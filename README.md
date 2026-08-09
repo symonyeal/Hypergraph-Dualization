@@ -135,7 +135,9 @@ store inputs as JSON, and make the claim executable as a test. See
 instances and the one it found: the Witt design `S(4,5,11)`, in the library as
 `w11`. [docs/hard-classes.md](docs/hard-classes.md) states what is settled about
 the families that make FK-A's frequency bound tight, and which kind of symmetry
-causes it.
+causes it. [docs/dedekind-atoms.md](docs/dedekind-atoms.md) classifies the
+five-variable space from the four-variable one — 210 classes, not 7581 functions
+— and assesses what the vendored `Dedekind/` snapshot can and cannot supply.
 
 ## SageMath
 

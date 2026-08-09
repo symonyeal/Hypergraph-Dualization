@@ -69,14 +69,28 @@ The variant keeps its baseline in every instance file and its own row in
 
 - `fk-a-vs-fk-b.json` and `fk-a-vs-fk-b.md` — node counts, automorphism-group
   distributions, and symmetry retention for both algorithms on every instance,
-  plus `sdfp-sd-3`, which is too large to keep in the library.
+  plus `sdfp-sd-3`, which is too large to keep in the library. Regenerate with
+  `python experiments/compare_algorithms.py`; every row is checked against the
+  brute-force oracle before it is reported, and the reading of these numbers is in
+  [`../docs/fk-a-vs-fk-b.md`](../docs/fk-a-vs-fk-b.md).
 - `hard-case-search.json` — every vertex-transitive self-transversal hypergraph
   on at most 15 points, with its group, primitivity, frequency and both
   algorithms' node counts. Regenerate with
   `sage -python experiments/hard_case_search.py 3 15`; the reading is in
   [`../docs/hard-cases.md`](../docs/hard-cases.md).
+- `hard-classes.json` and `hard-classes.md` — every instance against FK96's
+  `c = eps * log2 N` window, and every node of both trees classified as
+  read-once / transitive / primitive. Regenerate with
+  `python experiments/hard_classes.py`; the reading is in
+  [`../docs/hard-classes.md`](../docs/hard-classes.md).
 
-Regenerate with `python experiments/compare_algorithms.py`. Every row is checked
-against the brute-force oracle before it is reported.
+## Standalone studies
 
-The reading of these numbers is in [`../docs/fk-a-vs-fk-b.md`](../docs/fk-a-vs-fk-b.md).
+- `dedekind-atoms.md` — the 7581 monotone Boolean functions on 5 variables
+  classified into their 210 `S_5`-classes using the 30 four-variable classes as
+  atoms, with the Cauchy-Frobenius cross-check and the cost accounting. Regenerate
+  with `python experiments/dedekind_atoms.py`; the derivation and the assessment
+  of the vendored `Dedekind/` snapshot are in
+  [`../docs/dedekind-atoms.md`](../docs/dedekind-atoms.md). This one is about the
+  space both algorithms search, not about a run of either, so it has no instance
+  and no tree.
