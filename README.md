@@ -49,8 +49,14 @@ What the project provides:
 From this directory, the source-tree tests require no installation:
 
 ```text
-python -m pytest
+python -m pytest -m 'not slow'
 ```
+
+That is the working invocation: 457 passed, 13 skipped, 12 deselected in about
+four minutes. A bare `python -m pytest` also runs the twelve `slow`-marked
+exhaustive checks, one of which — `tk(2)`, enumerating a group of order 32768 —
+takes 26 minutes on its own. Nothing is wrong when that happens; CI runs the full
+set deliberately.
 
 Install the command-line package into whichever interpreter you use (no project
 virtual environment is required):
@@ -147,8 +153,10 @@ backend, not an import-time dependency. Use the Binder badge above to run Sage
 same Sage-backed checks for every definitive revision.
 
 Sage 10.9 is installed on the maintenance workstation, so the Sage-marked tests
-execute rather than skip: 373 passed / 1 skipped under Sage's Python against
-361 passed / 13 skipped under plain CPython.
+execute rather than skip: 469 passed / 1 skipped under Sage's Python against
+457 passed / 13 skipped under plain CPython, both with `-m 'not slow'`. The
+difference is exactly the twelve `sage`-marked tests, which run in one case and
+skip in the other.
 [docs/sagemath.md](docs/sagemath.md) has the conda recipe and the two traps in
 that build (no `sage -python`, no GAP `design` package).
 

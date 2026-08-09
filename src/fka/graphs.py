@@ -133,26 +133,37 @@ def _check_size(g: Graph, what: str) -> None:
         )
 
 
-def find_induced_p4(g: Graph) -> Optional[tuple[int, ...]]:
+def find_induced_p4(
+    g: Graph, *, max_vertices: Optional[int] = MAX_ENUMERATION_VERTICES
+) -> Optional[tuple[int, ...]]:
     """Return the vertices of an induced ``P4``, or ``None``.
 
     ``P4`` is the path on 4 vertices; a graph is a cograph exactly when it has
     none (Corneil-Lerchs-Stewart). Checking all 4-subsets is ``O(n^4)``, which
     beats writing a cotree decomposition for graphs this size.
+
+    The test is the internal degree sequence alone, read straight off the
+    adjacency bitsets with no subgraph construction: those degrees sum to twice
+    the number of edges inside the 4-set, so ``1,1,2,2`` forces exactly three
+    edges, no vertex is isolated and no component can be a pair, and the only
+    4-vertex tree left is the path.
+
+    ``max_vertices=None`` lifts the cap. This is the one enumeration in this
+    module cheap enough to run past it -- the others build induced subgraphs --
+    and `experiments/hard_classes.py` needs it on the deeper template words.
     """
-    _check_size(g, "cograph testing")
+    if max_vertices is not None and g.n > max_vertices:
+        _check_size(g, "cograph testing")
     for quad in combinations(range(g.n), 4):
-        sub = g.induced(quad)
-        degs = sorted(sub.degree(i) for i in range(4))
-        # A P4 is the unique 4-vertex graph with 3 edges and degrees 1,1,2,2.
-        if sub.size == 3 and degs == [1, 1, 2, 2] and sub.is_connected():
+        deg = [sum(1 for w in quad if w != v and g.adj[v] >> w & 1) for v in quad]
+        if sorted(deg) == [1, 1, 2, 2]:
             return quad
     return None
 
 
-def is_cograph(g: Graph) -> bool:
+def is_cograph(g: Graph, *, max_vertices: Optional[int] = MAX_ENUMERATION_VERTICES) -> bool:
     """``P4``-free."""
-    return find_induced_p4(g) is None
+    return find_induced_p4(g, max_vertices=max_vertices) is None
 
 
 def _induced_cycles_at_least(g: Graph, length: int) -> Iterator[tuple[int, ...]]:

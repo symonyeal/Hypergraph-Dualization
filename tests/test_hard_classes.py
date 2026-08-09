@@ -14,7 +14,8 @@ from fractions import Fraction
 import pytest
 
 from fka.hypergraph import Hypergraph, phi_x_0
-from fka.instances import witt_11
+from fka.instances import (TEMPLATE_X, TEMPLATE_Y, gk, template_word, tk,
+                           witt_11)
 from fka.properties import is_read_once
 from fka.selfdual import (automorphisms, fano, is_intersecting, is_primitive,
                           is_self_dual, is_transitive, pair_automorphisms)
@@ -23,31 +24,8 @@ from fka.algorithm import eps_exact
 from fka.bound import iterate, shortest_edge_ratio, threshold_ratio
 from fka.transversal import transversal
 
-X = Hypergraph.from_sets(4, [[0, 1], [2, 3]])                    # (v1^v2)v(v3^v4)
-Y = Hypergraph.from_sets(4, [[0, 2], [0, 3], [1, 2], [1, 3]])    # (v1vv2)^(v3vv4)
-
-
-def word(w):
-    """T_w = w_1[w_2[...w_k]] over the atoms X, Y."""
-    atoms = {"X": X, "Y": Y}
-    MBF = atoms[w[-1]]
-    for ch in reversed(w[:-1]):
-        MBF = substitute(atoms[ch], [MBF] * 4)
-    return MBF
-
-
-def gk(k):
-    f = Hypergraph.from_sets(2, [[0], [1]])
-    for _ in range(k - 1):
-        f = disjoint_vee(disjoint_wedge(f, f), disjoint_wedge(f, f))
-    return f
-
-
-def tk(k):
-    S = single()
-    for _ in range(k):
-        S = disjoint_wedge(disjoint_vee(S, S), disjoint_vee(S, S))
-    return S
+X, Y = TEMPLATE_X, TEMPLATE_Y  # (v1^v2)v(v3^v4) and (v1vv2)^(v3vv4)
+word = template_word
 
 
 # ----------------------------------------------------------------------
