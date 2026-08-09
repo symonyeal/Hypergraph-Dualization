@@ -254,7 +254,7 @@ def search(n_from: int, n_to: int, pair_max: int = 12) -> list[dict]:
                     intersecting_orbits.append(orbit)
                     if not edges_are_minimal_transversals(orbit):
                         continue
-                    H = Hypergraph.from_bitsets(n, orbit)
+                    MBF = Hypergraph.from_bitsets(n, orbit)
                     if is_self_transversal(MBF):
                         found.setdefault(canonical_key(MBF), (MBF, set()))[1].add(label)
             if n > pair_max:
@@ -267,7 +267,7 @@ def search(n_from: int, n_to: int, pair_max: int = 12) -> list[dict]:
                     continue               # a self-transversal family is Sperner
                 if not edges_are_minimal_transversals(edges):
                     continue
-                H = Hypergraph.from_bitsets(n, edges)
+                MBF = Hypergraph.from_bitsets(n, edges)
                 if is_self_transversal(MBF):
                     found.setdefault(canonical_key(MBF), (MBF, set()))[1].add(label)
 

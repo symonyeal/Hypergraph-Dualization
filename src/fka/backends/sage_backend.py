@@ -99,7 +99,9 @@ def name_group(group: PermutationGroup) -> GroupIdentification:
         )
     try:
         name = str(sage_group.structure_description())
-        return GroupIdentification(name, group.order, bool(graph.is_abelian()), "sage-gap")
+        return GroupIdentification(
+            name, group.order, bool(sage_group.is_abelian()), "sage-gap"
+        )
     except Exception:
         return identify(group)
 

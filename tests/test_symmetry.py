@@ -22,7 +22,7 @@ from fka.groups import (
     perm_order,
 )
 from fka.hypergraph import Hypergraph
-from fka.instances import load
+from fka.instances import load, load_all
 from fka.properties import analyse, is_alpha_acyclic, is_conformal, is_read_once
 
 
@@ -268,10 +268,38 @@ def test_alpha_acyclicity_by_gyo():
 
 
 def test_conformal_and_normal_are_the_same_predicate():
-    """Documented in fka.properties: every clique sits inside a maximal one."""
-    from fka.properties import is_conformal, is_conformal
+    """Documented in fka.properties: every clique sits inside a maximal one.
 
-    assert is_conformal is is_conformal
+    Conformal is every *maximal* clique of the primal graph lying in a term;
+    normal is *every* clique doing so. Only :func:`is_conformal` exists, so the
+    definition it is compared against is kept here -- the rule that a deleted
+    duplicate's definition lives in the test that makes the comparison.
+    """
+    from itertools import combinations
+
+    from fka.graphs import primal_graph
+    from fka.hypergraph import bits
+
+    def is_normal(MBF):
+        """Every clique, maximal or not, is contained in some term."""
+        g = primal_graph(MBF)
+        for size in range(1, MBF.n + 1):
+            for candidate in combinations(range(MBF.n), size):
+                if not all(g.has_edge(u, v) for u, v in combinations(candidate, 2)):
+                    continue
+                c = bits(candidate)
+                if not any((c & e) == c for e in MBF.edges):
+                    return False
+        return True
+
+    checked = 0
+    for inst in load_all():
+        for side in (inst.cnf, inst.dnf):
+            if side.n > 8:  # enumerating every clique is 2^n
+                continue
+            assert is_normal(side) == is_conformal(side), side.label()
+            checked += 1
+    assert checked > 10, f"only {checked} sides were small enough; not meaningful"
 
 
 def test_thesis_claim_that_aut_g_equals_aut_h_needs_a_transversal_pair():
@@ -300,6 +328,19 @@ def test_thesis_claim_that_aut_g_equals_aut_h_needs_a_transversal_pair():
     )
 
 
+#: Instances no annotation pass can afford, whatever their tree size: 16
+#: variables each, with a per-node group search of roughly 40 s because the group
+#: is past ``MAX_GROUP_ORDER`` and the full enumeration budget is spent
+#: discovering that. ``results/README.md`` records the same decision for their
+#: committed artifacts, which are generated with ``--no-annotate``.
+#:
+#: They are excluded by *name* because the node-count guard below is a proxy for
+#: annotation cost and does not track it. ``word-xy`` builds 577 nodes under FK-A,
+#: safely above the guard, but only 193 under FK-B -- so it slipped underneath and
+#: annotating it ran for hours. ``word-yx`` builds 223 and was skipped by luck.
+ANNOTATION_HOSTILE = frozenset({"word-xy", "word-yx"})
+
+
 @pytest.mark.slow
 @pytest.mark.parametrize("algorithm", ["fk-a", "fk-b"])
 def test_aut_g_equals_aut_h_at_every_node_of_both_algorithms(algorithm):
@@ -316,7 +357,6 @@ def test_aut_g_equals_aut_h_at_every_node_of_both_algorithms(algorithm):
     """
     from fka.algorithm import fk_a
     from fka.analysis import AnalysisOptions, annotate
-    from fka.instances import load_all
     from fkb.algorithm import fk_b
 
     build = fk_a if algorithm == "fk-a" else fk_b
@@ -324,6 +364,8 @@ def test_aut_g_equals_aut_h_at_every_node_of_both_algorithms(algorithm):
 
     checked = 0
     for inst in load_all():
+        if inst.id in ANNOTATION_HOSTILE:
+            continue
         tree = build(inst.cnf, inst.dnf, instance=inst.id)
         if len(tree) > 200:  # sdfp-sd-2 is covered by the committed report
             continue
