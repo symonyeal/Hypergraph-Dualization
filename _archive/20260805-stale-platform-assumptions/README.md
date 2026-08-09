@@ -13,6 +13,12 @@ describing a machine that no longer exists.
 | `conftest-before.py` | `tests/conftest.py` as of 2026-08-04 | `pytest_configure` and `_usable` removed |
 | `architecture-excerpt-before.md` | `docs/architecture.md` as of 2026-08-04 | interpreter paths made platform-neutral |
 
+The excerpt is verbatim, so its relative links are dead here by design: it points
+at `glossary.md`, which was a sibling in `docs/` when the excerpt was taken and is
+now at [`../20260806-mbf-vocabulary/glossary.md`](../20260806-mbf-vocabulary/glossary.md),
+superseded by `docs/dictionary.md`. The text is left as printed rather than
+repaired.
+
 ## 1. The dated Sage assessment
 
 `docs/sagemath.md` opened with a status block asserting that Windows CPython is

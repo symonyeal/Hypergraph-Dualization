@@ -15,6 +15,19 @@ superseded in full by `docs/dictionary.md`, which adds the on-disk column, the
 recursion-tree names, the rule that a concept has exactly one identifier, and a
 change log that is only appended to after approval.
 
+**Amended 2026-08-06.** The archival copied `docs/glossary.md` here but did not
+remove the original, so the repository carried two byte-identical copies and the
+superseded one was still the live path. `docs/glossary.md` is now deleted; this
+is the only copy. Nothing referenced it — the sole live mention was
+`docs/dictionary.md`'s change-log line recording that it had been archived.
+
+One paragraph of it, "How big is the space", had no counterpart in
+`docs/dictionary.md`, which is a correspondence table and not the place for it.
+It is not lost: [`Dedekind/README.md`](../../Dedekind/README.md) carries the
+`d(n)` table it summarised, and
+[`docs/dedekind-atoms.md`](../../docs/dedekind-atoms.md) now takes the argument
+further.
+
 ## What is not here, and why
 
 Nothing else. Every other file in that change was renamed or edited in place, so

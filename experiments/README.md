@@ -12,6 +12,7 @@ importable library.
 | `hard_classes.py` | Places every instance against FK96's `c = eps * log2 N` window and classifies every node of both trees as read-once / transitive / primitive. Writes `results/hard-classes.{json,md}`. |
 | `prime_templates.py` | Searches for a template at the frequency threshold that is not read-once. Writes `results/prime-templates.md`. |
 | `selfdual_orbits.py` | Hunts self-dual families beyond the Fano plane as unions of transitive-group orbits. Writes `results/selfdual-orbits.md`. |
+| `dedekind_atoms.py` | Classifies the 7581 MBFs on 5 variables into their 210 `S_5`-classes using the 30 four-variable classes as atoms, without enumerating them. Writes `results/dedekind-atoms.md`. |
 
 Core correctness claims belong in `tests/`, and normal runs belong in the `fka`
 and `fkb` CLIs. Avoid adding notebooks or unstructured output logs. Naming

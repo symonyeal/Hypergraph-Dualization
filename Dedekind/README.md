@@ -38,6 +38,43 @@ place by being a published or constructed object.
 `docs/fk-a-vs-fk-b.md` for what the two algorithms actually do inside that
 space.
 
+## What the `data/` tables actually are, and what they are good for
+
+The table above counts **labelled** functions. `d(4) = 168` and `d(5) = 7581`
+count them without quotienting by anything, so most of what they count is
+relabellings: up to `S_n` there are only 30 and 210 respectively (OEIS A003182).
+That distinction is the subject of [`../docs/dedekind-atoms.md`](../docs/dedekind-atoms.md),
+which classifies the five-variable space from the four-variable one and uses this
+snapshot as a check. Two findings about the snapshot belong here.
+
+**The `data/n/intervals.txt` files are a decomposition of `MBF(n+1)`.** Reading
+the third column as a multiplicity and summing it:
+
+| file | rows | multiplicities sum to | |
+| --- | ---: | ---: | --- |
+| `data/2/intervals.txt` | 6 | 20 | `= d(3)` |
+| `data/3/intervals.txt` | 18 | 168 | `= d(4)` |
+| `data/4/intervals.txt` | 134 | 7581 | `= d(5)` |
+
+This is Shannon expansion on one variable: `f = f|x=0 v (x ^ f|x=1)` is a
+bijection between `MBF(n+1)` and the comparable pairs of `MBF(n)`, so `d(n+1)`
+is the number of intervals of `FDL(n)` counted with multiplicity. It is the
+recursion the `d(9)` computation is built on, and `data/4/` is already a
+decomposition of the five-variable space over four-variable data.
+
+**The 134 rows are not a symmetry classification.** They are not the 210 classes
+up to `S_5`, nor the 620 up to `S_4`, nor even isomorphism classes of the
+intervals — colour refinement puts at least 227 of those in `FDL(4)`, and 134 is
+below the bound. Jäkel's classes merge intervals with their order duals, which is
+sound for him because all he needs from an interval is its length. At `n = 2` the
+row `0 7 2` covers `[0,7]` and `[1,15]`: five elements each, anti-isomorphic, one
+row. So the files can confirm a total but cannot answer a question about
+relabelling.
+
+Nothing here needs building. `docs/dedekind-atoms.md` reaches the classification
+in under a second of pure Python, and this snapshot's role is unchanged — the
+scale of the space, and an independent witness that 7581 is right.
+
 ## Licensing
 
 This snapshot is MIT and is **not** covered by the repository's

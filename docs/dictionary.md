@@ -103,6 +103,26 @@ the parameter name; only the concept is hypergraph-side.
 conformal, α-acyclic, read-once, cograph, `support`, `degree`, isolated vertex,
 `Tr`, Berge's method.
 
+## Names from the lattice reading
+
+A third register, used only in `fka.dedekind` and `docs/dedekind-atoms.md`. It
+describes the *space* of monotone Boolean functions rather than any one of them,
+so it has no counterpart in either source and does not mix with the two above.
+
+| name | is |
+| --- | --- |
+| `FDL(n)` | the free distributive lattice on `n` generators — every MBF on `n` variables, ordered by implication |
+| up-set | an MBF stored as the bitmask of the subsets satisfying it; bit `S` and term `S` are the same integer |
+| `d(n)` | the `n`-th Dedekind number, `\|FDL(n)\|`, OEIS A000372 — MBFs on `n` **labelled** variables |
+| A003182 | the same count **up to** `S_n`; 30 at `n = 4`, 210 at `n = 5` |
+| atom, `Atom` | one `S_n`-class of MBFs on `n` variables, the unit the level above is built from |
+| lift, `Lift` | the classification of `MBF(n+1)` obtained from the level-`n` atoms |
+| cofactor profile | the multiset over the variables of `([f\|x=0], [f\|x=1])`, each entry an atom class |
+
+`d(n)` counts labelled functions and A003182 counts classes. Writing "the number
+of Sperner hypergraphs up to symmetry" for `d(n)` is the one error this register
+exists to prevent.
+
 ## Where a bare `G` or `H` is still correct
 
 Three uses are *not* the hypergraph `G`/`H` and are left alone:
@@ -117,6 +137,12 @@ Anywhere else, a bare `G` or `H` in this repository is a leftover.
 ## Change log
 
 Entries are appended, with a date, only after approval.
+
+- **2026-08-08** — added the lattice register above for `fka.dedekind`: `FDL(n)`,
+  up-set, `d(n)`, A003182, atom, lift, cofactor profile. No existing name
+  changed. Recorded because `d(n)` and A003182 are two different counts that a
+  single loose phrase ("Sperner hypergraphs up to symmetry") collapses, and the
+  distinction is what `docs/dedekind-atoms.md` turns on.
 
 - **2026-08-06** — created. Adopted the MBF register repo-wide, replacing the
   mixed `G`/`H` + `cnf`/`dnf` vocabulary and the split `pivot` / `split_var`,
