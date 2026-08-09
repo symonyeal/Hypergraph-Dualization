@@ -45,6 +45,12 @@ __all__ = [
     "witt_11",
     "matching",
     "threshold",
+    "TEMPLATE_X",
+    "TEMPLATE_Y",
+    "TEMPLATE_ATOMS",
+    "template_word",
+    "gk",
+    "tk",
     "refresh_expected",
 ]
 
@@ -315,6 +321,71 @@ def threshold(v: int) -> Hypergraph:
         [[i, j] for j in range(2, v + 1, 2) for i in range(1, j)],
         one_indexed=True,
     )
+
+
+# ----------------------------------------------------------------------
+# Chapter 4's template families, all built by substitution
+# ----------------------------------------------------------------------
+#: The two template atoms, on four variables each and dual to one another:
+#: ``(v1^v2)v(v3^v4)`` and ``(v1vv2)^(v3vv4)``. Iterating either alone gives the
+#: GK- and TK-families; mixing them gives the *words* of `docs/hard-classes.md`,
+#: which is where the frequency bound is measured.
+TEMPLATE_X = Hypergraph.from_sets(4, [[0, 1], [2, 3]])
+TEMPLATE_Y = Hypergraph.from_sets(4, [[0, 2], [0, 3], [1, 2], [1, 3]])
+
+#: The atoms by the letter that names them in a word.
+TEMPLATE_ATOMS = {"X": TEMPLATE_X, "Y": TEMPLATE_Y}
+
+
+def template_word(w: str) -> Hypergraph:
+    """``T_w = w_1[w_2[...w_k]]``, the template word over the atoms X and Y.
+
+    Composed right to left, each atom substituted into all four slots of the one
+    before it, so ``"XY"`` is ``X[Y,Y,Y,Y]`` on 16 variables.
+    """
+    from .substitution import substitute
+
+    if not w:
+        raise ValueError("a template word needs at least one letter")
+    unknown = sorted(set(w) - set(TEMPLATE_ATOMS))
+    if unknown:
+        raise ValueError(f"unknown template letters {unknown}; use X and Y")
+    MBF = TEMPLATE_ATOMS[w[-1]]
+    for letter in reversed(w[:-1]):
+        MBF = substitute(TEMPLATE_ATOMS[letter], [MBF] * 4)
+    return MBF
+
+
+def gk(k: int) -> Hypergraph:
+    """``GK_k``: the Gurvich-Khachiyan family, by iterated disjoint composition.
+
+    ``GK_1`` is ``v1 v v2``; each step replaces ``f`` by
+    ``(f^f) v (f^f)`` on disjoint copies. Section 4.3's ``c -> 2`` family.
+    """
+    from .substitution import disjoint_vee, disjoint_wedge
+
+    if k < 1:
+        raise ValueError(f"k must be at least 1, got {k}")
+    f = Hypergraph.from_sets(2, [[0], [1]])
+    for _ in range(k - 1):
+        f = disjoint_vee(disjoint_wedge(f, f), disjoint_wedge(f, f))
+    return f
+
+
+def tk(k: int) -> Hypergraph:
+    """``TK_k``: the Takata family, the same iteration with the operators swapped.
+
+    Starts from the single variable and replaces ``f`` by ``(fvf)^(fvf)``, so it
+    is the order-dual iteration to :func:`gk` and reaches the same ``c -> 2``.
+    """
+    from .substitution import disjoint_vee, disjoint_wedge, single
+
+    if k < 0:
+        raise ValueError(f"k must be non-negative, got {k}")
+    S = single()
+    for _ in range(k):
+        S = disjoint_wedge(disjoint_vee(S, S), disjoint_vee(S, S))
+    return S
 
 
 # ----------------------------------------------------------------------

@@ -143,7 +143,12 @@ def test_automorphism_groups_match_the_thesis(instance_id, side, order, name):
 @pytest.mark.sage
 @pytest.mark.parametrize(
     "instance_id,side,order",
-    [("fano", "G", 168), ("f2g2", "G", 128), ("6b", "G", 48), ("w11", "G", 7920)],
+    [
+        ("fano", "cnf", 168),
+        ("f2g2", "cnf", 128),
+        ("6b", "cnf", 48),
+        ("w11", "cnf", 7920),
+    ],
 )
 def test_sage_group_names_are_isomorphic(instance_id, side, order):
     """Sage's name may spell the group differently; it must not describe a
@@ -153,9 +158,9 @@ def test_sage_group_names_are_isomorphic(instance_id, side, order):
     from fka.backends.sage_backend import sage_automorphism_group
 
     inst = load(instance_id)
-    H = inst.G if side == "G" else inst.H
-    py = automorphism_group(H, backend="python")
-    sg = sage_automorphism_group(H)
+    MBF = getattr(inst, side)
+    py = automorphism_group(MBF, backend="python")
+    sg = sage_automorphism_group(MBF)
     assert sg["order"] == py.order == order
 
     gens = [libgap.eval(g) for g in sg["generators"] if g != "()"]

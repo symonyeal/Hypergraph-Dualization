@@ -21,7 +21,6 @@ Two measurements over one instance set:
 
 from __future__ import annotations
 
-import itertools
 import json
 import math
 import time
@@ -29,11 +28,11 @@ from pathlib import Path
 
 from fka.algorithm import eps_exact, fk_a
 from fka.hypergraph import Hypergraph, verts
-from fka.instances import list_ids, load, matching, threshold, witt_11
-from fka.graphs import primal_graph
+from fka.instances import (gk, list_ids, load, matching, template_word,
+                           threshold, tk, witt_11)
+from fka.graphs import is_cograph, primal_graph
 from fka.properties import is_conformal, is_read_once
 from fka.selfdual import fano, is_primitive, is_transitive, pair_automorphisms
-from fka.substitution import disjoint_vee, disjoint_wedge, single, substitute
 from fka.bound import shortest_edge_ratio, threshold_ratio
 from fka.transversal import transversal
 from fkb.algorithm import fk_b
@@ -45,63 +44,28 @@ CAP = 120
 #: reasonable time, so the node is recorded as undetermined rather than guessed.
 MAX_EDGES = 100
 
-X = Hypergraph.from_sets(4, [[0, 1], [2, 3]])
-Y = Hypergraph.from_sets(4, [[0, 2], [0, 3], [1, 2], [1, 3]])
-
-
-def word(w):
-    atoms = {"X": X, "Y": Y}
-    MBF = atoms[w[-1]]
-    for ch in reversed(w[:-1]):
-        MBF = substitute(atoms[ch], [MBF] * 4)
-    return MBF
+word = template_word
 
 
 def swap(w):
     return w.translate(str.maketrans("XY", "YX"))
 
 
-def gk(k):
-    f = Hypergraph.from_sets(2, [[0], [1]])
-    for _ in range(k - 1):
-        f = disjoint_vee(disjoint_wedge(f, f), disjoint_wedge(f, f))
-    return f
-
-
-def tk(k):
-    S = single()
-    for _ in range(k):
-        S = disjoint_wedge(disjoint_vee(S, S), disjoint_vee(S, S))
-    return S
-
-
-def _has_induced_p4(g) -> bool:
-    """Direct induced-P4 scan, O(n^4).
-
-    ``fka.graphs.is_cograph`` refuses graphs over 20 vertices because its
-    recogniser enumerates induced subgraphs, and the deeper alternating-tree
-    members are larger than that. Only P4-freeness is needed here, and checking
-    the 4-subsets one at a time is cheap enough at these sizes.
-    """
-    n = g.n
-    for quad in itertools.combinations(range(n), 4):
-        deg = [sum(1 for w in quad if w != v and g.adj[v] >> w & 1) for v in quad]
-        if sorted(deg) == [1, 1, 2, 2]:
-            ends = [v for v, d in zip(quad, deg) if d == 1]
-            if not (g.adj[ends[0]] >> ends[1]) & 1:
-                return True
-    return False
-
-
 def read_once(MBF: Hypergraph) -> bool:
-    """``is_read_once``, falling back to the direct P4 scan past its cap."""
+    """``is_read_once``, falling back past its cap.
+
+    The deeper template words are larger than
+    ``fka.graphs.MAX_ENUMERATION_VERTICES``, and read-once is conformal plus
+    P4-free. Only the P4 scan is cheap enough to run uncapped, so it is asked for
+    explicitly rather than reimplemented here.
+    """
     if not len(MBF):
         return True
     try:
         return is_read_once(MBF)
     except ValueError:
         g = primal_graph(MBF)
-        return is_conformal(MBF, g) and not _has_induced_p4(g)
+        return is_conformal(MBF, g) and is_cograph(g, max_vertices=None)
 
 
 def classify(cnf: Hypergraph, dnf: Hypergraph):
