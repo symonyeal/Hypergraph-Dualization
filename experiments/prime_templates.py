@@ -76,7 +76,6 @@ def search(r, dmax, log):
                     dd[v] += 1
             by_deg[tuple(dd[r:])].append(g)
         tried = nsel = nclosed = ndual = nprime = 0
-        target = (d,) * (t - r)
         for combo in itertools.product(groups, repeat=r - 1):
             deg = [0] * (t - r)
             ok = True
