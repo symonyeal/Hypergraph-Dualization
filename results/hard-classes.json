@@ -970,7 +970,7 @@
         "undetermined": 0
       }
     },
-    "seconds": 1.0
+    "seconds": 0.8
   },
   {
     "instance": "trivial-aut-1",
@@ -1080,27 +1080,27 @@
     "seconds": 0.0
   },
   {
-    "instance": "witt-s4511",
+    "instance": "w11",
     "class": "library",
     "n_vertices": 11,
     "N": 132,
     "eps": "5/11",
     "c": 3.202,
     "s_over_log2N": 0.7098,
-    "fka_nodes": 483,
+    "fka_nodes": 475,
     "fka_depth": 9,
-    "fkb_nodes": 321,
+    "fkb_nodes": 323,
     "fkb_depth": 9,
-    "ratio": 1.505,
-    "exponent": 1.266,
-    "fka_repeat_rate": 0.7308,
-    "distinct_pairs": 278,
+    "ratio": 1.471,
+    "exponent": 1.262,
+    "fka_repeat_rate": 0.7053,
+    "distinct_pairs": 301,
     "root_primitive": false,
     "root_read_once": false,
     "last_primitive_depth": 8,
-    "primitive_nodes_fka": 2,
-    "primitive_nodes_fkb": 4,
-    "read_once_nodes_fka": 354,
+    "primitive_nodes_fka": 6,
+    "primitive_nodes_fkb": 6,
+    "read_once_nodes_fka": 342,
     "undetermined_nodes": 6,
     "fka_by_depth": {
       "0": {
@@ -1153,14 +1153,14 @@
       },
       "8": {
         "nodes": 140,
-        "primitive": 0,
-        "read_once": 140,
+        "primitive": 4,
+        "read_once": 136,
         "undetermined": 0
       },
       "9": {
-        "nodes": 120,
+        "nodes": 112,
         "primitive": 0,
-        "read_once": 120,
+        "read_once": 112,
         "undetermined": 0
       }
     },
@@ -1202,31 +1202,198 @@
         "undetermined": 0
       },
       "6": {
-        "nodes": 70,
+        "nodes": 68,
         "primitive": 0,
         "read_once": 20,
         "undetermined": 0
       },
       "7": {
-        "nodes": 110,
+        "nodes": 106,
         "primitive": 0,
-        "read_once": 74,
+        "read_once": 68,
         "undetermined": 0
       },
       "8": {
-        "nodes": 72,
-        "primitive": 2,
-        "read_once": 70,
+        "nodes": 76,
+        "primitive": 4,
+        "read_once": 72,
         "undetermined": 0
       },
       "9": {
-        "nodes": 4,
+        "nodes": 8,
         "primitive": 0,
-        "read_once": 4,
+        "read_once": 8,
         "undetermined": 0
       }
     },
     "seconds": 0.8
+  },
+  {
+    "instance": "w11-sd-1",
+    "class": "library",
+    "n_vertices": 13,
+    "N": 266,
+    "eps": "67/133",
+    "c": 4.0579,
+    "s_over_log2N": 0.2483,
+    "fka_nodes": 955,
+    "fka_depth": 11,
+    "fkb_nodes": 719,
+    "fkb_depth": 10,
+    "ratio": 1.328,
+    "exponent": 1.229,
+    "fka_repeat_rate": 0.8513,
+    "distinct_pairs": 573,
+    "root_primitive": false,
+    "root_read_once": false,
+    "last_primitive_depth": 10,
+    "primitive_nodes_fka": 12,
+    "primitive_nodes_fkb": 0,
+    "read_once_nodes_fka": 686,
+    "undetermined_nodes": 16,
+    "fka_by_depth": {
+      "0": {
+        "nodes": 1,
+        "primitive": 0,
+        "read_once": 0,
+        "undetermined": 1
+      },
+      "1": {
+        "nodes": 2,
+        "primitive": 0,
+        "read_once": 0,
+        "undetermined": 2
+      },
+      "2": {
+        "nodes": 4,
+        "primitive": 0,
+        "read_once": 2,
+        "undetermined": 2
+      },
+      "3": {
+        "nodes": 4,
+        "primitive": 0,
+        "read_once": 0,
+        "undetermined": 4
+      },
+      "4": {
+        "nodes": 8,
+        "primitive": 4,
+        "read_once": 0,
+        "undetermined": 0
+      },
+      "5": {
+        "nodes": 16,
+        "primitive": 0,
+        "read_once": 0,
+        "undetermined": 0
+      },
+      "6": {
+        "nodes": 32,
+        "primitive": 0,
+        "read_once": 0,
+        "undetermined": 0
+      },
+      "7": {
+        "nodes": 64,
+        "primitive": 0,
+        "read_once": 4,
+        "undetermined": 0
+      },
+      "8": {
+        "nodes": 120,
+        "primitive": 0,
+        "read_once": 24,
+        "undetermined": 0
+      },
+      "9": {
+        "nodes": 200,
+        "primitive": 0,
+        "read_once": 160,
+        "undetermined": 0
+      },
+      "10": {
+        "nodes": 280,
+        "primitive": 8,
+        "read_once": 272,
+        "undetermined": 0
+      },
+      "11": {
+        "nodes": 224,
+        "primitive": 0,
+        "read_once": 224,
+        "undetermined": 0
+      }
+    },
+    "fkb_by_depth": {
+      "0": {
+        "nodes": 1,
+        "primitive": 0,
+        "read_once": 0,
+        "undetermined": 1
+      },
+      "1": {
+        "nodes": 2,
+        "primitive": 0,
+        "read_once": 0,
+        "undetermined": 2
+      },
+      "2": {
+        "nodes": 4,
+        "primitive": 0,
+        "read_once": 0,
+        "undetermined": 4
+      },
+      "3": {
+        "nodes": 8,
+        "primitive": 0,
+        "read_once": 0,
+        "undetermined": 0
+      },
+      "4": {
+        "nodes": 16,
+        "primitive": 0,
+        "read_once": 0,
+        "undetermined": 0
+      },
+      "5": {
+        "nodes": 32,
+        "primitive": 0,
+        "read_once": 0,
+        "undetermined": 0
+      },
+      "6": {
+        "nodes": 68,
+        "primitive": 0,
+        "read_once": 8,
+        "undetermined": 0
+      },
+      "7": {
+        "nodes": 136,
+        "primitive": 0,
+        "read_once": 40,
+        "undetermined": 0
+      },
+      "8": {
+        "nodes": 242,
+        "primitive": 0,
+        "read_once": 172,
+        "undetermined": 0
+      },
+      "9": {
+        "nodes": 202,
+        "primitive": 0,
+        "read_once": 198,
+        "undetermined": 0
+      },
+      "10": {
+        "nodes": 8,
+        "primitive": 0,
+        "read_once": 8,
+        "undetermined": 0
+      }
+    },
+    "seconds": 2.4
   },
   {
     "instance": "word-xy",
@@ -1664,27 +1831,27 @@
     "seconds": 0.0
   },
   {
-    "instance": "witt-s4511",
+    "instance": "w11",
     "class": "self-dual",
     "n_vertices": 11,
     "N": 132,
     "eps": "5/11",
     "c": 3.202,
     "s_over_log2N": 0.7098,
-    "fka_nodes": 483,
+    "fka_nodes": 475,
     "fka_depth": 9,
-    "fkb_nodes": 321,
+    "fkb_nodes": 323,
     "fkb_depth": 9,
-    "ratio": 1.505,
-    "exponent": 1.266,
-    "fka_repeat_rate": 0.7308,
-    "distinct_pairs": 278,
+    "ratio": 1.471,
+    "exponent": 1.262,
+    "fka_repeat_rate": 0.7053,
+    "distinct_pairs": 301,
     "root_primitive": false,
     "root_read_once": false,
     "last_primitive_depth": 8,
-    "primitive_nodes_fka": 2,
-    "primitive_nodes_fkb": 4,
-    "read_once_nodes_fka": 354,
+    "primitive_nodes_fka": 6,
+    "primitive_nodes_fkb": 6,
+    "read_once_nodes_fka": 342,
     "undetermined_nodes": 6,
     "fka_by_depth": {
       "0": {
@@ -1737,14 +1904,14 @@
       },
       "8": {
         "nodes": 140,
-        "primitive": 0,
-        "read_once": 140,
+        "primitive": 4,
+        "read_once": 136,
         "undetermined": 0
       },
       "9": {
-        "nodes": 120,
+        "nodes": 112,
         "primitive": 0,
-        "read_once": 120,
+        "read_once": 112,
         "undetermined": 0
       }
     },
@@ -1786,31 +1953,31 @@
         "undetermined": 0
       },
       "6": {
-        "nodes": 70,
+        "nodes": 68,
         "primitive": 0,
         "read_once": 20,
         "undetermined": 0
       },
       "7": {
-        "nodes": 110,
+        "nodes": 106,
         "primitive": 0,
-        "read_once": 74,
+        "read_once": 68,
         "undetermined": 0
       },
       "8": {
-        "nodes": 72,
-        "primitive": 2,
-        "read_once": 70,
+        "nodes": 76,
+        "primitive": 4,
+        "read_once": 72,
         "undetermined": 0
       },
       "9": {
-        "nodes": 4,
+        "nodes": 8,
         "primitive": 0,
-        "read_once": 4,
+        "read_once": 8,
         "undetermined": 0
       }
     },
-    "seconds": 0.8
+    "seconds": 1.0
   },
   {
     "instance": "gk-f2",
@@ -2180,7 +2347,7 @@
         "undetermined": 0
       }
     },
-    "seconds": 17.6
+    "seconds": 21.2
   },
   {
     "instance": "tk-s1",
@@ -2376,7 +2543,7 @@
         "undetermined": 0
       }
     },
-    "seconds": 0.2
+    "seconds": 0.1
   },
   {
     "instance": "word-xy",

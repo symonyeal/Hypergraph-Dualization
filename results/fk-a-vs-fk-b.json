@@ -26,7 +26,7 @@
           "order_min": 2,
           "order_max": 4,
           "symmetry_retained": 0.5714,
-          "seconds": 0.0006
+          "seconds": 0.0005
         },
         "FK-B": {
           "nodes": 3,
@@ -50,7 +50,7 @@
           "branches": {
             "split": 1
           },
-          "seconds": 0.0003
+          "seconds": 0.0002
         }
       },
       "node_ratio": 3.667
@@ -107,7 +107,7 @@
           "branches": {
             "mu_D": 1
           },
-          "seconds": 0.0004
+          "seconds": 0.0003
         }
       },
       "node_ratio": 2.167
@@ -138,7 +138,7 @@
           "order_min": 24,
           "order_max": 48,
           "symmetry_retained": 0.625,
-          "seconds": 0.0003
+          "seconds": 0.0002
         },
         "FK-B": {
           "nodes": 1,
@@ -192,7 +192,7 @@
           "order_min": 1,
           "order_max": 8,
           "symmetry_retained": 0.4464,
-          "seconds": 0.0009
+          "seconds": 0.0004
         },
         "FK-B": {
           "nodes": 3,
@@ -251,7 +251,7 @@
           "order_min": 1,
           "order_max": 8,
           "symmetry_retained": 1.3333,
-          "seconds": 0.0011
+          "seconds": 0.001
         },
         "FK-B": {
           "nodes": 11,
@@ -312,7 +312,7 @@
           "order_min": 2,
           "order_max": 48,
           "symmetry_retained": 0.6324,
-          "seconds": 0.0013
+          "seconds": 0.0011
         },
         "FK-B": {
           "nodes": 21,
@@ -343,7 +343,7 @@
             "mu_C": 1,
             "mu_D": 1
           },
-          "seconds": 0.0015
+          "seconds": 0.0012
         }
       },
       "node_ratio": 1.0
@@ -376,7 +376,7 @@
           "order_min": 2,
           "order_max": 128,
           "symmetry_retained": 0.1016,
-          "seconds": 0.0013
+          "seconds": 0.0011
         },
         "FK-B": {
           "nodes": 7,
@@ -438,7 +438,7 @@
           "order_min": 1,
           "order_max": 168,
           "symmetry_retained": 0.0648,
-          "seconds": 0.0017
+          "seconds": 0.0015
         },
         "FK-B": {
           "nodes": 11,
@@ -465,7 +465,7 @@
           "branches": {
             "split": 5
           },
-          "seconds": 0.0009
+          "seconds": 0.0008
         }
       },
       "node_ratio": 3.182
@@ -496,7 +496,7 @@
           "order_min": 2,
           "order_max": 6,
           "symmetry_retained": 0.5556,
-          "seconds": 0.0002
+          "seconds": 0.0001
         },
         "FK-B": {
           "nodes": 3,
@@ -557,7 +557,7 @@
           "order_min": 1,
           "order_max": 336,
           "symmetry_retained": 0.0658,
-          "seconds": 0.0041
+          "seconds": 0.0037
         },
         "FK-B": {
           "nodes": 37,
@@ -589,7 +589,7 @@
             "mu_D": 5,
             "mu_C": 1
           },
-          "seconds": 0.0043
+          "seconds": 0.0028
         }
       },
       "node_ratio": 2.027
@@ -643,7 +643,7 @@
           "order_mean": 138.789,
           "order_min": 1,
           "order_max": 56448,
-          "seconds": 0.1249
+          "seconds": 0.1051
         },
         "FK-B": {
           "nodes": 231,
@@ -682,7 +682,7 @@
             "mu_D": 18,
             "mu_C": 8
           },
-          "seconds": 0.0331
+          "seconds": 0.0264
         }
       },
       "node_ratio": 6.177
@@ -717,7 +717,7 @@
           "order_min": 1,
           "order_max": 24,
           "symmetry_retained": 4.8462,
-          "seconds": 0.003
+          "seconds": 0.0026
         },
         "FK-B": {
           "nodes": 33,
@@ -746,21 +746,21 @@
           "branches": {
             "split": 16
           },
-          "seconds": 0.0032
+          "seconds": 0.0028
         }
       },
       "node_ratio": 1.242
     },
     {
-      "instance": "witt-s4511",
+      "instance": "w11",
       "n": 11,
       "nC": 66,
       "nD": 66,
       "oracle_dual": true,
       "algorithms": {
         "FK-A": {
-          "nodes": 483,
-          "leaves": 242,
+          "nodes": 475,
+          "leaves": 238,
           "depth": 9,
           "dual": true,
           "annotated": true,
@@ -769,13 +769,13 @@
           "nodes_analysed": 404,
           "aut_disagreements": 0,
           "group_names": {
-            "C2": 202,
-            "S3": 50,
-            "D4": 48,
+            "C2": 194,
+            "S3": 52,
+            "D4": 46,
             "S4": 36,
-            "C2 x C2": 22,
+            "C2 x C2": 26,
+            "C1": 14,
             "C2 x S4": 10,
-            "C1": 10,
             "D6": 8,
             "order 16 (non-abelian, unidentified)": 6,
             "S5": 4,
@@ -784,49 +784,133 @@
             "order 48 (non-abelian, unidentified)": 2,
             "order 72 (non-abelian, unidentified)": 2
           },
-          "trivial_group_nodes": 10,
+          "trivial_group_nodes": 14,
           "order_mean": 12.797,
           "order_min": 1,
           "order_max": 720,
-          "seconds": 0.0407
+          "seconds": 0.0344
         },
         "FK-B": {
-          "nodes": 321,
+          "nodes": 323,
           "leaves": 172,
           "depth": 9,
           "dual": true,
           "annotated": true,
           "root_group": null,
           "root_order": null,
-          "nodes_analysed": 318,
+          "nodes_analysed": 320,
           "aut_disagreements": 0,
           "group_names": {
-            "C2": 120,
-            "S3": 74,
+            "C2": 122,
+            "S3": 78,
             "C2 x C2": 40,
-            "C1": 30,
+            "C1": 28,
             "D4": 26,
-            "S4": 14,
+            "S4": 10,
             "order 16 (non-abelian, unidentified)": 6,
             "order 48 (non-abelian, unidentified)": 2,
             "C2 x S4": 2,
             "order 72 (non-abelian, unidentified)": 2,
+            "S5": 2,
             "order 720 (non-abelian, unidentified)": 1,
             "order 144 (non-abelian, unidentified)": 1
           },
-          "trivial_group_nodes": 30,
-          "order_mean": 8.535,
+          "trivial_group_nodes": 28,
+          "order_mean": 9.012,
           "order_min": 1,
           "order_max": 720,
           "branches": {
-            "split": 127,
-            "mu_C": 11,
-            "mu_D": 11
+            "split": 131,
+            "mu_C": 10,
+            "mu_D": 10
           },
-          "seconds": 0.0377
+          "seconds": 0.0335
         }
       },
-      "node_ratio": 1.505
+      "node_ratio": 1.471
+    },
+    {
+      "instance": "w11-sd-1",
+      "n": 13,
+      "nC": 133,
+      "nD": 133,
+      "oracle_dual": true,
+      "algorithms": {
+        "FK-A": {
+          "nodes": 955,
+          "leaves": 478,
+          "depth": 11,
+          "dual": true,
+          "annotated": true,
+          "root_group": null,
+          "root_order": null,
+          "nodes_analysed": 808,
+          "aut_disagreements": 0,
+          "group_names": {
+            "C2": 388,
+            "S3": 104,
+            "D4": 92,
+            "S4": 72,
+            "C2 x C2": 52,
+            "C1": 28,
+            "C2 x S4": 20,
+            "D6": 16,
+            "order 16 (non-abelian, unidentified)": 12,
+            "S5": 8,
+            "order 720 (non-abelian, unidentified)": 4,
+            "order 144 (non-abelian, unidentified)": 4,
+            "order 48 (non-abelian, unidentified)": 4,
+            "order 72 (non-abelian, unidentified)": 4
+          },
+          "trivial_group_nodes": 28,
+          "order_mean": 12.797,
+          "order_min": 1,
+          "order_max": 720,
+          "seconds": 0.0759
+        },
+        "FK-B": {
+          "nodes": 719,
+          "leaves": 402,
+          "depth": 10,
+          "dual": true,
+          "annotated": true,
+          "root_group": null,
+          "root_order": null,
+          "nodes_analysed": 712,
+          "aut_disagreements": 0,
+          "group_names": {
+            "C2": 206,
+            "C2 x C2": 132,
+            "S3": 108,
+            "C1": 96,
+            "D4": 46,
+            "S4": 36,
+            "C2 x C2 x C2": 20,
+            "D6": 14,
+            "C2 x D4": 12,
+            "S5": 12,
+            "order 16 (non-abelian, unidentified)": 12,
+            "order 48 (non-abelian, unidentified)": 4,
+            "order 72 (non-abelian, unidentified)": 4,
+            "C2 x C2 x S4": 2,
+            "S6": 2,
+            "order 720 (non-abelian, unidentified)": 2,
+            "order 144 (non-abelian, unidentified)": 2,
+            "C2 x S4": 2
+          },
+          "trivial_group_nodes": 96,
+          "order_mean": 12.646,
+          "order_min": 1,
+          "order_max": 720,
+          "branches": {
+            "split": 241,
+            "mu_C": 34,
+            "mu_D": 42
+          },
+          "seconds": 0.073
+        }
+      },
+      "node_ratio": 1.328
     },
     {
       "instance": "word-xy",
@@ -847,7 +931,7 @@
           "aut_disagreements": 0,
           "group_names": {},
           "trivial_group_nodes": 0,
-          "seconds": 0.042
+          "seconds": 0.0349
         },
         "FK-B": {
           "nodes": 193,
@@ -866,7 +950,7 @@
             "mu_C": 3,
             "split": 1
           },
-          "seconds": 0.0173
+          "seconds": 0.0148
         }
       },
       "node_ratio": 2.99
@@ -890,7 +974,7 @@
           "aut_disagreements": 0,
           "group_names": {},
           "trivial_group_nodes": 0,
-          "seconds": 0.0427
+          "seconds": 0.035
         },
         "FK-B": {
           "nodes": 223,
@@ -909,7 +993,7 @@
             "mu_C": 32,
             "split": 1
           },
-          "seconds": 0.0198
+          "seconds": 0.0159
         }
       },
       "node_ratio": 2.587
@@ -933,7 +1017,7 @@
           "aut_disagreements": 0,
           "group_names": {},
           "trivial_group_nodes": 0,
-          "seconds": 3.0271
+          "seconds": 3.1279
         },
         "FK-B": {
           "nodes": 1677,
@@ -952,7 +1036,7 @@
             "mu_D": 11,
             "mu_C": 10
           },
-          "seconds": 0.9035
+          "seconds": 0.878
         }
       },
       "node_ratio": 16.059
