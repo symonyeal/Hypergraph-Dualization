@@ -133,21 +133,29 @@ is the cotree's by 4.4.15); for the rest the enumeration is capped, and a capped
 subgroup with no nontrivial block still *proves* primitivity, so the cap can
 only under-report.
 
-Two things come out of the exhaustive pass over 22 instances.
+Two things come out of the exhaustive pass, 26 rows over 21 distinct pairs.
 
 > **(5.1)** A read-once root produces **no** primitive node anywhere in either
-> tree -- 12 of 12 such instances, `prim depth = -1`. That is Proposition
+> tree -- 13 of 13 such rows, `prim depth = -1`. That is Proposition
 > **(2.1)** in its recursive form: substitution never manufactures a primitive
 > group, so the alternating trees stay in the imprimitive regime at every level.
-> The converse fails: `6a`, `7ver`, `8ver` and `threshold-10` have non-read-once
-> roots and still no primitive node, being non-conformal with imprimitive
-> groups.
+> The converse fails, and widely: `6a`, `7ver`, `8ver`, `fano`, `sdfp-sd-1`,
+> `sdfp-sd-2` and `threshold-10` all have non-read-once roots and still no
+> primitive node, being non-conformal with imprimitive groups. Only four rows
+> carry a primitive node at all -- `k3`, `trivial-aut-1`, `w11`, `w11-sd-1`.
 
-> **(5.2)** Primitivity *depth* does **not** predict FK-B's advantage. A
-> three-instance reading suggested it did -- Fano dies at depth 0 with a 3.18x
-> gap, `S(4,5,11)` survives to depth 8 with only 1.50x. The full pass refutes
-> it: `sdfp-sd-2` keeps primitive nodes to depth 9 and FK-B still wins 6.18x.
-> There is no monotone relation between the two columns.
+> **(5.2)** Primitivity *depth* does **not** predict FK-B's advantage.
+> `w11-sd-1` keeps primitive nodes to depth 10 and FK-B wins only 1.33x, while
+> `gk-f3` carries no primitive node anywhere and FK-B wins 52.96x. There is no
+> monotone relation between the two columns -- if anything the sign is the
+> opposite of the one a three-instance reading suggested.
+>
+> **Corrected 2026-08-10.** This paragraph previously refuted the same claim
+> with "`sdfp-sd-2` keeps primitive nodes to depth 9 and FK-B still wins
+> 6.18x", and described Fano as dying "at depth 0". Neither is in the data:
+> `sdfp-sd-2` and `fano` both have zero primitive nodes and `prim depth = -1`,
+> in this pass and in the one the paragraph was written from. The conclusion is
+> unchanged and now rests on instances that carry the property.
 
 The repeat rate remains the better predictor at scale (99.6% -> 52.96x on
 `gk-f3`), but it is not sufficient either: `word-xy` repeats 95.2% of its nodes
@@ -155,9 +163,17 @@ and FK-B gains only 2.99x. What separates them is tree size, not symmetry --
 FK-B's saving compounds with the number of nodes there are to reuse. See
 `docs/fk-a-vs-fk-b.md`.
 
+The repeat column is worth reading in the other direction too. `1/(1 - repeat)`
+is exactly `tau/delta`, FK-A's tree over its distinct-subproblem count: 280x on
+`gk-f3`, 20.6x on `word-xy`. Measured that way none of the tight families is
+hard -- `gk-f3` needs 369 subproblems on `N = 192`, and the constant word at
+`N = 16512` needs 4139. The families in this note make FK-A's *frequency bound*
+tight, which is what section 0 claims; they do not make its recursion large.
+See `docs/tree-vs-dag.md`.
+
 Nodes whose incidence graph is too large to enumerate are counted in the
 `undet` column and excluded from the primitivity counts rather than guessed:
-6 nodes on `w11`, 2 on `sdfp-sd-2`, none anywhere else.
+16 nodes on `w11-sd-1`, 6 on `w11`, 2 on `sdfp-sd-2`, none anywhere else.
 
 ## Open
 

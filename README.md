@@ -37,6 +37,8 @@ What the project provides:
 - faithful and thesis-modified FK-A variants, and a faithful FK-B port with its
   single- and multiple-assignment variants;
 - FK-B run as a *generator* of `Tr(D)`, not only as a decision procedure;
+- FK-A's recursion memoised, so its subproblem *DAG* is measurable separately
+  from its tree — and reachable on instances whose tree is not;
 - an independent transversal oracle and checkable conflicting assignments;
 - structured, provenance-bearing JSON instances;
 - deterministic JSON, DOT, and self-contained interactive HTML results;
@@ -141,7 +143,9 @@ store inputs as JSON, and make the claim executable as a test. See
 instances and the one it found: the Witt design `S(4,5,11)`, in the library as
 `w11`. [docs/hard-classes.md](docs/hard-classes.md) states what is settled about
 the families that make FK-A's frequency bound tight, and which kind of symmetry
-causes it. [docs/dedekind-atoms.md](docs/dedekind-atoms.md) classifies the
+causes it. [docs/tree-vs-dag.md](docs/tree-vs-dag.md) separates FK-A's tree from
+its distinct-subproblem count and finds that no published hard instance is hard
+for the recursion itself. [docs/dedekind-atoms.md](docs/dedekind-atoms.md) classifies the
 five-variable space from the four-variable one — 210 classes, not 7581 functions
 — and assesses what the vendored `Dedekind/` snapshot can and cannot supply.
 

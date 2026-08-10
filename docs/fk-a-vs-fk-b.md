@@ -160,17 +160,25 @@ things. FK-A's is a *shape* shortcut, for when one side collapses to a single
 edge. FK-B's is a *frequency* shortcut, for when no single vertex is frequent
 enough to make a two-way split productive. Neither subsumes the other.
 
-## 6. The output-bound exception
+## 6. `matching(v)` is not output-bound
 
 `matching(v)` has `|Tr| = 2^(v/2)`: the answer itself is exponential in the
 input. FK-A's repeat rate there is high — 90.4% at `v = 12` — but the ratio
 stays pinned at about 1.9x across every size tested.
 
-That is the check on the story in §2. A high repeat rate only converts into a
-large gap when the repeats are *avoidable*. In the matching family both
-algorithms must emit work proportional to an exponential output, so neither can
-pull away, and the repeat rate stops being predictive. Symmetry-driven repeats
-are avoidable; output-driven ones are not.
+**Corrected 2026-08-10.** This section read the pinned ratio as an *output*
+bound: both algorithms "must emit work proportional to an exponential output",
+so the repeats were "unavoidable" and the repeat rate stopped being predictive.
+That is wrong for the decision problem. Memoising FK-A's recursion settles
+`matching(v)` in exactly `v` distinct subproblems, against a tree of
+`2^(v/2+1) − 3` nodes — both closed forms, asserted in `tests/test_memo.py`.
+Neither algorithm ever has to touch `Tr`. Output size lower-bounds *generation*;
+FK-A and FK-B are deciding.
+
+So the repeats here are as avoidable as anywhere else, and what survives is the
+narrower observation: FK-A and FK-B *both* fail to avoid them, which is why
+their ratio stays flat. That is a fact about the two algorithms, not about the
+instance. See [tree-vs-dag.md](tree-vs-dag.md) §2.
 
 ## 7. The thesis' `Aut(C) = Aut(D)` claim
 
@@ -201,7 +209,7 @@ is locked by `tests/test_symmetry.py`.
 | --- | --- | --- | --- | --- |
 | **Symmetry-bound** | `sdfp-sd-*`, `fano`, `f2g2` | 60–98% | **FK-B**, growing with size | FK-A re-derives orbit-equivalent subproblems; FK-B's per-term branch takes a whole orbit representative at once |
 | **Primitively symmetric** | `w11`, `w11-sd-1` | 70% | **neither**, ~1.5x | The root group is 4-transitive, so no vertex, pair, triple or quadruple is distinguishable. FK-B's cheap path stops firing: it needs 323 nodes at depth 9 where the Fano plane costs it 11 at depth 3. Added 2026-08-05; see [hard-cases.md](hard-cases.md) |
-| **Output-bound** | `matching(v)` | high but unavoidable | neither, flat ~1.9x | `|Tr|` is exponential; both must pay it |
+| **Large output** | `matching(v)` | high, and avoidable | neither, flat ~1.9x | `|Tr|` is exponential but neither algorithm needs it; both simply fail to reuse — `delta = v`, see §6 |
 | **Shape-easy** | `threshold(v)`, `8ver` | 0–48% | **FK-A** | `D_{1,k}` settles it before FK-B's per-term fan-out earns anything |
 
 The practical consequence for this project: **`ε(C, D)` and `|Aut|` at the root
@@ -209,3 +217,13 @@ predict which algorithm to reach for.** A high root automorphism order with a
 self-dual structure is FK-A's worst case and FK-B's best; a small, lopsided pair
 is the reverse. Neither dominates, and the instance library now contains
 witnesses for both directions.
+
+One qualification on all of the above, added 2026-08-10. Every ratio in this
+document compares two *trees*. Against FK-A's distinct-subproblem count the
+picture changes: `delta <= 4·beta` on every instance, and `delta/beta` falls to
+0.14 on `word-xy` and 0.19 on `gk-f3`, so FK-B's asymptotic advantage is
+subsumed by a transposition table and what it keeps is the constant factor from
+§4's shallower base case. The repeat rate of §2 is not an empirical predictor
+either — `tau/delta = 1/(1 − rho)` is an identity, making `rho` the *ceiling* on
+any such speedup rather than a correlate of FK-B's share of it.
+[tree-vs-dag.md](tree-vs-dag.md) is the full account.

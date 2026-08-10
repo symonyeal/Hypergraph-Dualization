@@ -21,6 +21,7 @@ one-way and is about where files sit, not about one algorithm needing the other.
 | `fka/tree.py` | the serializable `Tree`, shared by both algorithms |
 | `fka/transversal.py` | the independent Berge-method oracle |
 | `fka/algorithm.py` | FK-A |
+| `fka/memo.py` | the same recursion with a transposition table: FK-A's subproblem DAG, `delta`, against its tree `tau` |
 | `fkb/algorithm.py` | FK-B |
 | `fkb/dualize.py` | `Tr(D)` by repeated FK-B equivalence tests |
 | `fka/automorphism.py` | the one automorphism search, for one term set or a pair |
@@ -38,6 +39,12 @@ one-way and is about where files sit, not about one algorithm needing the other.
 `fka/automorphism.py` is the module Chapter 3 is about: every recursion node is
 annotated with the group of both its subhypergraphs, and that annotation is what
 `docs/fk-a-vs-fk-b.md` and `docs/hard-cases.md` measure.
+
+`fka/memo.py` is deliberately not a flag on `fka/algorithm.py`. The tree is the
+published object and its node counts are fixed by
+`tests/test_thesis_reproduction.py`; the DAG is a second measurement of the same
+recursion, and it is defined on instances whose tree cannot be built. See
+`docs/tree-vs-dag.md`.
 
 Neither algorithm plots, computes automorphism groups, or touches the filesystem
 while recursing. That separation is what makes a result reproducible and

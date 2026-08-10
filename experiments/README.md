@@ -10,6 +10,7 @@ importable library.
 | `hard_case_search.py` | Enumerates every vertex-transitive self-transversal hypergraph on <= 15 points, over SageMath's transitive-group database, and measures both algorithms on each. Writes `results/hard-case-search.json`. Requires SageMath. |
 | `import_fkb_benchmarks.py` | Reads the local MATLAB FK-B snapshot's `*_CNF_DNF.mat` files and reports what is in them. Requires SciPy and the snapshot; neither is a project dependency. |
 | `hard_classes.py` | Places every instance against FK96's `c = eps * log2 N` window and classifies every node of both trees as read-once / transitive / primitive. Writes `results/hard-classes.{json,md}`. |
+| `dag_size.py` | Measures FK-A's tree `tau` against its distinct-subproblem count `delta`, the closed forms along `matching` and `threshold`, and `delta` on words whose tree cannot be enumerated. Writes `results/dag-size.{json,md}`. `--deep` adds the length-3 words, minutes rather than seconds. |
 | `prime_templates.py` | Searches for a template at the frequency threshold that is not read-once. Writes `results/prime-templates.md`. |
 | `selfdual_orbits.py` | Hunts self-dual families beyond the Fano plane as unions of transitive-group orbits. Writes `results/selfdual-orbits.md`. |
 | `dedekind_atoms.py` | Classifies the 7581 MBFs on 5 variables into their 210 `S_5`-classes using the 30 four-variable classes as atoms, without enumerating them. Writes `results/dedekind-atoms.md`. |

@@ -83,6 +83,12 @@ The variant keeps its baseline in every instance file and its own row in
   read-once / transitive / primitive. Regenerate with
   `python experiments/hard_classes.py`; the reading is in
   [`../docs/hard-classes.md`](../docs/hard-classes.md).
+- `dag-size.json` and `dag-size.md` — FK-A's tree `tau` against its distinct
+  subproblem count `delta` and FK-B's `beta`, the closed forms along `matching`
+  and `threshold`, and `delta` on the alternating-tree words out to `N = 16512`,
+  where the tree is not an observable. Regenerate with
+  `python experiments/dag_size.py --deep`; the reading is in
+  [`../docs/tree-vs-dag.md`](../docs/tree-vs-dag.md).
 
 ## Standalone studies
 
