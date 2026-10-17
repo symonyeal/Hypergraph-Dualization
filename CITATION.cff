@@ -1,13 +1,13 @@
 cff-version: 1.2.0
 message: "Please cite the thesis and this software if you use the FK-A or FK-B implementation or its research data."
-title: "Hypergraph Transversal Thesis: FK-A and FK-B Research Package"
+title: "Hypergraph Dualization: FK-A and FK-B Research Package"
 type: software
 authors:
   - family-names: Islam
     given-names: Saimon Y.
   - family-names: Liang
     given-names: Lacey
-repository-code: "https://github.com/symonyeal/Hypergraph-Transversal-Thesis"
+repository-code: "https://github.com/symonyeal/Hypergraph-Dualization"
 license: GPL-3.0-or-later
 version: 2.0.0
 references:

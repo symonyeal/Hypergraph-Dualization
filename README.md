@@ -1,13 +1,15 @@
-# Hypergraph dualization: FK-A and FK-B
+# Hypergraph Dualization
 
-[![Tests](https://github.com/symonyeal/Hypergraph-Transversal-Thesis/actions/workflows/tests.yml/badge.svg)](https://github.com/symonyeal/Hypergraph-Transversal-Thesis/actions/workflows/tests.yml)
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/symonyeal/Hypergraph-Transversal-Thesis/main?urlpath=lab)
+Fredman–Khachiyan algorithms FK-A and FK-B.
+
+[![Tests](https://github.com/symonyeal/Hypergraph-Dualization/actions/workflows/tests.yml/badge.svg)](https://github.com/symonyeal/Hypergraph-Dualization/actions/workflows/tests.yml)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/symonyeal/Hypergraph-Dualization/main?urlpath=lab)
 
 This is the maintained research implementation for Saimon Y. Islam's work on
 hypergraph dualization, symmetry, and the Fredman-Khachiyan algorithms. The
 mathematical reference is [Saimon Islam Manuscript MSc Thesis (1).pdf](Saimon%20Islam%20Manuscript%20MSc%20Thesis%20(1).pdf).
 The definitive repository is
-[symonyeal/Hypergraph-Transversal-Thesis](https://github.com/symonyeal/Hypergraph-Transversal-Thesis).
+[symonyeal/Hypergraph-Dualization](https://github.com/symonyeal/Hypergraph-Dualization).
 
 Both algorithms decide the same question against one shared model, one instance
 library, and one visualiser, so their recursion trees are directly comparable.

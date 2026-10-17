@@ -37,10 +37,10 @@ RUN if id -u ${NB_UID} >/dev/null 2>&1; then \
       useradd -m -s /bin/bash -u ${NB_UID} -g ${NB_USER} ${NB_USER}; \
     fi
 
-COPY --chown=${NB_USER}:${NB_USER} . ${HOME}/Hypergraph-Transversal-Thesis
+COPY --chown=${NB_USER}:${NB_USER} . ${HOME}/Hypergraph-Dualization
 
 USER ${NB_USER}
-WORKDIR ${HOME}/Hypergraph-Transversal-Thesis
+WORKDIR ${HOME}/Hypergraph-Dualization
 
 # No --user: Sage's Python is a virtualenv and rejects a user install. NB_USER
 # is the image's own uid 1000, which owns the venv, so it can install into it.
