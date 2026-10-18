@@ -5,6 +5,36 @@ Fredman–Khachiyan algorithms FK-A and FK-B.
 [![Tests](https://github.com/symonyeal/Hypergraph-Dualization/actions/workflows/tests.yml/badge.svg)](https://github.com/symonyeal/Hypergraph-Dualization/actions/workflows/tests.yml)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/symonyeal/Hypergraph-Dualization/main?urlpath=lab)
 
+## In plain terms
+
+This is the code for an MSc thesis in mathematics. It studies one basic problem that comes
+up whenever someone asks for all the smallest ways to do something.
+
+An example: an organization has several committees and wants a delegation that includes at
+least one member of every committee. A delegation is *minimal* if removing anyone from it
+breaks that rule. Listing every minimal delegation is called *dualization*. The same problem
+appears when listing every minimal way a system can fail, in database design, and in data
+mining. The companion project
+[Resilient-Supplier-Panels](https://github.com/symonyeal/Resilient-Supplier-Panels) uses it
+to find every minimal panel of backup food suppliers.
+
+The hard part is checking that a list is complete, with no minimal delegation missing. In
+1996, Fredman and Khachiyan gave a method far faster than trying every possibility. Whether
+a truly efficient method exists (one that runs in polynomial time) is still an open
+problem. This repository implements two versions of their method, called FK-A and FK-B. It
+runs both on the same examples, draws their search trees side by side, and looks for the
+examples that make them work hardest.
+
+**Findings, briefly.** The two versions always agree, and an independent check confirms
+every answer. The search for new hard examples found one, built from a classical structure
+in combinatorics (the Witt design S(4,5,11)). Many examples that look hard make the method
+solve the same sub-problem over and over. When only distinct sub-problems are counted, none
+of the published hard examples is hard for the method itself.
+
+The rest of this page is written for specialists.
+
+## Overview
+
 This is the maintained research implementation for Saimon Y. Islam's work on
 hypergraph dualization, symmetry, and the Fredman-Khachiyan algorithms. The
 mathematical reference is [Saimon Islam Manuscript MSc Thesis (1).pdf](Saimon%20Islam%20Manuscript%20MSc%20Thesis%20(1).pdf).
