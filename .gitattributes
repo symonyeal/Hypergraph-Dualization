@@ -14,3 +14,9 @@ Dockerfile text eol=lf
 # either direction, so "unmodified" stays a checkable claim and its Makefile
 # and CMake files reach a Linux build the way upstream shipped them.
 Dedekind/** -text
+
+# Language statistics count the maintained source: generated run reports and
+# preserved material are excluded, the third-party snapshot is vendored.
+results/** linguist-generated
+_archive/** linguist-detectable=false
+Dedekind/** linguist-vendored
