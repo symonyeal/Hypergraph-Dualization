@@ -13,6 +13,8 @@ importable library.
 | `dag_size.py` | Measures FK-A's tree `tau` against its distinct-subproblem count `delta`, the closed forms along `matching` and `threshold`, and `delta` on words whose tree cannot be enumerated. Writes `results/dag-size.{json,md}`. `--deep` adds the length-3 words, minutes rather than seconds. |
 | `prime_templates.py` | Searches for a template at the frequency threshold that is not read-once. Writes `results/prime-templates.md`. |
 | `selfdual_orbits.py` | Hunts self-dual families beyond the Fano plane as unions of transitive-group orbits. Writes `results/selfdual-orbits.md`. |
+| `witt_m11.py` | Re-derives the facts about the Witt design `S(4,5,11)` (Steiner property, self-transversality, `|Aut| = 7920`, the FK-A children's groups); `--lean` writes `lean/HypergraphDualization/WittData.lean`. |
+| `steiner_selftr.py` | Checks `d(r² − t) ≥ r(r − 1)` on self-transversal hypergraphs, lists the Steiner parameters with no two disjoint blocks, and scans the intersecting ones for 2-colourings. See `docs/research-prompt.md`. |
 | `dedekind_atoms.py` | Classifies the 7581 MBFs on 5 variables into their 210 `S_5`-classes using the 30 four-variable classes as atoms, without enumerating them. Writes `results/dedekind-atoms.md`. |
 
 Core correctness claims belong in `tests/`, and normal runs belong in the `fka`
