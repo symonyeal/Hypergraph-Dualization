@@ -1,0 +1,80 @@
+%   Tracing the Effects of Symmetry in Hypergraphs On the Fredman-Khachiyan Algorithm
+%   Saimon Y. Islam, MSc thesis, Simon Fraser University, Summer 2024.
+%
+%   Source recovered on 2026-10-20 from the deposited PDF (pdfTeX 1.40.25,
+%   2024-11-22), the original source having been lost. This edition reproduces
+%   the deposited text as printed, including its errors, undefined references
+%   and undefined citations; the corrected edition is ../revised/.
+
+\documentclass{sfuthesis}
+
+\title{Tracing the Effects of Symmetry in Hypergraphs On the Fredman-Khachiyan Algorithm}
+\thesistype{Thesis}
+\author{Saimon Y. Islam}
+\previousdegrees{B.Sc. in Mathematics, Washington and Lee University, 2019}
+\degree{Master of Science}
+\department{Department of Mathematics}
+\faculty{Faculty of Science}
+\copyrightyear{2024}
+\semester{Summer 2024}
+\keywords{Hypergraph Transversal; Monotone Boolean Function; Automorphism}
+
+\committee{
+    \chair{Amarpreet Rattan}{Associate Professor, Mathematics}
+    \member{Tamon Stephen}{Senior Supervisor \\ Professor, Mathematics}
+    \member{Ladislav Stacho}{Supervisor \\ Professor, Mathematics}
+    \member{Luis Goddyn}{Examiner \\ Professor, Mathematics}
+}
+
+\input{preamble}
+
+\begin{document}
+
+\frontmatter
+\maketitle{}
+\makecommittee{}
+
+\begin{abstract}
+Determining if two Sperner hypergraphs $H_1$ and $H_2$ are transversals of each other in polynomial time remains a longstanding open problem in combinatorial optimization. Fredman and Khachiyan proposed two quasi-polynomial time algorithms, \FKA{} and\FKB, to solve it. While \FKA{} performs well for most hypergraphs, it's shown to perform poorly with some families of hypergraphs exhibiting a high degree of symmetry.
+
+This thesis analyzes the symmetry in clique hypergraphs and their transversals by their underlying graph structure and gains insight into how the \FKA{} recursion impacts their symmetry. We also show that \FKA{} decomposition induces a minor map on the underlying graph of hypergraphs, and present characterization of hypergraphs that \FKA{} struggles with. Additionally, we present a modified implementation of \FKA{} and show the changes in hypergraph symmetry during the recursive decomposition of \FKA.
+\end{abstract}
+
+\begin{dedication}
+I am dedicating this thesis to my sister, Afroza Islam Ima. She was not only my first teacher but also an unwavering source of guidance throughout my life. This work stands as a tribute to her memory, reflecting her aspirations for me and honoring the profound impact she had on my journey. Here's to everything I didn't get to say to you.
+\end{dedication}
+
+\begin{acknowledgements}
+I want to thank my parents for their unwavering support and encouragement throughout my studies. I am also grateful to my friends in Vancouver and my roommates from Foster, who stood by me through both good and challenging times.
+
+I sincerely thank my supervisor, Tamon Stephen, for his guidance and support. For the entire duration of my program, I had gone through some difficult periods when I needed support. Whenever I felt lost in the work or frustrated with the progress, he helped me and guided me to stay motivated and find direction. His patience and advice were essential throughout this journey.
+
+I also want to thank the faculty members I learned from and worked with as a TA, as well as the graduate students I collaborated with. Your support made this experience valuable and rewarding.
+
+Lastly, thank you to ChatGPT for helping me resolve countless \LaTeX{} errors and teaching me how to draw tikz figures along the way.
+\end{acknowledgements}
+
+\addtoToC{Table of Contents}%
+\tableofcontents%
+\clearpage
+
+\addtoToC{List of Figures}%
+\listoffigures%
+\clearpage
+
+\mainmatter
+
+\input{chapters/ch1-introduction}
+\input{chapters/ch2-background}
+\input{chapters/ch3-symmetry}
+\input{chapters/ch4-hard-classes}
+\input{chapters/ch5-experiments}
+
+\backmatter%
+    \addtoToC{Bibliography}
+    \bibliographystyle{amsalpha}
+    \bibliography{references}
+
+\input{chapters/appendix}
+
+\end{document}

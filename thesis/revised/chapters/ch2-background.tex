@@ -1,0 +1,279 @@
+\chapter{Background}
+
+\section{The \TransHyp{} Problem}
+
+\subsection{Properties of Transversal Hypergraphs}
+
+This section explores the sufficient and necessary conditions for a hypergraph to be the transversal hypergraph of another. The following results are based on \cite{Ber87}.
+
+\begin{lemma}[\leanref{eq_tr_iff_partition}]\label{lem:partition}
+Let $G$ and $H$ be two Sperner hypergraphs on the same vertex set $V$. Then $H=\Tr(G)$ if and only if, for all partitions $(A,B)$ of $V$, where $A\cup B=V$ and $A\cap B=\emptyset$, the following conditions hold:
+\begin{enumerate}
+\item There exists either an $e_i\in E(H)$ such that $e_i\subseteq A$ or an $e_j\in E(G)$ such that $e_j\subseteq B$.
+\item These two cases cannot happen simultaneously.
+\end{enumerate}
+\end{lemma}
+
+This lemma establishes a fundamental property for recognizing transversal hypergraphs, which leads directly to the following corollaries.
+
+\begin{corollary}[\leanref{eq_tr_comm}]
+Let $G$ and $H$ be two Sperner hypergraphs on the same vertex set $V$. Then $H=\Tr(G)$ if and only if $G=\Tr(H)$.
+\end{corollary}
+
+\begin{corollary}[\leanref{tr_tr_of_sperner}]
+Let $H$ be a Sperner hypergraph. Then $\Tr(\Tr(H))=H$. For an arbitrary hypergraph, $\Tr(\Tr(H))=min(H)$ \leanref{tr_tr}.
+\end{corollary}
+
+\subsection{Problem Representation}
+
+We define \TransHyp{} as the problem of determining if two given hypergraphs are transversal to each other.
+
+\begin{problem}[\textit{\texttt{Trans-Hyp}}]
+\textbf{\textit{Input:}} Two hypergraphs $G=(V,E(G))$ and $H=(V,E(H))$.\\
+\textbf{\textit{Output:}} Determine whether $G$ and $H$ are transversal to each other.
+\end{problem}
+
+Clearly, \TransHyp{} for two hypergraphs $G$ and $H$ is in co-NP, as shown in \cite{FK96}, since if $H$ is not the transversal hypergraph of $G$, this can be verified by a set of vertices $S\subseteq V$ such that:
+\begin{equation}\label{eq:witness}
+S\cap e_i\neq\emptyset\text{ for all }e_i\in E(G),\quad\text{and}\quad S\nsupseteq e_j\text{ for all }e_j\in E(H).
+\end{equation}
+Intuitively, $S$ is a transversal of $G$ (not necessarily minimal) that does not fully contain any hyperedge of $H$. Such a set $S$ acts as a \emph{certificate} for the non-transversality of the pair $(G,H)$, as discussed in \cite{Rau11}, although this perspective is inspired from \cite{FK96} and earlier papers. We note that this condition is symmetric: if $S\subseteq V$ satisfies the above for $(G,H)$, then $V\setminus S$ satisfies it for $(H,G)$.
+
+Hypergraphs are one medium for studying the \TransHyp{} problem. Monotone Boolean functions (MBFs) offer an alternate representation of the same problem. A Sperner hypergraph corresponds to the disjunctive normal form (DNF) of an MBF, where each hyperedge represents a minimal true setting of the function. Similarly, the transversal hypergraph corresponds to the conjunctive normal form (CNF) of the dual MBF, with each clause corresponding to a minimal condition for satisfaction. Using the MBF language, we can define the decision problem as the following:
+
+\begin{problem}[\textit{\texttt{DUAL}}]
+\textbf{\textit{Input:}} Two monotone Boolean functions $f$ and $g$, in CNF forms.\\
+\textbf{\textit{Output:}} Are $f$ and $g$ dual?
+\end{problem}
+
+\section{Fredman-Khachiyan Algorithm \FKA}
+
+The \FKA{} algorithm checks whether two hypergraphs $G$ and $H$ are a transversal pair through a recursive decomposition that generates a \emph{recursion tree}, where each node represents a pair of hypergraphs being checked. At the root of the tree are the input hypergraphs $G$ and $H$. The algorithm proceeds by splitting the input into two smaller subproblems whenever necessary, with the edges of the tree connecting parent nodes to their child subproblems.
+
+The algorithm begins by performing a Sperner reduction on $G$ and $H$, removing edges that are not minimal. After this, it checks the necessary conditions that all transversal pairs must satisfy as a base step, and they can be verified in polynomial time. If any of these preconditions fail, the algorithm immediately returns a witness based on \ref{lem:partition}. If the hypergraphs pass the precondition checks, the algorithm handles trivial instances of input hypergraphs (hypergraphs with a single edge containing 1 vertex or the empty hypergraph). In the recursive case, the algorithm selects the most frequent vertex in $G$ or $H$ as a pivot. Using this vertex, it partitions the edge sets of $G$ and $H$ into two smaller subproblems.
+
+Importantly, if $G$ and $H$ are already transversal, these precondition checks do nothing to reduce computation and the algorithm decomposes further into smaller subproblems, creating child nodes in the recursion tree. The performance of \FKA{} is determined by the number of subproblems it generates, and this is reflected in the number of nodes of the recursion tree \FKA{} generates.
+
+\cite{FK96}
+
+\subsection{Base Conditions for \FKA}
+
+Let $G$ and $H$ be Sperner hypergraphs that are transversal to one another. \cite{DNU21}, \cite{FK96} outlines some fundamental properties that must hold.
+
+\begin{proposition}[\leanref{edges_meet}]\label{prop:intersect}
+For every $e_i\in E(G)$ and $e_j\in E(H)$, $e_i\cap e_j\neq\emptyset$.
+\end{proposition}
+
+\begin{proof}
+Assume that there exists an edge $e_i\in E(G)$ and $e_j\in E(H)$ such that $e_i\cap e_j=\emptyset$. In this case, $e_i$ does not intersect $e_j$, meaning that $e_i$ fails to act as a minimal hitting set for $H$, which contradicts the assumption that $G$ and $H$ form a transversal pair.
+\end{proof}
+
+\begin{proposition}[\leanref{support_eq}]\label{prop:support}
+$\bigcup\{e_i:e_i\in E(G)\}=\bigcup\{e_j:e_j\in E(H)\}$.
+\end{proposition}
+
+\begin{proof}
+Suppose $\bigcup\{e_i:e_i\in E(G)\}\neq\bigcup\{e_j:e_j\in E(H)\}$. This implies either
+\[
+\bigcup\{e_i:e_i\in E(G)\}\nsubseteq\bigcup\{e_j:e_j\in E(H)\}\quad\text{or}\quad\bigcup\{e_j:e_j\in E(H)\}\nsubseteq\bigcup\{e_i:e_i\in E(G)\}.
+\]
+
+If $\bigcup\{e_i:e_i\in E(G)\}\nsubseteq\bigcup\{e_j:e_j\in E(H)\}$, there exists some vertex $v\in\bigcup\{e_i:e_i\in E(G)\}$ such that $v\notin\bigcup\{e_j:e_j\in E(H)\}$. Since $v$ is not contained in any edge of $H$, removing $v$ from $H$ does not intersect any edge in $H$. Thus, $H$ is not affected by the removal of $v$, and $G$ and $H$ cannot form a transversal pair.
+
+Conversely, if $\bigcup\{e_j:e_j\in E(H)\}\nsubseteq\bigcup\{e_i:e_i\in E(G)\}$, there exists some vertex $v\in\bigcup\{e_j:e_j\in E(H)\}$ such that $v\notin\bigcup\{e_i:e_i\in E(G)\}$. Let $e_j\in E(H)$ be an edge containing $v$. Since $v$ does not appear in any edge of $G$, removing $v$ from $G$ does not intersect any edge in $G$. Therefore, $G$ and $H$ cannot form a transversal pair.
+\end{proof}
+
+\begin{proposition}[\leanref{card_le_card_tr}]\label{prop:size}
+$\max\{|e_i|:e_i\in E(G)\}\leq|H|$ and $\max\{|e_j|:e_j\in E(H)\}\leq|G|$.
+\end{proposition}
+
+\begin{proof}
+First, we show that $\max\{|e_i|:e_i\in E(G)\}\leq|H|$. Let's assume that there exists an edge $e_i\in E(G)$ such that $|e_i|>|H|$. Let $e_i'$ be a proper subset of $e_i$ where $e_i'\cap e_j\neq\emptyset$ for every $e_j\in H$. Such a subset must exist. Suppose we remove $e_i'$ from $G$ and also remove every vertex in $e_i'$ from $H$. Then $e_i\neq\emptyset$, so $e_i$ still contains at least one vertex $v$. However, since all edges in $H$ are intersected, this implies that $e_i'$ is a transversal of $H$. As $G$ is Sperner, this would mean $e_i'=e_i$, which is a contradiction because $e_i$ was assumed to have vertices not in $e_i'$. Hence, such an $e_i$ cannot exist.
+
+Now we show that $\max\{|e_j|:e_j\in E(H)\}\leq|G|$. Assume that there exists an edge $e_j\in E(H)$ such that $|e_j|>|G|$. Let $e_j'$ be a proper subset of $e_j$ such that $e_j'\cap e_i\neq\emptyset$ for every $e_i\in G$. Let's remove $e_j'$ from $H$ and also remove every vertex in $e_j'$ from $G$. Then $e_j\neq\emptyset$, so $e_j$ still contains at least one vertex $v$. This similarly leads to a contradiction, as $e_j'=e_j$ violates the Sperner property of $H$. Therefore, no such $e_j$ can exist.
+\end{proof}
+
+\begin{algorithm}[p]
+\caption{Algorithm \FKA{} for \TransHyp{} (cf. \cite{FK96})}\label{alg:fka}
+\begin{algorithmic}[1]
+\State \textbf{Input:} Hypergraphs $G=(V(G),E(G))$ and $H=(V(H),E(H))$
+\State \textbf{Output:}
+\If{$G=\Tr(H)$}
+\State \textbf{TRUE}
+\Else
+\State Return a witness $e_k\in E(G)$ such that $\exists e_l\in E(H)$ with $e_k\cap e_l=\emptyset$
+\EndIf
+\Statex \hfill$\triangleright$ Step 1: Sperner reduction
+\State Sperner reduce $G$ and $H$ (delete all non-Sperner edges).
+\Statex \hfill$\triangleright$ Step 2: Check conditions ($i$)-($iv$)
+\State Check the following conditions:
+\Statex \hspace{\algorithmicindent}\begin{tabular}{rl}
+(i) & $V(G)=V(H)=V$\\
+(ii) & $\max\{|e_i|:e_i\in E(G)\}\leq|H|$ and $\max\{|e_j|:e_j\in E(H)\}\leq|G|$\\
+(iii) & $e_i\cap e_j\neq\emptyset,\forall e_i\in E(G),e_j\in E(H)$\\
+(iv) & $\sum_{e_i\in E(G)}2^{-|e_i|}+\sum_{e_j\in E(H)}2^{-|e_j|}\geq 1$
+\end{tabular}
+\If{any condition ($i$)-($iv$) fails}
+\State $G\neq\Tr(H)$
+\State Return $e_k$ as a witness in polynomial time.
+\EndIf
+\Statex \hfill$\triangleright$ Step 3: Handle trivial cases
+\If{$|G|\cdot|H|\leq 1$}
+\State Return $e_k$ by a trivial check in $\mathcal{O}(1)$ time.
+\EndIf
+\Statex \hfill$\triangleright$ Step 4: Recursive decomposition
+\If{$|G|\cdot|H|\geq 2$}
+\State Select a vertex $v_i\in V$ such that $\epsilon(v_i)\geq\frac{1}{\log(|G|+|H|)}$
+\State Define:
+\Statex \hspace{\algorithmicindent}\begin{minipage}{0.8\linewidth}
+\begin{itemize}
+\item $G_0=\{e_j-\{v_i\}\mid v_i\in e_j,e_j\in G\}$
+\item $G_1=\{e_j\mid v_i\notin e_j,e_j\in G\}$
+\item $H_0=\{e_k-\{v_i\}\mid v_i\in e_k,e_k\in H\}$
+\item $H_1=\{e_k\mid v_i\notin e_k,e_k\in H\}$
+\end{itemize}
+\end{minipage}
+\State Call \FKA{} on the following subproblems:
+\State \textbf{L}: $(G_1,H_0\vee H_1)$
+\State \textbf{R}: $(H_1,G_0\vee G_1)$
+\If{\textbf{L} AND \textbf{R} return \textbf{TRUE}}
+\State Return \textbf{TRUE} ($G$ and $H$ are transversal hypergraphs).
+\Else
+\State Return witness $e_k$ in polynomial time.
+\EndIf
+\EndIf
+\end{algorithmic}
+\end{algorithm}
+
+\begin{proposition}[\leanref{kraft_sum}]\label{prop:sum}
+\[
+\sum_{e_i\in E(G)}2^{-|e_i|}+\sum_{e_j\in E(H)}2^{-|e_j|}\geq 1
+\]
+\end{proposition}
+
+\begin{proof}
+Let $G$ and $H$ be Sperner hypergraphs that are transversal to each other. This implies that each minimal transversal of $G$ corresponds to an edge in $H$, and each minimal transversal of $H$ corresponds to an edge in $G$. Suppose that the sum is less than 1. This would imply that there exists an edge $e_i\in E(G)$ such that
+\[
+\forall v_k\in e_i,\exists e_j\in H:v_k\notin e_j.
+\]
+In this case, some vertices in $e_i$ would not intersect any edge in $H$, which contradicts the assumption that $H$ is a transversal of $G$.
+\end{proof}
+
+\subsection{Recursive Decomposition}
+
+Let $\epsilon\in(0,1]$. A vertex $v_i\in\{v_1,\dots,v_n\in V\}$ is said to have frequency at least $\epsilon$ in hypergraphs $G$ and $H$ if:
+\[
+\epsilon(v_i)\leq\max\left\{\frac{\#\{e_j\in E(G):v_i\in e_j\}}{|E(G)|},\frac{\#\{e_j\in E(H):v_i\in e_j\}}{|E(H)|}\right\}.
+\]
+
+We denote that a vertex $v_i$ has frequency $\geq\epsilon$ in $G$ and $H$ if $|E(G)|\cdot|E(H)|\geq 1$ and $v_i$ has a frequency of at least $\epsilon$ in either $G$ or $H$.
+
+This frequency condition ensures the existence of a vertex $v_i$ with these properties, referred to as a \emph{frequent vertex}. For $G$ and $H$, the vertex with the highest frequency in either hypergraph is called the \emph{most frequent vertex} (MFV).
+
+As described in \ref{alg:fka}, for a most frequent vertex $v\in V$, the hypergraphs $G$ and $H$ can be rewritten as:
+\[
+G=(\{v\}\wedge G_0)\vee G_1,\quad H=(\{v\}\wedge H_0)\vee H_1
+\]
+where:
+\begin{gather*}
+G_0=\{e_j-\{v\}\mid v\in e_j,e_j\in G\},\quad G_1=\{e_j\mid v\notin e_j,e_j\in G\}\\
+H_0=\{e_k-\{v\}\mid v\in e_k,e_k\in H\},\quad H_1=\{e_k\mid v\notin e_k,e_k\in H\}
+\end{gather*}
+
+The algorithm then reduces the problem to the following smaller subproblems:
+\[
+\textbf{L:}\ \ (G_1,H_0\wedge H_1),\qquad\textbf{R:}\ \ (H_1,G_0\wedge G_1)
+\]
+
+If both subproblems \textbf{L} and \textbf{R} return TRUE, the algorithm confirms that $G$ and $H$ are transversal hypergraphs. Otherwise, the algorithm identifies a hyperedge $w$ in polynomial time that violates one of the transversal properties.
+
+We define the subhypergraphs as input for the subproblems generated by \FKA{} recursion as the following:
+
+\begin{definition}\label{def:contraction}
+Let $H=(V,E)$ be a hypergraph and $v\in V$ be a vertex. We define the \emph{contraction subhypergraph} of $v$ as the induced subhypergraph $H/v=(V_v,E_v)$ where $V_v=V\setminus\{v\}$, and $E_v=\{e'\subseteq e\in E\mid e'=e\cap V_v,\forall e\in E\}$. For hypergraph $G$, this is equivalent to the $G_0\wedge G_1$.
+\end{definition}
+
+\begin{definition}\label{def:deletion}
+Let $H=(V,E)$ be a hypergraph and $v\in V$ be a vertex. The \emph{deletion subhypergraph} of $v$ is defined as the subhypergraph $H\setminus v=(V_v,E_v)$ where $V_v=V\setminus\{v\}$, and $E_v=\{e\in E\mid v\notin e\}$.
+\end{definition}
+
+\begin{example}
+Consider the hypergraph $H=(V,E)$ where $V=\{v_1,v_2,v_3,v_4\}$ and $E=\{\{v_1,v_2\},\{v_2,v_3,v_4\},\{v_1,v_3\}\}$.
+
+Let $V'=V\setminus\{v_1\}$ be a subset of vertices. The contraction $H/v=(V',E/v_1)$ is given by $V'=V\setminus\{v\}$ and:
+\[
+E/v_1=\{\{v_2\},\{v_2,v_3,v_4\},\{v_3\}\},
+\]
+where each edge in $E/v_1$ is the intersection of an edge in $E$ with $V'$. The deletion $H\setminus v_1=(V',E\setminus v_1)$ is given by :
+\[
+E\setminus v_1=\{\{v_2,v_3,v_4\}\},
+\]
+where $E\setminus v_1$ consists of edges from $E$ that do not contain $v_1$.
+\end{example}
+
+Suppose, $H=(V,E)$ is a Sperner hypergraph, where $v\in V$. $H/v$ is the $v$ induced contraction subhypergraph. $H/v$ does not necessarily retain the Sperner property. However, the $v$ induced deletion subhypergraph $H\setminus v$ is just a set of edges not containing $v$. Thus, their Sperner property is retained.
+
+\section{\FKA{} Bound}
+
+\subsubsection*{Bound on Hyperedge Size}
+
+In the base operation of \FKA, Proposition \ref{prop:sum} ensures that transversal hypergraphs contain hyperedges of logarithmic length (in terms of the number of vertices). Using this property, the size of hyperedges can be bounded by the following result:
+
+\begin{corollary}[\leanref{two_pow_shortest_le}]\label{cor:shortest}
+Let $G$ and $H$ be mutually transversal hypergraphs, where $n=|G|+|H|$, and let $s=\min\{|e_l|:e_l\in E(G)\cup E(H)\}$ represent the length of the shortest hyperedge. Then:
+\[
+s\leq\log_2 n,\quad\text{since }1\leq\sum_{e\in E(G)}2^{-|e|}+\sum_{e\in E(H)}2^{-|e|}\leq n\cdot 2^{-s}.
+\]
+\end{corollary}
+\noindent\textit{\cite{FK96}.} The 2024 edition printed $s\geq\log n$. The inequality is reversed: for $G=H=K_3$, $s=2<\log_2 6$ \leanref{k3_refutes_printed_cor_2_3_1}.
+
+\subsubsection*{Bound on Vertex Frequency}
+
+Both Proposition \ref{prop:sum} and Corollary \ref{cor:shortest} establish bounds on the frequency of the most frequent vertex (MFV). This is formalized as follows:
+
+\begin{lemma}[\leanref{exists_frequent_vertex}]\label{lem:frequency}
+For transversal hypergraphs $G$ and $H$, with $|G|\cdot|H|\geq 1$ and $n=|G|+|H|$, there exists a vertex $v_i\in V(G)=V(H)$ with frequency:
+\[
+\epsilon(v_i)\geq\frac{1}{\log n}.
+\]
+\end{lemma}
+\noindent\textit{\cite{FK96}}
+
+These bounds provide a lower limit on the performance of \FKA. Identifying better upper bounds is an open challenge, particularly for hypergraph classes where \FKA{} struggles.
+
+\begin{observation}\label{obs:tight}
+The bounds in Corollary \ref{cor:shortest} and Lemma \ref{lem:frequency} are tight up to a factor of 2. There exist transversal hypergraph pairs with arbitrarily large $n$ such that:
+\[
+s=\min\{|e_l|:e_l\in E(G)\cup E(H)\}\geq\frac{\log n}{2},\quad\text{and}
+\]
+\[
+\max\left(\epsilon_i^G,\epsilon_i^H\right)<\frac{2}{\log n},\quad\text{for any }i=1,\dots,n.
+\]
+\end{observation}
+\noindent\textit{\cite{FK96}}
+
+\subsubsection*{Bound on Number of Subproblems}
+
+In each recursive step, \FKA{} splits the problem into two smaller subproblems, denoted \textbf{L} and \textbf{R}. The algorithm's running time is bounded (up to a factor of $n^{\mathcal{O}(1)}$) by the total number of recursive calls, denoted $\alpha(G,H)$. The following lemma establishes this bound:
+
+\begin{lemma}\label{lem:subproblems}
+For hypergraphs $G$ and $H$:
+\[
+\alpha(G,H)\leq n^{4\log^2 n}.
+\]
+\end{lemma}
+\noindent\textit{\cite{FK96}}
+
+These results lead to the first quasi-polynomial bound for solving \TransHyp{} using \FKA, as described in \cite{FK96}:
+
+\begin{theorem}
+\textit{\texttt{Trans-Hyp}} for $G$ and $H$ can be solved in:
+\[
+n^{4\cdot\chi(n)+\mathcal{O}(1)}\text{ time, where }\chi(n)^{\chi(n)}=n\text{ and }\chi(n)\sim\log\log n=\mathcal{O}(\log n).
+\]
+\end{theorem}
+
+This result implies that solving \TransHyp{} is possible within $\mathcal{O}(\log n)$ time, which corresponds to the bound for FK-B. Additionally, given a hypergraph $G$ and a proper subhypergraph of its transversal hypergraph $H$, denoted $H^c\subseteq H$, a new hyperedge $e_i\in H\setminus H^c$ can be generated in incremental time:
+\[
+n^{4\cdot\chi(n)+\mathcal{O}(1)}.
+\]

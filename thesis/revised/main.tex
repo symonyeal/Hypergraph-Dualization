@@ -1,0 +1,100 @@
+%   Tracing the Effects of Symmetry in Hypergraphs On the Fredman-Khachiyan Algorithm
+%   Saimon Y. Islam, MSc thesis, Simon Fraser University, Summer 2024.
+%
+%   Revised edition, 2026. Built from the recovered 2024 source (../2024/) with
+%   every correction of ../CLAIMS.md applied. Each statement the thesis makes on
+%   its own authority carries the name of the Lean declaration that proves it
+%   (lean/HypergraphDualization); the Proof Status appendix lists them.
+
+\documentclass{sfuthesis}
+
+\title{Tracing the Effects of Symmetry in Hypergraphs On the Fredman-Khachiyan Algorithm}
+\thesistype{Thesis}
+\author{Saimon Y. Islam}
+\previousdegrees{B.Sc. in Mathematics, Washington and Lee University, 2019}
+\degree{Master of Science}
+\department{Department of Mathematics}
+\faculty{Faculty of Science}
+\copyrightyear{2024}
+\semester{Summer 2024}
+\keywords{Hypergraph Transversal; Monotone Boolean Function; Automorphism}
+
+\committee{
+    \chair{Amarpreet Rattan}{Associate Professor, Mathematics}
+    \member{Tamon Stephen}{Senior Supervisor \\ Professor, Mathematics}
+    \member{Ladislav Stacho}{Supervisor \\ Professor, Mathematics}
+    \member{Luis Goddyn}{Examiner \\ Professor, Mathematics}
+}
+
+\input{preamble}
+
+\begin{document}
+
+\frontmatter
+\maketitle{}
+\makecommittee{}
+
+\begin{abstract}
+Determining if two Sperner hypergraphs $H_1$ and $H_2$ are transversals of each other in polynomial time remains a longstanding open problem in combinatorial optimization. Fredman and Khachiyan proposed two quasi-polynomial time algorithms, \FKA{} and\FKB, to solve it. While \FKA{} performs well for most hypergraphs, it's shown to perform poorly with some families of hypergraphs exhibiting a high degree of symmetry.
+
+This thesis analyzes the symmetry in clique hypergraphs and their transversals by their underlying graph structure and gains insight into how the \FKA{} recursion impacts their symmetry. We also show that \FKA{} decomposition induces a minor map on the underlying graph of hypergraphs, and present characterization of hypergraphs that \FKA{} struggles with. Additionally, we present a modified implementation of \FKA{} and show the changes in hypergraph symmetry during the recursive decomposition of \FKA.
+\end{abstract}
+
+\begin{dedication}
+I am dedicating this thesis to my sister, Afroza Islam Ima. She was not only my first teacher but also an unwavering source of guidance throughout my life. This work stands as a tribute to her memory, reflecting her aspirations for me and honoring the profound impact she had on my journey. Here's to everything I didn't get to say to you.
+\end{dedication}
+
+\begin{acknowledgements}
+I want to thank my parents for their unwavering support and encouragement throughout my studies. I am also grateful to my friends in Vancouver and my roommates from Foster, who stood by me through both good and challenging times.
+
+I sincerely thank my supervisor, Tamon Stephen, for his guidance and support. For the entire duration of my program, I had gone through some difficult periods when I needed support. Whenever I felt lost in the work or frustrated with the progress, he helped me and guided me to stay motivated and find direction. His patience and advice were essential throughout this journey.
+
+I also want to thank the faculty members I learned from and worked with as a TA, as well as the graduate students I collaborated with. Your support made this experience valuable and rewarding.
+
+Lastly, thank you to ChatGPT for helping me resolve countless \LaTeX{} errors and teaching me how to draw tikz figures along the way.
+\end{acknowledgements}
+
+\chapter*{On this Edition}
+\addtoToC{On this Edition}
+This is a revised edition of the thesis deposited in 2024. The original \LaTeX{} source was lost; it was recovered from the deposited PDF in 2026, and that verbatim recovery is kept beside this edition. Every statement the thesis makes on its own authority was then checked in the Lean~4 proof assistant against Mathlib. Results cited from the literature are attributed and were not re-proved.
+
+Most statements hold as printed. The following were corrected. Each correction is proved in Lean, together with a counterexample to the printed form where one exists.
+\begin{itemize}
+\item Corollary~2.3.1: the inequality is reversed; the shortest edge has $s\le\log_2 n$ vertices.
+\item Claim~3.1.6: invariant vertex sets are unions of orbits, the orbits being the minimal ones.
+\item Section~3.2: the printed edge sets of $P_{n_3}$, $\overline{P_{n_3}}$, $P_4$, $K_3^{\cdot}$, $K_4^-$, $K_2^{\cdot\cdot}$, $C_4$ and $K_4$, and three vertex frequencies.
+\item Lemma~3.3.1 requires $H$ to be Sperner; Corollary~3.3.4 holds only as an inclusion.
+\item Lemma~3.3.2 is replaced by a precise statement; Lemma~3.3.3 is false and is replaced by a counterexample.
+\item The example of Section~3.4 used a permutation that is not a primal-graph automorphism; Observation~3.4.5 is stated precisely.
+\item Section~4.2.3: the two cases of the edge-count recurrences were exchanged.
+\item Lemma~4.4.13 holds for every graph, not only for distance-hereditary ones.
+\item Chapter~5: the edge sets of 6-A and 8-Ver, four group labels in the automorphism trees, the transversal count of Definition~5.2.1, and Observation~5.2.3, whose case $n=7$ is not established.
+\end{itemize}
+A tag such as \leanref{tr_minimal} names the Lean declaration behind a statement. The Proof Status appendix lists them, and the repository file \texttt{thesis/CLAIMS.md} records the status of every statement.
+\clearpage
+
+\addtoToC{Table of Contents}%
+\tableofcontents%
+\clearpage
+
+\addtoToC{List of Figures}%
+\listoffigures%
+\clearpage
+
+\mainmatter
+
+\input{chapters/ch1-introduction}
+\input{chapters/ch2-background}
+\input{chapters/ch3-symmetry}
+\input{chapters/ch4-hard-classes}
+\input{chapters/ch5-experiments}
+
+\backmatter%
+    \addtoToC{Bibliography}
+    \bibliographystyle{amsalpha}
+    \bibliography{references}
+
+\input{chapters/appendix}
+\input{chapters/proof-status}
+
+\end{document}

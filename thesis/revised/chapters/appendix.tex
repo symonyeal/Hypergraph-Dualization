@@ -1,0 +1,58 @@
+%   The deposited PDF sets the appendix as an unnumbered-chapter section, which
+%   is why its heading reads ".1" and its figures are numbered 5, 6, ... without
+%   a chapter prefix. Reproduced as printed.
+
+\renewcommand{\thefigure}{\arabic{figure}}
+\setcounter{figure}{4}
+\section{Appendix of Figures}
+\clearpage
+
+\begin{figure}[p]
+\centering
+\begin{subfigure}{\linewidth}\centering
+\includegraphics[width=0.62\linewidth]{figures/7ver-fka.png}
+\caption{Visualization of 7-vertex Hypergraph in \FKA}
+\end{subfigure}\\[4pt]
+\begin{subfigure}{\linewidth}\centering
+\resizebox{0.9\linewidth}{!}{\input{figures/at-7ver}}
+\caption{Automorphism Tree of 7-ver Hypergraph in \FKA}
+\end{subfigure}
+\caption{\FKA{} recursion tree and automorphism tree of 7-Ver. Hypergraph}
+\end{figure}
+
+\begin{figure}[p]
+\centering
+\begin{subfigure}{\linewidth}\centering
+\resizebox{0.75\linewidth}{!}{\input{figures/at-8ver}}
+\caption{Automorphism Tree of 8-ver in \FKA}
+\end{subfigure}\\[4pt]
+\begin{subfigure}{\linewidth}\centering
+\includegraphics[width=0.62\linewidth]{figures/8ver-fka.png}
+\caption{Figures/8Var in\FKA.png}
+\end{subfigure}
+\caption{\FKA{} recursion tree and automorphism tree of 8-ver. hypergraph}
+\end{figure}
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=0.75\linewidth]{figures/asym1-fka.png}
+\caption{\FKA{} recursion tree on asymmetric hypergraph $Asym_1$}
+\end{figure}
+
+\begin{figure}[p]
+\centering
+\resizebox{\linewidth}{!}{\input{figures/at-asym1}}
+\caption{Automorphism Tree of an asymmetric hypergraph \textbf{Asym}-1 in \FKA}
+\end{figure}
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=0.9\linewidth]{figures/asym2-fka.png}
+\caption{\FKA{} recursion tree on asymmetric hypergraph $Asym_2$}
+\end{figure}
+
+\begin{figure}[p]
+\centering
+\resizebox{\linewidth}{!}{\input{figures/at-asym2}}
+\caption{Automorphism Tree of an asymmetric hypergraph \textbf{Asym}-2in \FKA}
+\end{figure}

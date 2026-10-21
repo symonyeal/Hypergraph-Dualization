@@ -1,0 +1,49 @@
+%   Appendix B of the revised edition: the Lean declaration behind each statement.
+%   The full register, with the printed forms of corrected statements, is thesis/CLAIMS.md.
+
+\renewcommand{\thefigure}{\arabic{figure}}
+\section*{Proof Status}
+\addcontentsline{toc}{section}{Proof Status}
+
+Every statement below is settled in Lean~4 with Mathlib, except the one marked open (\texttt{lean/HypergraphDualization} in the repository). \emph{Proved}: holds as printed, for every input. \emph{Corrected}: false or imprecise as printed in 2024; the corrected statement is proved, and the counterexample to the printed form is the last name listed. \emph{Checked}: a finite fact about named instances, proved by evaluation (\texttt{native\_decide}). \emph{Open}: not established.
+
+{\small
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.27\linewidth}>{\raggedright\arraybackslash}p{0.13\linewidth}>{\raggedright\arraybackslash}p{0.54\linewidth}@{}}
+\textbf{Statement} & \textbf{Status} & \textbf{Lean}\\\hline
+\endhead
+Proposition 1.1.5 & Proved & \texttt{tr\_minimal}\\
+Lemma 2.1.1 & Proved & \texttt{eq\_tr\_iff\_partition}\\
+Corollary 2.1.2 & Proved & \texttt{eq\_tr\_comm}\\
+Corollary 2.1.3 & Proved & \texttt{tr\_tr\_of\_sperner}, \texttt{tr\_tr}\\
+Propositions 2.2.1--2.2.4 & Proved & \texttt{edges\_meet}, \texttt{support\_eq}, \texttt{card\_le\_card\_tr}, \texttt{kraft\_sum}\\
+Corollary 2.3.1 & Corrected & \texttt{two\_pow\_shortest\_le}; \texttt{k3\_refutes\_printed\_cor\_2\_3\_1}\\
+Lemma 2.3.2 & Proved & \texttt{exists\_frequent\_vertex}\\
+Algorithm 1 decides \TransHyp & Proved & \texttt{fkA\_correct}, \texttt{conds\_of\_dual}, \texttt{dual\_split}\\
+Claim 3.1.6 & Corrected & \texttt{invariant\_eq\_union\_orbits}, \texttt{orbit\_minimal}; \texttt{claim\_3\_1\_6\_counterexample}\\
+Section 3.2, counts & Checked & \texttt{sperner\_four\_card}, \texttt{classes\_four}, \texttt{self\_dual\_classes\_four}, \texttt{max\_tree\_three}, \texttt{max\_tree\_four}\\
+Section 3.2, $\Aut(D_{m,1})$ & Proved & \texttt{young\_aut\_singletons}\\
+Section 3.2, named hypergraphs & Corrected & \texttt{*\_tr}, \texttt{table\_aut}, \texttt{table\_orbits}, \texttt{*\_freq}, \texttt{*\_splits}; \texttt{*\_printed\_*}\\
+Figure 3.3(b), $\Tr(D_{3,1})$ & Corrected & \texttt{d31\_tr}\\
+Lemma 3.3.1 & Corrected & \texttt{aut\_tr\_of\_sperner}, \texttt{aut\_tr\_eq\_aut\_minimal}; \texttt{lemma\_3\_3\_1\_needs\_sperner}\\
+Lemma 3.3.2 & Corrected & \texttt{aut\_child\_moves\_split\_to\_isolated}, \texttt{stab\_mem\_aut\_del}, \texttt{stab\_mem\_aut\_con}\\
+Lemma 3.3.3 & False & \texttt{lemma\_3\_3\_3\_false}\\
+Corollary 3.3.4 & Corrected & \texttt{aut\_le\_aut\_minimal}; \texttt{cor\_3\_3\_4\_not\_iso}\\
+Example of Section 3.4 & Corrected & \texttt{ex34\_corrected}\\
+Observation 3.4.5 & Corrected & \texttt{primal\_children\_le}\\
+Section 4.1 & Proved & \texttt{tr\_union}, \texttt{tr\_join}, \texttt{tr\_union\_disjoint}, \texttt{tr\_join\_disjoint}\\
+Section 4.2, $\Tr(f_k)=g_k$, $\Tr(S_k)=r_k$ & Proved & \texttt{tr\_alt}, \texttt{tr\_coalt}\\
+Section 4.2.3, recurrences & Corrected & \texttt{card\_alt\_succ}, \texttt{card\_coalt\_succ}, \texttt{alt\_counts}; \texttt{printed\_recurrence\_fails}\\
+Section 4.3 & Corrected & \texttt{alt\_counts}, \texttt{alt\_shape}\\
+Observation 4.4.9 & Proved & \texttt{primalAdj\_alt}, \texttt{support\_alt}\\
+Section 4.4.2, distance-hereditary & Corrected & \texttt{gem\_chordal\_four}, \texttt{gem\_chordal\_five}, \texttt{gem\_not\_distance\_hereditary}\\
+Lemma 4.4.13 & Proved, generalised & \texttt{twins\_mem\_aut\_cliques}, \texttt{swap\_isAut\_of\_twins}\\
+Lemma 4.4.14 & Proved & \texttt{twins\_map}, \texttt{not\_trueTwin\_and\_falseTwin}\\
+Section 5.2.1, instances & Corrected & \texttt{*\_dual}; \texttt{sixA\_printed\_not\_dual}, \texttt{eightVer\_printed\_not\_dual}\\
+Definition 5.2.1, counts & Corrected & \texttt{kFano\_card}, \texttt{tr\_kFano\_card}; \texttt{two\_fano\_tr\_card}\\
+Figures 5.1--5.6 and 5--10, tree sizes, split vertices, group orders & Checked & \texttt{*\_nodes}, \texttt{*\_tree}\\
+Observation 5.2.2 & Proved & \texttt{falseTwin\_filtered}, \texttt{f2g2\_false\_twin\_filtered}\\
+Observation 5.2.3 & Corrected; $n=7$ open & \texttt{eps\_three}, \texttt{eps\_four}, \texttt{fano\_eps}\\
+Section 5.2.2, frequencies, self-transversality & Checked & \texttt{*\_eps}, \texttt{fano\_self\_tr}, \texttt{k3\_self\_tr}, \texttt{pg23\_not\_self\_dual}\\
+\end{longtable}}
+
+The hypergraph and graph property labels of the automorphism trees (conformal, $\alpha$-acyclic, read-once, chordal, bipartite and the like) were computed with the Python engine of the repository and are not formalized; they are reported as computations, not as proved statements.

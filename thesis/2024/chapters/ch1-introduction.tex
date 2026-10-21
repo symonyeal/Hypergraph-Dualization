@@ -1,0 +1,241 @@
+\chapter{Introduction}
+
+A \emph{hypergraph} $H$ is as a pair $(V,E)$, where $V$ is a set of \emph{vertices}, and $E=\{e_1,e_2,\dots,e_m\}$ is a set of \emph{hyperedges} (nonempty subsets of $V$). For hypergraph $H=(V,E)$, if $e_i\subseteq e_j\implies i=j$ holds for all hyperedges, it's called a \emph{Sperner} hypergraph (often called \emph{simple} hypergraph). A set $T\subseteq V$ is a \emph{transversal} of $H$ if it intersects all the edges. A transversal of $H$ is \emph{minimal} if every proper subset of it are also not transversal. The set of all minimal transversals of $H$ constitutes a Sperner hypergraph on $V$ called the \emph{transversal hypergraph} of $H$, and denoted by $\Tr(H)$.
+
+We denote the verification of two given hypergraphs as transversal hypergraphs as the \emph{Transversal Hypergraph} problem, or \TransHyp. The problem decides, given two Sperner hypergraphs $H_1$ and $H_2$, if they are transversal to each other. Solving \TransHyp{} in output-polynomial time remains an open problem \cite{EMG08}. As the number of minimal transversals of a hypergraph can be exponential in size relative to the input hypergraph, for any algorithm solving \TransHyp, it's efficiency is measured in terms of the total input and output sizes. \TransHyp{} is probably not coNP-complete since in \cite{EGM03}
+
+Generating the transversal hypergraph is a longstanding problem of interest. Perhaps the simplest and most well-known algorithm to generate the transversal hypergraph is the sequential method, also known as Berge's algorithm \cite{Ber87}. However, \cite{Tak08} showed that for a family of hypergraphs (denoted here as $\TK$-family), sequential method generates exponential sized (in total size of input and output) intermediate hypergraphs.
+
+In 1996, Fredman and Khachiyan in \cite{FK96} showed that \TransHyp{} is solvable in pseudo-polynomial time, namely in time $\mathcal{O}(n^{polylog(n)})$, where $n$ is the combined size of the input i.e., the total number of hyperedges of the two hypergraphs. They developed two algorithms we will call \FKA{} and \FKB, and showed that their running times are bounded by $n^{\mathcal{O}(\log^2 n)}$ and $n^{\mathcal{O}(\log n)}$, respectively. These algorithms, unlike Berge's, can be used as an oracle for computing the transversal hypergraph in incremental output-subexponential time, the best provable upper time bound yet \cite{CKP20}.
+
+The results of Fredman and Khachiyan made significant advancements in the tractability of Trans-Hyp. Since there is no known polynomial algorithm for \TransHyp, emphasis has been on identifying restrictions on input hypergraphs that sufficiently simplify the problem to allow for polynomial-timed solution we call \emph{tractable classes} of hypergraphs. Such classes include hypergraphs of bounded edge-size, of bounded degree, of bounded-edge intersections, tree width, latency, and acyclic hypergraphs etc. \cite{EMG08}. While the algorithms work well in practice for most hypergraphs, their characteristics for general classes of hypergraphs are poorly understood. For some tractable classes, there are families of hypergraphs for whom \FKA{} has superpolynomial lower bounds. The symmetric structure of the hypergraph has not been a well-explored area regarding understanding why \FKA{} performs suboptimally for these hypergraphs. This thesis aims to gain a better understanding of the symmetric properties of the hypergraphs with superpolynomial lower bound in \FKA{} by analyzing their structural composition with respect to their underlying graph structure and how their automorphism groups are formed, and highlights how they interact with the \FKA{} recursion.
+
+\section{Definitions}
+
+\subsection{Hypergraph Terminology}
+
+\begin{definition}
+Let $V=\{v_1,v_2,\dots,v_n\}$ be a finite set. A \emph{hypergraph} on $V$ is a family $H=(V,E)$ where $E=\{e_1,e_2,\dots,e_m\}$ is a set of subsets of $V$. Each subset is called a \emph{hyperedge}, and $V$ is the \emph{vertex} set.
+\end{definition}
+
+\begin{definition}
+A \emph{Sperner Hypergraph} is a hypergraph $H=(V,E)$ such that $e_i\subseteq e_j\implies i=j$.
+\end{definition}
+
+Sperner hypergraphs are also called \emph{simple} hypergraphs. In many recent literature, they are also called \emph{clutters}
+
+\begin{definition}\label{def:sperner-reduction}
+Let $H=(V,E(H))$ be a hypergraph. The \emph{Sperner reduced hypergraph} of $H$, denoted $min(H)=(V,E_{min}(H))$, is defined as the hypergraph where:
+\[
+E_{min}(H)=\{e\in E(H)\mid \nexists e'\in E(H)\text{ such that }e\subset e'\}.
+\]
+In other words, $min(H)$ consists of all inclusion-minimal hyperedges of $H$.
+\end{definition}
+
+\begin{definition}
+Let $H=(e_1,\dots,e_m)$ be a hypergraph on a set $V$. A vertex $v_i\in V$ \emph{hits} a hyperedge $e_j$ when $v_i\in e_j$. A set $f\subseteq V$ is a \emph{transversal} or a \emph{hitting set} of $H$ if it intersects all the edges: $f\cap e_i\neq\emptyset\quad(i=1,2,\dots,m)$.\\
+A transversal is \emph{minimal} when any of its proper subsets is not a transversal. The set of all minimal transversals of $H$ constitutes a hypergraph on $V$ called the \emph{transversal hypergraph} of $H$, and denoted by $\Tr(H)$. Note that $\Tr(H)$ is Sperner by definition.
+\end{definition}
+
+Lately, transversals have also been called \emph{blockers} by many.
+
+\begin{proposition}
+Let $H=(V,E(H))$ be a hypergraph, and let $min(H)=(V,E_min(H))$ be its Sperner reduction. Then $\Tr(H)=\Tr(min(H))$.
+\end{proposition}
+
+\cite{Ber87} The transversal hypergraph remains unchanged under Sperner reduction.
+
+\begin{definition}
+The \emph{degree} of a vertex $v_i$ in a hypergraph $H=(V,E)$ is the number of hyperedges in $E$ that contain the vertex $v_i$. Formally, for any vertex $v\in V$, its degree is $|\{e\in E\mid v\in e\}|$.
+\end{definition}
+
+\begin{definition}\label{def:distance}
+Let $G=(V,E(G))$ be a graph. The \emph{distance} $d_G(v,u)$ between two vertices $v,u\in V$ is the length of the shortest path connecting $v$ and $u$ in $G$. If no such path exists, $d_G(v,u)$ is defined as $\infty$.
+\end{definition}
+
+\begin{definition}
+A \emph{uniform hypergraph} is a hypergraph $H=(V,E)$ where all hyperedges have the same size. Specifically, an \emph{$r$-uniform} hypergraph is a hypergraph where every hyperedge $e\in E$ satisfies $|e|=r$ for some fixed integer $r$. Any graph $G$ without loops or multi-edges is a 2-uniform hypergraph. All uniform hypergraphs are Sperner.
+\end{definition}
+
+\begin{definition}
+A \emph{regular hypergraph} is a hypergraph $H=(V,E)$ where every vertex has the same degree. Specifically, an \emph{$(r,d)$-regular} hypergraph is an $r$-uniform hypergraph where every vertex $v\in V$ has degree $d$.
+\end{definition}
+
+\begin{example}
+A complete $r$-uniform hypergraph on $n$ vertices is denoted by $K_n^r$. In this case, $V=\{v_1,v_2,\dots,v_n\}$ and $E=\{e\subseteq V\mid |e|=r\}$, meaning that every $r$-subset of $n$ vertices forms a hyperedge. The degree of any vertex $v\in V$ in $K_n^r$ is $\binom{n-1}{r-1}$.
+\end{example}
+
+\begin{definition}
+The \emph{complement} of a subset $I\subseteq V$ with respect to the hypergraph $H=(V,E(H))$, denoted $I^c$, is the set of vertices in $V$ that are not in $I$, i.e., $I^c=V\setminus I$.
+\end{definition}
+
+\begin{definition}
+A subset of vertices $I\subseteq V$ is an \emph{independent set} of the hypergraph $H$ if no hyperedge $e_j\in E(H)$ is entirely contained in $I$, i.e., $e_j\nsubseteq I$ for all $e_j\in E(H)$.
+\end{definition}
+
+\begin{definition}
+A subset of vertices $S\subseteq V$ is a \emph{stable set} of the hypergraph $H$ if each hyperedge $e_j\in E(H)$ contains at most one vertex from $S$, i.e., $|e_j\cap S|\leq 1$ for all $e_j\in E(H)$.
+\end{definition}
+
+An independent set is \emph{maximal} if none of its proper supersets is an independent set. Note that if $I$ is an independent set of $H$, then $I^c\cap e_j\neq\emptyset$ for all $e_j\in E(H)$, i.e., $I^c$ is a transversal of $H$. In particular, $I^c$ is a minimal transversal of $H$ if and only if $I$ is a maximal independent set of $H$. In an independent set of a hypergraph, no hyperedge is fully contained in the set, while in a stable set, no hyperedge contains more than one vertex from the set. For 2-uniform hypergraphs (graphs), independent sets are the same as stable sets.
+
+\begin{example}
+Let $G$ be a transportation network, represented as a directed graph with a \emph{source} $s$ and a \emph{sink} $t$. Define the hypergraph $H=(V,E)$, where the $V=V(G)$, and the hyperedge set $E$ consists of all sets of vertices that correspond to simple (non-repeating) paths from $s$ to $t$ in $G$. $H$ is a simple hypergraph, and the transversal hypergraph $\Tr(H)$ consists of the minimal cuts between $s$ and $t$, where a minimal cut is a minimal set of vertices whose removal disconnects all paths from $s$ to $t$.
+\end{example}
+
+\begin{definition}
+The \emph{clique hypergraph} of a graph $G=(V,E(G))$ is the hypergraph $H=(V,E(H))$, where $E(H)$ consists of all maximal cliques of $G$ as its hyperedges.
+\end{definition}
+
+\begin{definition}
+The \emph{stable hypergraph} of a graph $G=(V,E(G))$ is the hypergraph $H=(V,E(H))$, where $E(H)$ consists of all maximal stable sets of $G$ as its hyperedges.
+\end{definition}
+
+\subsection{Monotone Boolean Functions Terminology}
+
+\begin{definition}
+A \emph{literal} is a variable $x_i$ or its complement $(x_i)^c$. For a set of $n$ variables, a Boolean expression can be formed using literals.
+\end{definition}
+
+\begin{definition}
+A \emph{Boolean function} on $n$ literals is a mapping $f:\{0,1\}^n\to\{0,1\}$. A Boolean expression $\mathbf{x}=(x_1,x_2,\dots,x_n)$ is a tuple in $\{0,1\}^n$, where $x_i$ denotes the value of the $i$-th literal.
+\end{definition}
+
+\begin{definition}
+An \emph{implicant} of a Boolean function $f$ is a Boolean expression in the form of a conjunction of literals, denoted $I=x_1\wedge x_2\wedge\dots\wedge x_k$, such that $I(\mathbf{x})=1$ implies $f(\mathbf{x})=1$ for all $\mathbf{x}\in\{0,1\}^n$.
+\end{definition}
+
+\begin{definition}
+A \emph{prime implicant} of a Boolean function $f$ is an implicant that cannot be simplified by removing any literal without losing its ability to imply $f$. Formally, $I$ is a prime implicant if no proper subexpression of $I$ is an implicant of $f$.
+\end{definition}
+
+\begin{example}
+For $f(x_1,x_2)=x_1\vee x_2$, $x_1$ and $x_2$ are prime implicants. The conjunction $x_1\wedge x_2$ is an implicant but not a prime implicant, as it can be reduced to $x_1$ or $x_2$.
+\end{example}
+
+\begin{definition}
+An \emph{implicate} of a Boolean function $f$ is a Boolean expression in the form of a disjunction of literals, denoted $I=x_1\vee x_2\vee\dots\vee x_k$, such that $f(\mathbf{x})=0$ implies $I(\mathbf{x})=0$ for all $\mathbf{x}\in\{0,1\}^n$.
+\end{definition}
+
+\begin{definition}
+A \emph{prime implicate} of a Boolean function $f$ is an implicate that cannot be simplified by removing any literal without losing its status as an implicate. Formally, $I$ is a prime implicate if no proper subexpression of $I$ is an implicate of $f$.
+\end{definition}
+
+\begin{example}
+For $f(x_1,x_2)=x_1\wedge x_2$, $x_1^c\vee x_2^c$ is a prime implicate. The disjunction $x_1^c\vee x_2^c\vee x_3^c$ is an implicate but not a prime implicate, as it simplifies to $x_1^c\vee x_2^c$.
+\end{example}
+
+\begin{definition}
+A Boolean function is in \emph{Conjunctive Normal Form (CNF)} if it is expressed as an irredundant conjunction of disjunctions of its prime implicates:
+\[
+C=\bigwedge_{c\in I}\bigvee_{i\in c}a_i,
+\]
+where $I$ is the set of prime implicates of $f$.
+\end{definition}
+
+\begin{definition}
+A Boolean function is in \emph{Disjunctive Normal Form (DNF)} if it is represented as an irredundant disjunction of conjunctions of its prime implicants:
+\[
+D=\bigvee_{t\in A}\bigwedge_{j\in t}a_j,
+\]
+where $A$ is the set of prime implicants of $f$.
+\end{definition}
+
+\begin{definition}
+A Boolean function $f$ is \emph{irredundant} if its minimal representation, in either CNF or DNF, contains no redundant prime implicants or prime implicates. Removing any such implicant or implicate changes the function's output.
+\end{definition}
+
+\begin{example}
+For $f(x_1,x_2)=x_1\vee x_2$, the DNF $x_1\vee x_2$ is irredundant. In contrast, $x_1\vee x_2\vee x_3$ is not irredundant, as $x_3$ is unnecessary.
+\end{example}
+\noindent In this thesis, the terms Boolean \emph{function} and Boolean \emph{expression} will be used interchangeably.
+
+\begin{definition}
+A Boolean function is \emph{monotone} if it can be represented by conjunctions $(\wedge)$ and disjunctions $(\vee)$ of its variables and satisfies the following condition for any $x,y\in\{0,1\}^n$:
+\[
+x\leq y\implies f(x)\leq f(y),
+\]
+where $x\leq y$ if $x_i\leq y_i,\quad\forall i\in\{1,2,\dots,n\}$.
+\end{definition}
+
+\begin{example}
+Consider the Boolean function $f(x_1,x_2)=x_1\vee(x_1\wedge x_2)$. It's monotone since
+\[
+f(0,0)=0,\quad f(0,1)=0,\quad f(1,0)=1,\quad f(1,1)=1,
+\]
+and for any $x\leq y$, $f(x)\leq f(y)$. ($f(0,0)\leq f(1,0)$ and $f(0,1)\leq f(1,1)$).
+\end{example}
+
+\begin{definition}
+By De Morgan's laws, the \emph{dual} of a monotone Boolean function $f$, denoted $f^d$, is defined as:
+\[
+f^d(X)=f^c(X^c),
+\]
+where:
+\begin{itemize}
+\item $f^c$ is the complement of $f$.
+\item $X^c$ is the complement of the set $X=\{x_1,x_2,\dots,x_n\}$, defined as $X^c=\{x_1^c,x_2^c,\dots,x_n^c\}$.
+\end{itemize}
+\end{definition}
+
+The dual function $f^d$ is monotone and satisfies $(f^d)^d=f$. If $f^d$ has a prime CNF $f'$, and $f$ has a prime DNF given by $f^b=\bigvee_{I\in\mathcal{F}}\bigwedge_{i\in I}x_i$, then the prime CNF of $f$ is $f^b=\bigwedge_{I\in\mathcal{F}}\bigvee_{i\in I}x_i$.
+
+Thus, computing the prime DNF of $f^d$ from the prime CNF of $f$ is equivalent to computing the prime CNF of $f$ from its prime DNF. Since $(f^d)^d=f$, the two operations are dual to each other.
+
+A Sperner hypergraph $H=(V,E(H))$ corresponds to an MBF $f$ in its disjunctive normal form (DNF). The vertices $V$ represent the variables of $f$, and the hyperedges $E(H)$ correspond to the prime implicants of $f$. Each hyperedge $e\in E(H)$ represents a minimal true setting of $f$, $min\{\mathbf{x}:f(\mathbf{x})=1\}$, and corresponds directly to a term in the DNF of $f$.
+
+For a Boolean assignment $\mathbf{x}$, if $\mathbf{x}$ satisfies $f$, then $\mathbf{x}$ must intersect at least one hyperedge $e\in E(H)$. Conversely, any hyperedge $e\in E(H)$ corresponds to a term in the DNF of $f$, ensuring that $H$ precisely represents $f$ in terms of its minimal true settings.
+
+The transversal hypergraph $\Tr(H)$ corresponds to the conjunctive normal form (CNF) of the same MBF $f$. The hyperedges of $\Tr(H)$ are the minimal hitting sets of $H$, and each hitting set $T\in\Tr(H)$ corresponds to a clause in the CNF of $f$. Each clause is the disjunction of the literals in $T$, ensuring that every clause represents a minimal condition to satisfy $f$.
+
+For every hyperedge $e\in E(H)$, there exists at least one literal in each hitting set $T\in\Tr(H)$ that intersects $e$, ensuring that every clause in the CNF is satisfied whenever $f$ is satisfied. Conversely, any assignment satisfying the CNF intersects all hyperedges of $H$, ensuring that it also satisfies $f$. Thus, $\Tr(H)$ represents the CNF of $f$ by capturing the minimal hitting sets of $H$.
+
+This establishes a duality: the Sperner hypergraph $H$ corresponds to the DNF of $f$, while the transversal hypergraph $\Tr(H)$ corresponds to the CNF of $f$, ensuring that both hypergraph representations fully describe the MBF.
+
+\section{Applications}
+
+In this section, we provide an overview of problems that are modelled by hypergraphs in \TransHyp.
+
+\textbf{Set Cover Problem:} For a hypergraph $H=(V,E)$, the vertices represent the elements of a set, and the edges are subsets of these elements. A \emph{set cover} is a subset $E'\subseteq E$ such that every $v\in V$ is contained in at least one edge $e\in E'$. Each transversal of $H$ corresponds to a set covering in the transversal hypergraph $\Tr(H)=(E,\{e_v\mid v\in V\})$, where $e_v=\{e\in E\mid v\in e\}$. Thus, \TransHyp{} computes minimal set coverings or maximal independent sets in $\Tr(H)$ \cite{EMG08}.
+
+\textbf{Minimal Dominating Sets:} In a graph $G=(V,E)$, a \emph{dominating set} $D\subseteq V$ ensures every $v\in V$ is in $D$ or adjacent to $u\in D$. A dominating set $D$ is minimal if no proper subset of $D$ satisfies this condition. Minimal dominating sets correspond to minimal hitting sets of the hypergraph formed by neighborhoods of vertices in $G$.
+
+\textbf{Model-Based Diagnosis:} Given a system $S$ with its set of components $V$, a diagnosis identifies the minimal set of faulty components $D\subseteq V$ responsible for a set of faulty observations $F$. A diagnosis corresponds to a transversal of $F$. \cite{Rei87}.
+
+\textbf{Minimal Cut Sets in Metabolic Networks:} A metabolic network is represented as a directed hypergraph where the vertex set $V$ corresponds to metabolites and the edge set $E$ represents biochemical reactions. Blocking a set of metabolic reactions through cut sets corresponds to finding minimal hitting sets of the hypergraph, making this an instance of \emph{Trans-Gen}.
+
+\textbf{Drug Cocktail Development:} Given a set of antibiotics and a set of bacterial strains, each strain (vertex) is associated with the set of antibiotics (edges) that are effective against it. A transversal of this hypergraph represents a minimal cocktail of antibiotics that is effective against all target strains.
+
+\section{Recent Developments}
+
+This section describes some of the \emph{tractable} classes of hypergraphs and the techniques used to solve \TransHyp{} in polynomial time. Tractable classes are defined by input restrictions that make it possible to find efficient solutions. Research into these classes is important because it identifies cases where problems can be solved faster than general algorithms for hypergraph transversals. Whereas a \emph{hard class} for an algorithm includes hypergraphs that causes suboptimal performance for a given algorithm, and studying these helps understand the lower bounds of the problem.
+
+\cite{Hag08} collected the tractable classes based on their restrictions. \cite{EMG08}, \cite{GDVL17}, and \cite{DNU21} included surveys that cover various algorithms and methods used to prove tractability or related problems. For example, \cite{MZ11} and \cite{Her04} used \texttt{SAT} algorithms to improve the bounds of \FKA, while \cite{SS24} applied reinforcement learning to find new \emph{hard classes} of hypergraphs.
+
+\subsubsection*{Size Restrictions on Hypergraphs}
+
+\paragraph{Hypergraphs with Fixed Number of Edges:} \TransHyp{} can solve Sperner hypergraphs with a fixed number of edges $|E|=c$ in polynomial time $\mathcal{O}(n^c)$ \cite{EG02}.
+
+\paragraph{Hypergraphs with Edge-Size Bound:} \TransHyp{} can solve hypergraphs where the size of each edge is bounded by a fixed value $k$, i.e., $|e|\leq k$ for all $e\in E$, in polynomial time $\mathcal{O}(n^{k+1})$ \cite{BGH98}. When $k=2$, the hypergraph corresponds to a graph.
+
+\paragraph{Hypergraphs with Large Edges:} \TransHyp{} can solve hypergraphs where each edge satisfies $|e|\geq|V|-c$ for some constant $c$ in $\mathcal{O}(n^{c+1})$ \cite{BGH98}. Let $V^c$ be the complement of $V'\subseteq V$, and define the set of complementary edges as $E^c=\{e^c\mid e\in E\}$. For a Sperner hypergraph $H=(V,E_H)$, define $\tau(E_H)=\{e\setminus\{v\}\mid e\in E_H,v\in e\}$. \cite{EG02} shows that every edge $e_j\in\Tr(H)$ is in $\tau(E_H)^c$.
+
+\subsubsection*{Structural Restrictions on Hypergraphs}
+
+\paragraph{Acyclic Hypergraphs:} \TransHyp{} can solve $\beta$-acyclic hypergraphs and Sperner, $\alpha$-acyclic hypergraphs in polynomial time \cite{EGM03}.
+
+\paragraph{Bounded Intersection:} A hypergraph $H=(V,E)$ is called $r$-exact if any minimal transversal of $H$ intersects every edge in at most $r$ vertices. \TransHyp{} can solve hypergraphs with bounded intersection in polynomial time \cite{ER10}. The class of hypergraphs with bounded intersection includes read-once hypergraphs, which are 1-exact (having the \emph{CIS}-property), and hypergraphs with the circular ones property, which are 2-exact.
+
+\paragraph{Bounded Conformality:} A hypergraph $H=(V,E)$ is \emph{bounded conformal} if for every subset $S\subseteq V$, $S\in e_i$ for some edge $e_i\in E$ whenever all subsets of $S$ with size at most $\delta$ are contained in an edge $e_j\in E$. A hypergraph is \emph{bounded dual conformal} if its transversal hypergraph $\Tr(H)$ is bounded conformal for some constant. \TransHyp{} can solve both in polynomial time. \cite{Hag08} Conformal hypergraphs include highly symmetric families, which will be analyzed in Chapter 4.
+
+\paragraph{Bounded Intersecting Hypergraphs:} bounded intersecting means input hypergraphs where any $k$ edges intersect in at most $r$ vertices, and $k+r\leq c$ for some constant $c$, \TransHyp{} can solve bounded intersecting hypergraphs in polynomial time \cite{KBEG06}.
+
+\paragraph{$k$-Degenerate Hypergraphs:} A hypergraph is $k$-degenerate if its vertices can be ordered as $v_1,v_2,\dots,v_n$ such that, for each $v_i$, the number of edges containing $v_i$ and vertices among $v_1,\dots,v_{i-1}$ is at most $k$. \TransHyp{} can solve $k$-degenerate hypergraphs in polynomial time \cite{EGM03}.
+
+\paragraph{Matroids:} A Sperner hypergraph $H=(V,E)$ is a \emph{matroid} if, for any two edges $e_i,e_j\in E$ and any vertex $v_l\in e_i\setminus e_j$, there exists a vertex $v_m\in e_j\setminus e_i$ such that $e_i\setminus\{v_l\}\cup\{v_m\}\in E$. \TransHyp{} can solve matroid hypergraphs in polynomial time \cite{Ber87}.
+
+\section{Thesis Outline}
+
+This thesis focuses on the relationship between the \FKA{} operation and the symmetric structure of hypergraphs generated at each recursion level. The thesis is divided into two main parts across five chapters. The first part includes Chapters 1 and 2. Chapter 1 introduces the necessary definitions, and the \TransHyp{} problem, describing its properties, applications, and tractable hypergraph classes. Chapter 2 details the \FKA{} algorithm, its necessary conditions, complexity bounds, and presents new results on \TransHyp.
+
+The second part consists of Chapters 3, 4, and 5. Chapter 3 examines hypergraph symmetry, characterizes automorphism groups for small hypergraphs with up to 4 vertices, and some lemmas on how \FKA{} recursion impacts hypergraph symmetry and connects the primal graphs of hypergraphs with \FKA{} decomposition using generalizations of graph minor operations. Chapter 4 analyzes hard classes of hypergraphs for \FKA{} such as the alternating trees, and characterizes them as read-once hypergraphs. Then, it focuses on their structural and automorphism group properties. Chapter 5 discusses some optimizations made in the implementation of \FKA, visualizes recursion trees for interesting cases, and presents figures describing how recursion impacts the automorphism group structure of input hypergraphs.
