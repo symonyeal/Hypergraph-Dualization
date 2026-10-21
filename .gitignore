@@ -15,3 +15,15 @@ Thumbs.db
 # Their provenance/licensing is separate from this project's GPL source.
 Reading/*.pdf
 FK- B/FK-master/
+
+# Lean build output and the Mathlib cache (rebuilt by `lake exe cache get && lake build`).
+lean/.lake/
+
+# LaTeX build output; the compiled main.pdf of each edition is committed.
+thesis/*/*.aux
+thesis/*/*.bbl
+thesis/*/*.blg
+thesis/*/*.lof
+thesis/*/*.log
+thesis/*/*.out
+thesis/*/*.toc
