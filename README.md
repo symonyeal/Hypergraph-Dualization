@@ -3,6 +3,7 @@
 Fredman–Khachiyan algorithms FK-A and FK-B.
 
 [![Tests](https://github.com/symonyeal/Hypergraph-Dualization/actions/workflows/tests.yml/badge.svg)](https://github.com/symonyeal/Hypergraph-Dualization/actions/workflows/tests.yml)
+[![Lean](https://github.com/symonyeal/Hypergraph-Dualization/actions/workflows/lean.yml/badge.svg)](https://github.com/symonyeal/Hypergraph-Dualization/actions/workflows/lean.yml)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/symonyeal/Hypergraph-Dualization/main?urlpath=lab)
 
 ## In plain terms
@@ -120,6 +121,25 @@ python -m fkb dualize --all  Tr(D) by repeated FK-B tests
 `run` writes a portable HTML explorer and machine-readable JSON to `results/`.
 Open the HTML directly; it has no network, font, JavaScript, or image dependency.
 
+## Thesis source and Lean proofs
+
+The thesis' LaTeX source was rebuilt from the deposited PDF in October 2026, and every statement
+it makes on its own authority was checked in Lean 4 against Mathlib.
+
+| Path | Contents |
+| --- | --- |
+| [thesis/2024/](thesis/2024) | the recovered source, as deposited, with its compiled PDF |
+| [thesis/revised/](thesis/revised) | the revised edition: corrections applied, each statement tagged with its Lean proof |
+| [thesis/CLAIMS.md](thesis/CLAIMS.md) | every statement, its status and its Lean proof |
+| [lean/](lean) | the Lean library (281 theorems); `cd lean && lake exe cache get && lake build` |
+| [docs/openai-math-connections.md](docs/openai-math-connections.md) | where the [`openai/math`](https://github.com/openai/math) results meet the thesis, with Lean bridges |
+
+Most statements hold as printed. Those that do not are corrected, each with a counterexample to
+the printed form where one exists: among them Corollary 2.3.1 (the inequality is reversed), Lemma
+3.3.3 (false), Lemma 3.3.1 (needs the Sperner hypothesis), several §3.2 edge sets and Figure
+3.3(b), the §4.2.3 recurrences and the transversal count of Definition 5.2.1. Observation 5.2.3's
+case `n = 7` is open.
+
 ## Research contracts
 
 - **Duality is decided by the oracle, never by either algorithm.**
@@ -160,6 +180,8 @@ Open the HTML directly; it has no network, font, JavaScript, or image dependency
 | `results/` | Every run of both algorithms and every variant, plus the cross-algorithm report |
 | `experiments/` | Explicit migration or one-off research programs |
 | `docs/` | Architecture, the FK-A/FK-B findings, the hard-case search, Sage setup, and assessment notes |
+| `thesis/` | The thesis source: the recovered 2024 edition, the revised edition, the claim register, figure tools |
+| `lean/` | Lean 4 proofs of every thesis statement, its corrections, and the `openai/math` bridges |
 | `Reading/` | Local-only third-party reference library; PDFs are not redistributed |
 | `FK- B/` | Local-only third-party MATLAB FK-B reference snapshot |
 | `Dedekind/` | Third-party MIT snapshot of Jäkel's `d(9)` computation — the size of the space both algorithms search |
