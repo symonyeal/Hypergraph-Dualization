@@ -325,14 +325,17 @@ subproblem.
 ### Read-once pairs (C2)
 
 Hertel (MSc thesis, Toronto 2004) settles the question for one branching order. DPLL simulates
-FK-A (his Thm 4.1.7), and every DPLL decision tree for the alternating trees has
+FK-A (his Thm 4.1.7), and every DPLL decision tree for the alternating trees (the GK- and TK-families) has
 `n^{Ω(log^{1−o(1)} n)}` nodes (Thm 4.3.6), so FK-A's recursion tree is superpolynomial on them
 under every split rule. With memoisation (DPLLCache), branching on the leaves of the formula from
 left to right decides any read-once formula with `k` connectives in `2k + 3` nodes (Thm 4.4.1).
 So C2 holds for that order, and the question left is FK-A's own rule: the vertex of largest
 degree sum.
 
-**Observation 4.4.** Under FK-A's rule the memoised count `δ` exceeds Hertel's `2k + 3`:
+**Observation 4.4.** Under FK-A's rule the memoised count `δ` exceeds Hertel's `2k + 3` on the
+alternating trees. GK `fₖ` and TK `Sₖ` below are the alternating trees with an OR root and with
+an AND root; `word-xxx` is the alternating tree on 64 leaves with an OR root, the dual of TK `S₃`
+(`word-yyy`), and has the same `δ`.
 
 | pair | `n` | `2k + 3` | `N` | `τ` | `δ` |
 | --- | --- | --- | --- | --- | --- |
@@ -370,8 +373,8 @@ candidate: their `δ/N` stays below 2.
 
 For a template `T` on points `ι` and hypergraphs `Γ i`, the substitution is
 `T[Γ] = {⋃_{i∈t} g_i : t ∈ T, g_i ∈ Γ i}`: the composition `f_T(f_{Γ 1}, …, f_{Γ m})` of monotone
-functions. Union and join are `T = {{0},{1}}` and `T = {{0,1}}`; the GK, TK and word families of
-`docs/hard-classes.md` are iterated substitutions.
+functions. Union and join are `T = {{0},{1}}` and `T = {{0,1}}`; the alternating trees and the word families
+of `docs/hard-classes.md` are iterated substitutions.
 
 **Theorem 5.1** (D1). For all `T` and `Γ`, `Tr(T[Γ]) = min(Tr(T)[Tr Γ])`. If the `Γ i` lie in
 pairwise disjoint sets and are nonempty, the reduction is unnecessary:

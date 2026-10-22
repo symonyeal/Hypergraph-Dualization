@@ -15,8 +15,8 @@ hypergraph* `Tr(H)`, which is Sperner. **TransHyp** asks, given two Sperner hype
 `H₂`, whether `H₂ = Tr(H₁)`. No polynomial algorithm is known. Fredman and Khachiyan (1996) gave
 two quasi-polynomial algorithms, **FK-A** (`n^{O(log² n)}`) and **FK-B** (`n^{o(log n)}`), where
 `n` is the total number of hyperedges. FK-A recurses on a split vertex of high frequency; some
-highly symmetric families (the GK and TK families, Hertel's alternating trees, the Fano plane)
-make its recursion tree superpolynomial. The thesis studies how the symmetry of a hypergraph,
+highly symmetric families, the alternating trees (the GK- and TK-families, which Hertel unified)
+and the Fano plane, make its recursion tree superpolynomial. The thesis studies how the symmetry of a hypergraph,
 through its automorphism group `Aut(H)` and its underlying graph, interacts with that recursion.
 
 ## Policy: a result is a Lean declaration
@@ -90,7 +90,7 @@ hypothesis no polynomial bounds the number of distinct subproblems on all dual p
 **Substitution.** For a template `T` and hypergraphs `Γᵢ`,
 `Tr(T[Γ]) = min(Tr(T)[Tr Γ])`; on disjoint vertex sets no reduction is needed and
 `|T[Γ]| = Σ_{t∈T} Π_{i∈t} |Γᵢ|` (`tr_subst`, `tr_subst_of_disjoint`, `card_subst`). Union and
-join are the two smallest templates; the GK, TK and word families are iterated substitutions.
+join are the two smallest templates; the alternating trees and the word families are iterated substitutions.
 
 **Bridges to [`openai/math`](https://github.com/openai/math).** Covers in Ryser's conjecture are
 transversals; `P_p(H) + P_{1−p}(Tr H) = 1`, so a self-transversal hypergraph has critical
