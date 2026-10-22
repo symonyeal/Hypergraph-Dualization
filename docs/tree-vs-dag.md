@@ -159,7 +159,7 @@ any such speedup. FK-B captures 14-55% of it. That is why `word-xy` at
 ceilings are 20.6x and 280.1x, and FK-B takes a similar fraction of each. The
 documented exception was never an exception.
 
-## Open
+## Caveats
 
 * `delta` is split-rule- and labelling-specific, as `tau` is
   ([hard-cases.md](hard-cases.md) §6). The agreement in `tests/test_memo.py`
@@ -167,5 +167,5 @@ documented exception was never an exception.
   `modified` / `degree_sum`.
 * `gk-f4` is beyond this program; `experiments/readonce_dag` measures it on
   live-variable sets (section 4).
-* `delta = O(N)` on read-once pairs under FK-A's degree-sum rule is false
-  (`ro12`, section 4). Whether `delta/N` is unbounded on the GK family is open.
+
+Open problems are listed once, in [research §7](research-2026-10.md#7-open-items).

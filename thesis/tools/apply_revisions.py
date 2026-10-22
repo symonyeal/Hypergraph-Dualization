@@ -173,6 +173,8 @@ Let \FKA{} split the pair $(C,D)$ on $v$. The primal graph of each subproblem, a
 \end{observation}"""),
 ],
 "ch4-hard-classes.tex": [
+(r"""conjecturing that these hypergraphs are challenging for \FKA{} and presented a superpolynomial upper bound of $n^{\omega(\log^{1-\mathcal{O}(1)}n)}$ on the number of subproblems.""",
+ r"""conjecturing that these hypergraphs are challenging for \FKA{}. He proved a superpolynomial lower bound of $n^{\Omega(\log^{1-o(1)}n)}$, where $n$ is the combined size of the hypergraph and its transversal hypergraph, on the size of every DPLL decision tree for them \cite[Thm.~4.3.6]{Her04}; since DPLL simulates \FKA{} \cite[Thm.~4.1.7]{Her04}, the bound applies to the recursion tree of \FKA{} under any choice of split vertex. With memoisation the picture reverses: DPLLCache decides every read-once formula with $k$ connectives by a decision tree of $2k+3$ nodes \cite[Thm.~4.4.1]{Her04}. The 2024 edition called the lower bound an upper bound on the number of subproblems."""),
 (r"""|E_0|=1,\quad|E_i|=\begin{cases}2\times|E_{i-1}|&\text{if }i\text{ is odd,}\\|E_{i-1}|^2&\text{if }i\text{ is even,}\end{cases}\qquad|E_i|=2^{2^{(i/2)-1}}\text{ for even }i.""",
  r"""|E_0|=1,\quad|E_i|=\begin{cases}|E_{i-1}|^2&\text{if }i\text{ is odd,}\\2\times|E_{i-1}|&\text{if }i\text{ is even,}\end{cases}\qquad|E_i|=2^{2^{i/2}-1}\text{ for even }i."""),
 (r"""|E_0'|=1,\quad|E_i'|=\begin{cases}|E_{i-1}'|^2&\text{if }i\text{ is odd,}\\2\times|E_{i-1}'|&\text{if }i\text{ is even,}\end{cases}\qquad|E_i'|=2^{(i/2)-1}\text{ for even }i.
@@ -243,11 +245,11 @@ In the \FKA{} decomposition of certain read-once hypergraphs, when the most freq
 (r"""\begin{observation}\label{obs:fano-tight}
 For hypergraphs with $n=3$ and $n=7$ vertices, the lower bound on the vertex frequency $\epsilon$ for \FKA{} is tight, with $\epsilon(3)=\frac{2}{3}$ and $\epsilon(7)=\frac{3}{7}$, where $\epsilon(n)$ is the lower bound for hypergraphs on $n$ vertices. So, the lower bound is tight for $n=3,7$.
 \end{observation}""",
- r"""\begin{observation}[\leanref{eps_three}, \leanref{eps_four}, \leanref{fano_eps}]\label{obs:fano-tight}
-Let $\epsilon(n)$ be the least frequency of a most frequent vertex over transversal pairs on $n$ vertices with both hypergraphs nonempty and without the empty edge. Then $\epsilon(3)=\frac{2}{3}$, attained only by $K_3$, and $\epsilon(4)=\frac{1}{2}$. The Fano plane has $\epsilon=\frac{3}{7}$, so $\epsilon(7)\le\frac{3}{7}$.
+ r"""\begin{observation}[\leanref{eps_three}, \leanref{eps_four}, \leanref{eps_seven}, \leanref{fano_eps}]\label{obs:fano-tight}
+Let $\epsilon(n)$ be the least frequency of a most frequent vertex over transversal pairs on $n$ vertices with both hypergraphs nonempty and without the empty edge. Then $\epsilon(3)=\frac{2}{3}$, attained only by $K_3$, $\epsilon(4)=\frac{1}{2}$, and $\epsilon(7)=\frac{3}{7}$, attained by the Fano plane.
 \end{observation}
 
-The 2024 edition also claimed $\epsilon(7)=\frac{3}{7}$. Whether any transversal pair on seven vertices has $\epsilon<\frac{3}{7}$ is not established; it is left open."""),
+The 2024 edition stated $\epsilon(7)=\frac{3}{7}$ without proof. Let $s$ be the size of a smallest edge $g$ of $G$. Counting incidences gives $s|G|\le\sum_v\deg_G v\le n\epsilon|G|$, so $s\le n\epsilon$; every minimal transversal meets $g$, so $|H|\le\sum_{v\in g}\deg_H v\le s\epsilon|H|$, so $s\epsilon\ge1$ \leanref{eps_bound}. On seven vertices $\epsilon<\frac{3}{7}$ would force $s\le2$ and then $s\epsilon<1$ \leanref{eps_seven}."""),
 (r"""No larger projective plane hypergraph has been shown to be self-transversal, further highlighting their distinctiveness in this context.""",
  r"""No larger projective plane hypergraph has been shown to be self-transversal, further highlighting their distinctiveness in this context. The projective plane of order 3 is not: six of its points meet every line and contain none \leanref{pg23_not_self_dual}."""),
 ],
