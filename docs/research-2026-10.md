@@ -187,7 +187,35 @@ majority function) is self-transversal and is excluded by `t < k`.
 `ε(G, H) = max_v max(deg_G v/|G|, deg_H v/|H|)` for a transversal pair, both sides nonempty and
 without the empty edge; `ε(n)` is its minimum over pairs on `n` points.
 
-**Conjecture 3.1** (B2, solver evidence). `ε(6) = 1/2`, `ε(7) = 3/7`, `ε(8) = 2/5`.
+**Theorem 3.1** (B2). Let `(G, Tr G)` be a non-trivial transversal pair on `n` points,
+`ε = ε(G, Tr G)`, and `s` the size of a smallest edge of `G`. Then `s·ε ≥ 1` and `s ≤ n·ε`.
+Hence `n·ε² ≥ 1`.
+Lean: `eps_bound`, `eps_sq`.
+
+*Proof.* Each vertex has `deg_G v ≤ ε|G|`, so `|G|·s ≤ Σ_{g∈G} |g| = Σ_v deg_G v ≤ nε|G|`. Let `g`
+be a smallest edge. Every minimal transversal meets `g`, so
+`|Tr G| ≤ Σ_{h} |g ∩ h| = Σ_{v∈g} deg_{Tr G} v ≤ s·ε|Tr G|`. ∎
+
+**Corollary 3.2** (Observation 5.2.3 settled). `ε(7) = 3/7`, attained by the Fano plane. Also
+`ε(5) = ε(6) = 1/2` and `ε(9) = 1/3` (three disjoint triples).
+Lean: `eps_seven`, `eps_five`, `eps_six`, `eps_nine`.
+
+*Proof.* If `ε < 3/7` on seven points, then `s ≤ 7ε < 3`, so `s ≤ 2` and `sε < 6/7 < 1`,
+contradicting Theorem 3.1. The other cases are the same argument; `ε(9) ≥ 1/3` is `9ε² ≥ 1`. The
+attaining pairs are evaluated (`native_decide`). ∎
+
+So `ε(n) ≥ L(n) := min_{s ≥ 1} max(1/s, s/n)`. Together with the attaining instances:
+
+| `n` | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `L(n)` | 2/3 | 1/2 | 1/2 | 1/2 | 3/7 | 3/8 | 1/3 |
+| `ε(n)` | 2/3 | 1/2 | 1/2 | 1/2 | 3/7 | `[3/8, 2/5]` | 1/3 |
+| attained by | `K₃` | `{{0,3},{1,2}}` | same | same | Fano | 8-Ver (`2/5`) | three disjoint triples |
+
+The bound is not tight in general: `PG(2,3)` has `ε = 112/247` against `L(13) = 4/13`
+(`python` check), and at `n = 8` the solver evidence below puts `ε(8)` at `2/5 > 3/8`.
+
+**Conjecture 3.3** (solver evidence). `ε(8) = 2/5`.
 
 *Evidence.* `python experiments/eps_search.py` encodes "some pair on `n` points has every
 frequency below `p/q`" as a 0/1 program on the truth table of a monotone `f : {0,1}ⁿ → {0,1}`
@@ -202,7 +230,5 @@ symmetry) and solves it with OR-Tools CP-SAT:
 | 7 | `ε < 3/7` | infeasible | 0.1 s |
 | 8 | `ε < 2/5` | infeasible | 646 s |
 
-The upper bounds are attained: `1/2` by `{{0,3},{1,2}}` with isolated points added (Lean, on four
-points: `eps_four`), `3/7` by the Fano plane (`fano_eps`), `2/5` by 8-Ver. The lower bounds rest on
-CP-SAT's infeasibility verdicts, which are not Lean certificates; Lean proves only
-`ε(3) = 2/3` and `ε(4) = 1/2` (`eps_three`, `eps_four`).
+The rows for `n ≤ 7` agree with Corollary 3.2. The row for `n = 8` is CP-SAT's infeasibility
+verdict, not a Lean certificate; Lean proves `3/8 ≤ ε(8) ≤ 2/5` (`eps_bound`, `eightVer_eps`).

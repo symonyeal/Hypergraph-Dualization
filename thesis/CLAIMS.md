@@ -107,7 +107,7 @@ possible it also gives a concrete example on which the printed version fails.
 | §5.2.2, frequencies `ε` | Checked | `*_eps`, `eightVer_uniform` |
 | Observation 5.2.2, a false twin of the split vertex leaves the contraction | Proved (general lemma) and checked on `f₂, g₂` | `falseTwin_filtered`, `f2g2_false_twin_filtered` |
 | Observation 5.2.3, `ε(3) = 2/3` | Proved by exhaustion; `K₃` is the unique minimiser | `eps_three` |
-| Observation 5.2.3, `ε(7) = 3/7` | **Open**: the Fano plane attains `3/7` (`fano_eps`), but no proof that it is the minimum on seven vertices exists; `ε(4) = ε(5) = 1/2` | `eps_four` |
+| Observation 5.2.3, `ε(7) = 3/7` | Proved (2026-10): every non-trivial pair on `n` points has `s·ε ≥ 1` and `s ≤ nε` for its smallest edge size `s`, which forces `ε ≥ 3/7` on seven points; Fano attains it. Also `ε(4) = ε(5) = ε(6) = 1/2`, `ε(9) = 1/3` | `eps_seven`, `eps_bound`, `eps_four`, `eps_five`, `eps_six`, `eps_nine` |
 | §5.2.2, Fano and `K₃` are self-transversal; `PG(2,3)` is not | Checked | `fano_self_tr`, `k3_self_tr`, `pg23_not_self_dual` |
 | Def. 5.2.1, `7k` edges and the transversal count `(k−2)²/4 + k/2 + 1` | **Corrected**: `k` disjoint Fano planes have `7k` edges and `7^k` minimal transversals, for every `k` | `kFano_card`, `tr_kFano_card`, `two_fano_tr_card` |
 
@@ -135,4 +135,6 @@ each is written up in [`docs/research-2026-10.md`](../docs/research-2026-10.md).
 | Theorem A5a: in `S(t,k,v)`, `1 ≤ t ≤ k`, every block is disjoint from exactly `n₀(t,k,v) = Σ_{i<t} (−1)^i C(k,i)(λ_i − 1)` blocks; hence `n₀ ≥ 0` for every existing system | Proved | `steiner_disjoint`, `steiner_n0_nonneg` |
 | Observation A5b: `n₀` for 19 parameter sets; no `S(t,k,v)` with `n₀ > 0` (nine sets, including every `S(2,3,15)`, `S(3,4,16)`, `S(5,8,24)`) is self-transversal; none with `n₀ < 0` (ten sets) exists | Proved (kernel `decide`) | `n0_table`, `steiner_tr_ne_of_table`, `not_steiner_of_table` |
 | `PG(2,4)` and `S(4,7,23)` are intersecting Steiner systems with a 2-colouring, so not self-transversal | Checked | `pg24_steiner`, `pg24_tr_ne`, `s4723_steiner`, `s4723_tr_ne` |
+| Theorem B: `s·ε ≥ 1` and `s ≤ nε` for the smallest edge size `s`; hence `nε² ≥ 1` | Proved | `eps_bound`, `eps_sq` |
+| `ε(8) = 2/5` | Open: `3/8 ≤ ε(8) ≤ 2/5` proved; CP-SAT finds no pair below `2/5` (`experiments/eps_search.py`) | `eps_bound`, `eightVer_eps` |
 | Theorem A5c: every Steiner system `S(t, t+1, 2t+3)` is self-transversal, and `t` is even | Proved | `witt_tr_eq` |

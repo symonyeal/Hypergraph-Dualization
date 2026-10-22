@@ -138,7 +138,8 @@ Most statements hold as printed. Those that do not are corrected, each with a co
 the printed form where one exists: among them Corollary 2.3.1 (the inequality is reversed), Lemma
 3.3.3 (false), Lemma 3.3.1 (needs the Sperner hypothesis), several §3.2 edge sets and Figure
 3.3(b), the §4.2.3 recurrences and the transversal count of Definition 5.2.1. Observation 5.2.3's
-case `n = 7` is open.
+case `n = 7`, open in 2024, was proved in October 2026; that work, and the research beyond the
+thesis, is in [docs/research-2026-10.md](docs/research-2026-10.md).
 
 ## Research contracts
 
