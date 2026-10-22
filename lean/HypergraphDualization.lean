@@ -25,3 +25,4 @@ import HypergraphDualization.Primitive
 import HypergraphDualization.Steiner
 import HypergraphDualization.SteinerInstances
 import HypergraphDualization.EpsSeven
+import HypergraphDualization.Dag
