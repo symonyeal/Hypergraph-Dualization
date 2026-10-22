@@ -43,6 +43,16 @@ theorem freq_le_eps (C D : HG n) (v : Fin n) : freq C D v ≤ eps C D :=
 
 theorem eps_nonneg (C D : HG n) : 0 ≤ eps C D := (foldl_max_ge (freq C D) _ 0).1
 
+theorem degree_le_eps_left (G H : HG n) (hG : G.Nonempty) (v : Fin n) :
+    (degree G v : ℚ) ≤ eps G H * G.card := by
+  have hp : (0 : ℚ) < G.card := by exact_mod_cast card_pos.2 hG
+  exact (div_le_iff₀ hp).1 ((le_max_left _ _).trans (freq_le_eps G H v))
+
+theorem degree_le_eps_right (G H : HG n) (hH : H.Nonempty) (v : Fin n) :
+    (degree H v : ℚ) ≤ eps G H * H.card := by
+  have hp : (0 : ℚ) < H.card := by exact_mod_cast card_pos.2 hH
+  exact (div_le_iff₀ hp).1 ((le_max_right _ _).trans (freq_le_eps G H v))
+
 /-- `Σ_{v ∈ g} deg_H v = Σ_{h ∈ H} |g ∩ h|`. -/
 theorem sum_degree_eq (H : HG n) (g : Finset (Fin n)) :
     ∑ v ∈ g, degree H v = ∑ h ∈ H, (g ∩ h).card := by
@@ -60,10 +70,8 @@ theorem eps_bound (G : HG n) (hG : NonTrivial G) :
   set e := eps G H
   have hGpos : (0 : ℚ) < G.card := by exact_mod_cast card_pos.2 hGne
   have hHpos : (0 : ℚ) < H.card := by exact_mod_cast card_pos.2 hHne
-  have hfG : ∀ v, (degree G v : ℚ) ≤ e * G.card := fun v =>
-    (div_le_iff₀ hGpos).1 ((le_max_left _ _).trans (freq_le_eps G H v))
-  have hfH : ∀ v, (degree H v : ℚ) ≤ e * H.card := fun v =>
-    (div_le_iff₀ hHpos).1 ((le_max_right _ _).trans (freq_le_eps G H v))
+  have hfG := degree_le_eps_left G H hGne
+  have hfH := degree_le_eps_right G H hHne
   obtain ⟨g, hg, hmin⟩ := G.exists_min_image card hGne
   refine ⟨g.card, ?_, ?_⟩
   · -- every minimal transversal meets `g`
@@ -110,6 +118,19 @@ theorem eps_bound_lt (G : HG n) (hG : NonTrivial G) {m : ℕ} (hm : 0 < m)
   have he := eps_nonneg G (tr univ G)
   nlinarith
 
+/-- The integral smallest-edge bound gives `ε ≥ 1/m` whenever `n ≤ m(m+1)`. -/
+theorem eps_ge_inv (G : HG n) (hG : NonTrivial G) {m : ℕ} (hm : 0 < m)
+    (hn : n ≤ m * (m + 1)) : 1 / (m : ℚ) ≤ eps G (tr univ G) := by
+  by_contra h
+  push Not at h
+  obtain ⟨s, hs, hsn⟩ := eps_bound_lt G hG hm h
+  have hm' : (0 : ℚ) < m := by exact_mod_cast hm
+  have hs' : (m : ℚ) + 1 ≤ s := by exact_mod_cast hs
+  have hn' : (n : ℚ) ≤ (m : ℚ) * (m + 1) := by exact_mod_cast hn
+  have := mul_le_mul_of_nonneg_right hn' (eps_nonneg G (tr univ G))
+  rw [lt_div_iff₀ hm'] at h
+  nlinarith
+
 /-- **Theorem (Observation 5.2.3, `n = 7`).** Every non-trivial transversal pair on seven points
 has `ε ≥ 3/7`, and the Fano plane attains it: `ε(7) = 3/7`. -/
 theorem eps_seven :
@@ -126,25 +147,13 @@ theorem eps_seven :
 theorem eps_five :
     (∀ G : HG 5, NonTrivial G → 1 / 2 ≤ eps G (tr univ G)) ∧
       eps ({{0, 3}, {1, 2}} : HG 5) (tr univ {{0, 3}, {1, 2}}) = 1 / 2 := by
-  refine ⟨fun G hG => ?_, by native_decide⟩
-  by_contra h
-  push Not at h
-  obtain ⟨s, hs, hsn⟩ := eps_bound_lt G hG (m := 2) (by norm_num) (by norm_num; linarith)
-  have : (3 : ℚ) ≤ s := by exact_mod_cast hs
-  push_cast at hsn
-  linarith
+  exact ⟨fun G hG => eps_ge_inv G hG (by decide : 0 < 2) (by decide), by native_decide⟩
 
 /-- `ε(6) = 1/2`. -/
 theorem eps_six :
     (∀ G : HG 6, NonTrivial G → 1 / 2 ≤ eps G (tr univ G)) ∧
       eps ({{0, 3}, {1, 2}} : HG 6) (tr univ {{0, 3}, {1, 2}}) = 1 / 2 := by
-  refine ⟨fun G hG => ?_, by native_decide⟩
-  by_contra h
-  push Not at h
-  obtain ⟨s, hs, hsn⟩ := eps_bound_lt G hG (m := 2) (by norm_num) (by norm_num; linarith)
-  have : (3 : ℚ) ≤ s := by exact_mod_cast hs
-  push_cast at hsn
-  linarith
+  exact ⟨fun G hG => eps_ge_inv G hG (by decide : 0 < 2) (by decide), by native_decide⟩
 
 /-- `ε(9) = 1/3`, attained by three disjoint triples: the bound `ε ≥ 1/√n` is attained. -/
 theorem eps_nine :

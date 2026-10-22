@@ -81,6 +81,13 @@ parentheses; a statement without one is cited or conditional, and says so.
 (`eps_bound`). Hence `ε(7) = 3/7`, attained by the Fano plane (`eps_seven`), and `nε² ≥ 1` (`eps_sq`);
 `s` disjoint `s`-sets attain `ε(s²) = 1/s` (in Lean for `s = 2, 3`). `ε(8) = 2/5` is supported by a CP-SAT search but not proved.
 
+**Frequency rigidity and stability.** For nonempty cross-intersecting families, let
+`X = Σ_{g,h} (|g ∩ h| − 1)`. Then `1 + X/(|G||H|) ≤ nε²` (`eps_crossExcess`). Attaining
+`nε² = 1` forces square order, uniformity, regularity and singleton cross intersections (`eps_eq_rigid`);
+Gurvich's theorem then implies read-once structure (cited). Self-transversal families on more
+than one point satisfy the strict inequality (`eps_self_strict`). The [source audit](docs/frequency-equality-research.md)
+distinguishes these proofs from the cited structural bridge; novelty is not claimed.
+
 **FK-A's recursion tree against its distinct subproblems.** For the perfect matching on `v`
 vertices the tree has `2^{v/2+1} − 3` nodes but only `v` distinct subproblems; for the threshold
 graph both are `v − 1` (`matching_tau_delta`, `threshold_tau_delta`). Under the exponential-time

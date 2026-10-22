@@ -172,15 +172,17 @@ one. (3) Let `|Y| ≥ t+3` contain no block. Then a `(t+2)`-subset `S ⊆ Y` is 
 (4) One of `A`, `U \ A` has at least `t+2` points, so by (2)–(3) one of them contains a block:
 `H` is not 2-colourable. Proposition 2.1 concludes. ∎
 
-*Literature.* Searches on 2026-10-21 (Steiner systems `S(t, t+1, 2t+3)`, self-dual simple games
-on Steiner systems, blocking sets) found no statement of Theorem 2.11. Systems `S(t,t+1,2t+3)`
-are known for `t = 2, 4` only. The odd-`t` case may also follow from the standard divisibility
-conditions. Novelty is not claimed.
+*Literature.* This is the classical family `S(m−1,m,2m+1)`, `m=t+1`, equivalent to perfect
+1-codes in the odd graph `O(m+1)`; the Fano and Witt examples appear in
+[Godsil 1995, §9, p. 13](https://www.combinatorics.org/ojs/index.php/eljc/article/download/v2i1f1/pdf/).
+This connection is cited, not formalised. It gives an older context for Theorem 2.11;
+unsuccessful keyword searches do not establish novelty. The odd-`t` case may also follow
+from the standard divisibility conditions. Novelty is not claimed.
 
-**Conjecture 2.12** (A5d). A self-transversal Steiner system `S(t, k, v)` with `t < k` has
+**Conjecture 2.12** (A5d). A self-transversal Steiner system `S(t, k, v)` with `2 ≤ t < k < v` has
 `k = t+1` and `v = 2t+3`. *Evidence:* for `v ≤ 100`, every admissible parameter set other than
 `S(t,t+1,2t+3)` has `n₀ ≠ 0`, except the projective planes and `S(4,7,23)`. Projective planes of
-order `≥ 3` have blocking sets containing no line (Bruen, cited), and `S(4,7,23)` is unique
+order `≥ 3` have blocking sets containing no line ([Bierbrauer 1981, p. 85](https://www.numdam.org/item/RSMUP_1981__65__85_0.pdf), cited), and `S(4,7,23)` is unique
 (Witt, cited) and 2-colourable (Observation 2.10a). The trivial family `S(k,k,2k−1)` (the
 majority function) is self-transversal and is excluded by `t < k`.
 
@@ -284,6 +286,77 @@ symmetry) and solves it with OR-Tools CP-SAT:
 
 The rows for `n ≤ 7` agree with Corollary 3.2. The row for `n = 8` is CP-SAT's infeasibility
 verdict, not a Lean certificate; Lean proves `3/8 ≤ ε(8) ≤ 2/5` (`eps_bound`, `eightVer_eps`).
+
+### The gap and its equality case
+
+**Theorem 3.4** (B4, excess and stability). Let `G,H` be nonempty cross-intersecting families
+on `n` points, `a = |G|`, `b = |H|`, `ε = ε(G,H)`. Put
+`X = Σ_{g∈G,h∈H} (|g ∩ h| − 1)`. Then
+
+```text
+ab + X = Σ_v deg_G(v) deg_H(v) ≤ n ε² ab.
+```
+
+Hence the fraction of cross pairs with intersection size at least two is at most `nε² − 1`.
+One such pair gives `nε² ≥ 1 + 1/(ab)`. This needs neither Sperner nor duality.
+Lean: `sum_degree_mul_eq_excess`, `eps_crossExcess`, `eps_badCross`, `eps_overlap_gap`.
+With separate degree-frequency caps `p,q`, replace `ε²` by `pq` (`crossExcess_bound`).
+
+*Proof.* Count triples `(v,g,h)` with `v ∈ g ∩ h`. Each cross pair contributes its mandatory
+one point and its excess. Each vertex contributes at most `(εa)(εb)` triples. Every pair with
+intersection size at least two contributes at least one to `X`. ∎
+
+**Theorem 3.5** (B5, rigidity). Under the hypotheses of Theorem 3.4, if `nε² = 1`, then for
+some positive integer `m`, `n = m²`, `mε = 1`, both families are `m`-uniform and Sperner, every
+vertex has frequency `1/m` in each family, and every cross intersection is a singleton.
+If `n` is not a square, `nε² > 1`.
+Lean: `eps_eq_rigid`, `eps_eq_sperner`, `eps_eq_cross_singleton`, `eps_strict_of_nonsquare`.
+
+*Proof.* Theorem 3.4 forces `X = 0` and equality in every degree product. Since the caps are
+positive, each degree attains its cap. For any `g ∈ G`, summing its singleton intersections
+with `H` gives `b = |g|εb`, hence `|g|ε = 1`. Interchange `G,H`, and use `nε² = 1`. Uniformity
+implies the Sperner property. ∎
+
+For a transversal pair, Gurvich's theorem now implies that equality forces a read-once
+function. This last implication is **cited, not formalised**: [Das–Straßburger 2016,
+Theorem 4.10](https://lmcs.episciences.org/2621/pdf). Thus a non-read-once transversal pair has
+the quantitative gap of Theorem 3.4. In particular the regular convergent templates of
+[`hard-classes.md`](hard-classes.md), (1.1), are read-once for every `r`; its searches at `r = 2,3`
+are examples, not the boundary of the structural argument. Uniformity alone is insufficient:
+`path_four_not_extremal` checks a 2-uniform pair on four points with `ε = 2/3` and `X = 1`.
+This distinction leaves D3, which does not require regularity, open.
+
+**Corollary 3.6** (B6, self-transversal gap). If `G = Tr(G)` is nonempty, then
+
+```text
+|G|² + Σ_{g∈G} (|g| − 1) ≤ n ε(G,G)² |G|².
+```
+
+If `n > 1`, then `nε(G,G)² > 1`. Lean: `eps_self_diagonal`, `eps_self_strict`.
+The diagonal pairs supply the displayed correction. At equality, Theorem 3.5 and the diagonal
+singleton intersections force `m = n = 1`. Fano has `X = 14` (`fano_crossExcess`), all from
+diagonal pairs, and attains the excess inequality. The regular uniform special case is the
+same incidence count as Theorem 2.2, not an independent discovery.
+
+The degree-cap arguments are shared by `eps_bound` and Theorem 3.4. Likewise `eps_ge_inv`
+proves `ε ≥ 1/m` whenever `m > 0` and `n ≤ m(m+1)`; the former separate proofs for `n = 5,6`
+are now specialisations. The smallest-edge theorem remains useful because its integral `s`
+can strengthen the square-root bound.
+
+Source audit and older connections: [`frequency-equality-research.md`](frequency-equality-research.md).
+These are additions to the repository; priority in the literature is not asserted.
+
+**Proposition 3.7** (B7, one regular side). Let `r > 0`, `n = r²`, and let cross-intersecting
+families `G,H` both be `r`-uniform. If just `H` is regular, then every cross intersection
+is a singleton. Lean: `uniform_regular_cross_singleton`.
+
+*Proof.* Write `b = |H|` and `d = deg_H(v)`. Incidence counting gives `r²d = br`, hence
+`rd = b`. For any `g ∈ G`, `Σ_{h∈H}|g ∩ h| = rd = b`; all `b` summands are at least one,
+so they all equal one. ∎
+
+Interchange the families to obtain the same result from regularity of `G`. For a transversal
+pair, Gurvich's cited theorem therefore shows that a non-read-once candidate for D3 must
+be irregular on **both** sides. This exclusion does not require frequency equality.
 
 ## 4. FK-A's recursion tree against its subproblem DAG (Track C)
 
@@ -395,10 +468,13 @@ an `s`-template with `(l, l*)` satisfying `(P)` into each point gives an `rs`-te
 Lean: `card_subst_uniform` (the counts, with `tr_subst_of_disjoint` on the dual side),
 `prop_P_comp` (the inequality: `8^{rs−1} = 8^{r−1}·(8^{s−1})^r`).
 
-**Open problem 5.3** (D3). Is there a prime template (not read-once) with `k·k* < 8^{r−1}`? For
-`r ≤ 3` every convergent template is read-once (`docs/hard-classes.md` (1.3), exhaustive). At
-`r = 4`, `AG(2,4)`'s parallel-class splits meet every necessary condition and fail duality. A
-search over the transitive groups of degree 16 was not run.
+**Open problem 5.3** (D3). Is there a prime template (not read-once), `r`-uniform on `r²` points
+with an `r`-uniform dual, such that `k·k* < 8^{r−1}`? Candidates with either side regular are
+excluded at every rank by Proposition 3.7 and the cited Gurvich consequence; the finite
+regular classifications at `r = 2,3` are special cases. Both sides of a remaining candidate
+must be irregular. At `r = 4`, `AG(2,4)`'s
+parallel-class splits meet the necessary incidence conditions and fail duality. A search
+over the transitive groups of degree 16 was not run.
 
 ## 6. Influences (Track E)
 
@@ -450,3 +526,8 @@ been confirmed by the author.
 | 12 | `Aut(S(4,5,11))` is `M₁₁` | Jordan's theorem on sharply 4-transitive groups | Cited |
 | 13 | Theorem 2.11 (every `S(t,t+1,2t+3)` is self-transversal) is not in the literature | Searches of 2026-10-21 only | Novelty not claimed |
 | 14 | The `H` and `Tr(H)` columns of `docs/applications.md` | Each reduction as stated by Hagen (2008, Ch. 3); the columns are this repository's reading of it | Unchecked entry by entry |
+| 15 | Equality in `nε² ≥ 1` forces square order, uniformity, regularity and singleton cross intersections | Theorems 3.4–3.5, `FrequencyGap.lean` | Lean; no new axioms or `native_decide` |
+| 16 | Equality transversal pairs, and the regular convergent templates in `hard-classes.md`, are read-once for every `r` | Singleton cross intersections (Lean); Gurvich's theorem (Das–Straßburger 2016, Thm 4.10) | Cited bridge; equivalence with `ReadOnce` is not formalised |
+| 17 | `S(t,t+1,2t+3)` is the classical `S(m−1,m,2m+1)` family, `m=t+1`, associated with perfect 1-codes in odd graphs | Godsil 1995, §9; source audit | Cited; supplies older context for Theorem 2.11 |
+| 18 | The self-duality colouring scan requires a Sperner family to decide literal `G = Tr(G)` | `tr_eq_self_iff_needs_sperner`; regression `{{0},{0,1}}` | Corrected in Python; exhaustive oracle check on all 256 three-vertex families |
+| 19 | An `r`-uniform pair on `r²` points needs only one regular side for singleton cross intersections; a non-read-once D3 candidate must have both sides irregular | Proposition 3.7 (Lean); Gurvich's theorem for the read-once consequence | Lean incidence theorem; cited structural implication |

@@ -10,7 +10,7 @@ nonempty and free of the empty edge. Observation 5.2.3 claims `ε(3) = 2/3` and 
 | --- | --- |
 | `eps_three` | `ε(3) = 2/3`, attained only by `K₃` (exhaustive) |
 | `eps_four` | `ε(4) = 1/2`, so `ε` is not determined by projective planes |
-| `fano_eps` (in `Instances`) | the Fano plane has `eps = 3/7`; that `3/7` is the minimum on seven vertices is **not** established |
+| `eps_seven` (in `EpsSeven`) | `ε(7) = 3/7`; the lower bound is general and the Fano plane attains it |
 -/
 import HypergraphDualization.Section32
 

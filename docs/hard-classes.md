@@ -46,10 +46,18 @@ Counting `sum_{v in e} deg*(v)` two ways gives a second, free consequence:
 That is what makes the search Berge-free, and `experiments/prime_templates.py`
 runs it exhaustively:
 
-> **(1.3)** for `r = 2` and `r = 3`, **every** convergent template is
-> read-once. `r = 2` admits only `M(4)` and `C_4`, both with `c_inf = 2`
+> **(1.3)** every regular convergent template satisfying (1.1) is read-once, for
+> every `r`: the singleton intersections (1.2) imply this by Gurvich's theorem.
+> The exhaustive searches classify the small cases: `r = 2` admits only `M(4)` and `C_4`, both with `c_inf = 2`
 > exactly; `r = 3` only the partitions of 9 points into three triples, with
-> `c_inf = 3 log2(3) / 2 ~ 2.377`. `r >= 4` is open.
+> `c_inf = 3 log2(3) / 2 ~ 2.377`.
+
+The incidence and equality arguments are now consolidated in
+[`research-2026-10.md`, Theorems 3.4–3.5](research-2026-10.md#the-gap-and-its-equality-case),
+with kernel proofs in `FrequencyGap.lean`. The read-once implication is cited:
+[Das–Straßburger 2016, Theorem 4.10](https://lmcs.episciences.org/2621/pdf).
+It is not a Lean theorem about the repository's `ReadOnce` definition. The broader
+uniform-template question D3, which omits regularity, remains open.
 
 Since read-once means a cograph primal graph (Gurvich; Section 4.4), the answer
 to "what does the underlying graph structure of the hard families look like" is
@@ -102,14 +110,17 @@ instances. `word-xy` and `word-yx` are in the instance library.
 
 ## 4. Self-duality: the other regime, and why it is not the cause
 
-`MBF = Tr(MBF)` iff its term set is intersecting and **not 2-colourable** -- one `2^n`
-scan, never Berge. Self-duality is a free non-read-once certificate by
-**(2.1)**, since a self-dual read-once function would need a root label that is
-both `^` and `v`. But it can never reach the threshold:
+For a Sperner family without the empty edge, `MBF = Tr(MBF)` iff it is intersecting
+and **not 2-colourable** (`tr_eq_self_iff`). The Python scan now checks Sperner first:
+redundant terms can represent a self-dual function without the family equalling its
+transversal. For nonempty self-transversal families on `n > 1` points,
+`n eps^2 > 1` (`eps_self_strict`). In the uniform regular case:
 
 > **(4.1)** for self-dual, uniform, regular `MBF`, counting gives
-> `d(r^2 - t) >= r(r-1)`, hence `t < r^2` and `eps > 1/r`. Equality holds iff
-> any two blocks meet in one point -- a projective plane of order `r-1`.
+> `d(r^2 - t) >= r(r-1)`, hence for `r > 1`, `t < r^2` and `eps > 1/r`.
+> Equality holds iff any two distinct blocks meet in one point
+> (`intersecting_regular_bound`). See the canonical proof in
+> [`research-2026-10.md`, Theorem 2.2](research-2026-10.md#2-self-transversal-hypergraphs).
 
 Among projective planes only `PG(2,2)` survives: `PG(2,3)` has a 6-point
 projective triangle whose complement also blocks, so it is 2-colourable. Among
@@ -177,9 +188,10 @@ Nodes whose incidence graph is too large to enumerate are counted in the
 
 ## Open
 
-* **(1.3)** is exhaustive only for `r <= 3`. A prime template at `r >= 4` would
-  put a non-read-once family at the threshold and would falsify the reading of
-  Section 1. `AG(2,4)`'s parallel-class splits satisfy every necessary
-  condition and fail duality, exactly as the `r = 3` candidates do.
+* D3 asks for a non-read-once uniform template without imposing regularity.
+  Neither side of a candidate can be regular: research Proposition 3.7 and
+  Gurvich's cited theorem exclude even one regular side at every rank.
+  `AG(2,4)`'s parallel-class splits satisfy the necessary incidence conditions
+  and fail duality. The searches above do not settle the irregular case.
 * The placement rows are one size point per family. The `exp` column is
   indicative, not a fitted growth rate.

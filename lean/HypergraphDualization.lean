@@ -29,3 +29,4 @@ import HypergraphDualization.EpsSeven
 import HypergraphDualization.Dag
 import HypergraphDualization.Substitution
 import HypergraphDualization.Influence
+import HypergraphDualization.FrequencyGap

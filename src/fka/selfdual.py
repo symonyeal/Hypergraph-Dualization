@@ -1,6 +1,7 @@
 """Self-dual functions, and primitivity as a read-once certificate.
 
-``MBF = Tr(MBF)`` iff its term set is *intersecting* and *not 2-colourable*:
+For Sperner term sets without the empty term, ``MBF = Tr(MBF)`` iff the term
+set is *intersecting* and *not 2-colourable*:
 for every ``S``, exactly one of ``S``, ``V \\ S`` contains a term. That is one
 ``2^n`` scan, so self-duality never needs Berge's method. The Fano plane is the
 thesis' example (Section 3.3, p.26); the only other one among the Witt designs
@@ -48,6 +49,8 @@ __all__ = [
 
 def is_self_dual(MBF: Hypergraph) -> bool:
     """``MBF == Tr(MBF)``, by the ``2^n`` scan rather than by building ``Tr``."""
+    if not MBF.is_sperner():
+        return False
     full = (1 << MBF.n) - 1
     for S in range(1 << MBF.n):
         a = any((t & S) == t for t in MBF.edges)

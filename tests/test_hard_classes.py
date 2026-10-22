@@ -131,6 +131,20 @@ def test_word_families_beat_gk_and_tk():
 # ----------------------------------------------------------------------
 # self-duality, and primitivity as the read-once certificate
 # ----------------------------------------------------------------------
+def test_self_duality_requires_sperner():
+    """Lean `tr_eq_self_iff_needs_sperner`: a self-dual function can have redundant terms."""
+    H = Hypergraph.from_sets(2, [[0], [0, 1]])
+    assert transversal(H) == Hypergraph.from_sets(2, [[0]])
+    assert not is_self_dual(H)
+
+
+def test_self_duality_matches_oracle_on_three_vertices():
+    """Check all 256 families, including redundant and degenerate ones."""
+    for k in range(1 << 8):
+        H = Hypergraph.from_bitsets(3, (e for e in range(8) if k & (1 << e)))
+        assert is_self_dual(H) == (H == transversal(H))
+
+
 def test_fano_is_self_dual_and_primitive():
     F = fano()
     assert is_self_dual(F) and is_intersecting(F)

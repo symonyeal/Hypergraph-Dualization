@@ -136,6 +136,13 @@ New statements of the October 2026 research program, each written up in
 | Observation A5b: `n₀` for 19 parameter sets; no `S(t,k,v)` with `n₀ > 0` (nine sets, including every `S(2,3,15)`, `S(3,4,16)`, `S(5,8,24)`) is self-transversal; none with `n₀ < 0` (ten sets) exists | Proved (kernel `decide`) | `n0_table`, `steiner_tr_ne_of_table`, `not_steiner_of_table` |
 | `PG(2,4)` and `S(4,7,23)` are intersecting Steiner systems with a 2-colouring, so not self-transversal | Checked | `pg24_steiner`, `pg24_tr_ne`, `s4723_steiner`, `s4723_tr_ne` |
 | Theorem B: `s·ε ≥ 1` and `s ≤ nε` for the smallest edge size `s`; hence `nε² ≥ 1` | Proved | `eps_bound`, `eps_sq` |
+| B4: for nonempty cross-intersecting `G,H`, `ab + X ≤ nε²ab`, where `X = Σ_{g,h} (|g ∩ h|−1)`; at most `(nε²−1)ab` cross pairs have nonsingleton intersection | Proved (kernel) | `sum_degree_mul_eq_excess`, `crossExcess_bound`, `eps_crossExcess`, `eps_badCross`, `eps_overlap_gap` |
+| B5: equality forces `n=m²`, both families `m`-uniform and regular with frequency `1/m`, Sperner, every cross intersection singleton; nonsquares have strict inequality | Proved (kernel) | `eps_eq_rigid`, `eps_eq_sperner`, `eps_eq_cross_singleton`, `eps_strict_of_nonsquare` |
+| Equality transversal pairs are read-once; so are regular convergent templates for every `r` | Cited consequence of B5 and Gurvich (Das–Straßburger 2016, Thm 4.10); bridge not formalised | — |
+| B6: self-transversal `G` satisfies `|G|² + Σ_g (|g|−1) ≤ nε²|G|²`; `n>1` implies `nε²>1` | Proved (kernel) | `eps_self_diagonal`, `eps_self_strict` |
+| Both sides 2-uniform on four points need not attain the frequency bound; Fano has cross excess 14 | Checked (kernel `decide +kernel`) | `path_four_not_extremal`, `fano_crossExcess` |
+| `n ≤ m(m+1)`, `m>0` implies `ε ≥ 1/m`; shared proof for `ε(5),ε(6)` | Proved (kernel) | `eps_ge_inv` |
+| B7: two `r`-uniform cross-intersecting families on `r²` points have singleton cross intersections if either side is regular | Proved (kernel); a non-read-once D3 candidate must have both sides irregular by cited Gurvich | `uniform_regular_cross_singleton` |
 | `ε(8) = 2/5` | Open: `3/8 ≤ ε(8) ≤ 2/5` proved; CP-SAT finds no pair below `2/5` (`experiments/eps_search.py`) | `eps_bound`, `eightVer_eps` |
 | Theorem C1: `matching(v)` has `τ = 2^{v/2+1} − 3`, `δ = v`; `threshold(v)` has `τ = δ = v − 1` (modified FK-A, every even `v`) | Proved | `matching_tau_delta`, `threshold_tau_delta` |
 | Theorem A5c: every Steiner system `S(t, t+1, 2t+3)` is self-transversal, and `t` is even | Proved | `witt_tr_eq` |

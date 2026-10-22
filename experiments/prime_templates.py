@@ -19,9 +19,10 @@ Normalisation. Any valid ``T`` has a perfect selector, so relabel it to
 ``(r-1)``-set from the remaining ``r^2 - r``, which is the parametrisation
 enumerated here.
 
-Result: for ``r = 2`` and ``r = 3`` every convergent template is read-once, so
-no substitution-closed family at the threshold escapes the alternating trees.
-``r >= 4`` is open.
+The small cases classify the templates at ``r = 2,3``. Singleton cross
+intersections imply read-once structure for every rank by Gurvich's theorem;
+see docs/research-2026-10.md, Theorems 3.4-3.5. This program remains a finite
+classification tool, not a search for non-read-once equality cases.
 """
 
 from __future__ import annotations
@@ -144,9 +145,9 @@ def main():
     if any(not f[4] for f in every):
         log("**A non-read-once template exists.**")
     else:
-        log("Every convergent template for r = 2 and r = 3 is read-once: the")
-        log("substitution route to the threshold cannot leave the alternating")
-        log("trees. r >= 4 is not settled here.")
+        log("Every template enumerated here is read-once. The general exclusion")
+        log("for regular equality templates follows from singleton cross intersections")
+        log("and Gurvich's theorem; see docs/research-2026-10.md, Theorems 3.4-3.5.")
     log(f"\n_{time.time() - t0:.0f}s_")
     RESULTS.mkdir(exist_ok=True)
     (RESULTS / "prime-templates.md").write_text("\n".join(out) + "\n", encoding="utf-8")
