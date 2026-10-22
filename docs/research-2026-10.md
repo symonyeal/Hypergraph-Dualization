@@ -232,3 +232,40 @@ symmetry) and solves it with OR-Tools CP-SAT:
 
 The rows for `n ≤ 7` agree with Corollary 3.2. The row for `n = 8` is CP-SAT's infeasibility
 verdict, not a Lean certificate; Lean proves `3/8 ≤ ε(8) ≤ 2/5` (`eps_bound`, `eightVer_eps`).
+
+## 4. FK-A's recursion tree against its subproblem DAG (Track C)
+
+For a dual pair, `τ` is the number of nodes of the modified FK-A recursion tree (`fkA`), and `δ`
+the number of distinct Sperner-reduced pairs `(C, D)` among them (`fkADag`), i.e. the number of
+subproblems a memoised FK-A solves.
+
+**Lemma 4.1.** For any `G` and vertex `x`, `Tr(G/x) = Tr(G) − x` and `min(Tr(G)/x) = Tr(G − x)`.
+Hence at a node `(C, Tr C)` split at `x`, the left child reduces to `(C − x, Tr(C − x))` and the
+right child to `(Tr Q, Q)` with `Q = C/x`.
+Lean: `tr_con_eq`, `minimal_con_tr`.
+
+**Lemma 4.2.** The split rule returns a vertex of largest positive degree sum; every subproblem of
+a pair supported on `V` is supported on `V`.
+Lean: `splitVar_spec`, `fkADag_within`.
+
+**Theorem 4.3** (C1). For the perfect matching on `v = 2m ≥ 4` points,
+`τ = 2^{v/2+1} − 3` and `δ = v`. For the threshold graph on `v = 2k ≥ 2` points,
+`τ = δ = v − 1`.
+Lean: `matching_tau_delta`, `threshold_tau_delta` (general); `matching_eight`, `threshold_twelve`
+(evaluation at `v = 8, 12`, agreeing with `fka.memo`).
+
+*Proof (matching).* Induct on the set `S` of remaining pairs, `|S| = k + 1`, whatever pair FK-A
+splits. Splitting at `x` in pair `i`: the left child is `M(S − i)`. The right child is
+`(Tr Q, Q)` with `Q = {{x̄}} ∪ M(S − i)`, where `x̄` is the mate of `x`. There `x̄` has the unique
+largest degree sum, since it lies in every transversal. Its left child is the leaf `(∅, {∅})` and
+its right child is `M(S − i)` again. So `τ(k+1) = 1 + τ(k) + (2 + τ(k))`, which gives
+`2^{k+2} − 3`. The new subproblems `(M(S), ·)` and `(Tr Q, Q)` use a vertex of pair `i`, so they
+are absent from the subproblems of `M(S − i)` (Lemma 4.2). The leaf `(∅, {∅})` recurs, so
+`δ(k+1) = δ(k) + 2`. *(Threshold.)* The top odd vertex `2k − 1` has the largest degree sum: it has
+the most edges, and only `{0, …, 2k − 2}` among the minimal transversals avoids it, while every
+other vertex is avoided by an explicit minimal transversal. The right child is that single-edge
+leaf and the left child is the threshold graph on `2k − 2` points. Each step adds two new
+subproblems. ∎
+
+`matching` thus separates the tree from the DAG exponentially. `threshold` has no repeated
+subproblem.

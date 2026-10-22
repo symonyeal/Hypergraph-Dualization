@@ -881,4 +881,417 @@ theorem matching_eight :
 
 end Matching
 
+/-! ### The threshold family -/
+
+section Threshold
+
+/-- `TH(2k)`, 0-indexed: the pairs `{i, j}` with `i < j < 2k` and `j` odd. -/
+def thr (k : ℕ) : HG n :=
+  (((univ : Finset (Fin n)) ×ˢ univ).filter fun p => p.1 < p.2 ∧ p.2.val % 2 = 1 ∧ p.2.val < 2 * k).image
+    fun p => {p.1, p.2}
+
+theorem mem_thr {k : ℕ} {e : Finset (Fin n)} :
+    e ∈ thr k ↔ ∃ i j : Fin n, i < j ∧ j.val % 2 = 1 ∧ j.val < 2 * k ∧ {i, j} = e := by
+  simp [thr, and_assoc]
+
+theorem pair_mem_thr {k : ℕ} {i j : Fin n} (hij : i < j) (hj : j.val % 2 = 1) (hk : j.val < 2 * k) :
+    {i, j} ∈ (thr k : HG n) := mem_thr.2 ⟨i, j, hij, hj, hk, rfl⟩
+
+/-- `T` meets every edge of `TH(2k)`. -/
+theorem hits_thr {k : ℕ} {T : Finset (Fin n)} :
+    Hits (thr k) T ↔ ∀ i j : Fin n, i < j → j.val % 2 = 1 → j.val < 2 * k → i ∈ T ∨ j ∈ T := by
+  constructor
+  · intro h i j hij hj hk
+    obtain ⟨z, hz⟩ := h _ (pair_mem_thr hij hj hk)
+    simp only [mem_inter, mem_insert, mem_singleton] at hz
+    rcases hz with ⟨hzT, rfl | rfl⟩
+    · exact Or.inl hzT
+    · exact Or.inr hzT
+  · intro h e he
+    obtain ⟨i, j, hij, hj, hk, rfl⟩ := mem_thr.1 he
+    rcases h i j hij hj hk with h | h
+    · exact ⟨i, mem_inter.2 ⟨h, mem_insert_self _ _⟩⟩
+    · exact ⟨j, mem_inter.2 ⟨h, mem_insert_of_mem (mem_singleton_self _)⟩⟩
+
+theorem thr_sperner (k : ℕ) : IsSperner (thr (n := n) k) := by
+  intro e he f hf hef
+  obtain ⟨i, j, hij, -, -, rfl⟩ := mem_thr.1 he
+  obtain ⟨i', j', hij', -, -, rfl⟩ := mem_thr.1 hf
+  exact eq_of_subset_of_card_le hef (by
+    rw [card_pair (ne_of_lt hij), card_pair (ne_of_lt hij')])
+
+/-- The vertex `2k − 1`. -/
+def topv (k : ℕ) (h : 2 * k ≤ n) (hk : 1 ≤ k) : Fin n := ⟨2 * k - 1, by omega⟩
+
+/-- The points below `2k − 1`. -/
+def low (k : ℕ) : Finset (Fin n) := univ.filter fun z => z.val < 2 * k - 1
+
+theorem del_thr {k : ℕ} (h : 2 * k ≤ n) (hk : 1 ≤ k) :
+    del (thr (n := n) k) (topv k h hk) = thr (k - 1) := by
+  ext e
+  simp only [del, mem_filter, mem_thr]
+  constructor
+  · rintro ⟨⟨i, j, hij, hj, hjk, rfl⟩, htop⟩
+    refine ⟨i, j, hij, hj, ?_, rfl⟩
+    have : j ≠ topv k h hk := fun h' => htop (h' ▸ mem_insert_of_mem (mem_singleton_self _))
+    rw [Ne, Fin.ext_iff] at this
+    simp only [topv] at this
+    omega
+  · rintro ⟨i, j, hij, hj, hjk, rfl⟩
+    refine ⟨⟨i, j, hij, hj, by omega, rfl⟩, fun h' => ?_⟩
+    simp only [mem_insert, mem_singleton, Fin.ext_iff, topv] at h'
+    have := Fin.lt_def.1 hij
+    omega
+
+/-- The only minimal transversal of `TH(2k)` avoiding `2k − 1` is `{0, …, 2k − 2}`. -/
+theorem del_tr_thr {k : ℕ} (h : 2 * k ≤ n) (hk : 1 ≤ k) :
+    del (tr univ (thr (n := n) k)) (topv k h hk) = {low k} := by
+  set t := topv k h hk
+  have ht : t.val = 2 * k - 1 := rfl
+  ext T
+  simp only [del, mem_filter, mem_singleton, mem_tr, subset_univ, true_and]
+  constructor
+  · rintro ⟨hT, htT⟩
+    ext z
+    simp only [low, mem_filter, mem_univ, true_and]
+    constructor
+    · intro hz
+      obtain ⟨e, he, hze⟩ := exists_edge_of_mem_tr (mem_tr.2 ⟨subset_univ _, hT⟩) hz
+      obtain ⟨i, j, hij, hj, hjk, rfl⟩ := mem_thr.1 he
+      have hzt : z ≠ t := fun h' => htT (h' ▸ hz)
+      rw [Ne, Fin.ext_iff] at hzt
+      have := Fin.lt_def.1 hij
+      simp only [mem_insert, mem_singleton] at hze
+      rcases hze with rfl | rfl <;> omega
+    · intro hz
+      have hzt : z < t := Fin.lt_def.2 (by omega)
+      rcases (hits_thr.1 hT.1) z t hzt (by omega) (by omega) with h' | h'
+      · exact h'
+      · exact absurd h' htT
+  · rintro rfl
+    refine ⟨⟨hits_thr.2 fun i j hij hj hjk => Or.inl ?_, fun v hv hhit => ?_⟩, ?_⟩
+    · simp only [low, mem_filter, mem_univ, true_and]
+      have := Fin.lt_def.1 hij
+      omega
+    · simp only [low, mem_filter, mem_univ, true_and] at hv
+      rcases (hits_thr.1 hhit) v t (Fin.lt_def.2 (by omega)) (by omega) (by omega) with h' | h'
+      · exact notMem_erase v _ h'
+      · simp only [mem_erase, low, mem_filter, mem_univ, true_and] at h'
+        omega
+    · simp [low, ht]
+
+/-- Every vertex `y ≠ 2k − 1` below `2k` is missed by some minimal transversal. -/
+theorem exists_tr_thr_not_mem {k : ℕ} {y : Fin n} (hy : y.val < 2 * k - 1) :
+    ∃ T ∈ tr univ (thr (n := n) k), y ∉ T := by
+  by_cases hodd : y.val % 2 = 1
+  · -- `{z < y} ∪ {odd z, y < z < 2k}`
+    refine ⟨univ.filter fun z => z.val < y.val ∨ (y.val < z.val ∧ z.val % 2 = 1 ∧ z.val < 2 * k),
+      mem_tr.2 ⟨subset_univ _, hits_thr.2 fun i j hij hj hjk => ?_, fun v hv hhit => ?_⟩, ?_⟩
+    · have := Fin.lt_def.1 hij
+      simp only [mem_filter, mem_univ, true_and]
+      rcases Nat.lt_trichotomy j.val y.val with h | h | h
+      · left; left; omega
+      · left; left; omega
+      · right; right; exact ⟨h, hj, hjk⟩
+    · simp only [mem_filter, mem_univ, true_and] at hv
+      rcases hv with hv | ⟨hvy, hv1, hvk⟩
+      · rcases (hits_thr.1 hhit) v y (Fin.lt_def.2 hv) hodd (by omega) with h' | h'
+        · exact notMem_erase v _ h'
+        · simp only [mem_erase, mem_filter, mem_univ, true_and] at h'
+          omega
+      · rcases (hits_thr.1 hhit) y v (Fin.lt_def.2 hvy) hv1 hvk with h' | h'
+        · simp only [mem_erase, mem_filter, mem_univ, true_and] at h'
+          omega
+        · exact notMem_erase v _ h'
+    · simp
+  · -- the odd points below `2k`
+    refine ⟨univ.filter fun z => z.val % 2 = 1 ∧ z.val < 2 * k,
+      mem_tr.2 ⟨subset_univ _, hits_thr.2 fun i j hij hj hjk => ?_, fun v hv hhit => ?_⟩, ?_⟩
+    · right; simp [hj, hjk]
+    · simp only [mem_filter, mem_univ, true_and] at hv
+      have hv0 : 0 < v.val := by omega
+      rcases (hits_thr.1 hhit) ⟨v.val - 1, by omega⟩ v (Fin.lt_def.2 (by simp; omega)) hv.1 hv.2
+        with h' | h'
+      · simp only [mem_erase, mem_filter, mem_univ, true_and] at h'
+        omega
+      · exact notMem_erase v _ h'
+    · simp [hodd]
+
+/-- The vertex `2k − 1` lies in strictly more edges than any other vertex (`k ≥ 2`). -/
+theorem degree_thr_lt {k : ℕ} (h : 2 * k ≤ n) (hk : 2 ≤ k) {y : Fin n}
+    (hy : y ≠ topv k h (by omega)) :
+    degree (thr (n := n) k) y < degree (thr k) (topv k h (by omega)) := by
+  set t := topv k h (by omega)
+  have ht : t.val = 2 * k - 1 := rfl
+  have hyt : y.val ≠ 2 * k - 1 := fun h' => hy (Fin.ext h')
+  let ι : Finset (Fin n) → Finset (Fin n) := fun e => if t ∈ e then e else insert t (e.erase y)
+  have hmaps : ∀ e ∈ (thr k).filter (y ∈ ·), ι e ∈ (thr (n := n) k).filter (t ∈ ·) := by
+    intro e he
+    rw [mem_filter] at he ⊢
+    obtain ⟨he1, hye⟩ := he
+    obtain ⟨i, j, hij, hj, hjk, rfl⟩ := mem_thr.1 he1
+    by_cases hte : t ∈ ({i, j} : Finset (Fin n))
+    · simp only [ι, if_pos hte]; exact ⟨pair_mem_thr hij hj hjk, hte⟩
+    · simp only [ι, if_neg hte]
+      have hlt := Fin.lt_def.1 hij
+      simp only [mem_insert, mem_singleton, Fin.ext_iff, ht] at hte
+      simp only [mem_insert, mem_singleton] at hye
+      rcases hye with rfl | rfl
+      · rw [erase_insert_eq_erase, erase_eq_of_notMem (by simp [Fin.ext_iff]; omega)]
+        refine ⟨?_, mem_insert_self _ _⟩
+        have : ({t, j} : Finset (Fin n)) = {j, t} := pair_comm _ _
+        rw [this]
+        exact pair_mem_thr (Fin.lt_def.2 (by omega)) (by omega) (by omega)
+      · rw [pair_comm, erase_insert_eq_erase, erase_eq_of_notMem (by simp [Fin.ext_iff]; omega)]
+        refine ⟨?_, mem_insert_self _ _⟩
+        rw [pair_comm]
+        exact pair_mem_thr (Fin.lt_def.2 (by omega)) (by omega) (by omega)
+  have hinj : Set.InjOn ι ((thr (n := n) k).filter (y ∈ ·)) := by
+    intro e he f hf hef
+    simp only [coe_filter, Set.mem_setOf_eq] at he hf
+    by_cases hte : t ∈ e <;> by_cases htf : t ∈ f <;> simp only [ι, hte, htf, if_true, if_false] at hef
+    · exact hef
+    · -- `e = {y, t}`, `ι f = {z, t}` with `z ≠ y`
+      exfalso
+      have : y ∈ insert t (f.erase y) := hef ▸ he.2
+      rcases mem_insert.1 this with h' | h'
+      · exact hy h'
+      · exact notMem_erase y f h'
+    · exfalso
+      have : y ∈ insert t (e.erase y) := hef.symm ▸ hf.2
+      rcases mem_insert.1 this with h' | h'
+      · exact hy h'
+      · exact notMem_erase y e h'
+    · -- both are `{y, z}` with `t ∉`
+      have he' : e = insert y (e.erase y) := (insert_erase he.2).symm
+      have hf' : f = insert y (f.erase y) := (insert_erase hf.2).symm
+      have : e.erase y = f.erase y := by
+        have h1 : (insert t (e.erase y)).erase t = e.erase y :=
+          erase_insert (fun h' => hte (mem_of_mem_erase h'))
+        have h2 : (insert t (f.erase y)).erase t = f.erase y :=
+          erase_insert (fun h' => htf (mem_of_mem_erase h'))
+        rw [← h1, ← h2, hef]
+      rw [he', hf', this]
+  -- an edge through `t` outside the image
+  have hmiss : ∃ g ∈ (thr (n := n) k).filter (t ∈ ·),
+      g ∉ ((thr k).filter (y ∈ ·)).image ι := by
+    by_cases hy2 : y.val = 2 * k - 2
+    · refine ⟨{⟨0, by omega⟩, t}, mem_filter.2 ⟨pair_mem_thr (Fin.lt_def.2 (by simp; omega))
+        (by omega) (by omega), mem_insert_of_mem (mem_singleton_self _)⟩, fun hg => ?_⟩
+      obtain ⟨e, he, hge⟩ := mem_image.1 hg
+      rw [mem_filter] at he
+      obtain ⟨he1, hye⟩ := he
+      obtain ⟨i, j, hij, hj, hjk, rfl⟩ := mem_thr.1 he1
+      have hlt := Fin.lt_def.1 hij
+      simp only [mem_insert, mem_singleton, Fin.ext_iff] at hye
+      -- `y = 2k − 2` is even, so it is `i` and `j = 2k − 1 = t`
+      have hjt : j = t := Fin.ext (by rw [ht]; omega)
+      subst hjt
+      have hι : ι {i, t} = {i, t} := if_pos (mem_insert_of_mem (mem_singleton_self t))
+      rw [hι] at hge
+      have : (⟨0, by omega⟩ : Fin n) ∈ ({i, t} : Finset (Fin n)) := hge ▸ mem_insert_self _ _
+      simp only [mem_insert, mem_singleton, Fin.ext_iff] at this
+      omega
+    · refine ⟨{⟨2 * k - 2, by omega⟩, t}, mem_filter.2 ⟨pair_mem_thr (Fin.lt_def.2 (by simp; omega))
+        (by omega) (by omega), mem_insert_of_mem (mem_singleton_self _)⟩, fun hg => ?_⟩
+      obtain ⟨e, he, hge⟩ := mem_image.1 hg
+      rw [mem_filter] at he
+      obtain ⟨he1, hye⟩ := he
+      obtain ⟨i, j, hij, hj, hjk, rfl⟩ := mem_thr.1 he1
+      have hlt := Fin.lt_def.1 hij
+      have hw : (⟨2 * k - 2, by omega⟩ : Fin n) ∈ ι {i, j} := hge ▸ mem_insert_self _ _
+      simp only [ι] at hw
+      split_ifs at hw with hte
+      · simp only [mem_insert, mem_singleton, Fin.ext_iff] at hw hte hye
+        omega
+      · simp only [mem_insert, mem_erase, mem_singleton, Fin.ext_iff] at hw hte hye
+        omega
+  obtain ⟨g, hg, hgn⟩ := hmiss
+  calc degree (thr k) y = (((thr k).filter (y ∈ ·)).image ι).card := (card_image_of_injOn hinj).symm
+    _ < ((thr (n := n) k).filter (t ∈ ·)).card :=
+      card_lt_card ⟨fun z hz => by
+        obtain ⟨e, he, rfl⟩ := mem_image.1 hz; exact hmaps e he, fun h' => hgn (h' hg)⟩
+
+end Threshold
+
+section Threshold
+
+theorem thr_within (k : ℕ) : Within (univ.filter fun z : Fin n => z.val < 2 * k) (thr k) := by
+  intro e he z hz
+  obtain ⟨i, j, hij, -, hjk, rfl⟩ := mem_thr.1 he
+  have := Fin.lt_def.1 hij
+  simp only [mem_insert, mem_singleton] at hz
+  simp only [mem_filter, mem_univ, true_and]
+  rcases hz with rfl | rfl <;> omega
+
+theorem tr_thr_within (k : ℕ) :
+    Within (univ.filter fun z : Fin n => z.val < 2 * k) (tr univ (thr k)) := by
+  intro T hT z hz
+  obtain ⟨e, he, hze⟩ := exists_edge_of_mem_tr hT hz
+  exact thr_within k e he hze
+
+/-- **Theorem C1 (threshold).** For `1 ≤ k` and `2k ≤ n`, with fuel at least `k`, modified FK-A on
+`(TH(2k), Tr TH(2k))` has `2k − 1` nodes, all distinct: `τ = δ = 2k − 1`. -/
+theorem threshold_law : ∀ (k : ℕ), 1 ≤ k → 2 * k ≤ n → ∀ fuel, k ≤ fuel →
+    (fkA fuel true (thr (n := n) k) (tr univ (thr k))).2 = 2 * k - 1 ∧
+      (fkADag fuel true (thr (n := n) k) (tr univ (thr k))).card = 2 * k - 1 ∧
+      fkADag fuel true (thr (n := n) k) (tr univ (thr k)) =
+        fkADag k true (thr (n := n) k) (tr univ (thr k))
+  | 0, hk, _, _, _ => absurd hk (by norm_num)
+  | 1, _, hn, fuel, _ => by
+    have h1 : (thr (n := n) 1).card = 1 := by
+      rw [card_eq_one]
+      refine ⟨{⟨0, by omega⟩, ⟨1, by omega⟩}, eq_singleton_iff_unique_mem.2
+        ⟨pair_mem_thr (Fin.lt_def.2 (by simp)) (by simp) (by simp), fun e he => ?_⟩⟩
+      obtain ⟨i, j, hij, hj, hjk, rfl⟩ := mem_thr.1 he
+      have := Fin.lt_def.1 hij
+      have hj1 : j = ⟨1, by omega⟩ := Fin.ext (by simp; omega)
+      have hi0 : i = ⟨0, by omega⟩ := Fin.ext (by simp; omega)
+      rw [hi0, hj1]
+    obtain ⟨a, b⟩ := fkA_single (fuel := fuel) (thr_sperner 1) (tr_isSperner _ _) (dual_tr _) h1
+    obtain ⟨-, b'⟩ := fkA_single (fuel := 1) (thr_sperner (n := n) 1) (tr_isSperner _ _)
+      (dual_tr _) h1
+    exact ⟨by rw [a], by rw [b, card_singleton], by rw [b, b']⟩
+  | k + 2, _, hn, fuel, hf => by
+    set C := thr (n := n) (k + 2) with hCdef
+    set t := topv (n := n) (k + 2) hn (by omega)
+    have ht : t.val = 2 * k + 3 := by simp [t, topv]; omega
+    have sC := thr_sperner (n := n) (k + 2)
+    have hd := dual_tr C
+    have h0t : ({⟨0, by omega⟩, t} : Finset (Fin n)) ∈ C :=
+      pair_mem_thr (Fin.lt_def.2 (by simp; omega)) (by omega) (by omega)
+    have h1t : ({⟨1, by omega⟩, t} : Finset (Fin n)) ∈ C :=
+      pair_mem_thr (Fin.lt_def.2 (by simp; omega)) (by omega) (by omega)
+    have hCc : 2 ≤ C.card := one_lt_card.2 ⟨_, h0t, _, h1t, fun h => by
+      have : (⟨0, by omega⟩ : Fin n) ∈ ({⟨1, by omega⟩, t} : Finset (Fin n)) := h ▸ mem_insert_self _ _
+      simp only [mem_insert, mem_singleton, Fin.ext_iff] at this
+      omega⟩
+    have hdel := del_tr_thr (n := n) (k := k + 2) hn (by omega)
+    have hlow : low (n := n) (k + 2) ∈ tr univ C := by
+      have : low (n := n) (k + 2) ∈ del (tr univ C) t := by rw [hdel]; exact mem_singleton_self _
+      exact (mem_filter.1 this).1
+    obtain ⟨T0, hT0, h0T0⟩ := exists_tr_thr_not_mem (n := n) (k := k + 2) (y := ⟨0, by omega⟩)
+      (by simp; omega)
+    have hDc : 2 ≤ (tr univ C).card := one_lt_card.2 ⟨_, hlow, T0, hT0, fun h => h0T0 (by
+      rw [← h]; simp [low]; omega)⟩
+    -- the split vertex is `t`
+    have hdegt : (tr univ C).card - 1 ≤ degree (tr univ C) t := by
+      have := card_filter_add_card_filter_not (s := tr univ C) (fun T => t ∈ T)
+      have h2 : ((tr univ C).filter fun T => ¬ t ∈ T).card = 1 := by
+        rw [show ((tr univ C).filter fun T => ¬ t ∈ T) = del (tr univ C) t from rfl, hdel,
+          card_singleton]
+      unfold degree; omega
+    have hkey : ∀ y, y ≠ t → key C (tr univ C) y < key C (tr univ C) t := by
+      intro y hyt
+      by_cases hy : y.val < 2 * (k + 2) - 1
+      · have h1 : degree C y < degree C t := degree_thr_lt (n := n) (k := k + 2) hn (by omega) hyt
+        obtain ⟨T, hT, hyT⟩ := exists_tr_thr_not_mem (n := n) (k := k + 2) hy
+        have h2 : degree (tr univ C) y < (tr univ C).card :=
+          card_lt_card ⟨filter_subset _ _, fun h' => hyT (mem_filter.1 (h' hT)).2⟩
+        unfold key; omega
+      · have hy' : 2 * k + 4 ≤ y.val := by
+          rcases Nat.lt_or_ge y.val (2 * k + 4) with h' | h'
+          · exact absurd (Fin.ext (by omega)) hyt
+          · exact h'
+        have h1 : degree C y = 0 := by
+          rw [degree, card_eq_zero, filter_eq_empty_iff]
+          intro e he hye
+          have := thr_within (k + 2) e he hye
+          simp only [mem_filter, mem_univ, true_and] at this
+          omega
+        have h2 : degree (tr univ C) y = 0 := by
+          rw [degree, card_eq_zero, filter_eq_empty_iff]
+          intro T hT hyT
+          have := tr_thr_within (n := n) (k + 2) T hT hyT
+          simp only [mem_filter, mem_univ, true_and] at this
+          omega
+        have h3 : 0 < degree C t := degree_pos_iff.2 ⟨_, h0t, mem_insert_of_mem (mem_singleton_self _)⟩
+        unfold key; omega
+    obtain ⟨x, hx, -, hmax⟩ := splitVar_spec C (tr univ C) (y₀ := t)
+      (by have := degree_pos_iff.2 ⟨_, h0t, mem_insert_of_mem (mem_singleton_self t)⟩
+          unfold key; omega)
+    have hxt : x = t := by
+      by_contra h
+      have := hkey x h
+      have := hmax t
+      omega
+    rw [hxt] at hx
+    -- the two children
+    have hLeq : ∀ g, fkA g true (del C t) (con (tr univ C) t) =
+        fkA g true (thr (n := n) (k + 1)) (tr univ (thr (k + 1))) := fun g => by
+      rw [← fkA_minimal, minimal_con_tr (within_univ C) (mem_univ t), hCdef, del_thr,
+        minimal_eq_self (thr_sperner _)]
+      rfl
+    have hLeqD : ∀ g, fkADag g true (del C t) (con (tr univ C) t) =
+        fkADag g true (thr (n := n) (k + 1)) (tr univ (thr (k + 1))) := fun g => by
+      rw [← fkADag_minimal, minimal_con_tr (within_univ C) (mem_univ t), hCdef, del_thr,
+        minimal_eq_self (thr_sperner _)]
+      rfl
+    have hRd : Dual univ (minimal (del (tr univ C) t)) (minimal (con C t)) :=
+      dual_minimal.2 (dual_children hd t).2
+    have hRC : minimal (del (tr univ C) t) = {low (k + 2)} := by
+      rw [hdel, minimal_eq_self (fun e he f hf _ => by rw [mem_singleton.1 he, mem_singleton.1 hf])]
+    have hR := fun g => fkA_single (fuel := g) (minimal_isSperner _) (minimal_isSperner _) hRd
+      (by rw [hRC, card_singleton])
+    have hRcount : ∀ g, (fkA g true (del (tr univ C) t) (con C t)).2 = 1 := fun g => by
+      rw [← fkA_minimal]; exact (hR g).1
+    have hRdag : ∀ g, fkADag g true (del (tr univ C) t) (con C t) =
+        {({low (k + 2)}, minimal (con C t))} := fun g => by
+      rw [← fkADag_minimal, (hR g).2, hRC]
+    set D' := fkADag (k + 1) true (thr (n := n) (k + 1)) (tr univ (thr (k + 1)))
+    have hform : ∀ fuel', k + 2 ≤ fuel' → fkADag fuel' true C (tr univ C) =
+        insert (C, tr univ C) (insert ({low (k + 2)}, minimal (con C t)) D') := by
+      intro fuel' hf'
+      obtain ⟨g, rfl⟩ : ∃ g, fuel' = g + 1 := ⟨fuel' - 1, by omega⟩
+      rw [fkADag_split sC (tr_isSperner _ _) hd hCc hDc hx, hLeqD, hRdag,
+        (threshold_law (k + 1) (by omega) (by omega) g (by omega)).2.2]
+      ext p
+      simp only [mem_insert, mem_union, mem_singleton]
+      tauto
+    have hD'w : ∀ p ∈ D', Within (univ.filter fun z : Fin n => z.val < 2 * (k + 1)) p.1 :=
+      fun p hp => (fkADag_within _ _ _ _ (thr_within (k + 1)) (tr_thr_within (k + 1)) p hp).1
+    have hroot : (C, tr univ C) ∉ insert ({low (k + 2)}, minimal (con C t)) D' := by
+      simp only [mem_insert, not_or]
+      refine ⟨fun h => ?_, fun h => ?_⟩
+      · have h1 : C = {low (k + 2)} := congrArg Prod.fst h
+        have := h1 ▸ h0t
+        have hxl : t ∈ low (n := n) (k + 2) :=
+          mem_singleton.1 this ▸ mem_insert_of_mem (mem_singleton_self t)
+        simp [low, ht] at hxl
+        omega
+      · have := hD'w _ h _ h0t (mem_insert_of_mem (mem_singleton_self t))
+        simp only [mem_filter, mem_univ, true_and] at this
+        omega
+    have hRn : ({low (k + 2)}, minimal (con C t)) ∉ D' := by
+      intro h
+      have hw : (⟨2 * k + 2, by omega⟩ : Fin n) ∈ low (n := n) (k + 2) := by simp [low]; omega
+      have := hD'w _ h (low (k + 2)) (mem_singleton_self _) hw
+      simp only [mem_filter, mem_univ, true_and] at this
+      omega
+    obtain ⟨f, rfl⟩ : ∃ f, fuel = f + 1 := ⟨fuel - 1, by omega⟩
+    have ih := threshold_law (k + 1) (by omega) (by omega) f (by omega)
+    have ihD := threshold_law (k + 1) (by omega) (by omega) (k + 1) le_rfl
+    refine ⟨?_, ?_, ?_⟩
+    · rw [fkA_split sC (tr_isSperner _ _) hd hCc hDc hx, hLeq, hRcount, ih.1]
+      omega
+    · rw [hform _ (by omega), card_insert_of_notMem hroot, card_insert_of_notMem hRn, ihD.2.1]
+      omega
+    · rw [hform _ (by omega), hform _ (by omega)]
+
+/-- **Theorem C1 (threshold(v)).** For the threshold graph on `v = 2k` points, `k ≥ 1`,
+`τ = δ = v − 1`. -/
+theorem threshold_tau_delta (k : ℕ) (hk : 1 ≤ k) :
+    (runFKA true (thr (n := 2 * k) k) (tr univ (thr k))).2 = 2 * k - 1 ∧
+      (fkADag (2 * k + 1) true (thr (n := 2 * k) k) (tr univ (thr k))).card = 2 * k - 1 :=
+  let h := threshold_law k hk le_rfl (2 * k + 1) (by omega)
+  ⟨h.1, h.2.1⟩
+
+/-- The law checked by evaluation against `fka.memo` on `threshold(12)`: `τ = δ = 11`. -/
+theorem threshold_twelve :
+    (runFKA true (thr (n := 12) 6) (tr univ (thr 6))).2 = 11 ∧
+      (fkADag 13 true (thr (n := 12) 6) (tr univ (thr 6))).card = 11 := by
+  native_decide
+
+end Threshold
+
 end HD

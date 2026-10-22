@@ -137,4 +137,5 @@ each is written up in [`docs/research-2026-10.md`](../docs/research-2026-10.md).
 | `PG(2,4)` and `S(4,7,23)` are intersecting Steiner systems with a 2-colouring, so not self-transversal | Checked | `pg24_steiner`, `pg24_tr_ne`, `s4723_steiner`, `s4723_tr_ne` |
 | Theorem B: `s·ε ≥ 1` and `s ≤ nε` for the smallest edge size `s`; hence `nε² ≥ 1` | Proved | `eps_bound`, `eps_sq` |
 | `ε(8) = 2/5` | Open: `3/8 ≤ ε(8) ≤ 2/5` proved; CP-SAT finds no pair below `2/5` (`experiments/eps_search.py`) | `eps_bound`, `eightVer_eps` |
+| Theorem C1: `matching(v)` has `τ = 2^{v/2+1} − 3`, `δ = v`; `threshold(v)` has `τ = δ = v − 1` (modified FK-A, every even `v`) | Proved | `matching_tau_delta`, `threshold_tau_delta` |
 | Theorem A5c: every Steiner system `S(t, t+1, 2t+3)` is self-transversal, and `t` is even | Proved | `witt_tr_eq` |

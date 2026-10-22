@@ -50,6 +50,7 @@ same cache from Mathlib's Azure storage account.
 | `Steiner` | Steiner systems: blocks disjoint from a block, `n₀` (A5a–b); every `S(t, t+1, 2t+3)` is self-transversal (A5c) |
 | `SteinerData`, `SteinerInstances` | `PG(2,4)` and `S(4,7,23)`: Steiner, intersecting, 2-colourable |
 | `EpsSeven` | `s·ε ≥ 1`, `s ≤ nε` for the smallest edge size `s`; `ε(7) = 3/7` (Observation 5.2.3), `ε(5) = ε(6) = 1/2`, `ε(9) = 1/3` |
+| `Dag` | FK-A's distinct subproblems (`fkADag`); `Tr(G/x) = Tr(G) − x`; `τ` and `δ` of `matching(v)` and `threshold(v)` for every `v` (C1) |
 | `Primitive` | read-once hypergraphs with a primitive automorphism group have `Aut = Sₙ` (A7); `w11` and Fano are not read-once |
 
 ## Trust base
