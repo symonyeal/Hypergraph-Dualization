@@ -120,10 +120,10 @@ theorem card_supersets {e : Finset α} (he : e ⊆ U) :
 
 /-- **Proposition 2.2.4**, scaled by `2^|U|`:
 `∑_{e ∈ G} 2^(|U|-|e|) + ∑_{f ∈ H} 2^(|U|-|f|) ≥ 2^|U|`. -/
-theorem kraft_sum (hG : Within U G) (sG : IsSperner G) (hH : H = tr U G) :
+theorem kraft_sum (hG : Within U G) (hH : H = tr U G) :
     2 ^ U.card ≤ ∑ e ∈ G, 2 ^ (U.card - e.card) + ∑ f ∈ H, 2 ^ (U.card - f.card) := by
   have hHw : Within U H := hH ▸ tr_within U G
-  have hdual : Dual U H G := (eq_tr_iff_partition hG hHw sG (hH ▸ tr_isSperner U G)).1 hH
+  have hdual : Dual U H G := (eq_tr_iff_partition hG hHw (hH ▸ tr_isSperner U G)).1 hH
   rw [dual_iff] at hdual
   -- Every `A ⊆ U` contains an edge of `H`, or its complement contains an edge of `G`.
   have cover : U.powerset ⊆ G.biUnion (fun e => U.powerset.filter (fun A => e ⊆ U \ A))
@@ -164,10 +164,10 @@ theorem kraft_sum (hG : Within U G) (sG : IsSperner G) (hH : H = tr U G) :
 
 /-- **Corollary 2.3.1, corrected.** If every edge of a transversal pair has at least `s`
 vertices, then `2^s ≤ |G| + |H|`; the shortest edge has at most `log₂ (|G|+|H|)` vertices. -/
-theorem two_pow_shortest_le (hG : Within U G) (sG : IsSperner G) (hH : H = tr U G) (s : ℕ)
+theorem two_pow_shortest_le (hG : Within U G) (hH : H = tr U G) (s : ℕ)
     (hs : ∀ e ∈ G ∪ H, s ≤ e.card) : 2 ^ s ≤ G.card + H.card := by
   have hHw : Within U H := hH ▸ tr_within U G
-  have hk := kraft_sum hG sG hH
+  have hk := kraft_sum hG hH
   by_cases hsU : s ≤ U.card
   · have bound : ∀ X : Finset (Finset α), Within U X → (∀ e ∈ X, s ≤ e.card) →
         ∑ e ∈ X, 2 ^ (U.card - e.card) ≤ X.card * 2 ^ (U.card - s) := by
@@ -205,7 +205,7 @@ theorem exists_frequent_vertex (hG : Within U G) (sG : IsSperner G) (hH : H = tr
   have hG' : G = tr U H := (eq_tr_comm hG hHw sG (hH ▸ tr_isSperner U G)).1 hH
   -- A shortest edge of `G ∪ H`.
   obtain ⟨e, he, hmin⟩ := (G ∪ H).exists_min_image card (hGne.mono subset_union_left)
-  have hs := two_pow_shortest_le hG sG hH e.card hmin
+  have hs := two_pow_shortest_le hG hH e.card hmin
   have meet := edges_meet hH
   -- Every edge on the other side meets `e`, so the degrees over `e` sum to at least that
   -- side's size, and one of the `|e|` summands carries a `1/|e|` share.

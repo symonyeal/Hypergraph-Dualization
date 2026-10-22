@@ -295,17 +295,4 @@ theorem path_four_not_extremal :
 theorem fano_crossExcess : crossExcess fanoC fanoC = 14 := by
   decide +kernel
 
-#print axioms crossExcess_bound
-#print axioms eps_crossExcess
-#print axioms eps_eq_cross_singleton
-#print axioms eps_eq_rigid
-#print axioms eps_badCross
-#print axioms eps_self_diagonal
-#print axioms eps_self_strict
-#print axioms eps_strict_of_nonsquare
-#print axioms eps_eq_sperner
-#print axioms uniform_regular_cross_singleton
-#print axioms path_four_not_extremal
-#print axioms fano_crossExcess
-
 end HD.S32

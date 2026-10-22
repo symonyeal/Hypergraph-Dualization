@@ -96,7 +96,7 @@ theorem ryser_extremal_size {H : Finset (Finset V)} {r : ℕ} (hu : ∀ e ∈ H,
   have h0 : ∅ ∉ H := fun h => by have := hu ∅ h; simp at this; omega
   have sH : IsSperner H := fun e he f hf hef =>
     eq_of_subset_of_card_le hef (by rw [hu e he, hu f hf])
-  refine two_pow_shortest_le (fun _ _ => subset_univ _) sH rfl r fun e he => ?_
+  refine two_pow_shortest_le (fun _ _ => subset_univ _) rfl r fun e he => ?_
   rcases mem_union.1 he with he | he
   · exact (hu e he).ge
   · exact hτ ▸ (coverNumber_eq_tr_min h0).2 e he

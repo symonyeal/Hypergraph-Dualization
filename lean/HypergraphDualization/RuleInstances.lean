@@ -45,8 +45,4 @@ theorem ro12_rules :
       (fkADagR guardRule 13 true ro12 ro12d).card = 91 := by
   native_decide
 
-#print axioms gk2_ordered
-#print axioms gk2_rules
-#print axioms ro12_rules
-
 end HD

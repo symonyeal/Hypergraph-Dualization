@@ -28,21 +28,21 @@ possible it also gives a concrete example on which the printed version fails.
 | --- | --- | --- |
 | Prop. 1.1.5, `Tr(H) = Tr(min H)` | Proved | `tr_minimal` |
 | `Tr(H)` is Sperner (Def. 1.1.4) | Proved | `tr_isSperner` |
-| §1.1.1, complements of maximal independent sets are the minimal transversals | Proved | `isMinHit_compl_iff` |
+| §1.1.1, complements of maximal independent sets are the minimal transversals | Proved, generalised: no hypothesis `I ⊆ U` | `isMinHit_compl_iff` |
 | §1.1.2, `Tr(H)` is the CNF of the function whose DNF is `H` | Proved | `hits_tr_iff` |
 
 ## Chapter 2
 
 | Statement | Status | Lean |
 | --- | --- | --- |
-| Lemma 2.1.1, partition criterion | Proved | `eq_tr_iff_partition` |
+| Lemma 2.1.1, partition criterion | Proved, generalised: `G` need not be Sperner | `eq_tr_iff_partition` |
 | Cor. 2.1.2, `H = Tr G ⟺ G = Tr H` | Proved | `eq_tr_comm` |
 | Cor. 2.1.3, `Tr(Tr H) = H` | Proved; for non-Sperner `H` the value is `min(H)` | `tr_tr_of_sperner`, `tr_tr` |
-| Props. 2.2.1–2.2.4, conditions (i)–(iv) | Proved | `edges_meet`, `support_eq`, `card_le_card_tr`, `kraft_sum` |
-| Cor. 2.3.1, `s ≥ log n` | **Corrected**: the inequality is reversed, `2^s ≤ n`, i.e. `s ≤ log₂ n` | `two_pow_shortest_le`; counterexample `k3_refutes_printed_cor_2_3_1` |
+| Props. 2.2.1–2.2.4, conditions (i)–(iv) | Proved; (iv) generalised: `G` need not be Sperner | `edges_meet`, `support_eq`, `card_le_card_tr`, `kraft_sum` |
+| Cor. 2.3.1, `s ≥ log n` | **Corrected**: the inequality is reversed, `2^s ≤ n`, i.e. `s ≤ log₂ n`; `G` need not be Sperner | `two_pow_shortest_le`; counterexample `k3_refutes_printed_cor_2_3_1` |
 | Lemma 2.3.2, a vertex of frequency `≥ 1/log n` | Proved (as `≥ 1/s` with `2^s ≤ n`) | `exists_frequent_vertex` |
-| §2.2.2, `(G, H)` dual iff both FK-A subproblems are | Proved | `dual_split` |
-| Algorithm 1 decides `Trans-Hyp` | Proved for every input and both leaf rules | `fkA_correct`, `conds_of_dual` |
+| §2.2.2, `(G, H)` dual iff both FK-A subproblems are | Proved, generalised: `G`, `H` need not lie in `U` | `dual_split` |
+| Algorithm 1 decides `Trans-Hyp` | Proved for every input, both leaf rules and every split rule | `fkAR_correct`, `fkA_correct`, `conds_of_dual` |
 
 ## Chapter 3
 
@@ -106,8 +106,8 @@ possible it also gives a concrete example on which the printed version fails.
 | Hypergraph and graph property labels of the eight automorphism trees (conformal, α-acyclic, read-once, chordal, split, bipartite, cograph, perfect), and §5.2.2's "6-B, 6-C, 6-D are read-once and α-acyclic" | Computed: in the revised edition every group label has the computed order and every property label holds for `C` or `D` on the vertices present (`python thesis/tools/check_tree_labels.py revised`, exit 0 on 2026-10-21); the 2024 labels fail at the six nodes corrected above | — |
 | §5.2.2, frequencies `ε` | Checked | `*_eps`, `eightVer_uniform` |
 | Observation 5.2.2, a false twin of the split vertex leaves the contraction | Proved (general lemma) and checked on `f₂, g₂` | `falseTwin_filtered`, `f2g2_false_twin_filtered` |
-| Observation 5.2.3, `ε(3) = 2/3` | Proved by exhaustion; `K₃` is the unique minimiser | `eps_three` |
-| Observation 5.2.3, `ε(7) = 3/7` | Proved (2026-10): every non-trivial pair on `n` points has `s·ε ≥ 1` and `s ≤ nε` for its smallest edge size `s`, which forces `ε ≥ 3/7` on seven points; Fano attains it. Also `ε(4) = ε(5) = ε(6) = 1/2`, `ε(9) = 1/3` | `eps_seven`, `eps_bound`, `eps_four`, `eps_five`, `eps_six`, `eps_nine` |
+| Observation 5.2.3, `ε(3) = 2/3` | Checked (exhaustion by evaluation); `K₃` is the unique minimiser | `eps_three` |
+| Observation 5.2.3, `ε(7) = 3/7` | Lower bound Proved (2026-10): every non-trivial pair on `n` points has `s·ε ≥ 1` and `s ≤ nε` for its smallest edge size `s`, which forces `ε ≥ 3/7` on seven points. Attainment Checked: Fano. Also `ε(4) = ε(5) = ε(6) = 1/2`, `ε(9) = 1/3` (bounds Proved, attainment Checked) | `eps_bound` (Proved); `eps_seven`, `eps_four`, `eps_five`, `eps_six`, `eps_nine` (Checked) |
 | §5.2.2, Fano and `K₃` are self-transversal; `PG(2,3)` is not | Checked | `fano_self_tr`, `k3_self_tr`, `pg23_not_self_dual` |
 | Def. 5.2.1, `7k` edges and the transversal count `(k−2)²/4 + k/2 + 1` | **Corrected**: `k` disjoint Fano planes have `7k` edges and `7^k` minimal transversals, for every `k` | `kFano_card`, `tr_kFano_card`, `two_fano_tr_card` |
 
@@ -115,7 +115,8 @@ possible it also gives a concrete example on which the printed version fails.
 
 General theorems depend only on `propext`, `Classical.choice` and `Quot.sound`. Statements marked
 *Checked* are evaluations proved with `native_decide`, which adds the Lean compiler to the trust
-base; a kernel-only (`decide +kernel`) run was tried on 2026-10-21 and is practical only for the
+base. `lean/HypergraphDualization/Axioms.lean` makes `lake build` fail if either class is
+mislabelled; a kernel-only (`decide +kernel`) run was tried on 2026-10-21 and is practical only for the
 smallest instances. `lake build` reproduces everything; see [`lean/README.md`](../lean/README.md).
 
 ## Research beyond the thesis (2026-10)
@@ -126,12 +127,12 @@ New statements of the October 2026 research program, each written up in
 | Statement | Status | Lean |
 | --- | --- | --- |
 | Observation A1: `w11` is a Steiner system `S(4,5,11)`, self-transversal; distinct blocks meet in 1, 2 or 3 points (495, 660, 990 pairs) | Checked | `w11_steiner`, `w11_self_tr`, `w11_meet` |
-| Theorem A2: `|Aut(w11)| = 7920`, sharply 4-transitive, primitive | Proved (finite checks by `native_decide`) | `card_aut_w11`, `w11_four_transitive`, `w11_four_free`, `w11_preprimitive` |
+| Observation A2: `|Aut(w11)| = 7920`, sharply 4-transitive, primitive | Checked (the finite checks use `native_decide`) | `card_aut_w11`, `w11_four_transitive`, `w11_four_free`, `w11_preprimitive` |
 | Proposition A3: for Sperner `H` inside `U`, `Tr(H) = H` iff `H` is intersecting, `∅ ∉ H` and `H` is not 2-colourable; the Sperner hypothesis is needed | Proved | `tr_eq_self_iff`, `tr_eq_self_iff_needs_sperner` |
 | Theorem A4: intersecting, `r`-uniform, `d`-regular on `t` points gives `d(r² − t) ≥ r(r − 1)`, equality iff distinct edges meet in one point | Proved | `intersecting_regular_bound` |
 | Lemma: a relation preserved by a primitive action is connected or relates only equal points | Proved | `connected_or_trivial` |
 | Proposition A7: a read-once hypergraph on `n ≥ 2` points with primitive `Aut(H)` has `Aut(H) = Sₙ` | Proved | `aut_eq_top_of_readOnce` |
-| `w11` and the Fano plane are not read-once | Proved (`w11` via A2's finite checks; Fano by kernel `decide`) | `w11_not_readOnce`, `fano_not_readOnce` |
+| `w11` and the Fano plane are not read-once | `w11`: Checked (through A2); Fano: Proved (kernel `decide`) | `w11_not_readOnce`, `fano_not_readOnce` |
 | Theorem A5a: in `S(t,k,v)`, `1 ≤ t ≤ k`, every block is disjoint from exactly `n₀(t,k,v) = Σ_{i<t} (−1)^i C(k,i)(λ_i − 1)` blocks; hence `n₀ ≥ 0` for every existing system | Proved | `steiner_disjoint`, `steiner_n0_nonneg` |
 | Observation A5b: `n₀` for 19 parameter sets; no `S(t,k,v)` with `n₀ > 0` (nine sets, including every `S(2,3,15)`, `S(3,4,16)`, `S(5,8,24)`) is self-transversal; none with `n₀ < 0` (ten sets) exists | Proved (kernel `decide`) | `n0_table`, `steiner_tr_ne_of_table`, `not_steiner_of_table` |
 | `PG(2,4)` and `S(4,7,23)` are intersecting Steiner systems with a 2-colouring, so not self-transversal | Checked | `pg24_steiner`, `pg24_tr_ne`, `s4723_steiner`, `s4723_tr_ne` |
@@ -140,11 +141,11 @@ New statements of the October 2026 research program, each written up in
 | B5: equality forces `n=m²`, both families `m`-uniform and regular with frequency `1/m`, Sperner, every cross intersection singleton; nonsquares have strict inequality | Proved (kernel) | `eps_eq_rigid`, `eps_eq_sperner`, `eps_eq_cross_singleton`, `eps_strict_of_nonsquare` |
 | Equality transversal pairs are read-once; so are regular convergent templates for every `r` | Cited consequence of B5 and Gurvich (Das–Straßburger 2016, Thm 4.10); bridge not formalised | — |
 | B6: self-transversal `G` satisfies `|G|² + Σ_g (|g|−1) ≤ nε²|G|²`; `n>1` implies `nε²>1` | Proved (kernel) | `eps_self_diagonal`, `eps_self_strict` |
-| Both sides 2-uniform on four points need not attain the frequency bound; Fano has cross excess 14 | Checked (kernel `decide +kernel`) | `path_four_not_extremal`, `fano_crossExcess` |
+| Both sides 2-uniform on four points need not attain the frequency bound; Fano has cross excess 14 | Proved (finite, kernel `decide +kernel`) | `path_four_not_extremal`, `fano_crossExcess` |
 | `n ≤ m(m+1)`, `m>0` implies `ε ≥ 1/m`; shared proof for `ε(5),ε(6)` | Proved (kernel) | `eps_ge_inv` |
 | B7: two `r`-uniform cross-intersecting families on `r²` points have singleton cross intersections if either side is regular | Proved (kernel); a non-read-once D3 candidate must have both sides irregular by cited Gurvich | `uniform_regular_cross_singleton` |
 | `ε(8) = 2/5` | Open: `3/8 ≤ ε(8) ≤ 2/5` proved; CP-SAT finds no pair below `2/5` (`experiments/eps_search.py`) | `eps_bound`, `eightVer_eps` |
-| Theorem C1: `matching(v)` has `τ = 2^{v/2+1} − 3`, `δ = v`; `threshold(v)` has `τ = δ = v − 1` (modified FK-A, every even `v`) | Proved | `matching_tau_delta`, `threshold_tau_delta` |
+| Theorem C1: `matching(v)` has `τ = 2^{v/2+1} − 3`, `δ = v` (even `v ≥ 4`); `threshold(v)` has `τ = δ = v − 1` (even `v ≥ 2`); modified FK-A | Proved | `matching_tau_delta`, `threshold_tau_delta` |
 | Theorem A5c: every Steiner system `S(t, t+1, 2t+3)` is self-transversal, and `t` is even | Proved | `witt_tr_eq` |
 | Theorem (Seymour 1974): a 3-critical hypergraph covering `n` points has at least `n` edges | Proved | `card_le_of_critical` |
 | A self-transversal Sperner hypergraph covering `n` points has `|H| ≥ n` (equality for `K₃`, Fano) | Proved | `card_le_of_tr_eq_self`, `erase_twoColourable` |
@@ -153,23 +154,24 @@ New statements of the October 2026 research program, each written up in
 | Hertel's alternating-tree bound (cited in Chapter 4) is a lower bound on DPLL trees, not an upper bound on subproblems | Corrected citation (revised edition, Chapter 4) | — |
 | Observation 4.4: FK-A's degree-sum rule exceeds Hertel's memoised `2k + 3` on GK `f₃` (`δ = 369 > 65`) | Computed (`experiments/readonce_sim.py`) | — |
 | Conjecture 4.5: `δ ≤ 2N` on read-once pairs under FK-A's rule | **Refuted**: the read-once `ro12` on 12 points has `δ = 43 > 2N = 42` (evaluation); GK `f₄` has `δ/N = 1368` (Rust) | `ro12_readOnce`, `ro12_delta` |
-| Theorem 4.7: every FK-A subproblem of `(G, Tr G)` is `(H, Tr H)` or `(Tr H, H)`, `H` a minor of `G`; `δ ≤ 2·#minors` | Proved | `fkADag_minor`, `card_fkADag_le_minors` |
+| Theorem 4.7: under any split rule every FK-A subproblem of `(G, Tr G)` is `(H, Tr H)` or `(Tr H, H)`, `H` a minor of `G`; `δ ≤ 2·#minors` | Proved | `fkADag_minor`, `card_fkADag_le_minors` |
 | Proposition 4.8: `τ(C, D) = τ(D, C)` on dual pairs | Proved | `fkA_comm`, `splitVar_comm` |
-| Theorem 4.9: `d`-resilient `G` has `τ ≥ 2^{d+1} − 1` | Proved | `tau_ge_of_resilient` |
-| Proposition 4.10: `δ ≤ τ`; `τ − δ ≥ (τ_L − δ_L) + (τ_R − δ_R) + |Δ_L ∩ Δ_R|` at a split | Proved | `card_fkADag_le`, `excess_split` |
-| Observation 4.11 / Theorem 4.16: under the leftmost rule, a read-once formula with leaves in order has `δ ≤ 2n + 2` (Hertel's Thm 4.4.1); measured `δ = n` on GK `f₂–f₅`, TK `S₁–S₄`, far below the degree-sum rule | Proved; measurements computed (`experiments/split_rules.py`) | `Fm.leftmost_delta`, `Fm.St_closed`, `Fm.card_St_le` |
+| Theorem 4.9: `d`-resilient `G` has `τ ≥ 2^{d+1} − 1` (fuel `≥ d`); `matching(8)` is not 3-resilient | Proved; the matching fact Checked | `tau_ge_of_resilient`, `matching_eight_not_resilient` |
+| Proposition 4.10: under any split rule `δ ≤ τ`; `τ − δ ≥ (τ_L − δ_L) + (τ_R − δ_R) + |Δ_L ∩ Δ_R|` at a split | Proved | `card_fkADag_le`, `excess_split` |
+| Theorem 4.16: under the leftmost rule, a read-once formula with leaves in order has `δ ≤ 2n + 2`, and its states form an FBDD of at most `n + 2` nodes (cf. Hertel's Thm 4.4.1, cited); Observation 4.11: measured `δ = n` on GK `f₂–f₅`, TK `S₂–S₄`, far below the degree-sum rule | Proved; measurements Computed (`experiments/split_rules.py`) | `Fm.leftmost_delta`, `Fm.leftmost_fbdd`, `Fm.St_closed`, `Fm.card_St_le` |
 | Remark 4.12: a restriction of a read-once formula with nonempty support is determined by its support | Proved | `Fm.rminor_determined` |
 | `dnf(f\|x=0) = dnf f − x`, `dnf(f\|x=1) = dnf f / x`, `Tr(dnf f) = min dnf(f^d)` for every monotone formula; `= dnf(f^d)` for read-once `f` | Proved | `Fm.dnf_restrict_false`, `Fm.dnf_restrict_true`, `Fm.tr_dnf`, `Fm.tr_dnf_readOnce` |
 | FK-A under an arbitrary split rule is correct; the degree-sum instance is `fkA` | Proved | `fkAR_correct`, `fkAR_splitVar`, `fkADagR_splitVar` |
-| Theorem 4.13: under a valid symmetric rule the memo DAG is an FBDD for `f` of size `≤ 2δ + 2` (unmodified), with term and clause leaves (modified); an FBDD computes its functions and reads each variable once per path | Proved | `memo_fbdd`, `memo_bp`, `memo_good`, `run_correct`, `path_nodup` |
-| Proposition 4.14: an FBDD of size `s` named by its functions gives a rule with `δ ≤ 2s` | Proved | `rule_of_fbdd` |
-| Corollary 4.15: `δ ≥ (FBDD(f) − 2)/2` under every valid symmetric rule; an explicit family defeating every rule needs a monotone family with polynomial `N` and superpolynomial FBDD size | Proved for the bound; the FBDD reduction for arbitrary FBDDs argued; no such family known (literature, research §4) | `memo_fbdd` |
-| Lemma 4.17: minors of `A ∪ B`, `A ∧ B` are unions, joins of minors; parts recoverable on disjoint supports | Proved | `Fm.minor_union`, `Fm.minor_join`, `Fm.union_left_part`, `Fm.join_left_part` |
-| Proposition 4.18: the guarded rule is valid, symmetric, and splits on a vertex of frequency `≥ 1/⌊log₂ N⌋` (FK96 Lemma 2.3.2) | Proved | `guardRule_frequent`, `valid_guardRule`, `guardRule_symm` |
+| Theorem 4.13: under a valid symmetric rule the memo DAG of unmodified FK-A is an FBDD named by its functions for `f`, of size `≤ 2δ + 2`; under modified FK-A a branching program with term and clause leaves; an FBDD computes its functions and reads each variable once per path | Proved | `memo_fbdd`, `memo_bp`, `memo_good`, `run_correct`, `path_nodup` |
+| Proposition 4.14: an FBDD of size `s` named by its functions gives a valid symmetric rule with `δ ≤ 2s`, either variant | Proved | `fbddRule`, `rule_of_fbdd` |
+| Corollary 4.15: on unmodified FK-A, `δ ≥ (s − 2)/2` under every valid symmetric rule, `s` the least FBDD named by its functions; an explicit family defeating every such rule needs a monotone family with polynomial `N` and superpolynomial FBDD size | Proved for the bound; the step from FBDDs named by their functions to arbitrary FBDDs argued; the modified-variant bound argued; no such family known (literature, research §4) | `memo_fbdd`, `rule_of_fbdd` |
+| Lemma 4.17: minors of `A ∪ B`, `A ∧ B` are unions, joins of minors; parts recoverable on disjoint supports | Proved; the consequence for `δ` argued | `Fm.minor_union`, `Fm.minor_join`, `Fm.union_left_part`, `Fm.join_left_part` |
+| A read-once formula on all of `V` has a read-once DNF (Sperner, conformal, cograph primal graph); the converse is Gurvich's theorem | Proved for this direction; converse cited | `Fm.readOnce_dnf` |
+| Proposition 4.18: the guarded rule is valid, symmetric, and splits on the least vertex of frequency `≥ 1/⌊log₂ N⌋`, which exists by FK96 Lemma 2.3.2 | Proved | `guardRule_frequent`, `valid_guardRule`, `guardRule_symm` |
 | `δ` of GK `f₂` is 8 under all three rules; `ro12` has `δ = 91` under the leftmost and guarded rules | Checked | `gk2_rules`, `ro12_rules` |
 | Conjecture 4.19: `δ/N` is unbounded on GK under the degree-sum rule | Open; `δ/N = 0.67, 1.92, 1368` for `k = 2, 3, 4` (Rust) | — |
-| Proposition 4.6: under ETH no polynomial bounds `δ` on all dual pairs (C3 false) | Proved conditionally, from Kobayashi–Kurita–Wasa 2026 (cited) | — |
+| Proposition 4.6: under ETH no polynomial bounds `δ` on all dual pairs (C3 false) | Cited, conditional on ETH: a short argument from Kobayashi–Kurita–Wasa 2026; not in Lean | — |
 | Theorem D1: `Tr(T[Γ]) = min(Tr(T)[Tr Γ])`; on disjoint supports no reduction, Sperner, `|T[Γ]| = Σ_t Π_i |Γ i|` | Proved | `tr_subst`, `tr_subst_of_disjoint`, `subst_isSperner`, `card_subst` |
 | Proposition D2: `(P)` `k·k* ≥ 8^{r−1}` is closed under composition | Proved | `card_subst_uniform`, `prop_P_comp` |
-| Proposition 5.4: D3 at `r = 2` has no counterexample; `(k, k*) ∈ {(2,4),(4,2),(3,3)}` | Proved (evaluation over 64 families) | `template_rank_two` |
+| Proposition 5.4: D3 at `r = 2` has no counterexample; `(k, k*) ∈ {(2,4),(4,2),(3,3)}` | Checked (evaluation over 64 families) | `template_rank_two` |
 | Proposition E2: automorphisms preserve influences; Fano's seven influences agree at every `p` | Proved | `influence_aut`, `influence_eq_of_transitive`, `fano_influence_eq` |

@@ -110,8 +110,8 @@ theorem dual_iff {U : Finset α} {G H : Finset (Finset α)} :
   simp [Dual]
 
 /-- `Tr(H)` meets `U \ A` exactly when `A` contains no minimal transversal. -/
-theorem upHit_sdiff_iff {U : Finset α} {G : Finset (Finset α)} (hG : Within U G) {A : Finset α}
-    (hA : A ⊆ U) : upHit G (U \ A) ↔ ¬ upHit (tr U G) A := by
+theorem upHit_sdiff_iff {U : Finset α} {G : Finset (Finset α)} (hG : Within U G) {A : Finset α} :
+    upHit G (U \ A) ↔ ¬ upHit (tr U G) A := by
   rw [← hits_tr_iff hG]
   constructor
   · rintro h ⟨t, ht, htA⟩
@@ -125,19 +125,19 @@ theorem upHit_sdiff_iff {U : Finset α} {G : Finset (Finset α)} (hG : Within U 
     by_contra hxA
     exact hne ⟨x, mem_inter.2 ⟨mem_sdiff.2 ⟨(mem_tr.1 ht).1 hx, hxA⟩, hx⟩⟩
 
-/-- **Lemma 2.1.1.** For Sperner `G`, `H` inside `U`: `H = Tr(G)` iff for every partition
-`(A, U \ A)` exactly one of "`A` contains an edge of `H`" and "`U \ A` contains an edge of
-`G`" holds. -/
+/-- **Lemma 2.1.1.** For `G` inside `U` and Sperner `H` inside `U`: `H = Tr(G)` iff for every
+partition `(A, U \ A)` exactly one of "`A` contains an edge of `H`" and "`U \ A` contains an
+edge of `G`" holds. The thesis also assumes `G` Sperner; that is not needed. -/
 theorem eq_tr_iff_partition {U : Finset α} {G H : Finset (Finset α)} (hG : Within U G)
-    (hH : Within U H) (sG : IsSperner G) (sH : IsSperner H) :
+    (hH : Within U H) (sH : IsSperner H) :
     H = tr U G ↔ Dual U H G := by
   rw [dual_iff]
   constructor
   · rintro rfl A hA
-    rw [upHit_sdiff_iff hG hA, not_not]
+    rw [upHit_sdiff_iff hG, not_not]
   · intro h
     refine eq_of_upHit_iff hH (tr_within U G) sH (tr_isSperner U G) fun A hA => ?_
-    rw [h A hA, upHit_sdiff_iff hG hA, not_not]
+    rw [h A hA, upHit_sdiff_iff hG, not_not]
 
 /-- Duality on `U` is symmetric. -/
 theorem dual_comm {U : Finset α} {G H : Finset (Finset α)} : Dual U G H ↔ Dual U H G := by
@@ -159,7 +159,7 @@ theorem dual_iff_minimal_eq_tr {U : Finset α} {G H : Finset (Finset α)} (hG : 
     (hH : Within U H) : Dual U G H ↔ minimal G = tr U H := by
   rw [← dual_minimal (G := G) (H := H),
     ← eq_tr_iff_partition (fun e he => hH e (minimal_subset H he))
-      (fun e he => hG e (minimal_subset G he)) (minimal_isSperner H) (minimal_isSperner G),
+      (fun e he => hG e (minimal_subset G he)) (minimal_isSperner G),
     tr_minimal]
 
 /-! ### Independent sets (§1.1.1) -/
@@ -182,7 +182,7 @@ theorem hits_compl_iff {U : Finset α} {H : Finset (Finset α)} (hH : Within U H
     exact ⟨x, mem_inter.2 ⟨mem_sdiff.2 ⟨hH e he hxe, hxI⟩, hxe⟩⟩
 
 theorem isMinHit_compl_iff {U : Finset α} {H : Finset (Finset α)} (hH : Within U H)
-    {I : Finset α} (hI : I ⊆ U) :
+    {I : Finset α} :
     IsMinHit H (U \ I) ↔ IsIndep H I ∧ ∀ v ∈ U \ I, ¬ IsIndep H (insert v I) := by
   unfold IsMinHit
   rw [hits_compl_iff hH]

@@ -15,6 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+      # A `sorry` only warns; reject it before building.
+      - name: No sorry
+        run: "! grep -rnwE 'sorry|admit' lean/HypergraphDualization"
       # Installs the toolchain pinned in lean/lean-toolchain, fetches the Mathlib
       # cache and runs `lake build`, which checks every proof in the library.
       - uses: leanprover/lean-action@v1

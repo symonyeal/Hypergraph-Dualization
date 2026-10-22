@@ -3,8 +3,9 @@ Copyright (c) 2026 Saimon Y. Islam. Released under the GPL-3.0-or-later.
 
 # FK-A, executable and verified
 
-`fkA fuel modified C D` runs Algorithm 1 on hypergraphs over `Fin n` and returns the verdict
-together with the number of nodes in its recursion tree. Each node:
+`fkAR r fuel modified C D` runs Algorithm 1 on hypergraphs over `Fin n` under the split rule
+`r` and returns the verdict together with the number of nodes in its recursion tree; `fkA` is
+the published degree-sum instance `fkAR splitVar`. Each node:
 
 1. Sperner-reduces both sides (`minimal`);
 2. checks conditions (i)-(iv) (`conds`); a failure is a leaf with verdict `false`;
@@ -19,7 +20,7 @@ equivalent separately (`dual_empty_left`, `dual_singleton_left`, `conds_of_dual`
 
 | Lean | Thesis |
 | --- | --- |
-| `fkA_correct` | Algorithm 1 decides `Trans-Hyp`: the verdict is `Dual` |
+| `fkAR_correct`, `fkA_correct` | Algorithm 1 decides `Trans-Hyp` under every split rule: the verdict is `Dual` |
 | `conds_of_dual` | conditions (i)-(iv) hold for every dual pair (Props. 2.2.1-2.2.4) |
 | `dual_singleton_left` | the `D₁,ₖ` rule of §5.1.1 |
 -/
@@ -52,8 +53,11 @@ def splitVar (C D : HG n) : Option (Fin n) :=
         | some (y, k') => if k' < k then some (x, k) else some (y, k'))
     none).map Prod.fst
 
-/-- Algorithm 1: the verdict and the number of nodes of the recursion tree. -/
-def fkA : ℕ → Bool → HG n → HG n → Bool × ℕ
+/-- A split rule: the vertex on which to split the node `(C, D)`, or `none`. -/
+abbrev Rule (n : ℕ) := HG n → HG n → Option (Fin n)
+
+/-- Algorithm 1 with split rule `r`: the verdict and the number of nodes of the tree. -/
+def fkAR (r : Rule n) : ℕ → Bool → HG n → HG n → Bool × ℕ
   | 0, _, C₀, D₀ => (decide (Dual univ (minimal C₀) (minimal D₀)), 1)
   | fuel + 1, modified, C₀, D₀ =>
     let C := minimal C₀
@@ -62,14 +66,17 @@ def fkA : ℕ → Bool → HG n → HG n → Bool × ℕ
     else if C.card * D.card ≤ 1 || (modified && (C.card == 1 || D.card == 1)) then
       (decide (Dual univ C D), 1)
     else
-      match splitVar C D with
+      match r C D with
       | none => (decide (Dual univ C D), 1)
       | some x =>
-        let l := fkA fuel modified (del C x) (con D x)
+        let l := fkAR r fuel modified (del C x) (con D x)
         if l.1 then
-          let r := fkA fuel modified (del D x) (con C x)
-          (r.1, 1 + l.2 + r.2)
+          let r' := fkAR r fuel modified (del D x) (con C x)
+          (r'.1, 1 + l.2 + r'.2)
         else (false, 1 + l.2)
+
+/-- Algorithm 1 as published: the degree-sum rule. -/
+abbrev fkA : ℕ → Bool → HG n → HG n → Bool × ℕ := fkAR splitVar
 
 /-- Run FK-A with enough fuel for every vertex to be split once. -/
 def runFKA (modified : Bool) (C D : HG n) : Bool × ℕ := fkA (n + 1) modified C D
@@ -81,7 +88,7 @@ theorem conds_of_dual {C D : HG n} (sC : IsSperner C) (sD : IsSperner D)
     (h : Dual univ C D) : conds C D = true := by
   have hC : C = tr univ D := by
     rw [← minimal_eq_self sC]; exact (dual_iff_minimal_eq_tr (within_univ C) (within_univ D)).1 h
-  have hk := kraft_sum (within_univ D) sD hC
+  have hk := kraft_sum (within_univ D) hC
   have hsz := card_le_card_tr (within_univ D) sD hC
   have hsup := support_eq (within_univ D) sD hC
   have hmeet := edges_meet hC
@@ -89,14 +96,14 @@ theorem conds_of_dual {C D : HG n} (sC : IsSperner C) (sD : IsSperner D)
   refine ⟨⟨⟨⟨hsup.symm, hsz.2⟩, hsz.1⟩, fun c hc d hd => ?_⟩, by omega⟩
   rw [inter_comm]; exact hmeet d hd c hc
 
-/-- **Algorithm 1 is correct.** For any fuel, the verdict of FK-A is exactly `Dual`. -/
-theorem fkA_correct (fuel : ℕ) (modified : Bool) (C D : HG n) :
-    (fkA fuel modified C D).1 = decide (Dual univ C D) := by
+/-- **Algorithm 1 is correct under every split rule.** For any fuel, the verdict is `Dual`. -/
+theorem fkAR_correct (r : Rule n) (fuel : ℕ) (modified : Bool) (C D : HG n) :
+    (fkAR r fuel modified C D).1 = decide (Dual univ C D) := by
   induction fuel generalizing C D with
-  | zero => simp [fkA, dual_minimal]
+  | zero => simp [fkAR, dual_minimal]
   | succ fuel ih =>
     have hred : Dual univ (minimal C) (minimal D) ↔ Dual univ C D := dual_minimal
-    simp only [fkA]
+    simp only [fkAR]
     split_ifs with hc hleaf
     · -- A failed condition: the pair cannot be dual.
       have : ¬ Dual univ C D := fun h =>
@@ -108,7 +115,7 @@ theorem fkA_correct (fuel : ℕ) (modified : Bool) (C D : HG n) :
       · rename_i x _
         set C' := minimal C
         set D' := minimal D
-        have hsplit := dual_split (within_univ C') (within_univ D') (mem_univ x)
+        have hsplit := dual_split (G := C') (H := D') (mem_univ x)
         have hL := dual_erase_of_notMem (U := (univ : Finset (Fin n)))
           (G := del C' x) (H := con D' x) (x := x)
           (fun e he => (mem_filter.1 he).2) (fun e he => by
@@ -128,6 +135,11 @@ theorem fkA_correct (fuel : ℕ) (modified : Bool) (C D : HG n) :
         · rw [ih] at hl
           simp only [decide_eq_true_eq] at hl
           simp [hD, hl]
+
+/-- **Algorithm 1 is correct.** For any fuel, the verdict of FK-A is exactly `Dual`. -/
+theorem fkA_correct (fuel : ℕ) (modified : Bool) (C D : HG n) :
+    (fkA fuel modified C D).1 = decide (Dual univ C D) :=
+  fkAR_correct splitVar fuel modified C D
 
 /-! ### The polynomial leaf rules -/
 

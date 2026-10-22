@@ -47,6 +47,7 @@ __all__ = [
     "eps_v",
     "eps_exact",
     "choose_split_var",
+    "split_vertex",
     "check_conditions",
     "verify_CA",
     "VARIANTS",
@@ -108,25 +109,34 @@ def choose_split_var(
     if rule not in SPLIT_RULES:
         raise ValueError(f"unknown split rule {rule!r}; expected one of {SPLIT_RULES}")
     n = max(cnf.n, dnf.n)
-    live = [x for x in range(n) if cnf.degree(x) + dnf.degree(x)]
+    if rule == "frequency":
+        live = [x for x in range(n) if cnf.degree(x) + dnf.degree(x)]
+        return max(live, key=lambda x: (eps_v(cnf, dnf, x), -x), default=None)
+    dC = {x: cnf.degree(x) for x in range(n)}
+    dD = {x: dnf.degree(x) for x in range(n)}
+    return split_vertex(len(cnf), len(dnf), dC, dD, rule)
+
+
+def split_vertex(nC: int, nD: int, dC: dict, dD: dict, rule: str = "degree_sum") -> Optional[int]:
+    """The split vertex from the side sizes ``|C|, |D|`` and degrees ``x -> deg``; ``None`` if no
+    vertex is live. Lean ``splitVar``, ``leftRule``, ``guardRule`` (research §4).
+
+    ``degree_sum``: largest ``deg_C + deg_D``, least index on ties.
+    ``leftmost``:   least live vertex.
+    ``guarded``:    least live ``x`` with ``|C| <= s deg_C x`` or ``|D| <= s deg_D x``,
+                    ``s = floor(log2 N)``, else ``degree_sum``.
+    """
+    live = sorted(x for x in dC.keys() | dD.keys() if dC.get(x, 0) + dD.get(x, 0))
+    if not live:
+        return None
     if rule == "leftmost":
-        return live[0] if live else None
+        return live[0]
     if rule == "guarded":
-        s = (len(cnf) + len(dnf)).bit_length() - 1
+        s = (nC + nD).bit_length() - 1                                  # ⌊log₂ N⌋
         for x in live:
-            if len(cnf) <= s * cnf.degree(x) or len(dnf) <= s * dnf.degree(x):
+            if nC <= s * dC.get(x, 0) or nD <= s * dD.get(x, 0):
                 return x
-        rule = "degree_sum"
-    best: Optional[int] = None
-    best_key = -1.0
-    for x in range(n):
-        dc, dd = cnf.degree(x), dnf.degree(x)
-        if dc + dd == 0:
-            continue
-        key = float(dc + dd) if rule == "degree_sum" else eps_v(cnf, dnf, x)
-        if key > best_key:
-            best_key, best = key, x
-    return best
+    return min(live, key=lambda x: (-(dC.get(x, 0) + dD.get(x, 0)), x))
 
 
 # ----------------------------------------------------------------------

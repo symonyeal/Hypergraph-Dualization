@@ -14,11 +14,12 @@ Steiner system after the Fano plane.
 | `w11_meet` | **Observation A1.** two distinct blocks meet in 1, 2 or 3 points (495, 660, 990 pairs) |
 | `eq_one_of_fixes_base` | an automorphism fixing `0, 1, 2, 3` is the identity |
 | `wit_check` | an explicit automorphism for every ordered 4-tuple of distinct points |
-| `card_aut_w11` | **Theorem A2.** `|Aut(w11)| = 7920` |
-| `w11_four_transitive`, `w11_four_free` | **Theorem A2.** `Aut(w11)` is sharply 4-transitive |
+| `card_aut_w11` | **Observation A2.** `|Aut(w11)| = 7920` |
+| `w11_four_transitive`, `w11_four_free` | **Observation A2.** `Aut(w11)` is sharply 4-transitive |
 | `w11_preprimitive` | `Aut(w11)` is primitive |
 
-The finite checks use `native_decide` and so trust the Lean compiler (`Lean.ofReduceBool`).
+The finite checks use `native_decide` and so trust the Lean compiler; every result below,
+`card_aut_w11` included, is therefore *Checked*, not *Proved* (`Axioms`).
 The group order is not found by enumerating `11!` permutations: the 5040 permutations fixing
 `0..3` are checked once, which makes `σ ↦ (σ 0, σ 1, σ 2, σ 3)` injective on `Aut(w11)`;
 an explicit automorphism for each of the `11·10·9·8 = 7920` ordered 4-tuples makes it
@@ -173,7 +174,7 @@ theorem wit_mem (t : Fin 4 ↪ Fin 11) : wit t ∈ aut w11 :=
 theorem wit_base (t : Fin 4 ↪ Fin 11) (i : Fin 4) : wit t (base i) = t i :=
   (wit_check t t.injective).2 i
 
-/-! ### Theorem A2 -/
+/-! ### Observation A2 -/
 
 theorem smul_emb_apply (σ : aut w11) (t : Fin 4 ↪ Fin 11) (i : Fin 4) :
     (σ • t) i = (σ : Equiv.Perm (Fin 11)) (t i) := rfl
@@ -194,13 +195,13 @@ theorem tuple_injective : Function.Injective tuple := by
 theorem tuple_surjective : Function.Surjective tuple := fun t =>
   ⟨⟨wit t, wit_mem t⟩, Function.Embedding.ext fun i => wit_base t i⟩
 
-/-- **Theorem A2.** `|Aut(w11)| = 7920 = 11·10·9·8`. -/
+/-- **Observation A2.** `|Aut(w11)| = 7920 = 11·10·9·8`. -/
 theorem card_aut_w11 : Nat.card (aut w11) = 7920 := by
   rw [Nat.card_eq_of_bijective tuple ⟨tuple_injective, tuple_surjective⟩,
     Nat.card_eq_fintype_card, Fintype.card_embedding_eq]
   simp
 
-/-- **Theorem A2.** `Aut(w11)` is 4-transitive on the points. -/
+/-- **Observation A2.** `Aut(w11)` is 4-transitive on the points. -/
 instance w11_four_transitive : MulAction.IsMultiplyPretransitive (aut w11) (Fin 11) 4 where
   exists_smul_eq s t :=
     ⟨⟨wit t * (wit s)⁻¹, (aut w11).mul_mem (wit_mem t) ((aut w11).inv_mem (wit_mem s))⟩,
@@ -209,7 +210,7 @@ instance w11_four_transitive : MulAction.IsMultiplyPretransitive (aut w11) (Fin 
       rw [Equiv.Perm.mul_apply, ← wit_base s i, Equiv.Perm.inv_def, Equiv.symm_apply_apply,
         wit_base]⟩
 
-/-- **Theorem A2.** The action on ordered 4-tuples is free: with `w11_four_transitive`,
+/-- **Observation A2.** The action on ordered 4-tuples is free: with `w11_four_transitive`,
 `Aut(w11)` is sharply 4-transitive. -/
 theorem w11_four_free (σ : aut w11) (t : Fin 4 ↪ Fin 11) (h : σ • t = t) : σ = 1 := by
   have hfix : ∀ i, ((wit t)⁻¹ * σ * wit t) (base i) = base i := by

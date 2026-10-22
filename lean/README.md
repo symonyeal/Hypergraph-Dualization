@@ -1,8 +1,10 @@
 # Lean proofs
 
-Lean 4 proofs of every statement the 2024 thesis makes on its own authority, of the
-corrections made in the revised edition, and of the bridges to `openai/math`. The status of each
-thesis statement and the name of its proof are in [`../thesis/CLAIMS.md`](../thesis/CLAIMS.md).
+Lean 4 proofs of the statements the 2024 thesis makes on its own authority (the two rows of
+[`../thesis/CLAIMS.md`](../thesis/CLAIMS.md) without a Lean name are a clarification and a
+Python computation), of the corrections made in the revised edition, of the October 2026
+research, and of the bridges to `openai/math`. The status of each statement and the name of its
+proof are in `CLAIMS.md`.
 
 Toolchain `leanprover/lean4:v4.35.0`, Mathlib `v4.35.0`.
 
@@ -31,7 +33,7 @@ same cache from Mathlib's Azure storage account.
 | `Duality` | Lemma 2.1.1, Cors. 2.1.2–2.1.3, the `Dual` predicate |
 | `Conditions` | Props. 2.2.1–2.2.4, Cor. 2.3.1 (corrected), Lemma 2.3.2 |
 | `Decomposition` | deletion and contraction; the FK-A split |
-| `Algorithm` | FK-A as a function, and its correctness `fkA_correct` |
+| `Algorithm` | FK-A under a split rule (`fkAR`; `fkA` is the degree-sum instance) and its correctness `fkAR_correct` |
 | `Symmetry` | automorphism groups; Lemma 3.3.1, Cor. 3.3.4 (corrected), orbits |
 | `Operations`, `Families` | union and join; Hertel's alternating trees and their edge counts |
 | `AltShape` | uniform edge sizes and vertex frequencies of the alternating trees (§4.3) |
@@ -53,22 +55,25 @@ same cache from Mathlib's Azure storage account.
 | `SteinerData`, `SteinerInstances` | `PG(2,4)` and `S(4,7,23)`: Steiner, intersecting, 2-colourable |
 | `EpsSeven` | `s·ε ≥ 1`, `s ≤ nε` for the smallest edge size `s`; `ε(7) = 3/7` (Observation 5.2.3), `ε(5) = ε(6) = 1/2`, `ε(9) = 1/3` |
 | `FrequencyGap` | cross-intersection excess, stability, square-order equality structure, strict self-transversal gap; one regular side forces singleton intersections in uniform pairs on `r²` points; kernel-checked Fano excess and four-point counterexample |
-| `Dag` | FK-A's distinct subproblems (`fkADag`); `Tr(G/x) = Tr(G) − x`; `τ` and `δ` of `matching(v)` and `threshold(v)` for every `v` (C1) |
+| `Dag` | FK-A's distinct subproblems (`fkADagR`, `fkADag`) and the closure lemma `fkADagR_sub`; `Tr(G/x) = Tr(G) − x`; `τ` and `δ` of `matching(v)` and `threshold(v)` for every `v` (C1) |
 | `Primitive` | read-once hypergraphs with a primitive automorphism group have `Aut = Sₙ` (A7); `w11` and Fano are not read-once |
 | `Substitution` | substitution duality, disjoint-support Sperner and cardinality formulas; closure of `(P)`; D3 at `r = 2` (`template_rank_two`) |
 | `Influence` | automorphisms preserve pivotal probabilities; equal influences for Fano |
-| `Blowup` | why FK-A's subproblems multiply: subproblems are minors (`fkADag_minor`), `τ(C,D) = τ(D,C)` on dual pairs, the resilience bound `τ ≥ 2^{d+1} − 1`, superadditive repeated work `τ − δ`; the read-once `ro12` with `δ = 43 > 2N` (refutes Conjecture 4.5) |
-| `SplitRule` | FK-A under any split rule (`fkAR`, `fkADagR`), correct (`fkAR_correct`), the degree-sum instance is `fkA`; subproblems lie over any rule-closed family (`fkADagR_closed`); the leftmost rule |
-| `ReadOnceFormula` | monotone formulas, `dnf`, restriction and duality identities; the leftmost bound `δ ≤ 2n + 2` on read-once formulas with leaves in order (`leftmost_delta`, Observation 4.11); interleaving (`minor_union`, `minor_join`); Remark 4.12 (`rminor_determined`) |
-| `BranchingProgram` | branching programs named by their functions (`run_correct`, `path_nodup`); the memo DAG is an FBDD of size `≤ 2δ + 2` (`memo_fbdd`, `memo_bp`) and conversely (`rule_of_fbdd`); the guarded rule with FK96's frequency guarantee (`guardRule_frequent`) |
+| `Blowup` | why FK-A's subproblems multiply: subproblems are minors under any rule (`fkADag_minor`), `τ(C,D) = τ(D,C)` on dual pairs, the resilience bound `τ ≥ 2^{d+1} − 1`, superadditive repeated work `τ − δ`; the read-once `ro12` with `δ = 43 > 2N` (refutes Conjecture 4.5) |
+| `SplitRule` | symmetric rules, rule-closed families: subproblems lie over them (`fkADagR_closed`); the leftmost rule |
+| `ReadOnceFormula` | monotone formulas, `dnf`, restriction and duality identities; a read-once formula has a read-once DNF (`readOnce_dnf`); the leftmost bound `δ ≤ 2n + 2` on read-once formulas with leaves in order (`leftmost_delta`, Theorem 4.16); interleaving (`minor_union`, `minor_join`); Remark 4.12 (`rminor_determined`) |
+| `BranchingProgram` | branching programs named by their functions (`run_correct`, `path_nodup`); the memo DAG is an FBDD of size `≤ 2δ + 2` under a valid symmetric rule (`memo_fbdd`, `memo_bp`) and conversely (`fbddRule`, `rule_of_fbdd`); the leftmost FBDD (`Fm.leftmost_fbdd`); the guarded rule with FK96's frequency guarantee (`guardRule_frequent`) |
 | `RuleInstances` | `δ` of GK `f₂` and `ro12` under the three rules (evaluation) |
+| `Axioms` | the trust base, checked: cited general theorems use only the standard axioms, checked facts are evaluations |
 
 ## Trust base
 
-General theorems depend only on the axioms `propext`, `Classical.choice` and `Quot.sound`
-(`#print axioms`). Facts about named finite instances are proved by evaluation with
-`native_decide`, which also trusts the Lean compiler; their docstrings and module headers say
-so. A kernel-only check (`decide +kernel`) succeeds on the smallest instances but did not finish
+General theorems depend only on the axioms `propext`, `Classical.choice` and `Quot.sound`.
+Facts about named finite instances are proved by evaluation with `native_decide`, which also
+trusts the Lean compiler; their docstrings and module headers say so. `Axioms.lean` lists every
+cited name in one of the two classes, and `lake build` fails if a name is in the wrong one
+(`#assert_standard_axioms`, `#assert_evaluation`); a `sorry` fails it too. CI also rejects any
+`sorry` in the sources. A kernel-only check (`decide +kernel`) succeeds on the smallest instances but did not finish
 on the larger ones within 40 minutes.
 
 ## Regenerating the generated modules

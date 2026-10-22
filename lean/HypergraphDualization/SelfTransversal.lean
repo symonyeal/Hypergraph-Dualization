@@ -35,7 +35,7 @@ instance (U : Finset α) (H : Finset (Finset α)) : Decidable (TwoColourable U H
 theorem tr_eq_self_iff {U : Finset α} {H : Finset (Finset α)} (hH : Within U H)
     (sH : IsSperner H) :
     tr U H = H ↔ OpenAI.Intersecting H ∧ ∅ ∉ H ∧ ¬ TwoColourable U H := by
-  rw [eq_comm, eq_tr_iff_partition hH hH sH sH, dual_iff]
+  rw [eq_comm, eq_tr_iff_partition hH hH sH, dual_iff]
   constructor
   · intro h
     refine ⟨fun e he f hf _ => ?_, fun h0 => ?_, fun ⟨A, hA, h1, h2⟩ => h1 ((h A hA).2 h2)⟩

@@ -42,32 +42,34 @@ theorem con_within {U : Finset α} {H : Finset (Finset α)} (hH : Within U H) (x
   obtain ⟨f, hf, rfl⟩ := he
   exact erase_subset_erase x (hH f hf)
 
-/-- On a set without `x`, `H` and `del H x` contain the same edges. -/
-theorem upHit_del {H : Finset (Finset α)} {x : α} {A : Finset α} (hx : x ∉ A) :
-    upHit (del H x) A ↔ upHit H A := by
+/-- `S` contains an edge of `H − x` iff `S − x` contains an edge of `H`: `(f|x=0)(S) = f(S − x)`. -/
+theorem upHit_del {H : Finset (Finset α)} {x : α} {S : Finset α} :
+    upHit (del H x) S ↔ upHit H (S.erase x) := by
+  simp only [upHit, del, mem_filter]
   constructor
-  · rintro ⟨e, he, heA⟩; exact ⟨e, (mem_filter.1 he).1, heA⟩
-  · rintro ⟨e, he, heA⟩
-    exact ⟨e, mem_filter.2 ⟨he, fun hxe => hx (heA hxe)⟩, heA⟩
+  · rintro ⟨e, ⟨he, hx⟩, heS⟩
+    exact ⟨e, he, fun y hy => mem_erase.2 ⟨fun h => hx (h ▸ hy), heS hy⟩⟩
+  · rintro ⟨e, he, heS⟩
+    exact ⟨e, ⟨he, fun hx => (notMem_erase x S) (heS hx)⟩, heS.trans (erase_subset x S)⟩
 
-/-- On a set containing `x`, `H` and `con H x` agree once `x` is removed. -/
-theorem upHit_con {U : Finset α} {H : Finset (Finset α)} (hH : Within U H) {x : α}
-    {B : Finset α} (hB : B ⊆ U) (hxB : x ∈ B) :
-    upHit (con H x) (B.erase x) ↔ upHit H B := by
+/-- `S` contains an edge of `H / x` iff `S + x` contains an edge of `H`: `(f|x=1)(S) = f(S + x)`. -/
+theorem upHit_con {H : Finset (Finset α)} {x : α} {S : Finset α} :
+    upHit (con H x) S ↔ upHit H (insert x S) := by
+  simp only [upHit, con, mem_image]
   constructor
-  · rintro ⟨e, he, heB⟩
-    obtain ⟨f, hf, rfl⟩ := mem_image.1 he
-    refine ⟨f, hf, fun y hy => ?_⟩
-    by_cases hyx : y = x
-    · exact hyx ▸ hxB
-    · exact (mem_erase.1 (heB (mem_erase.2 ⟨hyx, hy⟩))).2
-  · rintro ⟨e, he, heB⟩
-    exact ⟨e.erase x, mem_image.2 ⟨e, he, rfl⟩, erase_subset_erase x heB⟩
+  · rintro ⟨_, ⟨e, he, rfl⟩, heS⟩
+    exact ⟨e, he, fun y hy => by
+      by_cases h : y = x
+      · exact h ▸ mem_insert_self x S
+      · exact mem_insert_of_mem (heS (mem_erase.2 ⟨h, hy⟩))⟩
+  · rintro ⟨e, he, heS⟩
+    exact ⟨e.erase x, ⟨e, he, rfl⟩, fun y hy => by
+      obtain ⟨hyx, hy⟩ := mem_erase.1 hy
+      exact (mem_insert.1 (heS hy)).resolve_left hyx⟩
 
 /-- **The FK-A decomposition (§2.2.2).** For `x ∈ U`, `(G, H)` is dual on `U` iff
 `L = (del G x, con H x)` and `R = (del H x, con G x)` are dual on `U \ {x}`. -/
-theorem dual_split {U : Finset α} {G H : Finset (Finset α)} (hG : Within U G)
-    (hH : Within U H) {x : α} (hx : x ∈ U) :
+theorem dual_split {U : Finset α} {G H : Finset (Finset α)} {x : α} (hx : x ∈ U) :
     Dual U G H ↔ Dual (U.erase x) (del G x) (con H x) ∧ Dual (U.erase x) (del H x) (con G x) := by
   simp only [dual_iff]
   -- `U \ A` for `A ⊆ U \ {x}` contains `x`; removing it gives `(U \ {x}) \ A`.
@@ -80,11 +82,12 @@ theorem dual_split {U : Finset α} {G H : Finset (Finset α)} (hG : Within U G)
     refine ⟨fun A hA => ?_, fun A hA => ?_⟩
     · -- `L`: a set without `x`.
       have hAU : A ⊆ U := hA.trans (erase_subset x U)
-      rw [upHit_del (hxA A hA), ← key A hA, upHit_con hH sdiff_subset (hxUA A hA)]
+      rw [upHit_del, erase_eq_of_notMem (hxA A hA), ← key A hA, upHit_con,
+        insert_erase (hxUA A hA)]
       exact h A hAU
     · -- `R`: the complement of a set containing `x`.
       have hAU : A ⊆ U := hA.trans (erase_subset x U)
-      rw [upHit_del (hxA A hA), ← key A hA, upHit_con hG sdiff_subset (hxUA A hA)]
+      rw [upHit_del, erase_eq_of_notMem (hxA A hA), ← key A hA, upHit_con, insert_erase (hxUA A hA)]
       have := h (U \ A) sdiff_subset
       rw [Finset.sdiff_sdiff_eq_self hAU] at this
       tauto
@@ -94,13 +97,13 @@ theorem dual_split {U : Finset α} {G H : Finset (Finset α)} (hG : Within U G)
       have hB : U \ A ⊆ U.erase x := fun y hy =>
         mem_erase.2 ⟨fun h => (mem_sdiff.1 hy).2 (h ▸ hxA'), (mem_sdiff.1 hy).1⟩
       have := hR (U \ A) hB
-      rw [upHit_del (hxA _ hB), ← key _ hB, upHit_con hG sdiff_subset (hxUA _ hB),
+      rw [upHit_del, erase_eq_of_notMem (hxA _ hB), ← key _ hB, upHit_con, insert_erase (hxUA _ hB),
         Finset.sdiff_sdiff_eq_self hA] at this
       tauto
     · have hA' : A ⊆ U.erase x := fun y hy =>
         mem_erase.2 ⟨fun h => hxA' (h ▸ hy), hA hy⟩
       have := hL A hA'
-      rwa [upHit_del hxA', ← key A hA', upHit_con hH sdiff_subset (hxUA A hA')] at this
+      rwa [upHit_del, erase_eq_of_notMem hxA', ← key A hA', upHit_con, insert_erase (hxUA A hA')] at this
 
 /-- Removing from the ground set a vertex in no edge does not change duality. -/
 theorem dual_erase_of_notMem {U : Finset α} {G H : Finset (Finset α)} {x : α}

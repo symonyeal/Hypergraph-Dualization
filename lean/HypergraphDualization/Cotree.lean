@@ -10,8 +10,8 @@ cograph (Thm. 4.4.8, cited). `altTree i` is Hertel's alternating tree with the l
 
 | Lean | Thesis |
 | --- | --- |
-| `primalAdj_alt`, `primalAdj_coalt` | Observation 4.4.9: the primal graph of every `Γᵢ` and `Γ̄ᵢ` (so of every `f_k`, `g_k`, `r_k`, `S_k`) is the graph of the alternating tree |
-| `support_alt`, `support_coalt` | both families use all `2^i` vertices |
+| `primalAdj_alt` | Observation 4.4.9: the primal graph of every `Γᵢ` and `Γ̄ᵢ` (so of every `f_k`, `g_k`, `r_k`, `S_k`) is the graph of the alternating tree |
+| `support_alt` | both families use all `2^i` vertices |
 -/
 import HypergraphDualization.Families
 import HypergraphDualization.Recursion

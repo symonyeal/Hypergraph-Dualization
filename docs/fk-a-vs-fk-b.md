@@ -220,10 +220,11 @@ witnesses for both directions.
 
 One qualification on all of the above, added 2026-08-10. Every ratio in this
 document compares two *trees*. Against FK-A's distinct-subproblem count the
-picture changes: `delta <= 4·beta` on every instance, and `delta/beta` falls to
-0.14 on `word-xy` and 0.19 on `gk-f3`, so FK-B's asymptotic advantage is
-subsumed by a transposition table and what it keeps is the constant factor from
-§4's shallower base case. The repeat rate of §2 is not an empirical predictor
+picture changes: `delta <= 4·beta` on every instance measured, and `delta/beta`
+falls to 0.14 on `word-xy` and 0.19 on `gk-f3`, so on this library FK-B's
+advantage is subsumed by a transposition table and what it keeps is the constant
+factor from §4's shallower base case (not an asymptotic claim; see
+[tree-vs-dag.md](tree-vs-dag.md) §5). The repeat rate of §2 is not an empirical predictor
 either — `tau/delta = 1/(1 − rho)` is an identity, making `rho` the *ceiling* on
 any such speedup rather than a correlate of FK-B's share of it.
 [tree-vs-dag.md](tree-vs-dag.md) is the full account.

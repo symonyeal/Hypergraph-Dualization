@@ -198,7 +198,7 @@ theorem card_subst_uniform (hV : ∀ i j, i ≠ j → Disjoint (V i) (V j)) {T :
 transversals, both `r`-uniform, and satisfy `(P)`: `k·k* ≥ 8^{r−1}`. Substituting into each point
 a copy of an `s`-template with `(l, l*)` satisfying `(P)` gives an `rs`-template with
 `(k·l^r, k*·l*^r)` (`card_subst_uniform`, `tr_subst_of_disjoint`), and it satisfies `(P)`.
-Under `(P)`, `c_∞ = max(log₂ k, log₂ k*)/(r − 1) ≥ 3/2`. -/
+This theorem is the inequality; the counts are `card_subst_uniform`. -/
 theorem prop_P_comp {r s k k' l l' : ℕ} (hr : 1 ≤ r) (hs : 1 ≤ s) (hT : 8 ^ (r - 1) ≤ k * k')
     (hS : 8 ^ (s - 1) ≤ l * l') : 8 ^ (r * s - 1) ≤ (k * l ^ r) * (k' * l' ^ r) := by
   obtain ⟨r, rfl⟩ := Nat.exists_eq_add_of_le' hr

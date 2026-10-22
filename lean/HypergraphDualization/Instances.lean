@@ -6,7 +6,8 @@ Copyright (c) 2026 Saimon Y. Islam. Released under the GPL-3.0-or-later.
 Every number the thesis reports about its instances, checked by evaluating the definitions
 of `Basic`, `Symmetry` and `Algorithm` on the instance data. These proofs use
 `native_decide`, so they trust the Lean compiler in addition to the kernel
-(`#print axioms` lists `Lean.ofReduceBool`); the general theorems elsewhere do not.
+(each depends on an auxiliary `…_native.native_decide` axiom); the general theorems elsewhere do
+not. `Axioms` checks both.
 
 | Lean | Thesis |
 | --- | --- |

@@ -28,7 +28,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from fka.algorithm import fk_a  # noqa: E402
+from fka.algorithm import fk_a, split_vertex  # noqa: E402
 from fka.hypergraph import Hypergraph  # noqa: E402
 from fka.memo import fk_a_memo  # noqa: E402
 
@@ -102,15 +102,7 @@ def degrees(f, dualised, m=1, out=None):
 
 def split_var(g, rule):
     """The split variable of node g under `degree_sum`, `leftmost` or `guarded` (fka.algorithm)."""
-    dg, dd = degrees(g, False), degrees(g, True)
-    if rule == "leftmost":
-        return min(dg)
-    if rule == "guarded":
-        s = (T[g] + TD[g]).bit_length() - 1
-        ok = [v for v in dg if T[g] <= s * dg[v] or TD[g] <= s * dd[v]]
-        if ok:
-            return min(ok)
-    return min(dg, key=lambda v: (-(dg[v] + dd[v]), v))
+    return split_vertex(T[g], TD[g], degrees(g, False), degrees(g, True), rule)
 
 
 def run(f, rule="degree_sum"):

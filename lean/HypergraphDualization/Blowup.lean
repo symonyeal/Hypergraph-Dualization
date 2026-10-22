@@ -7,14 +7,15 @@ On a dual pair `(G, Tr G)` FK-A is a decision tree of the monotone function `f` 
 `G`: deletion `G − x` is `f|x=0`, contraction `G / x` is `f|x=1`. This module proves the three
 facts that account for the size of its recursion tree `τ` and of its subproblem set `δ`.
 
-1. *Normal form.* Every subproblem is `(H, Tr H)` or `(Tr H, H)` for a minor `H` of `G`
-   (`fkADag_minor`); the two orientations have the same children (`fkA_comm`). Hence
+1. *Normal form.* Under any split rule every subproblem is `(H, Tr H)` or `(Tr H, H)` for a minor
+   `H` of `G` (`fkADag_minor`); the two orientations have the same children (`fkA_comm`). Hence
    `δ ≤ 2 · #minors` (`card_fkADag_le_minors`).
 2. *Resilience.* A dual node is never pruned, so if every minor of `G` by fewer than `d`
    deletions and contractions keeps two edges and two minimal transversals, then
-   `τ ≥ 2^(d+1) − 1` (`tau_ge_of_resilient`).
-3. *Overlap.* The repeated work `τ − δ` is superadditive over a split, with the overlap of the
-   children's subproblem sets as surplus (`excess_split`).
+   `τ ≥ 2^(d+1) − 1` (`tau_ge_of_resilient`). The hypothesis ranges over all minors, including
+   constants: `matching(8)` is not 3-resilient (`matching_eight_not_resilient`).
+3. *Overlap.* Under any rule the repeated work `τ − δ` is superadditive over a split, with the
+   overlap of the children's subproblem sets as surplus (`excess_split`).
 
 Finally an explicit read-once pair on 12 points has `δ = 43 > 2N = 42` (`ro12_delta`), which
 refutes Conjecture 4.5 of `docs/research-2026-10.md` (`δ ≤ 2N` on read-once pairs).
@@ -24,6 +25,7 @@ refutes Conjecture 4.5 of `docs/research-2026-10.md` (`δ ≤ 2N` on read-once p
 | `Minor`, `fkADag_minor` | subproblems are minors of `G` or their transversals |
 | `fkA_comm` | `τ(C, D) = τ(D, C)` on dual pairs |
 | `tau_ge_of_resilient` | `τ ≥ 2^(d+1) − 1` for `d`-resilient `G` |
+| `matching_eight_not_resilient` | contracting both points of a pair: `matching(8)` is not 3-resilient (evaluation) |
 | `card_fkADag_le`, `excess_split` | `δ ≤ τ`; `τ − δ ≥ (τ_L − δ_L) + (τ_R − δ_R) + |Δ_L ∩ Δ_R|` |
 | `ro12_readOnce`, `ro12_delta` | the read-once counterexample to `δ ≤ 2N` (evaluation) |
 -/
@@ -38,70 +40,30 @@ variable {n : ℕ}
 
 /-! ### One step of the recursion -/
 
-theorem minimal_tr (H : HG n) : minimal (tr univ H) = tr univ H :=
-  minimal_eq_self (tr_isSperner _ _)
-
 theorem splitVar_comm (C D : HG n) : splitVar C D = splitVar D C := by
   simp only [splitVar, Nat.add_comm (degree C _)]
 
 theorem fkA_pos (fuel : ℕ) (b : Bool) (C D : HG n) : 1 ≤ (fkA fuel b C D).2 := by
   cases fuel with
-  | zero => simp [fkA]
+  | zero => simp [fkAR]
   | succ f =>
-    simp only [fkA]
+    simp only [fkA, fkAR]
     split_ifs <;> try simp
     split <;> try simp
     split_ifs <;> dsimp only <;> omega
-
-/-- Every subproblem of `(C, D)` is the root or a subproblem of a child. -/
-theorem mem_fkADag_succ {f : ℕ} {b : Bool} {C D : HG n} {p : HG n × HG n}
-    (hp : p ∈ fkADag (f + 1) b C D) : p = (minimal C, minimal D) ∨ ∃ x,
-      p ∈ fkADag f b (del (minimal C) x) (con (minimal D) x) ∨
-        p ∈ fkADag f b (del (minimal D) x) (con (minimal C) x) := by
-  simp only [fkADag] at hp
-  split_ifs at hp
-  · exact Or.inl (mem_singleton.1 hp)
-  · exact Or.inl (mem_singleton.1 hp)
-  · split at hp
-    · exact Or.inl (mem_singleton.1 hp)
-    · rename_i x _
-      split_ifs at hp
-      · rcases mem_insert.1 hp with h | h
-        · exact Or.inl h
-        · rcases mem_union.1 h with h | h
-          · exact Or.inr ⟨x, Or.inl h⟩
-          · exact Or.inr ⟨x, Or.inr h⟩
-      · rcases mem_insert.1 hp with h | h
-        · exact Or.inl h
-        · exact Or.inr ⟨x, Or.inl h⟩
-
-/-- One split at a dual Sperner node with both sides of size at least 2, either variant. -/
-theorem fkA_split' {fuel : ℕ} {b : Bool} {C D : HG n} (sC : IsSperner C) (sD : IsSperner D)
-    (h : Dual univ C D) (hC : 2 ≤ C.card) (hD : 2 ≤ D.card) {x : Fin n}
-    (hx : splitVar C D = some x) :
-    (fkA (fuel + 1) b C D).2 =
-        1 + (fkA fuel b (del C x) (con D x)).2 + (fkA fuel b (del D x) (con C x)).2 ∧
-      fkADag (fuel + 1) b C D =
-        insert (C, D) (fkADag fuel b (del C x) (con D x) ∪ fkADag fuel b (del D x) (con C x)) := by
-  have hl : (fkA fuel b (del C x) (con D x)).1 = true := by
-    rw [fkA_correct]; exact decide_eq_true (dual_children h x).1
-  have hsize : ¬ (C.card * D.card ≤ 1) := by nlinarith
-  constructor <;>
-  simp [fkA, fkADag, minimal_eq_self sC, minimal_eq_self sD, conds_of_dual sC sD h, hx, hl, hsize,
-    show C.card ≠ 1 by omega, show D.card ≠ 1 by omega]
 
 /-- **The two orientations of a dual pair have the same tree size**: their children coincide. -/
 theorem fkA_comm (fuel : ℕ) (b : Bool) {C D : HG n} (h : Dual univ C D) :
     (fkA fuel b C D).2 = (fkA fuel b D C).2 := by
   cases fuel with
-  | zero => simp [fkA]
+  | zero => simp [fkAR]
   | succ f =>
     have hm : Dual univ (minimal C) (minimal D) := dual_minimal.2 h
     have h1 := conds_of_dual (minimal_isSperner C) (minimal_isSperner D) hm
     have h2 := conds_of_dual (minimal_isSperner D) (minimal_isSperner C) (dual_comm.1 hm)
     have hl := fun x => (dual_children hm x).1
     have hr := fun x => (dual_children hm x).2
-    simp only [fkA, h1, h2, Bool.not_true, Bool.false_eq_true, ite_false, splitVar_comm (minimal D),
+    simp only [fkA, fkAR, h1, h2, Bool.not_true, Bool.false_eq_true, ite_false, splitVar_comm (minimal D),
       Nat.mul_comm (minimal D).card, Bool.or_comm ((minimal D).card == 1)]
     split_ifs <;> try rfl
     split <;> try rfl
@@ -136,54 +98,29 @@ theorem IsMinorPair.lift {G H : HG n} {k : ℕ} {p : HG n × HG n} (hp : IsMinor
   obtain ⟨j, K, hK, h⟩ := hp
   exact ⟨k + j, K, hK.trans hH, h⟩
 
-/-- The left child of `(G, Tr G)` at `x` is `(G' − x, Tr(G' − x))`, `G' = min G`. -/
-theorem fkADag_left (f : ℕ) (b : Bool) (G : HG n) (x : Fin n) :
-    fkADag f b (del (minimal G) x) (con (minimal (tr univ G)) x) =
-      fkADag f b (del (minimal G) x) (tr univ (del (minimal G) x)) := by
-  rw [← fkADag_minimal f b _ (con _ x), minimal_tr, ← tr_minimal univ G,
-    minimal_con_tr (within_univ _) (mem_univ x), ← fkADag_minimal f b (del (minimal G) x) (tr univ _),
-    minimal_tr]
-
-/-- The right child of `(G, Tr G)` at `x` is `(Tr(G'/x), G'/x)`, `G' = min G`. -/
-theorem del_tr_eq (G : HG n) (x : Fin n) :
-    del (minimal (tr univ G)) x = tr univ (con (minimal G) x) := by
-  rw [minimal_tr, ← tr_minimal univ G, tr_con_eq]
-
-theorem fkA_left (f : ℕ) (b : Bool) (G : HG n) (x : Fin n) :
-    fkA f b (del (minimal G) x) (con (minimal (tr univ G)) x) =
-      fkA f b (del (minimal G) x) (tr univ (del (minimal G) x)) := by
-  rw [← fkA_minimal f b _ (con _ x), minimal_tr, ← tr_minimal univ G,
-    minimal_con_tr (within_univ _) (mem_univ x), ← fkA_minimal f b (del (minimal G) x) (tr univ _),
-    minimal_tr]
-
-/-- **Normal form.** Every subproblem of FK-A on `(G, Tr G)` or on `(Tr G, G)` is `(H, Tr H)` or
-`(Tr H, H)` for a Sperner-reduced minor `H` of `G`: a subfunction `f|ρ` of the input or its
-dual. -/
-theorem fkADag_minor (fuel : ℕ) (b : Bool) (G : HG n) :
-    (∀ p ∈ fkADag fuel b G (tr univ G), IsMinorPair G p) ∧
-      ∀ p ∈ fkADag fuel b (tr univ G) G, IsMinorPair G p := by
-  induction fuel generalizing G with
-  | zero =>
-    refine ⟨fun p hp => ⟨0, G, .refl, Or.inl ?_⟩, fun p hp => ⟨0, G, .refl, Or.inr ?_⟩⟩ <;>
-      simpa [fkADag, minimal_tr] using hp
-  | succ f ih =>
-    have hm : Minor G 0 (minimal G) := .min .refl
-    -- the two children, whichever orientation the parent has
-    have hL : ∀ x, ∀ p ∈ fkADag f b (del (minimal G) x) (con (minimal (tr univ G)) x),
-        IsMinorPair G p := fun x p hp => by
-      rw [fkADag_left] at hp
-      exact ((ih _).1 p hp).lift (.del x hm)
-    have hR : ∀ x, ∀ p ∈ fkADag f b (del (minimal (tr univ G)) x) (con (minimal G) x),
-        IsMinorPair G p := fun x p hp => by
-      rw [del_tr_eq] at hp
-      exact ((ih _).2 p hp).lift (.con x hm)
-    refine ⟨fun p hp => ?_, fun p hp => ?_⟩ <;> rcases mem_fkADag_succ hp with rfl | ⟨x, h | h⟩
-    · exact ⟨0, G, .refl, Or.inl (by rw [minimal_tr])⟩
-    · exact hL x p h
-    · exact hR x p h
-    · exact ⟨0, G, .refl, Or.inr (by rw [minimal_tr])⟩
-    · exact hR x p h
-    · exact hL x p h
+/-- **Normal form.** Under any rule, every subproblem of FK-A on `(G, Tr G)` or on `(Tr G, G)` is
+`(H, Tr H)` or `(Tr H, H)` for a Sperner-reduced minor `H` of `G`: a subfunction `f|ρ` of the
+input or its dual. -/
+theorem fkADag_minor (r : Rule n) (fuel : ℕ) (b : Bool) (G : HG n) :
+    (∀ p ∈ fkADagR r fuel b G (tr univ G), IsMinorPair G p) ∧
+      ∀ p ∈ fkADagR r fuel b (tr univ G) G, IsMinorPair G p := by
+  -- minors are closed under both children at every vertex, so any rule stays inside them
+  have hP : ∀ p ∈ {p | IsMinorPair G p}, ∀ x, r p.1 p.2 = some x →
+      (minimal (del p.1 x), minimal (con p.2 x)) ∈ {p | IsMinorPair G p} ∧
+        (minimal (del p.2 x), minimal (con p.1 x)) ∈ {p | IsMinorPair G p} := by
+    rintro p ⟨k, H, hH, hp⟩ x -
+    have hm : Minor G k (minimal H) := .min hH
+    obtain ⟨hl, hr⟩ := kids_eq (minimal_isSperner H) x
+    rw [tr_minimal] at hl hr
+    have L : IsMinorPair G (del (minimal H) x, tr univ (del (minimal H) x)) :=
+      ⟨k + 1, _, .del x hm, Or.inl (by rw [minimal_eq_self (del_isSperner (minimal_isSperner H) x)])⟩
+    have R : IsMinorPair G (tr univ (minimal (con (minimal H) x)), minimal (con (minimal H) x)) :=
+      ⟨k + 1, _, .con x hm, Or.inr (by rw [tr_minimal])⟩
+    rcases hp with rfl | rfl
+    · exact ⟨hl ▸ L, hr ▸ R⟩
+    · exact ⟨hr ▸ R, hl ▸ L⟩
+  refine ⟨fkADagR_sub hP fuel b _ _ ⟨0, G, .refl, Or.inl (by rw [minimal_tr])⟩,
+    fkADagR_sub hP fuel b _ _ ⟨0, G, .refl, Or.inr (by rw [minimal_tr])⟩⟩
 
 open Classical in
 /-- The Sperner-reduced minors of `G`: the distinct subfunctions `f|ρ`. -/
@@ -191,15 +128,15 @@ noncomputable def minors (G : HG n) : Finset (HG n) :=
   univ.filter fun H => ∃ k K, Minor G k K ∧ minimal K = H
 
 /-- **`δ ≤ 2 · #minors`.** A memoised FK-A solves at most two subproblems per subfunction. -/
-theorem card_fkADag_le_minors (fuel : ℕ) (b : Bool) (G : HG n) :
-    (fkADag fuel b G (tr univ G)).card ≤ 2 * (minors G).card := by
+theorem card_fkADag_le_minors (r : Rule n) (fuel : ℕ) (b : Bool) (G : HG n) :
+    (fkADagR r fuel b G (tr univ G)).card ≤ 2 * (minors G).card := by
   classical
-  have hsub : fkADag fuel b G (tr univ G) ⊆
+  have hsub : fkADagR r fuel b G (tr univ G) ⊆
       (minors G).image (fun H => (H, tr univ H)) ∪ (minors G).image (fun H => (tr univ H, H)) := by
     intro p hp
     have hK : ∀ k K, Minor G k K → minimal K ∈ minors G := fun k K hK => by
       simp only [minors, mem_filter, mem_univ, true_and]; exact ⟨k, K, hK, rfl⟩
-    obtain ⟨k, K, hk, h | h⟩ := (fkADag_minor fuel b G).1 p hp
+    obtain ⟨k, K, hk, h | h⟩ := (fkADag_minor r fuel b G).1 p hp
     · exact mem_union_left _ (mem_image.2 ⟨minimal K, hK k K hk, by rw [h, tr_minimal]⟩)
     · exact mem_union_right _ (mem_image.2 ⟨minimal K, hK k K hk, by rw [h, tr_minimal]⟩)
   calc _ ≤ _ := card_le_card hsub
@@ -239,12 +176,11 @@ theorem tau_ge_of_resilient (b : Bool) (d : ℕ) : ∀ (G : HG n) (fuel : ℕ), 
     obtain ⟨x, hx, -⟩ := splitVar_spec G' (tr univ G') (y₀ := y) (by unfold key; exact Nat.add_pos_left hy _)
     have hroot : fkA (f + 1) b G (tr univ G) = fkA (f + 1) b G' (tr univ G') := by
       rw [← fkA_minimal, minimal_tr, tr_minimal]
-    have hstep := (fkA_split' (fuel := f) (b := b) sG (tr_isSperner _ _) (dual_tr G')
-      hC hD hx).1
+    have hstep := fkA_split (fuel := f) (b := b) sG (tr_isSperner _ _) (dual_tr G') hC hD hx
     -- the children are `(G' − x, Tr)` and, up to orientation, `(G'/x, Tr)`
     have hL : (fkA f b (del G' x) (con (tr univ G') x)).2 =
         (fkA f b (del G' x) (tr univ (del G' x))).2 := by
-      have := fkA_left f b G x; rw [minimal_tr, ← tr_minimal univ G] at this; rw [this]
+      exact congrArg Prod.snd (fkAR_left splitVar f b G' x)
     have hR : (fkA f b (del (tr univ G') x) (con G' x)).2 =
         (fkA f b (con G' x) (tr univ (con G' x))).2 := by
       rw [← tr_con_eq]; exact (fkA_comm f b (dual_tr _)).symm
@@ -259,26 +195,26 @@ theorem tau_ge_of_resilient (b : Bool) (d : ℕ) : ∀ (G : HG n) (fuel : ℕ), 
 
 /-! ### Overlap: repeated work is superadditive -/
 
-/-- `δ ≤ τ`: the subproblems are among the tree's nodes. -/
-theorem card_fkADag_le (fuel : ℕ) (b : Bool) (C D : HG n) :
-    (fkADag fuel b C D).card ≤ (fkA fuel b C D).2 := by
+/-- `δ ≤ τ` under any rule: the subproblems are among the tree's nodes. -/
+theorem card_fkADag_le (r : Rule n) (fuel : ℕ) (b : Bool) (C D : HG n) :
+    (fkADagR r fuel b C D).card ≤ (fkAR r fuel b C D).2 := by
   induction fuel generalizing C D with
-  | zero => simp [fkA, fkADag]
+  | zero => simp [fkAR, fkADagR]
   | succ f ih =>
-    simp only [fkA, fkADag]
+    simp only [fkAR, fkADagR]
     split_ifs <;> try simp
-    rcases hs : splitVar (minimal C) (minimal D) with _ | x
+    rcases hs : r (minimal C) (minimal D) with _ | x
     · simp
     simp only
     have hL := ih (del (minimal C) x) (con (minimal D) x)
     have hR := ih (del (minimal D) x) (con (minimal C) x)
     split_ifs
-    · have := card_insert_le (minimal C, minimal D) (fkADag f b (del (minimal C) x)
-        (con (minimal D) x) ∪ fkADag f b (del (minimal D) x) (con (minimal C) x))
-      have := card_union_le (fkADag f b (del (minimal C) x) (con (minimal D) x))
-        (fkADag f b (del (minimal D) x) (con (minimal C) x))
+    · have := card_insert_le (minimal C, minimal D) (fkADagR r f b (del (minimal C) x)
+        (con (minimal D) x) ∪ fkADagR r f b (del (minimal D) x) (con (minimal C) x))
+      have := card_union_le (fkADagR r f b (del (minimal C) x) (con (minimal D) x))
+        (fkADagR r f b (del (minimal D) x) (con (minimal C) x))
       dsimp only; omega
-    · have := card_insert_le (minimal C, minimal D) (fkADag f b (del (minimal C) x)
+    · have := card_insert_le (minimal C, minimal D) (fkADagR r f b (del (minimal C) x)
         (con (minimal D) x))
       dsimp only; omega
 
@@ -286,21 +222,22 @@ theorem card_fkADag_le (fuel : ℕ) (b : Bool) (C D : HG n) :
 that of the two children plus the number of subproblems they share:
 `τ − δ ≥ (τ_L − δ_L) + (τ_R − δ_R) + |Δ_L ∩ Δ_R|`. A memo removes exactly this surplus, and
 iterating it along a chain of overlapping splits doubles `τ` while `δ` grows additively. -/
-theorem excess_split {fuel : ℕ} {b : Bool} {C D : HG n} (sC : IsSperner C) (sD : IsSperner D)
-    (h : Dual univ C D) (hC : 2 ≤ C.card) (hD : 2 ≤ D.card) {x : Fin n}
-    (hx : splitVar C D = some x) :
+theorem excess_split {r : Rule n} {fuel : ℕ} {b : Bool} {C D : HG n} (sC : IsSperner C)
+    (sD : IsSperner D) (h : Dual univ C D) (hC : 2 ≤ C.card) (hD : 2 ≤ D.card) {x : Fin n}
+    (hx : r C D = some x) :
     let L := (del C x, con D x)
     let R := (del D x, con C x)
-    let ΔL := fkADag fuel b L.1 L.2
-    let ΔR := fkADag fuel b R.1 R.2
-    ((fkA fuel b L.1 L.2).2 - ΔL.card) + ((fkA fuel b R.1 R.2).2 - ΔR.card) + (ΔL ∩ ΔR).card ≤
-      (fkA (fuel + 1) b C D).2 - (fkADag (fuel + 1) b C D).card := by
+    let ΔL := fkADagR r fuel b L.1 L.2
+    let ΔR := fkADagR r fuel b R.1 R.2
+    ((fkAR r fuel b L.1 L.2).2 - ΔL.card) + ((fkAR r fuel b R.1 R.2).2 - ΔR.card) +
+        (ΔL ∩ ΔR).card ≤
+      (fkAR r (fuel + 1) b C D).2 - (fkADagR r (fuel + 1) b C D).card := by
   intro L R ΔL ΔR
-  obtain ⟨hτ, hδ⟩ := fkA_split' (fuel := fuel) (b := b) sC sD h hC hD hx
+  obtain ⟨hτ, hδ⟩ := fkAR_split (fuel := fuel) (b := b) sC sD h hC hD hx
   have h1 := card_insert_le (C, D) (ΔL ∪ ΔR)
   have h2 := card_union_add_card_inter ΔL ΔR
-  have h3 := card_fkADag_le fuel b L.1 L.2
-  have h4 := card_fkADag_le fuel b R.1 R.2
+  have h3 := card_fkADag_le r fuel b L.1 L.2
+  have h4 := card_fkADag_le r fuel b R.1 R.2
   simp only [L, R, ΔL, ΔR] at *
   rw [hτ, hδ]
   omega
@@ -368,13 +305,14 @@ theorem ro12_delta :
     (runFKA true ro12 ro12d).2 = 59 ∧ (fkADag 13 true ro12 ro12d).card = 43 := by
   native_decide
 
-#print axioms fkADag_minor
-#print axioms card_fkADag_le_minors
-#print axioms fkA_comm
-#print axioms tau_ge_of_resilient
-#print axioms excess_split
-#print axioms ro12_cograph
-#print axioms ro12_readOnce
-#print axioms ro12_delta
+/-- **Theorem 4.9 does not reach the matching beyond `d = 2`.** Contracting both points of a
+pair of `matching(8)` gives the constant `{∅}`, a minor by two restrictions with one edge, so
+`matching(8)` is not 3-resilient (evaluation). -/
+theorem matching_eight_not_resilient : ¬ ∀ k < 3, ∀ H, Minor (matchS (n := 8) (range 4)) k H →
+    2 ≤ (minimal H).card ∧ 2 ≤ (tr univ H).card := by
+  intro h
+  have := (h 2 (by omega) _ (.con 1 (.con 0 .refl))).1
+  revert this
+  native_decide
 
 end HD

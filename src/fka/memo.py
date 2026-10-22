@@ -39,10 +39,11 @@ __all__ = ["MemoRun", "dag_size", "fk_a_memo"]
 
 
 def _key(C: Hypergraph, D: Hypergraph) -> tuple[int, tuple[int, ...], tuple[int, ...]]:
-    """The subproblem's identity. Matches :func:`fka.analysis.annotate`'s key.
+    """The subproblem's identity, the reduced pair ``(C, D)`` (Lean ``fkADag``).
+    Matches :func:`fka.analysis.annotate`'s key.
 
-    ``n`` is carried because ``phi_x_0`` drops variables, so two nodes can share
-    an edge tuple over different ground sets.
+    ``n`` is the ground set, the same at every node of one run (``phi_x_*`` and
+    ``vee`` keep it); it only separates keys across runs on different ``n``.
     """
     return (C.n, C.edges, D.edges)
 

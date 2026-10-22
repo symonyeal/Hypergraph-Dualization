@@ -3,15 +3,19 @@ Copyright (c) 2026 Saimon Y. Islam. Released under the GPL-3.0-or-later.
 
 # FK-A's recursion tree against its subproblem DAG (research track C)
 
-`fkA` counts the nodes `τ` of the recursion tree. `fkADag` collects the distinct
-Sperner-reduced pairs `(C, D)` the recursion visits; its cardinality is `δ`, the number of
-subproblems a memoised FK-A solves.
+`fkAR r` counts the nodes `τ` of the recursion tree under the split rule `r`. `fkADagR r`
+collects the distinct Sperner-reduced pairs `(C, D)` the recursion visits; its cardinality is
+`δ`, the number of subproblems a memoised FK-A solves. `fkA` and `fkADag` are the degree-sum
+instances.
 
 | Lean | Statement |
 | --- | --- |
 | `fkADag` | the set of distinct subproblems of the FK-A recursion |
 | `tr_con_eq`, `minimal_con_tr` | `Tr(G / x) = Tr(G) − x` and `min(Tr(G) / x) = Tr(G − x)` |
-| `fkA_split`, `fkADag_split` | one step of the recursion at a dual node |
+| `fkADagR`, `fkADag` | subproblems under a rule `r`; `fkADag = fkADagR splitVar` |
+| `fkADagR_sub` | a child-closed set of pairs contains every subproblem of its members |
+| `fkAR_split` | one step of the recursion at a dual node, any rule and variant |
+| `kids_eq` | the reduced children of `(K, Tr K)` are `(K − x, Tr(K − x))` and `(Tr(K/x), K/x)` |
 | `splitVar_spec` | the split vertex has the largest positive degree sum |
 | `fkADag_within` | every subproblem lives on the vertices of its root |
 -/
@@ -26,8 +30,8 @@ variable {n : ℕ}
 
 /-! ### The subproblem DAG -/
 
-/-- The distinct Sperner-reduced pairs visited by FK-A, node for node with `fkA`. -/
-def fkADag : ℕ → Bool → HG n → HG n → Finset (HG n × HG n)
+/-- The distinct Sperner-reduced pairs visited by `fkAR r`, node for node. -/
+def fkADagR (r : Rule n) : ℕ → Bool → HG n → HG n → Finset (HG n × HG n)
   | 0, _, C₀, D₀ => {(minimal C₀, minimal D₀)}
   | fuel + 1, modified, C₀, D₀ =>
     let C := minimal C₀
@@ -35,30 +39,92 @@ def fkADag : ℕ → Bool → HG n → HG n → Finset (HG n × HG n)
     if !conds C D then {(C, D)}
     else if C.card * D.card ≤ 1 || (modified && (C.card == 1 || D.card == 1)) then {(C, D)}
     else
-      match splitVar C D with
+      match r C D with
       | none => {(C, D)}
       | some x =>
-        let l := fkADag fuel modified (del C x) (con D x)
-        if (fkA fuel modified (del C x) (con D x)).1 then
-          insert (C, D) (l ∪ fkADag fuel modified (del D x) (con C x))
+        let l := fkADagR r fuel modified (del C x) (con D x)
+        if (fkAR r fuel modified (del C x) (con D x)).1 then
+          insert (C, D) (l ∪ fkADagR r fuel modified (del D x) (con C x))
         else insert (C, D) l
+
+/-- The distinct subproblems of FK-A as published (degree-sum rule). -/
+abbrev fkADag : ℕ → Bool → HG n → HG n → Finset (HG n × HG n) := fkADagR splitVar
 
 theorem minimal_minimal {α : Type*} [DecidableEq α] (H : Finset (Finset α)) :
     minimal (minimal H) = minimal H :=
   minimal_eq_self (minimal_isSperner H)
 
+theorem fkAR_minimal (r : Rule n) (fuel : ℕ) (b : Bool) (C D : HG n) :
+    fkAR r fuel b (minimal C) (minimal D) = fkAR r fuel b C D := by
+  cases fuel <;> simp only [fkAR, minimal_minimal]
+
+theorem fkADagR_minimal (r : Rule n) (fuel : ℕ) (b : Bool) (C D : HG n) :
+    fkADagR r fuel b (minimal C) (minimal D) = fkADagR r fuel b C D := by
+  cases fuel <;> simp only [fkADagR, minimal_minimal]
+
 theorem fkA_minimal (fuel : ℕ) (b : Bool) (C D : HG n) :
-    fkA fuel b (minimal C) (minimal D) = fkA fuel b C D := by
-  cases fuel <;> simp only [fkA, minimal_minimal]
+    fkA fuel b (minimal C) (minimal D) = fkA fuel b C D := fkAR_minimal splitVar fuel b C D
 
 theorem fkADag_minimal (fuel : ℕ) (b : Bool) (C D : HG n) :
-    fkADag fuel b (minimal C) (minimal D) = fkADag fuel b C D := by
-  cases fuel <;> simp only [fkADag, minimal_minimal]
+    fkADag fuel b (minimal C) (minimal D) = fkADag fuel b C D :=
+  fkADagR_minimal splitVar fuel b C D
+
+theorem root_mem_fkADagR (r : Rule n) (fuel : ℕ) (b : Bool) (C D : HG n) :
+    (minimal C, minimal D) ∈ fkADagR r fuel b C D := by
+  cases fuel with
+  | zero => simp [fkADagR]
+  | succ f =>
+    simp only [fkADagR]
+    split_ifs
+    · exact mem_singleton_self _
+    · exact mem_singleton_self _
+    · split
+      · exact mem_singleton_self _
+      · split_ifs <;> exact mem_insert_self _ _
+
+/-- Every subproblem is the root or a subproblem of a child at the vertex the rule chose. -/
+theorem mem_fkADagR_succ {r : Rule n} {f : ℕ} {b : Bool} {C D : HG n} {p : HG n × HG n}
+    (hp : p ∈ fkADagR r (f + 1) b C D) : p = (minimal C, minimal D) ∨
+      ∃ x, r (minimal C) (minimal D) = some x ∧
+        (p ∈ fkADagR r f b (del (minimal C) x) (con (minimal D) x) ∨
+          p ∈ fkADagR r f b (del (minimal D) x) (con (minimal C) x)) := by
+  simp only [fkADagR] at hp
+  split_ifs at hp
+  · exact Or.inl (mem_singleton.1 hp)
+  · exact Or.inl (mem_singleton.1 hp)
+  · split at hp
+    · exact Or.inl (mem_singleton.1 hp)
+    · rename_i x hx
+      split_ifs at hp
+      · rcases mem_insert.1 hp with h | h
+        · exact Or.inl h
+        · rcases mem_union.1 h with h | h
+          · exact Or.inr ⟨x, hx, Or.inl h⟩
+          · exact Or.inr ⟨x, hx, Or.inr h⟩
+      · rcases mem_insert.1 hp with h | h
+        · exact Or.inl h
+        · exact Or.inr ⟨x, hx, Or.inl h⟩
+
+/-- **Closure.** A set `P` of reduced pairs that contains both reduced children of each of its
+members the rule splits contains every subproblem of a root in `P`. -/
+theorem fkADagR_sub {r : Rule n} {P : Set (HG n × HG n)}
+    (hP : ∀ p ∈ P, ∀ x, r p.1 p.2 = some x →
+      (minimal (del p.1 x), minimal (con p.2 x)) ∈ P ∧ (minimal (del p.2 x), minimal (con p.1 x)) ∈ P)
+    (fuel : ℕ) (b : Bool) : ∀ C D : HG n, (minimal C, minimal D) ∈ P →
+      ∀ p ∈ fkADagR r fuel b C D, p ∈ P := by
+  induction fuel with
+  | zero => intro C D h p hp; simp only [fkADagR, mem_singleton] at hp; exact hp ▸ h
+  | succ f ih =>
+    intro C D h p hp
+    rcases mem_fkADagR_succ hp with rfl | ⟨x, hx, hp | hp⟩
+    · exact h
+    · exact ih _ _ (hP _ h x hx).1 p hp
+    · exact ih _ _ (hP _ h x hx).2 p hp
 
 /-- The two FK-A children of a dual pair are dual. -/
 theorem dual_children {C D : HG n} (h : Dual univ C D) (x : Fin n) :
     Dual univ (del C x) (con D x) ∧ Dual univ (del D x) (con C x) := by
-  have hsplit := (dual_split (within_univ C) (within_univ D) (mem_univ x)).1 h
+  have hsplit := (dual_split (mem_univ x)).1 h
   have hL := dual_erase_of_notMem (U := (univ : Finset (Fin n)))
     (G := del C x) (H := con D x) (x := x)
     (fun e he => (mem_filter.1 he).2) (fun e he => by
@@ -69,47 +135,53 @@ theorem dual_children {C D : HG n} (h : Dual univ C D) (x : Fin n) :
       obtain ⟨f, -, rfl⟩ := mem_image.1 he; exact notMem_erase x f)
   exact ⟨hL.1 hsplit.1, hR.1 hsplit.2⟩
 
-/-- One step of FK-A (modified) at a dual node with both sides of size at least 2. -/
-theorem fkA_split {fuel : ℕ} {C D : HG n} (sC : IsSperner C) (sD : IsSperner D)
-    (h : Dual univ C D) (hC : 2 ≤ C.card) (hD : 2 ≤ D.card) {x : Fin n}
-    (hx : splitVar C D = some x) :
-    (fkA (fuel + 1) true C D).2 =
-      1 + (fkA fuel true (del C x) (con D x)).2 + (fkA fuel true (del D x) (con C x)).2 := by
-  have hl : (fkA fuel true (del C x) (con D x)).1 = true := by
-    rw [fkA_correct]; exact decide_eq_true (dual_children h x).1
+/-- One step of FK-A, any rule and variant, at a dual Sperner node with both sides of size at
+least 2: a dual node is never pruned, so both children are entered. -/
+theorem fkAR_split {r : Rule n} {fuel : ℕ} {b : Bool} {C D : HG n} (sC : IsSperner C)
+    (sD : IsSperner D) (h : Dual univ C D) (hC : 2 ≤ C.card) (hD : 2 ≤ D.card) {x : Fin n}
+    (hx : r C D = some x) :
+    (fkAR r (fuel + 1) b C D).2 =
+        1 + (fkAR r fuel b (del C x) (con D x)).2 + (fkAR r fuel b (del D x) (con C x)).2 ∧
+      fkADagR r (fuel + 1) b C D =
+        insert (C, D) (fkADagR r fuel b (del C x) (con D x) ∪ fkADagR r fuel b (del D x) (con C x)) := by
+  have hl : (fkAR r fuel b (del C x) (con D x)).1 = true := by
+    rw [fkAR_correct]; exact decide_eq_true (dual_children h x).1
   have hsize : ¬ (C.card * D.card ≤ 1) := by nlinarith
-  simp [fkA, minimal_eq_self sC, minimal_eq_self sD, conds_of_dual sC sD h, hx, hl, hsize,
-    show C.card ≠ 1 by omega, show D.card ≠ 1 by omega]
+  constructor <;>
+  simp [fkAR, fkADagR, minimal_eq_self sC, minimal_eq_self sD, conds_of_dual sC sD h, hx, hl,
+    hsize, show C.card ≠ 1 by omega, show D.card ≠ 1 by omega]
 
-theorem fkADag_split {fuel : ℕ} {C D : HG n} (sC : IsSperner C) (sD : IsSperner D)
+theorem fkA_split {fuel : ℕ} {b : Bool} {C D : HG n} (sC : IsSperner C) (sD : IsSperner D)
     (h : Dual univ C D) (hC : 2 ≤ C.card) (hD : 2 ≤ D.card) {x : Fin n}
     (hx : splitVar C D = some x) :
-    fkADag (fuel + 1) true C D =
-      insert (C, D) (fkADag fuel true (del C x) (con D x) ∪
-        fkADag fuel true (del D x) (con C x)) := by
-  have hl : (fkA fuel true (del C x) (con D x)).1 = true := by
-    rw [fkA_correct]; exact decide_eq_true (dual_children h x).1
-  have hsize : ¬ (C.card * D.card ≤ 1) := by nlinarith
-  simp [fkADag, minimal_eq_self sC, minimal_eq_self sD, conds_of_dual sC sD h, hx, hl, hsize,
-    show C.card ≠ 1 by omega, show D.card ≠ 1 by omega]
+    (fkA (fuel + 1) b C D).2 =
+      1 + (fkA fuel b (del C x) (con D x)).2 + (fkA fuel b (del D x) (con C x)).2 :=
+  (fkAR_split sC sD h hC hD hx).1
+
+theorem fkADag_split {fuel : ℕ} {b : Bool} {C D : HG n} (sC : IsSperner C) (sD : IsSperner D)
+    (h : Dual univ C D) (hC : 2 ≤ C.card) (hD : 2 ≤ D.card) {x : Fin n}
+    (hx : splitVar C D = some x) :
+    fkADag (fuel + 1) b C D =
+      insert (C, D) (fkADag fuel b (del C x) (con D x) ∪ fkADag fuel b (del D x) (con C x)) :=
+  (fkAR_split sC sD h hC hD hx).2
 
 /-- A dual node with a single edge on one side is a leaf of the modified FK-A. -/
 theorem fkA_single {fuel : ℕ} {C D : HG n} (sC : IsSperner C) (sD : IsSperner D)
     (h : Dual univ C D) (hC : C.card = 1) :
     (fkA fuel true C D).2 = 1 ∧ fkADag fuel true C D = {(C, D)} := by
   cases fuel with
-  | zero => simp [fkA, fkADag, minimal_eq_self sC, minimal_eq_self sD]
+  | zero => simp [fkAR, fkADagR, minimal_eq_self sC, minimal_eq_self sD]
   | succ fuel =>
-    simp [fkA, fkADag, minimal_eq_self sC, minimal_eq_self sD, conds_of_dual sC sD h, hC]
+    simp [fkAR, fkADagR, minimal_eq_self sC, minimal_eq_self sD, conds_of_dual sC sD h, hC]
 
 /-- A node whose reduced left side is empty is a leaf. -/
 theorem fkA_empty {fuel : ℕ} {b : Bool} {C D : HG n} (hC : minimal C = ∅) :
     (fkA fuel b C D).2 = 1 ∧ fkADag fuel b C D = {(∅, minimal D)} := by
   cases fuel with
-  | zero => simp [fkA, fkADag, hC]
+  | zero => simp [fkAR, fkADagR, hC]
   | succ fuel =>
-    simp only [fkA, fkADag, hC, card_empty, zero_mul, zero_le, decide_true, Bool.true_or,
-      ite_true]
+    simp only [fkA, fkADag, fkAR, fkADagR, hC, card_empty, zero_mul, zero_le, decide_true,
+      Bool.true_or, ite_true]
     split_ifs <;> simp
 
 /-! ### The split vertex -/
@@ -262,7 +334,7 @@ theorem tr_con_eq (G : Finset (Finset α)) (x : α) : tr U (con G x) = del (tr U
     exact (hits_con_iff fun h' => hx (mem_of_mem_erase h')).1 h
 
 /-- `min(Tr(G) / x) = Tr(G − x)`. -/
-theorem minimal_con_tr {G : Finset (Finset α)} (hG : Within U G) {x : α} (hxU : x ∈ U) :
+theorem minimal_con_tr {G : Finset (Finset α)} {x : α} (hxU : x ∈ U) :
     minimal (con (tr U G) x) = tr U (del G x) := by
   -- every `T − x` with `T ∈ Tr G` hits `G − x`
   have hA : ∀ S ∈ con (tr U G) x, Hits (del G x) S ∧ S ⊆ U := by
@@ -327,36 +399,50 @@ theorem within_con {α : Type*} [DecidableEq α] {V : Finset α} {H : Finset (Fi
   obtain ⟨f, hf, rfl⟩ := mem_image.1 he
   exact (erase_subset x f).trans (h f hf)
 
-theorem fkADag_within {V : Finset (Fin n)} :
-    ∀ (fuel : ℕ) (b : Bool) (C D : HG n), Within V C → Within V D →
-      ∀ p ∈ fkADag fuel b C D, Within V p.1 ∧ Within V p.2 := by
-  intro fuel
-  induction fuel with
-  | zero =>
-    intro b C D hC hD p hp
-    simp only [fkADag, mem_singleton] at hp
-    subst hp
-    exact ⟨within_minimal hC, within_minimal hD⟩
-  | succ fuel ih =>
-    intro b C D hC hD p hp
-    have hC' := within_minimal hC
-    have hD' := within_minimal hD
-    simp only [fkADag] at hp
-    split_ifs at hp
-    · rw [mem_singleton] at hp; subst hp; exact ⟨hC', hD'⟩
-    · rw [mem_singleton] at hp; subst hp; exact ⟨hC', hD'⟩
-    · split at hp
-      · rw [mem_singleton] at hp; subst hp; exact ⟨hC', hD'⟩
-      · rename_i x _
-        split_ifs at hp
-        · rcases mem_insert.1 hp with rfl | hp
-          · exact ⟨hC', hD'⟩
-          rcases mem_union.1 hp with hp | hp
-          · exact ih b _ _ (within_del hC' x) (within_con hD' x) p hp
-          · exact ih b _ _ (within_del hD' x) (within_con hC' x) p hp
-        · rcases mem_insert.1 hp with rfl | hp
-          · exact ⟨hC', hD'⟩
-          · exact ih b _ _ (within_del hC' x) (within_con hD' x) p hp
+theorem fkADag_within {V : Finset (Fin n)} (fuel : ℕ) (b : Bool) (C D : HG n)
+    (hC : Within V C) (hD : Within V D) : ∀ p ∈ fkADag fuel b C D, Within V p.1 ∧ Within V p.2 :=
+  fkADagR_sub (P := {p | Within V p.1 ∧ Within V p.2})
+    (fun _ h x _ => ⟨⟨within_minimal (within_del h.1 x), within_minimal (within_con h.2 x)⟩,
+      ⟨within_minimal (within_del h.2 x), within_minimal (within_con h.1 x)⟩⟩)
+    fuel b C D ⟨within_minimal hC, within_minimal hD⟩
+
+/-! ### The children of a dual node -/
+
+theorem minimal_tr (H : HG n) : minimal (tr univ H) = tr univ H :=
+  minimal_eq_self (tr_isSperner _ _)
+
+theorem del_isSperner {H : HG n} (h : IsSperner H) (x : Fin n) : IsSperner (del H x) :=
+  fun e he f hf hef => h e (filter_subset _ _ he) f (filter_subset _ _ hf) hef
+
+/-- The two reduced children of `(K, Tr K)` at `x`: `(K − x, Tr(K − x))` and
+`(Tr(K/x), K/x)`, reduced (Lemma 4.1). -/
+theorem kids_eq {K : HG n} (sK : IsSperner K) (x : Fin n) :
+    (minimal (del K x), minimal (con (tr univ K) x)) = (del K x, tr univ (del K x)) ∧
+      (minimal (del (tr univ K) x), minimal (con K x)) =
+        (tr univ (minimal (con K x)), minimal (con K x)) := by
+  refine ⟨by rw [minimal_eq_self (del_isSperner sK x), minimal_con_tr (mem_univ x)], ?_⟩
+  rw [← tr_con_eq, minimal_tr, tr_minimal]
+
+theorem fkAR_left (r : Rule n) (f : ℕ) (b : Bool) (K : HG n) (x : Fin n) :
+    fkAR r f b (del K x) (con (tr univ K) x) = fkAR r f b (del K x) (tr univ (del K x)) := by
+  rw [← fkAR_minimal r f b (del K x) (con _ x), ← fkAR_minimal r f b (del K x) (tr univ _),
+    minimal_con_tr (mem_univ x), minimal_tr]
+
+theorem fkAR_right (r : Rule n) (f : ℕ) (b : Bool) (K : HG n) (x : Fin n) :
+    fkAR r f b (del (tr univ K) x) (con K x) =
+      fkAR r f b (tr univ (minimal (con K x))) (minimal (con K x)) := by
+  rw [← tr_con_eq, ← fkAR_minimal, minimal_tr, ← tr_minimal univ (con K x)]
+
+theorem fkADagR_left (r : Rule n) (f : ℕ) (b : Bool) (K : HG n) (x : Fin n) :
+    fkADagR r f b (del K x) (con (tr univ K) x) =
+      fkADagR r f b (del K x) (tr univ (del K x)) := by
+  rw [← fkADagR_minimal r f b (del K x) (con _ x), ← fkADagR_minimal r f b (del K x) (tr univ _),
+    minimal_con_tr (mem_univ x), minimal_tr]
+
+theorem fkADagR_right (r : Rule n) (f : ℕ) (b : Bool) (K : HG n) (x : Fin n) :
+    fkADagR r f b (del (tr univ K) x) (con K x) =
+      fkADagR r f b (tr univ (minimal (con K x))) (minimal (con K x)) := by
+  rw [← tr_con_eq, ← fkADagR_minimal, minimal_tr, ← tr_minimal univ (con K x)]
 
 /-! ### Facts about transversals used by the families -/
 
@@ -674,11 +760,11 @@ theorem rnode {y : Fin n} {S' : Finset ℕ} (hS : Fits n S') (hy : y.val / 2 ∉
   obtain ⟨hL1, hL2⟩ := fkA_empty (fuel := g) (b := true) (D := con Q x') hL
   have hR : fkA g true (del Q x') (con (tr univ Q) x') =
       fkA g true (matchS (n := n) S') (tr univ (matchS S')) := by
-    rw [← fkA_minimal, minimal_con_tr (within_univ Q) (mem_univ x'), del_Qf hy,
+    rw [← fkA_minimal, minimal_con_tr (mem_univ x'), del_Qf hy,
       minimal_eq_self (matchS_sperner hS)]
   have hRD : fkADag g true (del Q x') (con (tr univ Q) x') =
       fkADag g true (matchS (n := n) S') (tr univ (matchS S')) := by
-    rw [← fkADag_minimal, minimal_con_tr (within_univ Q) (mem_univ x'), del_Qf hy,
+    rw [← fkADag_minimal, minimal_con_tr (mem_univ x'), del_Qf hy,
       minimal_eq_self (matchS_sperner hS)]
   refine ⟨?_, ?_⟩
   · rw [fkA_split sT sQ hd hcardT hcardQ hx', hL1, hR]
@@ -687,17 +773,8 @@ theorem rnode {y : Fin n} {S' : Finset ℕ} (hS : Fits n S') (hy : y.val / 2 ∉
 end Matching
 
 theorem root_mem_fkADag (fuel : ℕ) (b : Bool) (C D : HG n) :
-    (minimal C, minimal D) ∈ fkADag fuel b C D := by
-  cases fuel with
-  | zero => simp [fkADag]
-  | succ f =>
-    simp only [fkADag]
-    split_ifs
-    · exact mem_singleton_self _
-    · exact mem_singleton_self _
-    · split
-      · exact mem_singleton_self _
-      · split_ifs <;> exact mem_insert_self _ _
+    (minimal C, minimal D) ∈ fkADag fuel b C D :=
+  root_mem_fkADagR splitVar fuel b C D
 
 section Matching
 
@@ -767,11 +844,11 @@ theorem matching_law : ∀ (k : ℕ) (S : Finset ℕ), S.card = k + 1 → Fits n
     have hRC : con C x = Qf y S' := con_matchS hS hxS
     have hLeq : ∀ g, fkA g true (del C x) (con (tr univ C) x) =
         fkA g true (matchS S') (tr univ (matchS S')) := fun g => by
-      rw [← fkA_minimal, minimal_con_tr (within_univ C) (mem_univ x), hCdef, del_matchS,
+      rw [← fkA_minimal, minimal_con_tr (mem_univ x), hCdef, del_matchS,
         minimal_eq_self (matchS_sperner hS')]
     have hLeqD : ∀ g, fkADag g true (del C x) (con (tr univ C) x) =
         fkADag g true (matchS S') (tr univ (matchS S')) := fun g => by
-      rw [← fkADag_minimal, minimal_con_tr (within_univ C) (mem_univ x), hCdef, del_matchS,
+      rw [← fkADag_minimal, minimal_con_tr (mem_univ x), hCdef, del_matchS,
         minimal_eq_self (matchS_sperner hS')]
     have hReq : del (tr univ C) x = tr univ (Qf y S') := by rw [← tr_con_eq, hRC]
     -- the DAG at any sufficient fuel
@@ -1219,12 +1296,12 @@ theorem threshold_law : ∀ (k : ℕ), 1 ≤ k → 2 * k ≤ n → ∀ fuel, k �
     -- the two children
     have hLeq : ∀ g, fkA g true (del C t) (con (tr univ C) t) =
         fkA g true (thr (n := n) (k + 1)) (tr univ (thr (k + 1))) := fun g => by
-      rw [← fkA_minimal, minimal_con_tr (within_univ C) (mem_univ t), hCdef, del_thr,
+      rw [← fkA_minimal, minimal_con_tr (mem_univ t), hCdef, del_thr,
         minimal_eq_self (thr_sperner _)]
       rfl
     have hLeqD : ∀ g, fkADag g true (del C t) (con (tr univ C) t) =
         fkADag g true (thr (n := n) (k + 1)) (tr univ (thr (k + 1))) := fun g => by
-      rw [← fkADag_minimal, minimal_con_tr (within_univ C) (mem_univ t), hCdef, del_thr,
+      rw [← fkADag_minimal, minimal_con_tr (mem_univ t), hCdef, del_thr,
         minimal_eq_self (thr_sperner _)]
       rfl
     have hRd : Dual univ (minimal (del (tr univ C) t)) (minimal (con C t)) :=

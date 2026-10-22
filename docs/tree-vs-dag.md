@@ -3,7 +3,8 @@
 Thesis p.12: "The performance of FK-A is determined by the number of subproblems
 it generates, and this is reflected in the number of nodes of the recursion
 tree." The first clause is the right measure. The second is false on this
-project's own instances, by a factor of up to 280.
+project's own instances, by a factor of 280 on `gk-f3` and of about `10¹²` on `gk-f4`
+(research §4, Observation 4.4).
 
 Write, for a dual pair with `N = |C| + |D|`,
 
@@ -101,11 +102,13 @@ are false under FK-A's own split rule:
 
 | instance | n | N | delta (degree sum) | delta (leftmost) |
 | --- | ---: | ---: | ---: | ---: |
-| `ro12` (read-once, 12 points) | 12 | 21 | **43** | 12 |
+| `ro12` (read-once, 12 points) | 12 | 21 | **43** | 12 (leaves renumbered); 91 (labels as given) |
 | `gk-f3` | 32 | 192 | 369 | 32 |
 | `gk-f4` | 128 | 49,152 | **67,247,387** | 128 |
 
-`ro12` is proved read-once with `delta = 43 > 2N` in Lean (`Blowup.lean`, `ro12_delta`);
+`ro12` is proved read-once with `delta = 43 > 2N` in Lean (`Blowup.lean`, `ro12_delta`). Its
+leftmost count depends on the labelling: 12 with the leaves renumbered left to right, 91 with the
+interleaved labels of `ro12` itself (`ro12_rules`; research §4, *Split rules*);
 `gk-f4` is computed by `experiments/readonce_dag`. Random read-once formulas with fan-in 3 or 4
 exceed `2N` often. The first corpus missed them because its random formulas were binary and
 small. See `docs/research-2026-10.md`, Observations 4.4-4.11.
@@ -133,13 +136,16 @@ The search in [hard-cases.md](hard-cases.md) was run against `tau`; run against 
 | `gk-f3` | 369 | 1,952 | 0.19 |
 | `word-xy` | 28 | 193 | 0.14 |
 
-`delta <= 4*beta` on every instance, with the maximum on the two smallest; and
-`delta/beta` falls steadily as instances grow. So **FK-B's asymptotic advantage
-is entirely subsumed by a transposition table on FK-A**, and what FK-B keeps is
-a bounded constant factor from its shallower base case -- `min(|C|,|D|) <= 2`
+`delta <= 4*beta` on every instance of this table, with the maximum on the two
+smallest; and `delta/beta` falls as these instances grow. So **on this library
+FK-B's advantage is subsumed by a transposition table on FK-A**, and what FK-B
+keeps is a constant factor from its shallower base case -- `min(|C|,|D|) <= 2`
 against `nC*nD <= 1`, which is a whole binary subtree per leaf
 ([fk-a-vs-fk-b.md](fk-a-vs-fk-b.md) §4). The two improvements are independent,
-and the algorithm to reach for is FK-A with both.
+and on this library the algorithm to reach for is FK-A with both. The table is
+seven instances, not an asymptotic statement: under FK-A's own rule `gk-f4` has
+`delta = 67,247,387` (research §4), where `beta` was not measured, and whether
+`delta/N` is unbounded on GK is open (Conjecture 4.19).
 
 This also dissolves the "predictor" of [fk-a-vs-fk-b.md](fk-a-vs-fk-b.md) §2.
 The repeat rate `rho` is not an empirical correlate of FK-B's advantage; it is

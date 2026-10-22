@@ -76,8 +76,9 @@ gives `2^3`, TK `S_2` gives `2^15`, and the mixed-arity `T_XY` gives
 There is a second read-once certificate, cheaper than conformality where
 conformality is awkward (the Fano plane, the asymmetric instances):
 
-> **(2.1)** if `Aut(MBF)` is primitive and is not `S_n` or `A_n`, then `MBF` is not
-> read-once.
+> **(2.1)** if `Aut(MBF)` is primitive and is not `S_n`, then `MBF` is not read-once.
+> This is research Proposition 2.5 (`aut_eq_top_of_readOnce`, Lean); the Python check in
+> `fka.selfdual` tests the weaker form with `A_n` excluded as well.
 
 A cograph on at least two vertices has exactly one of `G`, `G^c` disconnected
 (4.4.7), so the cotree's subtrees at any level are a block system unless the
@@ -147,9 +148,10 @@ only under-report.
 Two things come out of the exhaustive pass, 26 rows over 21 distinct pairs.
 
 > **(5.1)** A read-once root produces **no** primitive node anywhere in either
-> tree -- 13 of 13 such rows, `prim depth = -1`. That is Proposition
-> **(2.1)** in its recursive form: substitution never manufactures a primitive
-> group, so the alternating trees stay in the imprimitive regime at every level.
+> tree -- 13 of 13 such rows, `prim depth = -1` (computed). It is consistent with
+> **(2.1)** applied at every node: a restriction of a read-once function is
+> read-once, so a primitive node would need the full symmetric group. That
+> substitution never manufactures a primitive group is this reading, not a proof.
 > The converse fails, and widely: `6a`, `7ver`, `8ver`, `fano`, `sdfp-sd-1`,
 > `sdfp-sd-2` and `threshold-10` all have non-read-once roots and still no
 > primitive node, being non-conformal with imprimitive groups. Only four rows

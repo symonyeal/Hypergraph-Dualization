@@ -11,17 +11,20 @@ size is `|𝒮|`. Such an `𝒮` is a read-once branching program (an FBDD) comp
 `run` follows the labels and returns `H(S)` (`run_correct`), and the variables tested on any path
 are distinct (`path_nodup`).
 
-1. *The memo DAG is an FBDD.* For a valid symmetric split rule (`splitVar`, `leftRule`), the two
-   sides of the subproblems of the unmodified FK-A on `(G, Tr G)`, together with the constants,
-   form an FBDD for `f` labelled by the rule, of size at most `2δ + 2` (`memo_fbdd`). Under the
-   modified variant the same holds with single-term and single-clause leaves (`memo_bp`).
-   Hence every rule has `δ ≥ (FBDD(f) − 2)/2`: an FBDD lower bound for `f` is a lower bound
-   for memoised FK-A under every rule.
-2. *Conversely* an FBDD `𝒮` for `f` gives a rule with `δ ≤ 2|𝒮|` (`rule_of_fbdd`). So the least
-   `δ` over split rules and the least FBDD named by its functions agree within a factor 2.
+1. *The memo DAG is an FBDD.* For a valid symmetric split rule (`splitVar`, `leftRule`,
+   `guardRule`), the two sides of the subproblems of the unmodified FK-A on `(G, Tr G)`, together
+   with the constants, form an FBDD named by its functions for `f`, labelled by the rule, of
+   size at most `2δ + 2` (`memo_fbdd`). Under the modified variant the same family is a branching
+   program with single-term and single-clause leaves (`memo_bp`). Hence every valid symmetric
+   rule has `δ ≥ (s − 2)/2` on unmodified FK-A, `s` the least size of an FBDD named by its
+   functions.
+2. *Conversely* an FBDD `𝒮` named by its functions gives a valid symmetric rule (`fbddRule`)
+   with `δ ≤ 2|𝒮|`, either variant (`rule_of_fbdd`). So on unmodified FK-A the least `δ` over
+   valid symmetric rules and the least FBDD named by its functions agree within a factor 2.
 
-A static vertex order gives an OBDD; under the leftmost rule on a read-once formula with leaves
-in order, the nodes are the `≤ n` states of `ReadOnceFormula` (`leftmost_delta`).
+A family closed under a valid rule is an FBDD labelled by it (`isFBDD_of_closed`). Under the
+leftmost rule on a read-once formula with leaves in order, the states of `ReadOnceFormula` and
+the constants form an FBDD with at most `|vars f| + 2` nodes (`Fm.leftmost_fbdd`).
 
 | Lean | Statement |
 | --- | --- |
@@ -30,7 +33,8 @@ in order, the nodes are the `≤ n` states of `ReadOnceFormula` (`leftmost_delta
 | `Valid`, `valid_splitVar`, `valid_leftRule` | a rule returns a vertex of the support, whenever there is one |
 | `memo_good` | every memo node is a leaf of the variant or has both children in the memo |
 | `memo_bp`, `memo_fbdd` | the memo DAG is a BP (term/clause leaves) / an FBDD of size `≤ 2δ + 2` |
-| `rule_of_fbdd` | an FBDD of size `s` gives a rule with `δ ≤ 2s` |
+| `fbddRule`, `rule_of_fbdd` | an FBDD of size `s` gives a valid symmetric rule with `δ ≤ 2s` |
+| `isFBDD_of_closed`, `Fm.leftmost_fbdd` | a rule-closed family is an FBDD; the leftmost FBDD has `≤ \|vars f\| + 2` nodes |
 -/
 import HypergraphDualization.ReadOnceFormula
 
@@ -105,9 +109,9 @@ theorem run_correct {𝒮 : Finset (HG n)} {ℓ : HG n → Option (Fin n)} (h : 
     simp only [run, hs, if_false, hx]
     by_cases hxS : x ∈ S
     · rw [if_pos hxS, ih _ h1 (hc _ (support_con_sub H x))]
-      simp only [decide_eq_decide, upHit_minimal, upHit_con_iff, insert_eq_of_mem hxS]
+      simp only [upHit_minimal, upHit_con, insert_eq_of_mem hxS]
     · rw [if_neg hxS, ih _ h0 (hc _ (support_del_sub H x))]
-      simp only [decide_eq_decide, upHit_del_iff, erase_eq_of_notMem hxS]
+      simp only [upHit_del, erase_eq_of_notMem hxS]
 
 /-- **Read-once.** The variables tested on any path of an FBDD lie in the support and are
 distinct. -/
@@ -183,32 +187,6 @@ theorem valid_splitVar : Valid (splitVar (n := n)) := by
 
 /-! ### The memo DAG -/
 
-theorem root_mem_fkADagR (r : Rule n) (fuel : ℕ) (b : Bool) (C D : HG n) :
-    (minimal C, minimal D) ∈ fkADagR r fuel b C D := by
-  cases fuel with
-  | zero => simp [fkADagR]
-  | succ f =>
-    simp only [fkADagR]
-    split_ifs
-    · exact mem_singleton_self _
-    · exact mem_singleton_self _
-    · split
-      · exact mem_singleton_self _
-      · split_ifs <;> exact mem_insert_self _ _
-
-theorem del_isSperner {H : HG n} (h : IsSperner H) (x : Fin n) : IsSperner (del H x) :=
-  fun e he f hf hef => h e (filter_subset _ _ he) f (filter_subset _ _ hf) hef
-
-theorem child_left (r : Rule n) (f : ℕ) (b : Bool) (K : HG n) (x : Fin n) :
-    fkADagR r f b (del K x) (con (tr univ K) x) = fkADagR r f b (del K x) (tr univ (del K x)) := by
-  rw [← fkADagR_minimal r f b (del K x) (con _ x), ← fkADagR_minimal r f b (del K x) (tr univ _),
-    minimal_con_tr (within_univ K) (mem_univ x), minimal_tr]
-
-theorem child_right (r : Rule n) (f : ℕ) (b : Bool) (K : HG n) (x : Fin n) :
-    fkADagR r f b (del (tr univ K) x) (con K x) =
-      fkADagR r f b (tr univ (minimal (con K x))) (minimal (con K x)) := by
-  rw [← tr_con_eq, ← fkADagR_minimal, minimal_tr, ← tr_minimal univ (con K x)]
-
 /-- `p` is a dual pair over a Sperner family. -/
 def DualNode (p : HG n × HG n) : Prop :=
   ∃ K, IsSperner K ∧ (p = (K, tr univ K) ∨ p = (tr univ K, K))
@@ -274,8 +252,8 @@ theorem memo_good {r : Rule n} (hv : Valid r) (b : Bool) : ∀ fuel (K : HG n), 
           (∀ p ∈ fkADagR r f b (del D x) (con C x),
             Good r b (fkADagR r f b (del D x) (con C x)) p) := fun x hx => by
         rcases hCD with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
-        · rw [child_left, child_right]; exact ⟨iL x hx, iR x hx⟩
-        · rw [child_left, child_right]; exact ⟨iR x hx, iL x hx⟩
+        · rw [fkADagR_left, fkADagR_right]; exact ⟨iL x hx, iR x hx⟩
+        · rw [fkADagR_left, fkADagR_right]; exact ⟨iR x hx, iL x hx⟩
       intro p hp
       by_cases hleaf : C.card * D.card ≤ 1 ∨ (b = true ∧ (C.card = 1 ∨ D.card = 1))
       · have : fkADagR r (f + 1) b C D = {(C, D)} := by
@@ -455,60 +433,140 @@ theorem memo_fbdd {r : Rule n} (hv : Valid r) (hs : Symm r) {G : HG n} (sG : IsS
 
 /-! ### Conversely: a rule from an FBDD -/
 
-/-- **An FBDD gives a rule.** For an FBDD `𝒮` containing `G`, the rule that tests the label of
-whichever side of the node lies in `𝒮` has at most `2|𝒮|` subproblems on `(G, Tr G)`. -/
+/-- The label of `H` if `H` is a test node of `(𝒮, ℓ)`. -/
+def lab (𝒮 : Finset (HG n)) (ℓ : HG n → Option (Fin n)) (H : HG n) : Option (Fin n) :=
+  if H ∈ 𝒮 ∧ (support H).Nonempty then ℓ H else none
+
+/-- The rule of an FBDD: the label of whichever side is a test node, the lesser label if both
+are, and the degree-sum vertex if neither is. -/
+def fbddRule (𝒮 : Finset (HG n)) (ℓ : HG n → Option (Fin n)) : Rule n := fun C D =>
+  match lab 𝒮 ℓ C, lab 𝒮 ℓ D with
+  | some a, some b => some (min a b)
+  | some a, none => some a
+  | none, some b => some b
+  | none, none => splitVar C D
+
+theorem lab_spec {𝒮 : Finset (HG n)} {ℓ : HG n → Option (Fin n)} (h : IsFBDD 𝒮 ℓ) {H : HG n}
+    {x : Fin n} (hx : lab 𝒮 ℓ H = some x) :
+    x ∈ support H ∧ del H x ∈ 𝒮 ∧ minimal (con H x) ∈ 𝒮 := by
+  unfold lab at hx
+  split_ifs at hx with hH
+  obtain ⟨-, hl | ⟨y, hy, hys, h0, h1⟩⟩ := h H hH.1
+  · exact absurd hl (nonempty_iff_ne_empty.1 hH.2)
+  · rw [hy] at hx; cases hx; exact ⟨hys, h0, h1⟩
+
+theorem support_of_lab_none {𝒮 : Finset (HG n)} {ℓ : HG n → Option (Fin n)} (h : IsFBDD 𝒮 ℓ)
+    {H : HG n} (hH : H ∈ 𝒮) (hx : lab 𝒮 ℓ H = none) : support H = ∅ := by
+  by_contra h0
+  obtain ⟨-, hl | ⟨y, hy, -⟩⟩ := h H hH
+  · exact h0 hl
+  · simp [lab, hH, nonempty_iff_ne_empty.2 h0, hy] at hx
+
+theorem fbddRule_symm (𝒮 : Finset (HG n)) (ℓ : HG n → Option (Fin n)) : Symm (fbddRule 𝒮 ℓ) := by
+  intro C D
+  unfold fbddRule
+  cases lab 𝒮 ℓ C <;> cases lab 𝒮 ℓ D <;> simp [min_comm, splitVar_comm]
+
+/-- The vertex chosen is the label of a test node, or the degree-sum vertex if there is none. -/
+theorem fbddRule_spec {𝒮 : Finset (HG n)} {ℓ : HG n → Option (Fin n)} {C D : HG n} {x : Fin n}
+    (hx : fbddRule 𝒮 ℓ C D = some x) : lab 𝒮 ℓ C = some x ∨ lab 𝒮 ℓ D = some x ∨
+      (lab 𝒮 ℓ C = none ∧ lab 𝒮 ℓ D = none ∧ splitVar C D = some x) := by
+  unfold fbddRule at hx
+  rcases h1 : lab 𝒮 ℓ C with _ | a <;> rcases h2 : lab 𝒮 ℓ D with _ | b <;>
+    simp only [h1, h2, Option.some.injEq] at hx
+  · exact Or.inr (Or.inr ⟨rfl, rfl, hx⟩)
+  · exact Or.inr (Or.inl (hx ▸ rfl))
+  · exact Or.inl (hx ▸ rfl)
+  · rcases min_choice a b with h | h <;> rw [h] at hx <;> subst hx
+    · exact Or.inl rfl
+    · exact Or.inr (Or.inl rfl)
+
+theorem valid_fbddRule {𝒮 : Finset (HG n)} {ℓ : HG n → Option (Fin n)} (h : IsFBDD 𝒮 ℓ) :
+    Valid (fbddRule 𝒮 ℓ) := by
+  intro C D
+  refine ⟨fun x hx => ?_, fun hne => ?_⟩
+  · rcases fbddRule_spec hx with h1 | h1 | ⟨-, -, h1⟩
+    · exact mem_union_left _ (lab_spec h h1).1
+    · exact mem_union_right _ (lab_spec h h1).1
+    · exact (valid_splitVar C D).1 x h1
+  · unfold fbddRule
+    cases lab 𝒮 ℓ C <;> cases lab 𝒮 ℓ D <;> simp [(valid_splitVar C D).2 hne]
+
+/-- **An FBDD gives a valid symmetric rule.** For an FBDD `𝒮` named by its functions and
+containing `G`, the rule `fbddRule 𝒮 ℓ` is valid and symmetric, and FK-A under it has at most
+`2|𝒮|` subproblems on `(G, Tr G)`, either variant and any fuel. -/
 theorem rule_of_fbdd {𝒮 : Finset (HG n)} {ℓ : HG n → Option (Fin n)} (h : IsFBDD 𝒮 ℓ) {G : HG n}
-    (hG : G ∈ 𝒮) : ∀ fuel b,
-      (fkADagR (fun C D => if C ∈ 𝒮 then ℓ C else ℓ D) fuel b G (tr univ G)).card ≤ 2 * 𝒮.card := by
-  set r : Rule n := fun C D => if C ∈ 𝒮 then ℓ C else ℓ D
-  -- closure at every label, leaves included
-  have hcl : ∀ K ∈ 𝒮, ∀ x, ℓ K = some x → del K x ∈ 𝒮 ∧ minimal (con K x) ∈ 𝒮 := by
-    intro K hK x hx
-    obtain ⟨sK, hl | ⟨y, hy, -, h0, h1⟩⟩ := h K hK
-    · have hxs : x ∉ support K := by rw [hl]; exact notMem_empty x
-      rw [del_of_notMem hxs, con_of_notMem hxs, minimal_eq_self sK]; exact ⟨hK, hK⟩
-    · rw [hx] at hy; cases hy; exact ⟨h0, h1⟩
-  have hsp : ∀ K ∈ 𝒮, IsSperner K := fun K hK => (h K hK).1
-  intro fuel b
-  suffices main : ∀ K ∈ 𝒮, fkADagR r fuel b K (tr univ K) ⊆ pairs 𝒮 ∧
-      fkADagR r fuel b (tr univ K) K ⊆ pairs 𝒮 from
-    (card_le_card (main G hG).1).trans (card_pairs_le 𝒮)
-  induction fuel with
-  | zero =>
-    intro K hK
-    refine ⟨fun p hp => ?_, fun p hp => ?_⟩ <;>
-      simp only [fkADagR, mem_singleton, minimal_tr, minimal_eq_self (hsp K hK)] at hp <;> subst hp
-    · exact mem_union_left _ (mem_image_of_mem _ hK)
-    · exact mem_union_right _ (mem_image_of_mem _ hK)
-  | succ f ih =>
-    -- children of a split of `K ∈ 𝒮` at its label
-    have kids : ∀ K ∈ 𝒮, ∀ x, ℓ K = some x →
-        fkADagR r f b (del K x) (con (tr univ K) x) ⊆ pairs 𝒮 ∧
-          fkADagR r f b (del (tr univ K) x) (con K x) ⊆ pairs 𝒮 := fun K hK x hx => by
-      rw [child_left, child_right]
-      exact ⟨(ih _ (hcl K hK x hx).1).1, (ih _ (hcl K hK x hx).2).2⟩
-    have A : ∀ K ∈ 𝒮, fkADagR r (f + 1) b K (tr univ K) ⊆ pairs 𝒮 := by
-      intro K hK p hp
-      have mK := minimal_eq_self (hsp K hK)
-      rcases mem_fkADagR_succ hp with rfl | ⟨x, hx, hp | hp⟩
-      · rw [mK, minimal_tr]; exact mem_union_left _ (mem_image_of_mem _ hK)
-      all_goals rw [mK, minimal_tr] at hx hp; simp only [r, hK, if_true] at hx
-      · exact (kids K hK x hx).1 hp
-      · exact (kids K hK x hx).2 hp
-    have B : ∀ K ∈ 𝒮, fkADagR r (f + 1) b (tr univ K) K ⊆ pairs 𝒮 := by
-      intro K hK p hp
-      have mK := minimal_eq_self (hsp K hK)
-      by_cases hT : tr univ K ∈ 𝒮
-      · -- the node is `(K', Tr K')` for `K' = Tr K ∈ 𝒮`
-        have := A _ hT
-        rw [tr_tr_of_sperner (within_univ K) (hsp K hK)] at this
-        exact this hp
-      rcases mem_fkADagR_succ hp with rfl | ⟨x, hx, hp | hp⟩
-      · rw [mK, minimal_tr]; exact mem_union_right _ (mem_image_of_mem _ hK)
-      all_goals rw [mK, minimal_tr] at hx hp; simp only [r, hT, if_false] at hx
-      · exact (kids K hK x hx).2 hp
-      · exact (kids K hK x hx).1 hp
-    exact fun K hK => ⟨A K hK, B K hK⟩
+    (hG : G ∈ 𝒮) : Symm (fbddRule 𝒮 ℓ) ∧ Valid (fbddRule 𝒮 ℓ) ∧ ∀ fuel b,
+      (fkADagR (fbddRule 𝒮 ℓ) fuel b G (tr univ G)).card ≤ 2 * 𝒮.card := by
+  refine ⟨fbddRule_symm 𝒮 ℓ, valid_fbddRule h, fun fuel b => ?_⟩
+  -- a labelled side `K` has both children over `𝒮`
+  have key : ∀ K : HG n, IsSperner K → ∀ x, lab 𝒮 ℓ K = some x →
+      (minimal (del K x), minimal (con (tr univ K) x)) ∈ pairs 𝒮 ∧
+        (minimal (del (tr univ K) x), minimal (con K x)) ∈ pairs 𝒮 := fun K sK x hx =>
+    kids_mem sK (lab_spec h hx).2.1 (lab_spec h hx).2.2
+  -- either orientation `(C, D)` of the pair of `K ∈ 𝒮`
+  have node : ∀ K ∈ 𝒮, ∀ C D, (C = K ∧ D = tr univ K) ∨ (C = tr univ K ∧ D = K) →
+      ∀ x, fbddRule 𝒮 ℓ C D = some x →
+        (minimal (del C x), minimal (con D x)) ∈ pairs 𝒮 ∧
+          (minimal (del D x), minimal (con C x)) ∈ pairs 𝒮 := by
+    intro K hK C D hCD x hx
+    have sK := (h K hK).1
+    have sT := tr_isSperner univ K
+    have ttK := tr_tr_of_sperner (within_univ K) sK
+    have hs : support (tr univ K) = support K := (support_eq (within_univ K) sK rfl).symm
+    rcases fbddRule_spec hx with h1 | h1 | ⟨h1, h2, h3⟩
+    · rcases hCD with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
+      · exact key _ sK x h1
+      · have := key _ sT x h1; rw [ttK] at this; exact this
+    · rcases hCD with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
+      · have := key _ sT x h1; rw [ttK] at this; exact ⟨this.2, this.1⟩
+      · have := key _ sK x h1; exact ⟨this.2, this.1⟩
+    · have h0 : support K = ∅ := by
+        rcases hCD with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
+        · exact support_of_lab_none h hK h1
+        · exact support_of_lab_none h hK h2
+      have := (valid_splitVar C D).1 x h3
+      rcases hCD with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ <;> simp [hs, h0] at this
+  have hP : ∀ p ∈ (pairs 𝒮 : Set (HG n × HG n)), ∀ x, fbddRule 𝒮 ℓ p.1 p.2 = some x →
+      (minimal (del p.1 x), minimal (con p.2 x)) ∈ (pairs 𝒮 : Set (HG n × HG n)) ∧
+        (minimal (del p.2 x), minimal (con p.1 x)) ∈ (pairs 𝒮 : Set (HG n × HG n)) := by
+    intro p hp x hx
+    simp only [pairs, coe_union, coe_image, Set.mem_union, Set.mem_image, mem_coe] at hp
+    rcases hp with ⟨K, hK, rfl⟩ | ⟨K, hK, rfl⟩
+    · exact node K hK _ _ (Or.inl ⟨rfl, rfl⟩) x hx
+    · exact node K hK _ _ (Or.inr ⟨rfl, rfl⟩) x hx
+  have hroot : (minimal G, minimal (tr univ G)) ∈ (pairs 𝒮 : Set (HG n × HG n)) := by
+    rw [minimal_eq_self (h G hG).1, minimal_tr]; exact mem_pairs_left hG
+  exact (card_le_card fun p hp => fkADagR_sub hP fuel b _ _ hroot p hp).trans (card_pairs_le 𝒮)
+
+/-- A family closed under a valid rule is an FBDD labelled by the rule. -/
+theorem isFBDD_of_closed {r : Rule n} (hv : Valid r) {𝒮 : Finset (HG n)} (h : Closed r 𝒮) :
+    IsFBDD 𝒮 (fun H => r H (tr univ H)) := by
+  intro H hH
+  obtain ⟨sH, hcl⟩ := h H hH
+  refine ⟨sH, ?_⟩
+  by_cases h0 : support H = ∅
+  · exact Or.inl h0
+  have hs : support (tr univ H) = support H := (support_eq (within_univ H) sH rfl).symm
+  have hne : (support H ∪ support (tr univ H)).Nonempty := by
+    rw [hs, union_self]; exact nonempty_iff_ne_empty.2 h0
+  obtain ⟨x, hx⟩ := Option.isSome_iff_exists.1 ((hv H _).2 hne)
+  have hxs : x ∈ support H := by have := (hv H _).1 x hx; rwa [hs, union_self] at this
+  exact Or.inr ⟨x, hx, hxs, (hcl x hx).1, (hcl x hx).2⟩
+
+/-- **The leftmost FBDD.** For a read-once formula with leaves in order, the states and the two
+constants, labelled by the leftmost rule, form an FBDD for `f` with at most `|vars f| + 2` nodes
+(Theorem 4.16). -/
+theorem Fm.leftmost_fbdd {f : Fm n} (hf : Fm.Ordered f) :
+    IsFBDD (Fm.Kst f) (fun H => leftRule H (tr univ H)) ∧ Fm.dnf f ∈ Fm.Kst f ∧
+      (Fm.Kst f).card ≤ (Fm.vars f).card + 2 := by
+  refine ⟨isFBDD_of_closed valid_leftRule (Fm.leftRule_closed hf),
+    Fm.St_sub_Kst (Fm.dnf_mem_St hf), ?_⟩
+  have h1 := card_union_le (Fm.St f) ({∅, {∅}} : Finset (HG n))
+  have h2 : ({∅, {∅}} : Finset (HG n)).card ≤ 2 := (card_insert_le _ _).trans (by simp)
+  have h3 := Fm.card_St_le hf
+  unfold Fm.Kst
+  omega
 
 /-! ### A memo-friendly rule with FK96's guarantee (track 3) -/
 
@@ -551,8 +609,8 @@ theorem valid_guardRule : Valid (guardRule (n := n)) := by
     · exact (valid_splitVar C D).2 h
 
 /-- **FK96's guarantee.** On a dual pair `(G, Tr G)` with both sides nonempty the guarded rule
-splits on a vertex of frequency at least `1/⌊log₂ N⌋` on one side, the vertex FK96 Lemma 2.3.2
-provides (`exists_frequent_vertex`). -/
+splits on a vertex of frequency at least `1/⌊log₂ N⌋` on one side: the least such vertex, which
+exists by FK96 Lemma 2.3.2 (`exists_frequent_vertex`). -/
 theorem guardRule_frequent {G : HG n} (sG : IsSperner G) (hG : G.Nonempty)
     (hH : (tr univ G).Nonempty) : ∃ x, guardRule G (tr univ G) = some x ∧
       (G.card ≤ Nat.log 2 (G.card + (tr univ G).card) * degree G x ∨
@@ -581,17 +639,5 @@ theorem guardRule_frequent {G : HG n} (sG : IsSperner G) (hG : G.Nonempty)
   have hfx := List.find?_some hx
   simp only [frequent, Bool.and_eq_true, Bool.or_eq_true, decide_eq_true_iff] at hfx
   exact ⟨x, by simp only [guardRule, hx], hfx.2⟩
-
-#print axioms guardRule_symm
-#print axioms valid_guardRule
-#print axioms guardRule_frequent
-#print axioms run_correct
-#print axioms path_nodup
-#print axioms valid_splitVar
-#print axioms valid_leftRule
-#print axioms memo_good
-#print axioms memo_bp
-#print axioms memo_fbdd
-#print axioms rule_of_fbdd
 
 end HD
