@@ -139,10 +139,18 @@ so no Steiner system with the first nine parameter sets is self-transversal (thi
 example, all 80 systems `S(2,3,15)` and every `S(3,4,16)` at once), and none with the last ten
 exists. Lean: `n0_table`, `steiner_tr_ne_of_table`, `not_steiner_of_table` (kernel `decide`).
 
+**Observation 2.10a.** `PG(2,4)` is a Steiner system `S(2,5,21)` and `S(4,7,23)` (the weight-7
+words of the binary Golay code) is a Steiner system `S(4,7,23)`; both are intersecting, and
+neither is self-transversal: `{0,1,3,4,5,6,8,16}`, resp. `{0,1,2,4,5,6,7,8,9,11,12}`, meets every
+block and contains none.
+Lean: `pg24_steiner`, `pg24_intersecting`, `pg24_tr_ne`, `s4723_steiner`, `s4723_intersecting`,
+`s4723_tr_ne`; the Steiner property via `isSteiner_of_packing` (a `k`-uniform family whose distinct
+blocks share fewer than `t` points, with `b·C(k,t) = C(v,t)`, is `S(t,k,v)`).
+
 The parameter sets `2 ≤ t < k < v ≤ 100` with `n₀ = 0` (`python experiments/steiner_selftr.py`)
 are the projective planes `S(2, q+1, q²+q+1)`, `q ≤ 9`; `S(4,7,23)`; and `S(t, t+1, 2t+3)` for
 even `t ≤ 44` with admissible parameters. Of the systems built there, `PG(2,3)`, `PG(2,4)` and
-`S(4,7,23)` are 2-colourable (Python scan; `PG(2,3)` in Lean as `pg23_not_self_dual`).
+`S(4,7,23)` are 2-colourable (Python scan; in Lean as `pg23_not_self_dual` and Observation 2.10a).
 
 **Theorem 2.11** (A5c). Let `H` be a Steiner system `S(t, t+1, 2t+3)`. Then `t` is even and
 `Tr(H) = H`.
@@ -171,7 +179,7 @@ conditions. Novelty is not claimed.
 `k = t+1` and `v = 2t+3`. *Evidence:* for `v ≤ 100`, every admissible parameter set other than
 `S(t,t+1,2t+3)` has `n₀ ≠ 0`, except the projective planes and `S(4,7,23)`. Projective planes of
 order `≥ 3` have blocking sets containing no line (Bruen, cited), and `S(4,7,23)` is unique
-(Witt, cited) and 2-colourable (Python scan, not yet Lean). The trivial family `S(k,k,2k−1)` (the
+(Witt, cited) and 2-colourable (Observation 2.10a). The trivial family `S(k,k,2k−1)` (the
 majority function) is self-transversal and is excluded by `t < k`.
 
 ## 3. The least most-frequent-vertex frequency `ε(n)` (Track B)

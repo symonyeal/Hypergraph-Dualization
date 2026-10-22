@@ -48,6 +48,7 @@ same cache from Mathlib's Azure storage account.
 | `WittData`, `Witt` | the Witt design `S(4,5,11)`: self-transversal, `|Aut| = 7920`, sharply 4-transitive (research 2026-10, A1–A2) |
 | `SelfTransversal` | `Tr(H) = H` iff intersecting, no empty edge, not 2-colourable (A3); the bound `d(r² − t) ≥ r(r − 1)` (A4) |
 | `Steiner` | Steiner systems: blocks disjoint from a block, `n₀` (A5a–b); every `S(t, t+1, 2t+3)` is self-transversal (A5c) |
+| `SteinerData`, `SteinerInstances` | `PG(2,4)` and `S(4,7,23)`: Steiner, intersecting, 2-colourable |
 | `Primitive` | read-once hypergraphs with a primitive automorphism group have `Aut = Sₙ` (A7); `w11` and Fano are not read-once |
 
 ## Trust base
@@ -66,4 +67,5 @@ From the repository root, with the Python package importable:
 python lean/tools/gen_instances.py     # Data.lean from data/instances
 python lean/tools/gen_trees.py         # TreeFacts.lean from results/*.fk-a.modified.json
 python experiments/witt_m11.py --lean  # WittData.lean from data/instances/w11.json
+python experiments/steiner_selftr.py --lean  # SteinerData.lean: PG(2,4), S(4,7,23)
 ```
