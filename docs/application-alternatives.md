@@ -30,7 +30,7 @@ Then Tr(H) is exactly the family of inclusion-minimal panels that retain at leas
 
 **Decision:** For a fixed basket of imported food or manufacturing inputs, which minimal origin-country panels retain an observed trading origin for every product after specified disruptions?
 
-**Public input:** [UN Comtrade](https://comtradeplus.un.org/) provides detailed product-partner trade statistics with annual and monthly data; its API access uses free registration. [CEPII BACI](https://www.cepii.fr/CEPII/en/bdd_modele/bdd_modele_item.asp?id=37) is a reconciled product-level alternative derived from Comtrade. This research session encountered HTTP 403 on live CEPII pages and did not download its archive. Neither a complete trade extract nor a live registered API response was obtained. The USDA workbook has stronger access verification in this session.
+**Public input:** [UN Comtrade](https://comtradeplus.un.org/) provides detailed product-partner trade statistics with annual and monthly data; its API access uses free registration. [CEPII BACI](https://www.cepii.fr/CEPII/en/bdd_modele/bdd_modele_item.asp?id=37) is a reconciled product-level alternative derived from Comtrade. Live CEPII pages returned HTTP 403 on 2026-10-15, and its archive was not downloaded. Neither a complete trade extract nor a live registered API response was obtained. The USDA workbook was downloaded and inspected, so it is the better-verified source.
 
 Use vertices for origin countries and an edge for the origins with qualifying observed imports of each required product. Define and publish any minimum value or persistence threshold. Expand edges by disruption scenarios as above. Compare panels against subsequent years to measure observed coverage persistence.
 

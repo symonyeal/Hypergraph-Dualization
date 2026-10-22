@@ -49,7 +49,7 @@ commands changed.
 ## 3. The pytest basetemp hook
 
 `tests/conftest.py` carried a `pytest_configure` that redirected pytest's
-`basetemp` into `<repo>/../../../Claude Func Folder/pytest-fka`, with a
+`basetemp` into `<repo>/../../../<shared folder>/pytest-fka`, with a
 docstring stating that "the project contract forbids session-scoped `%TEMP%`
 files".
 

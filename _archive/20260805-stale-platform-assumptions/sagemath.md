@@ -43,7 +43,7 @@ project.
    package into Sage's own interpreter:
 
 ```text
-cd "/mnt/c/Users/sislam/Downloads/New Work Folder (Former Codex)/My Projects/F U N/Hypergraphs and FK-A"
+cd "/mnt/c/Users/sislam/Downloads/<work folder>/My Projects/F U N/Hypergraphs and FK-A"
 sage -python -m pip install -e ".[dev]"
 ```
 

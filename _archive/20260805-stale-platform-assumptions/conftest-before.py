@@ -40,7 +40,7 @@ def pytest_configure(config):
     if config.option.basetemp is not None:
         return
     project = Path(__file__).resolve().parents[1]
-    shared = project.parents[2] / "Claude Func Folder"
+    shared = project.parents[2] / "<shared folder>"
     if not shared.is_dir():
         return
     for name in ("pytest-fka", "pytest-fk"):
