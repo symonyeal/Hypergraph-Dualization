@@ -426,3 +426,27 @@ That `P_p` is strictly increasing for a nonconstant monotone property is Russo�
 | C3 | false under ETH (Proposition 4.6); no explicit family |
 | D3 | open (Open problem 5.3) |
 | E1: `|H| + |Tr H|` for the smallest explicit Ryser counterexample of `openai/math` family 162 | not started; needs the construction's transversals counted by structure |
+
+## 8. Review log
+
+Identifications and readings the results above rely on, for the author to check. Each later step
+appends its own. *Corrected* means an error was found and fixed; *Lean* means the identification
+is a Lean theorem; *unchecked* means it rests on a reading of a source or on Python and has not
+been confirmed by the author.
+
+| # | Identification | Basis | Status |
+| --- | --- | --- | --- |
+| 1 | The GK-family (`fₖ`, OR root) and the TK-family (`Sₖ`, AND root) are Hertel's alternating trees, not separate families | Thesis §4.2; `Families.lean`, `Cotree.lean` | Corrected 2026-10-21 (README and §4 had listed them separately) |
+| 2 | The constant words are alternating trees: `word-yyy` is TK `S₃`, `word-xxx` its dual | `docs/hard-classes.md` (3.2); `Y = (v₁ ∨ v₂) ∧ (v₃ ∨ v₄)` is TK `S₁` | Unchecked |
+| 3 | The instance `f2g2` is GK `f₂` and is labelled "Hertel's Mark's class" in `experiments/build_instances.py` | Thesis Ch. 5: Mark's class generates both the GK- and TK-families | Unchecked: is the label right? |
+| 4 | Self-transversal Sperner hypergraph = self-dual monotone function = non-dominated coterie = maximal linked system = intersecting 3-critical hypergraph | Proposition 2.1 and Lemma 2.14 (Lean); Ibaraki–Kameda 1993; Pawelski–Szepietowski 2025, Lemmas 3–4; Eiter–Makino–Gottlob 2008, §1 | Lean for the hypergraph forms; the coterie and linked-system forms are cited |
+| 5 | Read-once is defined in Lean as Sperner, conformal, cograph primal graph | Gurvich's characterisation (thesis Thm 4.4.8, cited) taken as the definition | The equivalence with read-once formulas is cited, not proved |
+| 6 | `δ` (distinct Sperner-reduced pairs, `fkADag`) equals the node count of `fka.memo` | `matching_eight`, `threshold_twelve` agree with `fka.memo`; `tests/test_memo.py` | Checked on those instances only |
+| 7 | Hertel: DPLL simulates FK-A (Thm 4.1.7); every DPLL tree for the alternating trees has `n^{Ω(log^{1−o(1)} n)}` nodes (Thm 4.3.6); DPLLCache decides read-once formulas in `2k + 3` nodes (Thm 4.4.1) | Hertel's MSc thesis, pages read 2026-10-21 | Cited, not formalised |
+| 8 | `experiments/readonce_sim.py` models an FK-A node by the function whose DNF is `C`, with children `g\|x=0` and `(g\|x=1)^d` | Agrees with `fka.algorithm` and `fka.memo` on GK `f₁–f₃`, TK `S₁–S₂` and 200 random formulas | Python |
+| 9 | `ε(n)` is the minimum over pairs with both sides nonempty and no empty hyperedge of the largest vertex frequency on either side | `Frequency.lean`, `EpsSeven.lean`; thesis Observation 5.2.3 | Unchecked against the thesis's intended definition |
+| 10 | Proposition 4.6 rests on Kobayashi–Kurita–Wasa (arXiv:2610.11473) | An unrefereed preprint; its authors state the proof was first found by an AI model and then verified by them | Conditional |
+| 11 | The A6 conjecture (FK-A/FK-B falls as primitivity depth rises) is refuted | `docs/hard-classes.md` (5.2), Python | Python |
+| 12 | `Aut(S(4,5,11))` is `M₁₁` | Jordan's theorem on sharply 4-transitive groups | Cited |
+| 13 | Theorem 2.11 (every `S(t,t+1,2t+3)` is self-transversal) is not in the literature | Searches of 2026-10-21 only | Novelty not claimed |
+| 14 | The `H` and `Tr(H)` columns of `docs/applications.md` | Each reduction as stated by Hagen (2008, Ch. 3); the columns are this repository's reading of it | Unchecked entry by entry |
