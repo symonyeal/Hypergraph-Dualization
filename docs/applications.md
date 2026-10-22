@@ -6,8 +6,8 @@ are Hagen's); Eiter, Makino and Gottlob, *Computational aspects of monotone dual
 Discrete Appl. Math. 156 (2008), §7; Defrain, *On the dualization problem in graphs, hypergraphs,
 and lattices* (PhD thesis, Clermont-Ferrand 2020); Pawelski and Szepietowski, *Counting
 self-dual monotone Boolean functions*, J. Integer Seq. 28 (2025). The one industrial study
-already carried out (qualified supplier panels) is in
-[`application-alternatives.md`](application-alternatives.md) and is not repeated here.
+already carried out, qualified supplier panels, is its own repository,
+[Resilient-Supplier-Panels](https://github.com/symonyeal/Resilient-Supplier-Panels).
 
 Nothing below has been run on application data. Each entry states the reduction to `Tr`; the
 shortlist in §3 states what a first study would measure.
@@ -48,7 +48,7 @@ self-duality test.
 | Network reliability | minimal source–sink path sets | minimal cut sets | Gen. |
 | Metabolic cut sets [KG04, Kla06, HKS08, IB07] | elementary modes through the target reaction | minimal reaction knockouts that block it | Gen. |
 | Vaccination strategies [BG07b] | transmission chains from the infected set | minimal vaccination sets | Gen. |
-| Supplier continuity | qualified suppliers per product, per scenario | minimal resilient panels | Gen. (see `application-alternatives.md`) |
+| Supplier continuity | qualified suppliers per product, per scenario | minimal resilient panels | Gen. (Resilient-Supplier-Panels) |
 
 The identity `P_p(G) + P_{1−p}(Tr G) = 1` (`Connections`) is the Moore–Shannon duality between a
 system and its cuts: the reliability of a path family at component reliability `p` is one minus

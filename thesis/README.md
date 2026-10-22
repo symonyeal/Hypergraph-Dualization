@@ -10,7 +10,7 @@ error found by that check is corrected.
 
 | Folder | Contents |
 | --- | --- |
-| `2024/` | The source recovered in October 2026 from the deposited PDF, reproducing the printed text, including its errors and undefined references. `main.pdf` is the compiled recovery |
+| `2024/` | The source recovered in October 2026 from the deposited PDF, reproducing the printed text, including its errors and undefined references. `deposited.pdf` is the thesis as deposited at SFU; `main.pdf` is the compiled recovery |
 | `revised/` | The revised edition: corrections applied, each statement tagged with the Lean declaration that proves it, a preface listing the corrections and a proof-status appendix. `main.pdf` is the compiled edition |
 | `CLAIMS.md` | The register: every statement, its status (proved, corrected, checked, computed, open) and its Lean proof |
 | `tools/` | Generators and checks for the figures and the revisions |

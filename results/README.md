@@ -89,14 +89,3 @@ The variant keeps its baseline in every instance file and its own row in
   where the tree is not an observable. Regenerate with
   `python experiments/dag_size.py --deep`; the reading is in
   [`../docs/tree-vs-dag.md`](../docs/tree-vs-dag.md).
-
-## Standalone studies
-
-- `dedekind-atoms.md` — the 7581 monotone Boolean functions on 5 variables
-  classified into their 210 `S_5`-classes using the 30 four-variable classes as
-  atoms, with the Cauchy-Frobenius cross-check and the cost accounting. Regenerate
-  with `python experiments/dedekind_atoms.py`; the derivation and the assessment
-  of the vendored `Dedekind/` snapshot are in
-  [`../docs/dedekind-atoms.md`](../docs/dedekind-atoms.md). This one is about the
-  space both algorithms search, not about a run of either, so it has no instance
-  and no tree.

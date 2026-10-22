@@ -28,7 +28,6 @@ one-way and is about where files sit, not about one algorithm needing the other.
 | `fka/groups.py` | naming the group it finds, without SageMath |
 | `fka/graphs.py`, `fka/properties.py` | the primal graph's class; conformality, alpha-acyclicity, read-once |
 | `fka/selfdual.py` | self-dual families and primitivity |
-| `fka/dedekind.py` | the space itself: `FDL(n)`, its `S_n`-classes, and the lift that classifies one level up from them |
 | `fka/substitution.py`, `fka/bound.py` | monotone composition and the Chapter 2 frequency bound |
 | `fka/analysis.py` | annotating completed nodes, memoizing repeated subproblems |
 | `fka/backends/` | SageMath as an optional independent check, never an import-time dependency |

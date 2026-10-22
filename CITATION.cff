@@ -10,15 +10,6 @@ authors:
 repository-code: "https://github.com/symonyeal/Hypergraph-Dualization"
 license: GPL-3.0-or-later
 version: 2.0.0
-references:
-  - type: software
-    title: "DedekindNumbersShiftFourMatrixMultiplication"
-    scope: "Third-party MIT snapshot vendored under Dedekind/; not covered by this project's licence."
-    license: MIT
-    year: 2023
-    authors:
-      - family-names: "Jäkel"
-        given-names: Christian
 preferred-citation:
   type: thesis
   title: "Tracing the Effects of Symmetry in Hypergraphs on the Fredman-Khachiyan Algorithm"
