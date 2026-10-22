@@ -131,8 +131,10 @@ it makes on its own authority was checked in Lean 4 against Mathlib.
 | [thesis/2024/](thesis/2024) | the recovered source, as deposited, with its compiled PDF |
 | [thesis/revised/](thesis/revised) | the revised edition: corrections applied, each statement tagged with its Lean proof |
 | [thesis/CLAIMS.md](thesis/CLAIMS.md) | every statement, its status and its Lean proof |
-| [lean/](lean) | the Lean library (281 theorems); `cd lean && lake exe cache get && lake build` |
+| [lean/](lean) | the Lean library (445 theorems); `cd lean && lake exe cache get && lake build` |
 | [docs/openai-math-connections.md](docs/openai-math-connections.md) | where the [`openai/math`](https://github.com/openai/math) results meet the thesis, with Lean bridges |
+| [docs/research-2026-10.md](docs/research-2026-10.md) | results beyond the thesis: the Witt design, self-transversal hypergraphs, `ε(n)`, FK-A's subproblems, substitution |
+| [docs/applications.md](docs/applications.md) | where dualization is used, grouped by what `H` and `Tr(H)` are, with a shortlist for this repository |
 
 Most statements hold as printed. Those that do not are corrected, each with a counterexample to
 the printed form where one exists: among them Corollary 2.3.1 (the inequality is reversed), Lemma

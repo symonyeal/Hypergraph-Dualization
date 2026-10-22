@@ -14,7 +14,8 @@ lake exe cache get
 lake build
 ```
 
-`lake build` checks every proof; it takes about two minutes once the Mathlib cache is in place.
+`lake build` checks every proof; once the Mathlib cache is in place it takes a few minutes, most
+of it in the `native_decide` checks of `Witt` and `SteinerInstances`.
 `lake build HypergraphDualization.Connections` (or any other module) checks one module and its
 imports.
 
@@ -47,6 +48,7 @@ same cache from Mathlib's Azure storage account.
 | `Connections` | bridges to the `openai/math` Ryser and threshold results |
 | `WittData`, `Witt` | the Witt design `S(4,5,11)`: self-transversal, `|Aut| = 7920`, sharply 4-transitive (research 2026-10, A1–A2) |
 | `SelfTransversal` | `Tr(H) = H` iff intersecting, no empty edge, not 2-colourable (A3); the bound `d(r² − t) ≥ r(r − 1)` (A4) |
+| `Critical` | Seymour's bound `n ≤ |H|` for minimally non-2-colourable `H`; hence for self-transversal `H`; the counting test `#{A : A ⊇ edge} = 2^{n−1}`; edge-transitive self-transversal `H` is vertex-transitive |
 | `Steiner` | Steiner systems: blocks disjoint from a block, `n₀` (A5a–b); every `S(t, t+1, 2t+3)` is self-transversal (A5c) |
 | `SteinerData`, `SteinerInstances` | `PG(2,4)` and `S(4,7,23)`: Steiner, intersecting, 2-colourable |
 | `EpsSeven` | `s·ε ≥ 1`, `s ≤ nε` for the smallest edge size `s`; `ε(7) = 3/7` (Observation 5.2.3), `ε(5) = ε(6) = 1/2`, `ε(9) = 1/3` |

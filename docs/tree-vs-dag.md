@@ -107,6 +107,13 @@ nothing in the corpus. Restated:
 > polynomial time has to exhibit superpolynomially many **distinct**
 > subproblems, and no construction in the literature or in this library does.
 
+For the alternating trees this was proved by Hertel (MSc thesis, Toronto 2004):
+memoised DPLL, branching on the formula's leaves from left to right, decides
+every read-once formula with `k` connectives in `2k + 3` nodes. Under the
+exponential-time hypothesis some dual family does have superpolynomially many
+distinct subproblems (`docs/research-2026-10.md`, Proposition 4.6), but no
+explicit one is known.
+
 That is the Chapter 4 program restated in the quantity that carries it. The
 search in [hard-cases.md](hard-cases.md) was run against `tau`; run against
 `delta`, `S(4,5,11)` places at 140 subproblems on `N = 132`, ordinary.
@@ -151,8 +158,8 @@ documented exception was never an exception.
   ([hard-cases.md](hard-cases.md) §6). The agreement in `tests/test_memo.py`
   holds across both variants and both split rules; the *values* above are
   `modified` / `degree_sum`.
-* `gk-f4` is not measured. `transversal(gk(4))` is Berge on 32,768 edges;
-  reaching it needs the dual built structurally, and `delta` there is the
-  natural next point.
-* Whether `delta = O(N)` on the read-once families is provable from the cotree
-  is open, and would be the first proof that any hard family is not hard.
+* `gk-f4` is not measured by this program. `experiments/readonce_sim.py`
+  builds both sides structurally, from the formula.
+* Whether `delta = O(N)` on the read-once families under FK-A's degree-sum rule
+  is open (`docs/research-2026-10.md`, Conjecture 4.5). For a fixed leaf order
+  Hertel's `2k + 3` already answers it.

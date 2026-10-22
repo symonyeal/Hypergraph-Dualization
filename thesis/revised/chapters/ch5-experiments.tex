@@ -209,11 +209,11 @@ Therefore, we see that our results support Cameron's proposition (\ref{prop:came
 
 Before discussing the hypergraphs from \cite{SS24}, we note the following:
 
-\begin{observation}[\leanref{eps_three}, \leanref{eps_four}, \leanref{fano_eps}]\label{obs:fano-tight}
-Let $\epsilon(n)$ be the least frequency of a most frequent vertex over transversal pairs on $n$ vertices with both hypergraphs nonempty and without the empty edge. Then $\epsilon(3)=\frac{2}{3}$, attained only by $K_3$, and $\epsilon(4)=\frac{1}{2}$. The Fano plane has $\epsilon=\frac{3}{7}$, so $\epsilon(7)\le\frac{3}{7}$.
+\begin{observation}[\leanref{eps_three}, \leanref{eps_four}, \leanref{eps_seven}, \leanref{fano_eps}]\label{obs:fano-tight}
+Let $\epsilon(n)$ be the least frequency of a most frequent vertex over transversal pairs on $n$ vertices with both hypergraphs nonempty and without the empty edge. Then $\epsilon(3)=\frac{2}{3}$, attained only by $K_3$, $\epsilon(4)=\frac{1}{2}$, and $\epsilon(7)=\frac{3}{7}$, attained by the Fano plane.
 \end{observation}
 
-The 2024 edition also claimed $\epsilon(7)=\frac{3}{7}$. Whether any transversal pair on seven vertices has $\epsilon<\frac{3}{7}$ is not established; it is left open.
+The 2024 edition stated $\epsilon(7)=\frac{3}{7}$ without proof. Let $s$ be the size of a smallest edge $g$ of $G$. Counting incidences gives $s|G|\le\sum_v\deg_G v\le n\epsilon|G|$, so $s\le n\epsilon$; every minimal transversal meets $g$, so $|H|\le\sum_{v\in g}\deg_H v\le s\epsilon|H|$, so $s\epsilon\ge1$ \leanref{eps_bound}. On seven vertices $\epsilon<\frac{3}{7}$ would force $s\le2$ and then $s\epsilon<1$ \leanref{eps_seven}.
 
 For $n=3$, we consider the hypergraph $K_3$, which is the complete 2-uniform graph on 3 vertices. It is self-transversal, with all variable frequencies equal to $\frac{2}{3}$. Since $K_3$ is the only hypergraph on 3 vertices that achieves this property, $\epsilon_3=\frac{2}{3}$, and the lower bound is tight. $K_3$ is the smallest example of a finite projective plane.
 

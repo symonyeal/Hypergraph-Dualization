@@ -21,8 +21,11 @@ import HypergraphDualization.AltShape
 import HypergraphDualization.FanoCopies
 import HypergraphDualization.Witt
 import HypergraphDualization.SelfTransversal
+import HypergraphDualization.Critical
 import HypergraphDualization.Primitive
 import HypergraphDualization.Steiner
 import HypergraphDualization.SteinerInstances
 import HypergraphDualization.EpsSeven
 import HypergraphDualization.Dag
+import HypergraphDualization.Substitution
+import HypergraphDualization.Influence

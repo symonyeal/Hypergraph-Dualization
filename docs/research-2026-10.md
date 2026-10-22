@@ -1,8 +1,10 @@
-# Research, October 2026: self-transversal designs, `ε(n)`, and FK-A's subproblems
+# Research, October 2026: self-transversal designs, `ε(n)`, FK-A's subproblems, substitution
 
-Results of the program in [`research-prompt.md`](research-prompt.md). Each item is a
-*Theorem*, *Proposition*, *Lemma* or *Observation* proved in Lean, or a *Conjecture* stated with
-its evidence and search bound. Lean names refer to
+Results beyond the thesis, in five tracks: A, the Witt design and self-transversal hypergraphs;
+B, the frequency `ε(n)`; C, FK-A's recursion tree against its subproblems; D, substitution;
+E, the bridges to `openai/math`. Item labels (A1, B2, …) are those of `thesis/CLAIMS.md`; §7
+lists what is open. Each item is a *Theorem*, *Proposition*, *Lemma* or *Observation* proved in
+Lean, or a *Conjecture* stated with its evidence and search bound. Lean names refer to
 [`lean/HypergraphDualization/`](../lean/HypergraphDualization); `lake build` in `lean/` checks all
 of them. Vertices are 0-indexed. *Observation* means a finite fact proved by evaluation
 (`native_decide`), which trusts the Lean compiler as well as the kernel.
@@ -182,6 +184,56 @@ order `≥ 3` have blocking sets containing no line (Bruen, cited), and `S(4,7,2
 (Witt, cited) and 2-colourable (Observation 2.10a). The trivial family `S(k,k,2k−1)` (the
 majority function) is self-transversal and is excluded by `t < k`.
 
+### Criticality
+
+A hypergraph is *3-critical* if it is not 2-colourable but becomes 2-colourable on deleting any
+edge. For an intersecting Sperner `H` without the empty edge, 3-critical is the same as
+self-transversal (Eiter, Makino and Gottlob 2008, §1; here Proposition 2.1 and Lemma 2.14).
+
+**Theorem 2.13** (Seymour 1974; Bretto, *Hypergraph Theory*, Thm 3.6). A 3-critical hypergraph
+covering `n` points has at least `n` edges.
+Lean: `card_le_of_critical`.
+
+*Proof.* Suppose `|H| < n`. The `n` incidence columns `x ↦ ([x ∈ e])_{e∈H}` lie in `ℚ^H`, so
+some `y ≠ 0` has `Σ_{x∈e} y_x = 0` for every edge `e`; an edge carrying a nonzero entry carries
+entries of both signs. Let `e₀` carry one and let `A'` 2-colour `H − e₀`. Put `x` in `A` if
+`y_x > 0`, or if `y_x = 0` and `x ∈ A'`. Edges with a nonzero entry meet `A` and its complement;
+the others lie in `H − e₀` and inherit the colouring of `A'`. So `H` is 2-colourable. ∎
+
+**Lemma 2.14.** A self-transversal Sperner `H` is 2-colourable after deleting any edge `e`, by the
+partition `(e, U \ e)`: no other edge lies inside `e` (Sperner) or avoids it (intersecting).
+Lean: `erase_twoColourable`.
+
+**Corollary 2.15.** A self-transversal Sperner hypergraph covering `n` points has `|H| ≥ n`.
+Equality holds for `K₃` and the Fano plane; `w11` has 66 edges on 11 points.
+Lean: `card_le_of_tr_eq_self`.
+
+In the language of distributed systems ([`applications.md`](applications.md)), a non-dominated coterie on `n` nodes has
+at least `n` quorums.
+
+**Proposition 2.16** (counting test). Let `H` be Sperner inside `U`, intersecting, without the
+empty edge. Then `Tr(H) = H` iff exactly `2^{|U|−1}` subsets of `U` contain an edge.
+Lean: `tr_eq_self_iff_card`.
+
+*Proof.* `A ↦ U \ A` maps the sets containing an edge bijectively onto the sets whose complement
+contains one. The two families are disjoint because `H` is intersecting, and by Proposition 2.1
+`Tr(H) = H` iff they cover the power set. ∎
+
+This is the test of Mezzini et al. (arXiv:2505.09642, Lemma 4) for self-dual functions:
+`f ≤ f^d` and `|f⁻¹(1)| = 2^{n−1}`. It is the counting form of the identity
+`P_{1/2}(G) + P_{1/2}(Tr G) = 1` in `Connections`.
+
+**Proposition 2.17.** If every minimal transversal of `H` is an edge (for example `Tr(H) = H`)
+and `Aut(H)` is transitive on edges, then `Aut(H)` is transitive on the points `H` covers.
+Lean: `transitive_of_edge_transitive`.
+
+*Proof.* Let `O` be the orbit of `x`. Moving an edge through `x` onto any edge `f` puts a point of
+`O` in `f`, so `O` is a transversal and contains a minimal one, which is an edge `e`. Moving `e`
+onto an edge through `y` puts `y` in `O`. ∎
+
+The Fano plane and `w11` are edge- and point-transitive; Proposition 2.17 says that for
+self-transversal hypergraphs the first property implies the second.
+
 ## 3. The least most-frequent-vertex frequency `ε(n)` (Track B)
 
 `ε(G, H) = max_v max(deg_G v/|G|, deg_H v/|H|)` for a transversal pair, both sides nonempty and
@@ -269,3 +321,105 @@ subproblems. ∎
 
 `matching` thus separates the tree from the DAG exponentially. `threshold` has no repeated
 subproblem.
+
+### Read-once pairs (C2)
+
+Hertel (MSc thesis, Toronto 2004) settles the question for one branching order. DPLL simulates
+FK-A (his Thm 4.1.7), and every DPLL decision tree for the alternating trees has
+`n^{Ω(log^{1−o(1)} n)}` nodes (Thm 4.3.6), so FK-A's recursion tree is superpolynomial on them
+under every split rule. With memoisation (DPLLCache), branching on the leaves of the formula from
+left to right decides any read-once formula with `k` connectives in `2k + 3` nodes (Thm 4.4.1).
+So C2 holds for that order, and the question left is FK-A's own rule: the vertex of largest
+degree sum.
+
+**Observation 4.4.** Under FK-A's rule the memoised count `δ` exceeds Hertel's `2k + 3`:
+
+| pair | `n` | `2k + 3` | `N` | `τ` | `δ` |
+| --- | --- | --- | --- | --- | --- |
+| GK `f₂` | 8 | 17 | 12 | 25 | 8 |
+| GK `f₃` | 32 | 65 | 192 | 103,377 | 369 |
+| TK `S₂` | 16 | 33 | 72 | 481 | 34 |
+| `word-xxx` | 64 | 129 | 16,512 | — | 4,139 |
+
+`python experiments/readonce_sim.py` simulates FK-A on the formula (a node is the function whose
+DNF is `C`; children are `g|x=0` and `(g|x=1)^d`), agrees with `fka.algorithm` and `fka.memo` on
+GK, TK and 200 random formulas on at most 12 variables (largest `δ/N` there: 1.17), and computes
+the table; `word-xxx` is from `results/dag-size.md`.
+
+**Conjecture 4.5.** On read-once pairs FK-A's rule gives `δ ≤ 2N`. *Evidence:* `δ/N ≤ 1.93` on
+every read-once pair above and in `docs/tree-vs-dag.md` §4. This would make memoised FK-A
+output-polynomial on read-once pairs; it would not give Hertel's bound, which is polynomial in the
+formula size `n` while `N` can be exponential in `n`.
+
+### All dual pairs (C3)
+
+**Proposition 4.6** (conditional). If the exponential-time hypothesis holds, then no polynomial
+`p` satisfies `δ ≤ p(N)` on all dual pairs; in particular C3 (`δ ≤ 2N`) is false.
+
+*Proof.* Each subproblem of memoised FK-A costs time polynomial in `N`. If `δ ≤ p(N)` held on dual
+pairs, then running memoised FK-A and answering "not dual" as soon as it meets more than `p(N)`
+subproblems would decide duality in polynomial time. Kobayashi, Kurita and Wasa
+(arXiv:2610.11473, October 2026; preprint, not refereed) prove that under ETH duality has no
+`N^{o(√(log N / log log N))}` algorithm. ∎
+
+Their reduction is from 3-SAT and yields pairs with `L ⊆ Tr(H)`; it does not give an explicit
+dual family with `δ/N → ∞`, which stays open. None of the families in this repository is a
+candidate: their `δ/N` stays below 2.
+
+## 5. Substitution (Track D)
+
+For a template `T` on points `ι` and hypergraphs `Γ i`, the substitution is
+`T[Γ] = {⋃_{i∈t} g_i : t ∈ T, g_i ∈ Γ i}`: the composition `f_T(f_{Γ 1}, …, f_{Γ m})` of monotone
+functions. Union and join are `T = {{0},{1}}` and `T = {{0,1}}`; the GK, TK and word families of
+`docs/hard-classes.md` are iterated substitutions.
+
+**Theorem 5.1** (D1). For all `T` and `Γ`, `Tr(T[Γ]) = min(Tr(T)[Tr Γ])`. If the `Γ i` lie in
+pairwise disjoint sets and are nonempty, the reduction is unnecessary:
+`Tr(T[Γ]) = Tr(T)[Tr Γ]`. Without empty edges on disjoint supports, `T[Γ]` is Sperner when `T`
+and every `Γ i` are, and `|T[Γ]| = Σ_{t∈T} Π_{i∈t} |Γ i|`.
+Lean: `tr_subst`, `tr_subst_of_disjoint`, `subst_isSperner`, `card_subst`.
+
+*Proof.* `X` hits `T[Γ]` iff the points `i` with `X` hitting `Γ i` form a transversal of `T`
+(`hits_subst`; one direction picks, for a point `i` whose `Γ i` is missed, an edge of `Γ i`
+disjoint from `X`). The same holds for "contains an edge" (`upHit_subst`). Two Sperner families
+with the same up-sets are equal. On disjoint supports the part of `⋃ g_i` inside the support of
+`Γ i` is `g_i`, which gives Sperner and the count. ∎
+
+**Proposition 5.2** (D2). Let a template be `r`-uniform on `r²` points with `k` edges and `k*`
+minimal transversals, both `r`-uniform, and satisfy `(P)`: `k·k* ≥ 8^{r−1}`. Substituting a copy of
+an `s`-template with `(l, l*)` satisfying `(P)` into each point gives an `rs`-template with
+`(k·l^r, k*·l*^r)`, which satisfies `(P)`. Under `(P)`, `c_∞ = max(log₂ k, log₂ k*)/(r − 1) ≥ 3/2`.
+Lean: `card_subst_uniform` (the counts, with `tr_subst_of_disjoint` on the dual side),
+`prop_P_comp` (the inequality: `8^{rs−1} = 8^{r−1}·(8^{s−1})^r`).
+
+**Open problem 5.3** (D3). Is there a prime template (not read-once) with `k·k* < 8^{r−1}`? For
+`r ≤ 3` every convergent template is read-once (`docs/hard-classes.md` (1.3), exhaustive). At
+`r = 4`, `AG(2,4)`'s parallel-class splits meet every necessary condition and fail duality. A
+search over the transitive groups of degree 16 was not run.
+
+## 6. Influences (Track E)
+
+**Proposition 6.1** (E2). An automorphism `σ` of `G` preserves influences: at every density `p`,
+the probability that `σ v` is pivotal for "contains an edge of `G`" equals that for `v`. Hence a
+transitive `Aut(G)` gives all points the same influence; for the Fano plane all seven influences
+agree at every `p`, and `P_{1/2} = 1/2` (`fano_k3_balanced`).
+Lean: `influence_aut`, `influence_eq_of_transitive`, `fano_influence_eq`.
+
+*Proof.* Reindex the sum defining the probability by `W ↦ σ(W)`. The product measure is invariant
+(`bernoulliWeight_pmap`), `σ(insert v W) = insert (σ v) (σ W)`, and `σ(A)` contains an edge of
+`G = σ(G)` iff `A` does (`upHit_pimg`). ∎
+
+That `P_p` is strictly increasing for a nonconstant monotone property is Russo–Margulis, cited.
+
+## 7. Open items
+
+| Item | Status |
+| --- | --- |
+| A6: Lean statements for the FK-A children of `w11` (orders 720 and 720, both primitive) | Python only (Correction 1.3). The conjecture that FK-A/FK-B falls as primitivity depth rises is refuted in `docs/hard-classes.md` (5.2): `w11-sd-1` keeps primitive nodes to depth 10 with FK-B 1.33× ahead, `gk-f3` has none with 52.96× |
+| A5d (Conjecture 2.12) | open; evidence for `v ≤ 100` |
+| B: `ε(8) = 2/5` (Conjecture 3.3) | open; CP-SAT infeasibility not Lean-certified |
+| B3: growth of `ε(n)` | `ε(n) ≥ 1/√n` (Theorem 3.1) and `ε(s²) ≤ 1/s` by `s` disjoint `s`-sets, so `ε(n) = Θ(n^{−1/2})`. These pairs have `N = s + s^s`, so `ε·log₂ N ≈ log₂ s → ∞`: minimising `ε` on `n` points does not approach the FK96 threshold `ε·log₂ N ≥ 1`. The upper bound for general `s` is not in Lean (`eps_four`, `eps_nine` cover `s = 2, 3`) |
+| C2: Conjecture 4.5 | open; `gk-f4` (`n = 128`) not yet measured |
+| C3 | false under ETH (Proposition 4.6); no explicit family |
+| D3 | open (Open problem 5.3) |
+| E1: `|H| + |Tr H|` for the smallest explicit Ryser counterexample of `openai/math` family 162 | not started; needs the construction's transversals counted by structure |

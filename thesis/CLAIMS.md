@@ -120,8 +120,8 @@ smallest instances. `lake build` reproduces everything; see [`lean/README.md`](.
 
 ## Research beyond the thesis (2026-10)
 
-New statements of the research program in [`docs/research-prompt.md`](../docs/research-prompt.md);
-each is written up in [`docs/research-2026-10.md`](../docs/research-2026-10.md).
+New statements of the October 2026 research program, each written up in
+[`docs/research-2026-10.md`](../docs/research-2026-10.md).
 
 | Statement | Status | Lean |
 | --- | --- | --- |
@@ -139,3 +139,14 @@ each is written up in [`docs/research-2026-10.md`](../docs/research-2026-10.md).
 | `ε(8) = 2/5` | Open: `3/8 ≤ ε(8) ≤ 2/5` proved; CP-SAT finds no pair below `2/5` (`experiments/eps_search.py`) | `eps_bound`, `eightVer_eps` |
 | Theorem C1: `matching(v)` has `τ = 2^{v/2+1} − 3`, `δ = v`; `threshold(v)` has `τ = δ = v − 1` (modified FK-A, every even `v`) | Proved | `matching_tau_delta`, `threshold_tau_delta` |
 | Theorem A5c: every Steiner system `S(t, t+1, 2t+3)` is self-transversal, and `t` is even | Proved | `witt_tr_eq` |
+| Theorem (Seymour 1974): a 3-critical hypergraph covering `n` points has at least `n` edges | Proved | `card_le_of_critical` |
+| A self-transversal Sperner hypergraph covering `n` points has `|H| ≥ n` (equality for `K₃`, Fano) | Proved | `card_le_of_tr_eq_self`, `erase_twoColourable` |
+| Counting test: for intersecting Sperner `H` without `∅`, `Tr(H) = H` iff `2^{n−1}` subsets contain an edge | Proved | `tr_eq_self_iff_card` |
+| If `Tr(H) ⊆ H` and `Aut(H)` is edge-transitive, it is transitive on covered points | Proved | `transitive_of_edge_transitive` |
+| Hertel's alternating-tree bound (cited in Chapter 4) is a lower bound on DPLL trees, not an upper bound on subproblems | Corrected citation (revised edition, Chapter 4) | — |
+| Observation 4.4: FK-A's degree-sum rule exceeds Hertel's memoised `2k + 3` on GK `f₃` (`δ = 369 > 65`) | Computed (`experiments/readonce_sim.py`) | — |
+| Conjecture 4.5: `δ ≤ 2N` on read-once pairs under FK-A's rule | Open; `δ/N ≤ 1.93` on every pair measured | — |
+| Proposition 4.6: under ETH no polynomial bounds `δ` on all dual pairs (C3 false) | Proved conditionally, from Kobayashi–Kurita–Wasa 2026 (cited) | — |
+| Theorem D1: `Tr(T[Γ]) = min(Tr(T)[Tr Γ])`; on disjoint supports no reduction, Sperner, `|T[Γ]| = Σ_t Π_i |Γ i|` | Proved | `tr_subst`, `tr_subst_of_disjoint`, `subst_isSperner`, `card_subst` |
+| Proposition D2: `(P)` `k·k* ≥ 8^{r−1}` is closed under composition | Proved | `card_subst_uniform`, `prop_P_comp` |
+| Proposition E2: automorphisms preserve influences; Fano's seven influences agree at every `p` | Proved | `influence_aut`, `influence_eq_of_transitive`, `fano_influence_eq` |
