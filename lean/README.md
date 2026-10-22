@@ -55,8 +55,9 @@ same cache from Mathlib's Azure storage account.
 | `FrequencyGap` | cross-intersection excess, stability, square-order equality structure, strict self-transversal gap; one regular side forces singleton intersections in uniform pairs on `r²` points; kernel-checked Fano excess and four-point counterexample |
 | `Dag` | FK-A's distinct subproblems (`fkADag`); `Tr(G/x) = Tr(G) − x`; `τ` and `δ` of `matching(v)` and `threshold(v)` for every `v` (C1) |
 | `Primitive` | read-once hypergraphs with a primitive automorphism group have `Aut = Sₙ` (A7); `w11` and Fano are not read-once |
-| `Substitution` | substitution duality, disjoint-support Sperner and cardinality formulas; closure of `(P)` |
+| `Substitution` | substitution duality, disjoint-support Sperner and cardinality formulas; closure of `(P)`; D3 at `r = 2` (`template_rank_two`) |
 | `Influence` | automorphisms preserve pivotal probabilities; equal influences for Fano |
+| `Blowup` | why FK-A's subproblems multiply: subproblems are minors (`fkADag_minor`), `τ(C,D) = τ(D,C)` on dual pairs, the resilience bound `τ ≥ 2^{d+1} − 1`, superadditive repeated work `τ − δ`; the read-once `ro12` with `δ = 43 > 2N` (refutes Conjecture 4.5) |
 
 ## Trust base
 

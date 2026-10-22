@@ -1,6 +1,9 @@
 """FK-A on read-once pairs, simulated on formulas (research track C, items C2 and C3).
 
 Usage (from the repository root): python experiments/readonce_sim.py [kmax]
+                                  python experiments/readonce_sim.py --sexpr gk|tk k
+The second form prints the formula for experiments/readonce_dag, which measures GK_4 (kmax = 4
+here needs more than 14 GB).
 
 A node of modified FK-A on a dual pair (C, Tr C) is determined by the monotone function g whose
 DNF is C. For a read-once g every quantity FK-A uses is read off its formula:
@@ -153,6 +156,13 @@ def random_formula(leaves, rng):
     return mk(rng.choice('|&'), [random_formula(leaves[:k], rng), random_formula(leaves[k:], rng)])
 
 
+def sexpr(f):
+    """The formula as an s-expression `(| (& 0 1) 2)`, the input of readonce_dag."""
+    if OP[f] == 'v':
+        return str(MASK[f].bit_length() - 1)
+    return "(" + OP[f] + " " + " ".join(sexpr(k) for k in KIDS[f]) + ")"
+
+
 def check(f, n):
     """Compare the simulation with the hypergraph implementations."""
     C = Hypergraph.from_bitsets(n, sorted(dnf(f)))
@@ -161,7 +171,10 @@ def check(f, n):
 
 
 if __name__ == "__main__":
-    kmax = int(sys.argv[1]) if len(sys.argv) > 1 else 4
+    if sys.argv[1:2] == ["--sexpr"]:
+        print(sexpr({"gk": gk, "tk": tk}[sys.argv[2]](int(sys.argv[3]))))
+        sys.exit()
+    kmax = int(sys.argv[1]) if len(sys.argv) > 1 else 3
     ok = all(check(gk(k), 2 ** (2 * k - 1)) for k in (1, 2, 3))
     ok &= all(check(tk(k), 4 ** k) for k in (1, 2))
     rng = random.Random(0)

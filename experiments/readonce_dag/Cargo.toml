@@ -1,0 +1,9 @@
+[package]
+name = "readonce_dag"
+version = "0.1.0"
+edition = "2021"
+description = "Modified FK-A on read-once pairs: tau and delta on live-variable sets"
+license = "GPL-3.0-or-later"
+
+[profile.release]
+opt-level = 3

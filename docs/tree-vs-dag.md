@@ -87,36 +87,37 @@ subproblems. Their trees are far past enumeration; `word-xy`, 344 times smaller,
 already unfolds to 577 nodes. The two agree exactly, as `T_w^d = T_wbar`
 requires.
 
-## 4. `delta <= 2N`, everywhere anyone has looked
+## 4. `delta <= 2N` on the first corpus, and where it fails
 
-Across every instance measured -- the library, the alternating families,
-`matching` to `v = 20`, `threshold` to `v = 20`, the words to `N = 16,512`, and
-234,135 random dual pairs on at most 14 vertices -- `delta` never exceeds `2N`.
-The maxima are 1.92 (`gk-f3`) among structured instances and 1.681 among random
-ones; 7.2% of random pairs exceed `delta = N`, 0.01% exceed `1.5N`, and not one
-reaches `2N`.
+Across the first corpus -- the library, the alternating families up to `gk-f3`, `matching` to
+`v = 20`, `threshold` to `v = 20`, the words to `N = 16,512`, and 234,135 random dual pairs on at
+most 14 vertices -- `delta` never exceeds `2N`. The maxima are 1.92 (`gk-f3`) among structured
+instances and 1.681 among random ones; 7.2% of random pairs exceed `delta = N`, 0.01% exceed
+`1.5N`, and not one reaches `2N`.
 
-This cannot be a theorem for all inputs. If it were, memoised FK-A would decide
-DUAL in polynomial time. So the law must fail somewhere -- and it fails on
-nothing in the corpus. Restated:
+**Corrected 2026-10-21.** This section called `delta <= 2N` a regularity of every instance
+measured and concluded that no published hard instance for FK-A is hard for memoised FK-A. Both
+are false under FK-A's own split rule:
 
-> **No published hard instance for FK-A is hard for FK-A.** The alternating
-> trees, the SDFP self-dualisations, the Fano plane and `S(4,5,11)` all witness
-> a superpolynomial lower bound against *memoryless* FK-A, and none of them
-> witnesses one against the recursion. An instance that separates FK-A from
-> polynomial time has to exhibit superpolynomially many **distinct**
-> subproblems, and no construction in the literature or in this library does.
+| instance | n | N | delta (degree sum) | delta (leftmost) |
+| --- | ---: | ---: | ---: | ---: |
+| `ro12` (read-once, 12 points) | 12 | 21 | **43** | 12 |
+| `gk-f3` | 32 | 192 | 369 | 32 |
+| `gk-f4` | 128 | 49,152 | **67,247,387** | 128 |
 
-For the alternating trees this was proved by Hertel (MSc thesis, Toronto 2004):
-memoised DPLL, branching on the formula's leaves from left to right, decides
-every read-once formula with `k` connectives in `2k + 3` nodes. Under the
-exponential-time hypothesis some dual family does have superpolynomially many
-distinct subproblems (`docs/research-2026-10.md`, Proposition 4.6), but no
-explicit one is known.
+`ro12` is proved read-once with `delta = 43 > 2N` in Lean (`Blowup.lean`, `ro12_delta`);
+`gk-f4` is computed by `experiments/readonce_dag`. Random read-once formulas with fan-in 3 or 4
+exceed `2N` often. The first corpus missed them because its random formulas were binary and
+small. See `docs/research-2026-10.md`, Observations 4.4-4.11.
 
-That is the Chapter 4 program restated in the quantity that carries it. The
-search in [hard-cases.md](hard-cases.md) was run against `tau`; run against
-`delta`, `S(4,5,11)` places at 140 subproblems on `N = 132`, ordinary.
+The leftmost rule (leaves numbered left to right, Hertel's order) keeps `delta = n` on the same
+instances. So the alternating trees are hard for memoised FK-A under its most-frequent-vertex
+rule and easy under a coordinated order: the remaining hardness is the split rule's, not the
+instance's. Under ETH some dual family must defeat every rule
+(`docs/research-2026-10.md`, Proposition 4.6), but no explicit one is known.
+
+The search in [hard-cases.md](hard-cases.md) was run against `tau`; run against `delta`,
+`S(4,5,11)` places at 140 subproblems on `N = 132`.
 
 ## 5. FK-B and memoisation are orthogonal
 
@@ -158,8 +159,7 @@ documented exception was never an exception.
   ([hard-cases.md](hard-cases.md) §6). The agreement in `tests/test_memo.py`
   holds across both variants and both split rules; the *values* above are
   `modified` / `degree_sum`.
-* `gk-f4` is not measured by this program. `experiments/readonce_sim.py`
-  builds both sides structurally, from the formula.
-* Whether `delta = O(N)` on the read-once families under FK-A's degree-sum rule
-  is open (`docs/research-2026-10.md`, Conjecture 4.5). For a fixed leaf order
-  Hertel's `2k + 3` already answers it.
+* `gk-f4` is beyond this program; `experiments/readonce_dag` measures it on
+  live-variable sets (section 4).
+* `delta = O(N)` on read-once pairs under FK-A's degree-sum rule is false
+  (`ro12`, section 4). Whether `delta/N` is unbounded on the GK family is open.

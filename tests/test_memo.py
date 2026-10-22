@@ -12,6 +12,7 @@ import pytest
 from fka.algorithm import fk_a
 from fka.instances import (gk, list_ids, load, matching, template_word,
                            threshold, tk)
+from fka.hypergraph import Hypergraph
 from fka.memo import dag_size, fk_a_memo
 from fka.transversal import is_dual_oracle, transversal
 
@@ -107,11 +108,10 @@ def test_word_dag_is_reachable_where_the_tree_is_not():
 
 @pytest.mark.slow
 def test_delta_stays_linear_on_random_dual_pairs(rng):
-    """``delta <= 2N`` on random dual pairs, as on every structured instance.
+    """``delta <= 2N`` on small random dual pairs (n <= 11).
 
-    Not a theorem -- it cannot be one for all inputs, since memoised FK-A would
-    then decide DUAL in polynomial time. It is the regularity that says the
-    corpus contains no instance that is genuinely hard for FK-A.
+    Not a law: it fails on the read-once pair ``ro12`` on 12 points
+    (``test_ro12_exceeds_2N``) and on ``gk-f4``.
     """
     from conftest import random_sperner
 
@@ -128,3 +128,17 @@ def test_delta_stays_linear_on_random_dual_pairs(rng):
         assert run.dual is True
         assert run.nodes <= 2 * (len(D) + len(H))
         measured += 1
+
+
+def test_ro12_exceeds_2N():
+    """The read-once pair of ``Blowup.ro12_delta``: ``tau = 59``, ``delta = 43 > 2N = 42``.
+
+    ``g(0,6,4,8,2,9) | g(1,7,5,11,10,3)``, ``g = (a | b) & (c | (d & (e | f)))``.
+    """
+    C = Hypergraph.from_sets(12, [{0, 2, 8}, {0, 4}, {0, 8, 9}, {1, 3, 11}, {1, 5}, {1, 10, 11},
+                                   {2, 6, 8}, {3, 7, 11}, {4, 6}, {5, 7}, {6, 8, 9}, {7, 10, 11}])
+    D = transversal(C)
+    run = fk_a_memo(C, D)
+    assert run.dual is True
+    assert len(fk_a(C, D, variant="modified")) == 59
+    assert (len(C), len(D), run.nodes) == (12, 9, 43)

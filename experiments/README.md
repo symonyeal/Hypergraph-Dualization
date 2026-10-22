@@ -15,7 +15,8 @@ importable library.
 | `witt_m11.py` | Re-derives the facts about the Witt design `S(4,5,11)` (Steiner property, self-transversality, `|Aut| = 7920`, the FK-A children's groups); `--lean` writes `lean/HypergraphDualization/WittData.lean`. |
 | `steiner_selftr.py` | Checks `d(r² − t) ≥ r(r − 1)` on self-transversal hypergraphs, lists the Steiner parameters with no two disjoint blocks, and scans the intersecting ones for 2-colourings; `--lean` writes `SteinerData.lean`. See `docs/research-2026-10.md` §2. |
 | `eps_search.py` | Decides `eps(n) < p/q` by CP-SAT on the truth table of a monotone function; the table `n = 3..8` at the thesis' bounds. See `docs/research-2026-10.md` §3. |
-| `readonce_sim.py` | Modified FK-A on read-once pairs simulated on formulas: `tau`, `delta` for GK, TK and random formulas, validated against `fka.algorithm` and `fka.memo`. See `docs/research-2026-10.md` §4. |
+| `readonce_sim.py` | Modified FK-A on read-once pairs simulated on formulas: `tau`, `delta` for GK, TK and random formulas, validated against `fka.algorithm` and `fka.memo`. `--sexpr gk 4` prints a formula for `readonce_dag`. See `docs/research-2026-10.md` §4. |
+| `readonce_dag/` | Rust: the same simulation keyed on live-variable sets (17 bytes a node), degree-sum or `--leftmost` rule. `cargo build --release`, then `python experiments/readonce_sim.py --sexpr gk 4 \| readonce_dag/target/release/readonce_dag` prints `n N delta tau` (GK `f₄`: about six minutes). |
 
 Core correctness claims belong in `tests/`, and normal runs belong in the `fka`
 and `fkb` CLIs. Avoid adding notebooks or unstructured output logs. Naming

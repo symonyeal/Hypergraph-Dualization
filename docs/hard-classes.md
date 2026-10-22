@@ -176,11 +176,13 @@ FK-B's saving compounds with the number of nodes there are to reuse. See
 
 The repeat column is worth reading in the other direction too. `1/(1 - repeat)`
 is exactly `tau/delta`, FK-A's tree over its distinct-subproblem count: 280x on
-`gk-f3`, 20.6x on `word-xy`. Measured that way none of the tight families is
-hard -- `gk-f3` needs 369 subproblems on `N = 192`, and the constant word at
-`N = 16512` needs 4139. The families in this note make FK-A's *frequency bound*
-tight, which is what section 0 claims; they do not make its recursion large.
-See `docs/tree-vs-dag.md`.
+`gk-f3`, 20.6x on `word-xy`. Measured that way the small members look easy --
+`gk-f3` needs 369 subproblems on `N = 192`, and the constant word at `N = 16512`
+needs 4139 -- but `gk-f4` needs 67,247,387 on `N = 49,152` under FK-A's own split
+rule, against 128 under the leftmost rule (`docs/tree-vs-dag.md` section 4,
+corrected 2026-10-21). The families in this note make FK-A's *frequency bound*
+tight, which is what section 0 claims; whether they make its memoised recursion
+large depends on the split rule.
 
 Nodes whose incidence graph is too large to enumerate are counted in the
 `undet` column and excluded from the primitivity counts rather than guessed:

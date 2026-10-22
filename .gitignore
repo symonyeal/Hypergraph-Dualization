@@ -18,6 +18,7 @@ FK- B/FK-master/
 
 # Lean build output and the Mathlib cache (rebuilt by `lake exe cache get && lake build`).
 lean/.lake/
+experiments/readonce_dag/target/
 
 # LaTeX build output; the compiled main.pdf of each edition is committed.
 thesis/*/*.aux

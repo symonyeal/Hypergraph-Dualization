@@ -407,30 +407,133 @@ degree sum.
 
 **Observation 4.4.** Under FK-A's rule the memoised count `δ` exceeds Hertel's `2k + 3` on the
 alternating trees. GK `fₖ` and TK `Sₖ` below are the alternating trees with an OR root and with
-an AND root; `word-xxx` is the alternating tree on 64 leaves with an OR root, the dual of TK `S₃`
-(`word-yyy`), and has the same `δ`.
+an AND root; `word-xxx`, the alternating tree on 64 leaves with an OR root, is the dual of TK `S₃`
+(`word-yyy`) and has the same `δ`. The last column splits on the least live variable instead,
+the leaves numbered left to right (Hertel's order).
 
-| pair | `n` | `2k + 3` | `N` | `τ` | `δ` |
-| --- | --- | --- | --- | --- | --- |
-| GK `f₂` | 8 | 17 | 12 | 25 | 8 |
-| GK `f₃` | 32 | 65 | 192 | 103,377 | 369 |
-| TK `S₂` | 16 | 33 | 72 | 481 | 34 |
-| `word-xxx` | 64 | 129 | 16,512 | — | 4,139 |
+| pair | `n` | `2k + 3` | `N` | `τ` | `δ` | `δ`, leftmost |
+| --- | --- | --- | --- | --- | --- | --- |
+| GK `f₂` | 8 | 17 | 12 | 25 | 8 | 8 |
+| GK `f₃` | 32 | 65 | 192 | 103,377 | 369 | 32 |
+| GK `f₄` | 128 | 257 | 49,152 | 78,146,658,241,629,218,193 | 67,247,387 | 128 |
+| TK `S₂` | 16 | 33 | 72 | 481 | 34 | 16 |
+| TK `S₃` | 64 | 129 | 16,512 | 19,609,201,217 | 4,139 | 64 |
 
-`python experiments/readonce_sim.py` simulates FK-A on the formula (a node is the function whose
-DNF is `C`; children are `g|x=0` and `(g|x=1)^d`), agrees with `fka.algorithm` and `fka.memo` on
-GK, TK and 200 random formulas on at most 12 variables (largest `δ/N` there: 1.17), and computes
-the table; `word-xxx` is from `results/dag-size.md`.
+`python experiments/readonce_sim.py 3` simulates FK-A on the formula (a node is the function
+whose DNF is `C`; children are `g|x=0` and `(g|x=1)^d`) and agrees with `fka.algorithm` and
+`fka.memo` on GK, TK and 200 random formulas. The rows for GK `f₄` and TK `S₃` and the last
+column are from `experiments/readonce_dag` (Rust), which stores a node as its set of relevant
+variables (Remark 4.12) and agrees with `readonce_sim.py` on `τ` and `δ` for GK `f₁–f₃`,
+TK `S₁–S₂` and 400 random formulas with fan-in up to 4 on at most 16 variables. GK `f₄` takes
+about six minutes; the formula-keyed `readonce_sim.py 4` exceeded 14 GB.
 
-**Conjecture 4.5.** On read-once pairs FK-A's rule gives `δ ≤ 2N`. *Evidence:* `δ/N ≤ 1.93` on
-every read-once pair above and in `docs/tree-vs-dag.md` §4. This would make memoised FK-A
-output-polynomial on read-once pairs; it would not give Hertel's bound, which is polynomial in the
-formula size `n` while `N` can be exponential in `n`.
+**Conjecture 4.5** (refuted). On read-once pairs FK-A's rule gives `δ ≤ 2N`.
+
+**Observation 4.5a.** Let `g(a,b,c,d,e,f) = (a ∨ b) ∧ (c ∨ (d ∧ (e ∨ f)))` and
+`ro12 = g(0,6,4,8,2,9) ∨ g(1,7,5,11,10,3)` on 12 points. Then `ro12` is read-once,
+`|ro12| + |Tr ro12| = 12 + 9 = 21`, and modified FK-A has `τ = 59` and `δ = 43 > 2N = 42`.
+Lean: `ro12_readOnce` (the cotree is the formula; conformality by evaluation), `ro12_delta`
+(evaluation).
+
+So Conjecture 4.5 is false. On the GK family `δ/N` is 0.67, 1.92 and 1368 for `k = 2, 3, 4`, and
+`log δ / log N` rises from 1.12 to 1.67 (Python). The earlier evidence (`δ/N ≤ 1.93`) came from
+fan-in-2 random formulas on at most 12 variables and the alternating trees up to `f₃`. Random
+read-once formulas with fan-in up to 4 often exceed `2N`; the smallest found in a seeded
+search has 12 variables, and none was found on at most 11 among 800,000 samples. The two copies of `g` in `ro12` are labelled so that the
+lowest-index tie-break alternates between them; with consecutive labels the same formula has
+`δ = 31`.
+
+### Why the subproblems multiply
+
+The thesis locates FK-A's cost in the number of subproblems and observes repeated ones (p. 53:
+"The resulting contraction subhypergraph at Node 8 is identical to that at Node 17"). On a dual
+input there are three separate sources of growth, and only the second is a repetition.
+
+**Theorem 4.7** (normal form). For every `G`, fuel and variant, every subproblem of FK-A on
+`(G, Tr G)` or on `(Tr G, G)` is `(H, Tr H)` or `(Tr H, H)`, `H` a Sperner-reduced minor of `G`
+(iterated deletions `· − x`, contractions `· / x` and Sperner reductions). Hence
+`δ ≤ 2·#{reduced minors of G}`.
+Lean: `Minor`, `fkADag_minor`, `card_fkADag_le_minors`.
+
+*Proof.* Induct on the fuel. By Lemma 4.1 the children of `(G, Tr G)` at `x`, `G' = min G`,
+reduce to `(G' − x, Tr(G' − x))` and `(Tr(G'/x), G'/x)`; those of `(Tr G, G)` are the same two
+pairs in the other order. Apply the hypothesis to `G' − x` and `G'/x`. ∎
+
+On functions, `G − x` is `f|x=0` and `G/x` is `f|x=1`. A subproblem is therefore a subfunction
+`h = f|ρ` with a tag recording whether the pair is `(DNF h, DNF h^d)` or the reverse, and both
+orientations of `h` have the children `h|x=0` and `h|x=1`.
+
+**Proposition 4.8.** On a dual pair, `τ(C, D) = τ(D, C)`: the two orientations split on the
+same vertex (`splitVar_comm`) into the same two children. Lean: `fkA_comm`.
+
+**Theorem 4.9** (resilience). Suppose every minor of `G` by `k < d` deletions and contractions
+keeps at least two edges and at least two minimal transversals. Then, with fuel at least `d`,
+FK-A's tree on `(G, Tr G)` has `τ ≥ 2^{d+1} − 1` nodes, in either variant.
+Lean: `tau_ge_of_resilient`.
+
+*Proof.* Induct on `d`. At the root both sides have two edges, so a vertex has positive degree
+and FK-A splits (`splitVar_spec`). The pair is dual, so the short-circuit never fires and
+`τ = 1 + τ_L + τ_R` (`fkA_split'`). Up to orientation (Proposition 4.8) the children are
+`(H, Tr H)` for the minors `G' − x` and `G'/x`, which are `(d − 1)`-resilient. ∎
+
+This is the growth of the tree, and no split rule escapes it; Hertel's DPLL lower bound (review
+row 7) is the sharp form for the alternating trees. For `matching(2m)`, `d = m − 1` gives
+`τ ≥ 2^m − 1` against the exact `2^{m+1} − 3` (Theorem 4.3).
+
+**Proposition 4.10** (overlap excess). `δ ≤ τ` at every node, and at a split of a dual Sperner
+node with children `L, R` and subproblem sets `Δ_L, Δ_R`,
+
+```text
+τ − δ ≥ (τ_L − δ_L) + (τ_R − δ_R) + |Δ_L ∩ Δ_R|.
+```
+
+Lean: `card_fkADag_le`, `excess_split`.
+
+*Proof.* `τ = 1 + τ_L + τ_R` and `δ ≤ 1 + |Δ_L ∪ Δ_R| = 1 + δ_L + δ_R − |Δ_L ∩ Δ_R|`. ∎
+
+This is the repetition the thesis saw. The work a memo saves is superadditive, and every split
+whose children share subproblems adds their overlap. On `matching` the right child reaches the
+left child again two levels down (`rnode` in `Dag.lean`), so `τ` doubles at each pair while `δ`
+grows by two (Theorem 4.3).
+
+**Observation 4.11** (the split rule). The third source is FK-A's own rule. On the alternating
+trees the distinct subproblems number exactly `n` under the leftmost rule and far exceed `N`
+under the degree-sum rule (Observation 4.4, last two columns). Over 500 seeded random formulas
+with fan-in up to 4 on at most 60 variables, leaves numbered left to right, the leftmost rule
+gives `δ ≤ 1.07 n` and the degree-sum rule `δ/N` up to 25.4. Hertel's Theorem 4.4.1 (DPLLCache,
+`2k + 3` nodes, cited) is the bound for the leftmost rule. (Python and Rust.)
+
+*Reason (not formalised).* For a read-once `h`, the relevant variables of `h|x=b` are those of `h`
+less the leaves below the highest gate that the assignment makes constant (Remark 4.12). With
+leaves in left-to-right order these form an interval beginning at the leftmost live variable
+`x`. So the relevant variables are always a suffix of `0, …, n − 1`, and with the tag
+`δ ≤ 2n + 2`. The degree-sum rule picks the most frequent variable wherever it lies. It thereby
+interleaves disjoint subformulas, and the subproblems become combinations of their partial
+states: the product structure of `ro12`.
+
+**Remark 4.12.** A nonconstant restriction of a read-once formula is determined by its relevant
+variables `S`: a gate of the restricted formula is live iff its subtree meets `S`, and a constant
+child of a live gate holds that gate's identity element. This is the encoding of
+`experiments/readonce_dag`, where a node is `(S, tag)`, 17 bytes, in place of a formula.
+(Argument stated here, not in Lean.)
+
+So, to the thesis's question. The recursion tree is exponential because a dual node always
+recurses into both children (Theorem 4.9). Most of the tree repeats subproblems, and
+memoisation removes exactly that part (Proposition 4.10). What remains, `δ`, is small for a
+coordinated split order and large for FK-A's most-frequent-vertex rule, because that rule
+interleaves independent parts of the instance (Observation 4.11). ETH forces memoised FK-A to
+be superpolynomial on some dual pairs (Proposition 4.6), a statement about `δ`. On the
+alternating trees FK-A's own rule already shows superlinear growth of `δ`, in this
+measurement.
 
 ### All dual pairs (C3)
 
+C3 as stated, `δ ≤ 2N` on all dual pairs, is refuted unconditionally by `ro12`
+(Observation 4.5a), a read-once and hence dual pair. The polynomial form is refuted only
+conditionally:
+
 **Proposition 4.6** (conditional). If the exponential-time hypothesis holds, then no polynomial
-`p` satisfies `δ ≤ p(N)` on all dual pairs; in particular C3 (`δ ≤ 2N`) is false.
+`p` satisfies `δ ≤ p(N)` on all dual pairs.
 
 *Proof.* Each subproblem of memoised FK-A costs time polynomial in `N`. If `δ ≤ p(N)` held on dual
 pairs, then running memoised FK-A and answering "not dual" as soon as it meets more than `p(N)`
@@ -439,8 +542,9 @@ subproblems would decide duality in polynomial time. Kobayashi, Kurita and Wasa
 `N^{o(√(log N / log log N))}` algorithm. ∎
 
 Their reduction is from 3-SAT and yields pairs with `L ⊆ Tr(H)`; it does not give an explicit
-dual family with `δ/N → ∞`, which stays open. None of the families in this repository is a
-candidate: their `δ/N` stays below 2.
+dual family with `δ/N → ∞`. The GK family under FK-A's own rule is now an explicit candidate:
+`δ/N = 0.67, 1.92, 1368` for `k = 2, 3, 4` (Observation 4.4). Unboundedness is not proved, and
+under the leftmost rule the same family has `δ = n`.
 
 ## 5. Substitution (Track D)
 
@@ -472,7 +576,15 @@ Lean: `card_subst_uniform` (the counts, with `tr_subst_of_disjoint` on the dual 
 with an `r`-uniform dual, such that `k·k* < 8^{r−1}`? Candidates with either side regular are
 excluded at every rank by Proposition 3.7 and the cited Gurvich consequence; the finite
 regular classifications at `r = 2,3` are special cases. Both sides of a remaining candidate
-must be irregular. At `r = 4`, `AG(2,4)`'s
+must be irregular.
+
+**Proposition 5.4** (D3 at `r = 2`). A nonempty 2-uniform family `G` on 4 points whose minimal
+transversals are 2-uniform has `(|G|, |Tr G|) ∈ {(2,4), (4,2), (3,3)}`, so `k·k* ≥ 8`: the
+answer to D3 at `r = 2` is no. Up to relabelling the three are the matching, the 4-cycle and the
+path `P₄`. `P₄` is the prime one, with `k·k* = 9`.
+Lean: `template_rank_two` (evaluation over the 64 families of pairs, `template_rank_two_check`).
+
+At `r = 4`, `AG(2,4)`'s
 parallel-class splits meet the necessary incidence conditions and fail duality. A search
 over the transitive groups of degree 16 was not run.
 
@@ -498,9 +610,9 @@ That `P_p` is strictly increasing for a nonconstant monotone property is Russo�
 | A5d (Conjecture 2.12) | open; evidence for `v ≤ 100` |
 | B: `ε(8) = 2/5` (Conjecture 3.3) | open; CP-SAT infeasibility not Lean-certified |
 | B3: growth of `ε(n)` | `ε(n) ≥ 1/√n` (Theorem 3.1) and `ε(s²) ≤ 1/s` by `s` disjoint `s`-sets, so `ε(n) = Θ(n^{−1/2})`. These pairs have `N = s + s^s`, so `ε·log₂ N ≈ log₂ s → ∞`: minimising `ε` on `n` points does not approach the FK96 threshold `ε·log₂ N ≥ 1`. The upper bound for general `s` is not in Lean (`eps_four`, `eps_nine` cover `s = 2, 3`) |
-| C2: Conjecture 4.5 | open; `gk-f4` (`n = 128`) not yet measured |
-| C3 | false under ETH (Proposition 4.6); no explicit family |
-| D3 | open (Open problem 5.3) |
+| C2: Conjecture 4.5 | **refuted**: `ro12` has `δ = 43 > 2N` (Lean, evaluation); GK `f₄` has `δ/N = 1368` (Rust). Open: is `δ/N` unbounded on GK under FK-A's rule (log-ratio 1.12 → 1.67)? Lean form of the leftmost bound `δ ≤ 2n + 2` (Observation 4.11) needs read-once formulas in Lean |
+| C3 | `δ ≤ 2N` refuted by `ro12`; no polynomial bound under ETH (Proposition 4.6); unboundedness of `δ/N` on an explicit family open |
+| D3 | `r = 2` settled, no (Proposition 5.4); open from `r = 3` (Open problem 5.3) |
 | E1: `|H| + |Tr H|` for the smallest explicit Ryser counterexample of `openai/math` family 162 | not started; needs the construction's transversals counted by structure |
 
 ## 8. Review log
@@ -531,3 +643,10 @@ been confirmed by the author.
 | 17 | `S(t,t+1,2t+3)` is the classical `S(m−1,m,2m+1)` family, `m=t+1`, associated with perfect 1-codes in odd graphs | Godsil 1995, §9; source audit | Cited; supplies older context for Theorem 2.11 |
 | 18 | The self-duality colouring scan requires a Sperner family to decide literal `G = Tr(G)` | `tr_eq_self_iff_needs_sperner`; regression `{{0},{0,1}}` | Corrected in Python; exhaustive oracle check on all 256 three-vertex families |
 | 19 | An `r`-uniform pair on `r²` points needs only one regular side for singleton cross intersections; a non-read-once D3 candidate must have both sides irregular | Proposition 3.7 (Lean); Gurvich's theorem for the read-once consequence | Lean incidence theorem; cited structural implication |
+| 20 | Every FK-A subproblem of `(G, Tr G)` is `(H, Tr H)` or `(Tr H, H)` for a minor `H` of `G`; the two orientations have the same children | Theorem 4.7, Proposition 4.8 | Lean |
+| 21 | Deletion `G − x` is `f\|x=0` and contraction `G / x` is `f\|x=1` for the function with DNF `G` | Def. 2.2.5–2.2.6; `upHit_del`, `upHit_con` | Lean for the up-set form; the function reading is standard |
+| 22 | A nonconstant restriction of a read-once formula is determined by its relevant variables | Remark 4.12, a written argument | Unchecked; the Rust simulator rests on it and agrees with the formula simulator on 405 formulas |
+| 23 | `δ(GK f₄) = 67,247,387`, `τ(GK f₄) ≈ 7.8·10¹⁹`, `τ(TK S₃) = 19,609,201,217`, leftmost `δ = n` on GK/TK | `experiments/readonce_dag` | Rust; validated against `readonce_sim.py`, which is validated against `fka.memo` |
+| 24 | `ro12` refutes Conjecture 4.5 and the claim `δ ≤ 2N` of `tree-vs-dag.md` §4 | `ro12_readOnce`, `ro12_delta`; `fka.memo` gives 43 | Lean (evaluation) |
+| 25 | Hertel's Theorem 4.4.1 is the leftmost-order case of Observation 4.11 | Review row 7; suffix argument in Observation 4.11 | Cited; the suffix argument is not formalised |
+| 26 | The prime 2-uniform template on 4 points is `P₄`; `P₄` is not read-once | Proposition 5.4 (Lean); a cograph is `P₄`-free (cited) | Lean for the counts; non-read-once cited |

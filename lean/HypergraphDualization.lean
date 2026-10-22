@@ -30,3 +30,4 @@ import HypergraphDualization.Dag
 import HypergraphDualization.Substitution
 import HypergraphDualization.Influence
 import HypergraphDualization.FrequencyGap
+import HypergraphDualization.Blowup

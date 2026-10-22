@@ -105,9 +105,19 @@ probability `1/2`; automorphisms preserve influences, so the Fano plane's seven 
 equal influence at every `p` (`influence_aut`, `fano_influence_eq`). See
 [`docs/openai-math-connections.md`](docs/openai-math-connections.md).
 
-Open: the converse of the Steiner theorem, `ε(8)`, whether FK-A's own split rule keeps the
-distinct subproblems of read-once pairs within `2N`, and an explicit family that is hard for
-memoised FK-A. The list is §7 of the research write-up.
+**Why FK-A's subproblems multiply.** On a dual pair every subproblem is a minor `H` of the
+input with its transversal, `(H, Tr H)` or `(Tr H, H)`, and both orientations have the same
+children (`fkADag_minor`, `fkA_comm`). A dual node is never pruned, so `d`-resilient inputs have
+`τ ≥ 2^{d+1} − 1` (`tau_ge_of_resilient`), and the repeated work `τ − δ` is superadditive with
+the children's overlap as surplus (`excess_split`). The distinct subproblems `δ` depend on the
+split rule. FK-A's most-frequent-vertex rule gives the read-once pair `ro12` on 12 points
+`δ = 43 > 2N = 42` (`ro12_delta`), refuting the conjecture `δ ≤ 2N` on read-once pairs, and
+GK `f₄` `δ = 67,247,387` on `N = 49,152`. The leftmost rule gives `δ = 128` on GK `f₄`
+(`experiments/readonce_dag`). D3 has no counterexample at rank 2 (`template_rank_two`).
+
+Open: the converse of the Steiner theorem, `ε(8)`, whether `δ/N` is unbounded on the
+alternating trees under FK-A's rule, D3 from rank 3, and an explicit family that is hard for
+memoised FK-A under every split rule. The list is §7 of the research write-up.
 
 ## Layout
 

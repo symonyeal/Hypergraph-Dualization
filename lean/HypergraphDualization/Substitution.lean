@@ -19,6 +19,7 @@ smallest cases.
 | `card_subst` | on disjoint supports, `|T[Γ]| = Σ_{t∈T} Π_{i∈t} |Γ i|` |
 | `card_subst_uniform` | `r`-uniform `T`, `|Γ i| = l`: `|T[Γ]| = |T|·l^r` |
 | `prop_P_comp` | **Proposition D2.** `(P)`: `k·k* ≥ 8^{r−1}` passes from two templates to their composite |
+| `template_rank_two` | **D3 at `r = 2`.** every 2-uniform template on 4 points with 2-uniform dual satisfies `(P)` |
 -/
 import HypergraphDualization.Operations
 import HypergraphDualization.Conditions
@@ -208,5 +209,24 @@ theorem prop_P_comp {r s k k' l l' : ℕ} (hr : 1 ≤ r) (hs : 1 ≤ s) (hT : 8 
   calc 8 ^ r * (8 ^ s) ^ (r + 1) ≤ (k * k') * (l * l') ^ (r + 1) :=
         Nat.mul_le_mul hT (Nat.pow_le_pow_left hS _)
     _ = (k * l ^ (r + 1)) * (k' * l' ^ (r + 1)) := by ring
+
+/-- Every family of pairs of `Fin 4` with a nonempty 2-uniform transversal family has
+`(|G|, |Tr G|)` equal to `(2, 4)`, `(4, 2)` or `(3, 3)` (evaluation, `native_decide`, over the 64
+families). -/
+theorem template_rank_two_check : ∀ G ∈ ((univ : Finset (Fin 4)).powersetCard 2).powerset,
+    G.Nonempty → (∀ t ∈ tr univ G, t.card = 2) →
+      (G.card, (tr univ G).card) ∈ ({(2, 4), (4, 2), (3, 3)} : Finset (ℕ × ℕ)) := by
+  native_decide
+
+/-- **Open problem D3 at `r = 2`.** A nonempty 2-uniform template on 4 points whose minimal
+transversals are 2-uniform satisfies `(P)`: `k·k* ≥ 8`. The counts `(k, k*)` are `(2, 4)`,
+`(4, 2)` or `(3, 3)`: the matching, the 4-cycle and the path `P₄` up to relabelling. `P₄`, the
+only one that is not read-once, exceeds the bound. -/
+theorem template_rank_two {G : Finset (Finset (Fin 4))} (hG : ∀ g ∈ G, g.card = 2)
+    (hne : G.Nonempty) (hT : ∀ t ∈ tr univ G, t.card = 2) : 8 ≤ G.card * (tr univ G).card := by
+  have h := template_rank_two_check G
+    (mem_powerset.2 fun g hg => mem_powersetCard.2 ⟨subset_univ _, hG g hg⟩) hne hT
+  simp only [mem_insert, mem_singleton, Prod.mk.injEq] at h
+  rcases h with ⟨h1, h2⟩ | ⟨h1, h2⟩ | ⟨h1, h2⟩ <;> simp [h1, h2]
 
 end HD

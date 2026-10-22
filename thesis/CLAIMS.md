@@ -152,8 +152,14 @@ New statements of the October 2026 research program, each written up in
 | If `Tr(H) ⊆ H` and `Aut(H)` is edge-transitive, it is transitive on covered points | Proved | `transitive_of_edge_transitive` |
 | Hertel's alternating-tree bound (cited in Chapter 4) is a lower bound on DPLL trees, not an upper bound on subproblems | Corrected citation (revised edition, Chapter 4) | — |
 | Observation 4.4: FK-A's degree-sum rule exceeds Hertel's memoised `2k + 3` on GK `f₃` (`δ = 369 > 65`) | Computed (`experiments/readonce_sim.py`) | — |
-| Conjecture 4.5: `δ ≤ 2N` on read-once pairs under FK-A's rule | Open; `δ/N ≤ 1.93` on every pair measured | — |
+| Conjecture 4.5: `δ ≤ 2N` on read-once pairs under FK-A's rule | **Refuted**: the read-once `ro12` on 12 points has `δ = 43 > 2N = 42` (evaluation); GK `f₄` has `δ/N = 1368` (Rust) | `ro12_readOnce`, `ro12_delta` |
+| Theorem 4.7: every FK-A subproblem of `(G, Tr G)` is `(H, Tr H)` or `(Tr H, H)`, `H` a minor of `G`; `δ ≤ 2·#minors` | Proved | `fkADag_minor`, `card_fkADag_le_minors` |
+| Proposition 4.8: `τ(C, D) = τ(D, C)` on dual pairs | Proved | `fkA_comm`, `splitVar_comm` |
+| Theorem 4.9: `d`-resilient `G` has `τ ≥ 2^{d+1} − 1` | Proved | `tau_ge_of_resilient` |
+| Proposition 4.10: `δ ≤ τ`; `τ − δ ≥ (τ_L − δ_L) + (τ_R − δ_R) + |Δ_L ∩ Δ_R|` at a split | Proved | `card_fkADag_le`, `excess_split` |
+| Observation 4.11: the leftmost rule keeps `δ = n` on GK/TK, the degree-sum rule does not | Computed (`experiments/readonce_dag`); suffix argument not formalised | — |
 | Proposition 4.6: under ETH no polynomial bounds `δ` on all dual pairs (C3 false) | Proved conditionally, from Kobayashi–Kurita–Wasa 2026 (cited) | — |
 | Theorem D1: `Tr(T[Γ]) = min(Tr(T)[Tr Γ])`; on disjoint supports no reduction, Sperner, `|T[Γ]| = Σ_t Π_i |Γ i|` | Proved | `tr_subst`, `tr_subst_of_disjoint`, `subst_isSperner`, `card_subst` |
 | Proposition D2: `(P)` `k·k* ≥ 8^{r−1}` is closed under composition | Proved | `card_subst_uniform`, `prop_P_comp` |
+| Proposition 5.4: D3 at `r = 2` has no counterexample; `(k, k*) ∈ {(2,4),(4,2),(3,3)}` | Proved (evaluation over 64 families) | `template_rank_two` |
 | Proposition E2: automorphisms preserve influences; Fano's seven influences agree at every `p` | Proved | `influence_aut`, `influence_eq_of_transitive`, `fano_influence_eq` |
