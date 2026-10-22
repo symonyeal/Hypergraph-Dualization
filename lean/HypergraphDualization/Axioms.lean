@@ -4,7 +4,7 @@ Copyright (c) 2026 Saimon Y. Islam. Released under the GPL-3.0-or-later.
 # The trust base, checked
 
 `lake build` fails if a general theorem cited in the documents depends on an axiom other than
-`propext`, `Classical.choice` and `Quot.sound` (a `sorry` shows up as `sorryAx`), or if a fact the
+`propext`, `Classical.choice` and `Quot.sound` (an unfinished proof shows up as `sorryAx`), or if a fact the
 documents label *Checked* or *Observation (evaluation)* is not in fact an evaluation
 (`native_decide`, which adds the Lean compiler to the trust base).
 -/
