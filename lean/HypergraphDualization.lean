@@ -22,3 +22,4 @@ import HypergraphDualization.FanoCopies
 import HypergraphDualization.Witt
 import HypergraphDualization.SelfTransversal
 import HypergraphDualization.Primitive
+import HypergraphDualization.Steiner

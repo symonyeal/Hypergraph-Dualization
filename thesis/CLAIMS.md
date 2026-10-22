@@ -132,3 +132,6 @@ each is written up in [`docs/research-2026-10.md`](../docs/research-2026-10.md).
 | Lemma: a relation preserved by a primitive action is connected or relates only equal points | Proved | `connected_or_trivial` |
 | Proposition A7: a read-once hypergraph on `n ≥ 2` points with primitive `Aut(H)` has `Aut(H) = Sₙ` | Proved | `aut_eq_top_of_readOnce` |
 | `w11` and the Fano plane are not read-once | Proved (`w11` via A2's finite checks; Fano by kernel `decide`) | `w11_not_readOnce`, `fano_not_readOnce` |
+| Theorem A5a: in `S(t,k,v)`, `1 ≤ t ≤ k`, every block is disjoint from exactly `n₀(t,k,v) = Σ_{i<t} (−1)^i C(k,i)(λ_i − 1)` blocks; hence `n₀ ≥ 0` for every existing system | Proved | `steiner_disjoint`, `steiner_n0_nonneg` |
+| Observation A5b: `n₀` for 19 parameter sets; no `S(t,k,v)` with `n₀ > 0` (nine sets, including every `S(2,3,15)`, `S(3,4,16)`, `S(5,8,24)`) is self-transversal; none with `n₀ < 0` (ten sets) exists | Proved (kernel `decide`) | `n0_table`, `steiner_tr_ne_of_table`, `not_steiner_of_table` |
+| Theorem A5c: every Steiner system `S(t, t+1, 2t+3)` is self-transversal, and `t` is even | Proved | `witt_tr_eq` |

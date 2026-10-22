@@ -102,6 +102,78 @@ Fano plane is not read-once: its primal graph is complete, and a conformal Spern
 with complete primal graph is `{V}` (`eq_univ_of_complete`).
 Lean: `w11_not_readOnce`, `fano_not_readOnce`.
 
+### Steiner systems
+
+A *Steiner system* `S(t, k, v)` on `U`, `|U| = v`, is a family of `k`-subsets of `U` (blocks) such
+that every `t`-subset of `U` lies in exactly one block. Lean: `IsSteiner`.
+
+**Lemma 2.7.** In `S(t, k, v)`, an `i`-set with `i ≤ t` lies in `λ_i` blocks, where
+`λ_i · C(k−i, t−i) = C(v−i, t−i)`.
+Lean: `steiner_count`. (Double-count pairs `(T, e)`, `S ⊆ T ⊆ e`, `|T| = t`.)
+
+**Lemma 2.8** (inclusion–exclusion). For a family `F` and a set `e`,
+`#{f ∈ F : e ∩ f = ∅} = Σ_{S ⊆ e} (−1)^{|S|} #{f ∈ F : S ⊆ f}`.
+Lean: `card_disjoint_eq`.
+
+**Theorem 2.9** (A5a). In `S(t, k, v)` with `1 ≤ t ≤ k`, every block is disjoint from exactly
+`n₀(t, k, v) = Σ_{i<t} (−1)^i C(k, i) (λ_i − 1)` blocks. Hence a Steiner system exists only if
+`n₀ ≥ 0`, and one with `n₀ > 0` is not self-transversal.
+Lean: `steiner_disjoint`, `steiner_n0_nonneg`, `steiner_tr_ne`.
+
+*Proof.* Apply Lemma 2.8 to a block `e`. A subset `S ⊆ e` with `|S| < t` lies in `λ_{|S|}`
+blocks; one with `|S| ≥ t` contains a `t`-set and lies only in `e`. Grouping by `|S|` and using
+`Σ_{i ≤ k} (−1)^i C(k, i) = 0` gives `n₀`. A self-transversal family is intersecting
+(Proposition 2.1). ∎
+
+**Observation 2.10** (A5b). `n₀` takes the values
+
+| `(t,k,v)` | (2,3,9) | (2,3,13) | (2,3,15) | (3,4,8) | (3,4,10) | (3,4,14) | (3,4,16) | (5,6,12) | (5,8,24) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `n₀` | 2 | 10 | 16 | 1 | 3 | 20 | 39 | 1 | 30 |
+
+| `(t,k,v)` | (2,6,16) | (2,6,21) | (2,12,45) | (2,10,46) | (2,10,55) | (4,12,57) | (2,15,85) | (2,14,92) | (2,20,96) | (2,12,100) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `n₀` | −5 | −5 | −22 | −18 | −18 | −195 | −42 | −39 | −57 | −22 |
+
+so no Steiner system with the first nine parameter sets is self-transversal (this covers, for
+example, all 80 systems `S(2,3,15)` and every `S(3,4,16)` at once), and none with the last ten
+exists. Lean: `n0_table`, `steiner_tr_ne_of_table`, `not_steiner_of_table` (kernel `decide`).
+
+The parameter sets `2 ≤ t < k < v ≤ 100` with `n₀ = 0` (`python experiments/steiner_selftr.py`)
+are the projective planes `S(2, q+1, q²+q+1)`, `q ≤ 9`; `S(4,7,23)`; and `S(t, t+1, 2t+3)` for
+even `t ≤ 44` with admissible parameters. Of the systems built there, `PG(2,3)`, `PG(2,4)` and
+`S(4,7,23)` are 2-colourable (Python scan; `PG(2,3)` in Lean as `pg23_not_self_dual`).
+
+**Theorem 2.11** (A5c). Let `H` be a Steiner system `S(t, t+1, 2t+3)`. Then `t` is even and
+`Tr(H) = H`.
+Lean: `witt_tr_eq`. The Fano plane is `t = 2`, the Witt design `w11` is `t = 4`.
+
+*Proof.* (1) For `|S| = i ≤ t`, Lemma 2.7 and `C(n, m+1)(m+1) = C(n, m)(n − m)` give
+`(t+3) · #{blocks ⊇ S} = C(2t+3−i, t+1−i)`, the number of `(t+1)`-subsets containing `S`.
+Applying Lemma 2.8 to the blocks and to all `(t+1)`-subsets of `U`, which differ only at
+`S = B`, gives `(t+3)·#{blocks disjoint from B} = (t+2)(1 + (−1)^{t+1})`. For odd `t`,
+`t+3` would divide `2(t+2)`, which is impossible; for even `t` no two blocks are disjoint.
+(2) No `(t+2)`-set contains two blocks, since they would share `t` points. So the `(t+2)`-sets
+containing a block number `b(t+2)`. They are distinct from the `b` complements of blocks by (1),
+and `b(t+3) = C(2t+3, t+2)`. Hence every `(t+2)`-set contains a block or is the complement of
+one. (3) Let `|Y| ≥ t+3` contain no block. Then a `(t+2)`-subset `S ⊆ Y` is `U \ B` for a block
+`B`. Take `x ∈ Y \ S`. For `y ∈ S` the set `S − y + x` is the complement of a block containing
+`(B − x) + y`. Two choices of `y` give two blocks through the `t`-set `B − x`, a contradiction.
+(4) One of `A`, `U \ A` has at least `t+2` points, so by (2)–(3) one of them contains a block:
+`H` is not 2-colourable. Proposition 2.1 concludes. ∎
+
+*Literature.* Searches on 2026-10-21 (Steiner systems `S(t, t+1, 2t+3)`, self-dual simple games
+on Steiner systems, blocking sets) found no statement of Theorem 2.11. Systems `S(t,t+1,2t+3)`
+are known for `t = 2, 4` only. The odd-`t` case may also follow from the standard divisibility
+conditions. Novelty is not claimed.
+
+**Conjecture 2.12** (A5d). A self-transversal Steiner system `S(t, k, v)` with `t < k` has
+`k = t+1` and `v = 2t+3`. *Evidence:* for `v ≤ 100`, every admissible parameter set other than
+`S(t,t+1,2t+3)` has `n₀ ≠ 0`, except the projective planes and `S(4,7,23)`. Projective planes of
+order `≥ 3` have blocking sets containing no line (Bruen, cited), and `S(4,7,23)` is unique
+(Witt, cited) and 2-colourable (Python scan, not yet Lean). The trivial family `S(k,k,2k−1)` (the
+majority function) is self-transversal and is excluded by `t < k`.
+
 ## 3. The least most-frequent-vertex frequency `ε(n)` (Track B)
 
 `ε(G, H) = max_v max(deg_G v/|G|, deg_H v/|H|)` for a transversal pair, both sides nonempty and
