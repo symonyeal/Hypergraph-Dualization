@@ -129,3 +129,6 @@ each is written up in [`docs/research-2026-10.md`](../docs/research-2026-10.md).
 | Theorem A2: `|Aut(w11)| = 7920`, sharply 4-transitive, primitive | Proved (finite checks by `native_decide`) | `card_aut_w11`, `w11_four_transitive`, `w11_four_free`, `w11_preprimitive` |
 | Proposition A3: for Sperner `H` inside `U`, `Tr(H) = H` iff `H` is intersecting, `∅ ∉ H` and `H` is not 2-colourable; the Sperner hypothesis is needed | Proved | `tr_eq_self_iff`, `tr_eq_self_iff_needs_sperner` |
 | Theorem A4: intersecting, `r`-uniform, `d`-regular on `t` points gives `d(r² − t) ≥ r(r − 1)`, equality iff distinct edges meet in one point | Proved | `intersecting_regular_bound` |
+| Lemma: a relation preserved by a primitive action is connected or relates only equal points | Proved | `connected_or_trivial` |
+| Proposition A7: a read-once hypergraph on `n ≥ 2` points with primitive `Aut(H)` has `Aut(H) = Sₙ` | Proved | `aut_eq_top_of_readOnce` |
+| `w11` and the Fano plane are not read-once | Proved (`w11` via A2's finite checks; Fano by kernel `decide`) | `w11_not_readOnce`, `fano_not_readOnce` |

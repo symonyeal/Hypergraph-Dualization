@@ -74,6 +74,34 @@ Self-transversal uniform regular hypergraphs are intersecting, so the bound appl
 `Maj₅`, `Maj₇`, `Maj₉`. The step from equality to "projective plane of order `r − 1`" is not
 proved here.
 
+**Definition 2.3.** `H` is *read-once* on `V` if it is Sperner, *conformal* (every nonempty
+clique of the primal graph lies in an edge), and its primal graph is a cograph, given by a
+cotree on `V`: a single point, or a disjoint union or join of two cographs.
+Lean: `ReadOnce`, `IsCograph`, `Conformal`.
+
+**Lemma 2.4.** Let a group act primitively on `α` and preserve a relation `R`. Then either the
+equivalence closure of `R` is all of `α × α`, or `R u v` implies `u = v`.
+Lean: `connected_or_trivial`.
+
+*Proof.* The classes of the equivalence closure are blocks, since `g` maps the class of `v` onto
+the class of `gv`. Primitivity makes each class a singleton or all of `α`. ∎
+
+**Proposition 2.5** (A7). Let `H` be read-once on `n ≥ 2` points with `Aut(H)` primitive. Then
+`Aut(H) = Sₙ`.
+Lean: `aut_eq_top_of_readOnce`.
+
+*Proof.* The root of the cotree is a union or a join of nonempty parts `A`, `B`. The primal graph
+`P` and its complement are `Aut(H)`-invariant. *Union:* no edge of `P` crosses `A | B`, so the
+closure of `P` does not join `A` to `B`; by Lemma 2.4, `P` has no edges. Every edge of `H` has at
+most one point, and by transitivity a singleton edge forces every singleton, so every permutation
+preserves `H`. *Join:* the same argument applied to the complement of `P` makes `P` complete.
+Conformality puts `V` inside an edge, and Sperner gives `H = {V}`. ∎
+
+**Corollary 2.6.** `w11` is not read-once: `Aut(w11)` is primitive of order `7920 ≠ 11!`. The
+Fano plane is not read-once: its primal graph is complete, and a conformal Sperner hypergraph
+with complete primal graph is `{V}` (`eq_univ_of_complete`).
+Lean: `w11_not_readOnce`, `fano_not_readOnce`.
+
 ## 3. The least most-frequent-vertex frequency `ε(n)` (Track B)
 
 `ε(G, H) = max_v max(deg_G v/|G|, deg_H v/|H|)` for a transversal pair, both sides nonempty and

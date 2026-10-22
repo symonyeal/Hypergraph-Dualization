@@ -47,6 +47,7 @@ same cache from Mathlib's Azure storage account.
 | `Connections` | bridges to the `openai/math` Ryser and threshold results |
 | `WittData`, `Witt` | the Witt design `S(4,5,11)`: self-transversal, `|Aut| = 7920`, sharply 4-transitive (research 2026-10, A1–A2) |
 | `SelfTransversal` | `Tr(H) = H` iff intersecting, no empty edge, not 2-colourable (A3); the bound `d(r² − t) ≥ r(r − 1)` (A4) |
+| `Primitive` | read-once hypergraphs with a primitive automorphism group have `Aut = Sₙ` (A7); `w11` and Fano are not read-once |
 
 ## Trust base
 
