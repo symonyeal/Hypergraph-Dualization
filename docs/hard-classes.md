@@ -190,12 +190,10 @@ Nodes whose incidence graph is too large to enumerate are counted in the
 `undet` column and excluded from the primitivity counts rather than guessed:
 16 nodes on `w11-sd-1`, 6 on `w11`, 2 on `sdfp-sd-2`, none anywhere else.
 
-## Open
+## Caveats
 
-* D3 asks for a non-read-once uniform template without imposing regularity.
-  Neither side of a candidate can be regular: research Proposition 3.7 and
-  Gurvich's cited theorem exclude even one regular side at every rank.
-  `AG(2,4)`'s parallel-class splits satisfy the necessary incidence conditions
-  and fail duality. The searches above do not settle the irregular case.
+* The searches above do not settle D3's irregular case; its status is research
+  Open problem 5.3, and open problems are listed once, in
+  [research §7](research-2026-10.md#7-open-items).
 * The placement rows are one size point per family. The `exp` column is
   indicative, not a fitted growth rate.

@@ -132,6 +132,8 @@ Open: the converse of the Steiner theorem, `ε(8)`, whether `δ/N` is unbounded 
 alternating trees under FK-A's rule, D3 from rank 3, and an explicit family that is hard for
 memoised FK-A under every valid symmetric split rule: up to a factor 2, a monotone function with
 small DNF and CNF but no small FBDD named by its functions (research §7, C3). The list is §7 of the research write-up.
+The next phase, how much of FK-A's work is repetition up to isomorphism, is planned in
+[`docs/research-prompt.md`](docs/research-prompt.md).
 
 ## Layout
 
