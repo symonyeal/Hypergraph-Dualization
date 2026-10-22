@@ -13,6 +13,7 @@ Steiner system after the Fano plane.
 | `w11_self_tr` | **Observation A1.** `Tr(w11) = w11` |
 | `w11_meet` | **Observation A1.** two distinct blocks meet in 1, 2 or 3 points (495, 660, 990 pairs) |
 | `eq_one_of_fixes_base` | an automorphism fixing `0, 1, 2, 3` is the identity |
+| `wit_check` | an explicit automorphism for every ordered 4-tuple of distinct points |
 | `card_aut_w11` | **Theorem A2.** `|Aut(w11)| = 7920` |
 | `w11_four_transitive`, `w11_four_free` | **Theorem A2.** `Aut(w11)` is sharply 4-transitive |
 | `w11_preprimitive` | `Aut(w11)` is primitive |
@@ -21,11 +22,14 @@ The finite checks use `native_decide` and so trust the Lean compiler (`Lean.ofRe
 The group order is not found by enumerating `11!` permutations: the 5040 permutations fixing
 `0..3` are checked once, which makes `σ ↦ (σ 0, σ 1, σ 2, σ 3)` injective on `Aut(w11)`;
 an explicit automorphism for each of the `11·10·9·8 = 7920` ordered 4-tuples makes it
-surjective. By Jordan's theorem a sharply 4-transitive group of degree 11 is the Mathieu
+surjective. That check (`witCheck`) iterates the block list `w11L`, compares blocks as bitmasks
+(`mask`, bridged by `mem_of_mask`), and evaluates permutations from arrays; it runs in about 6 s,
+where the same check over `Finset` membership ran for more than 10 minutes. By Jordan's theorem a sharply 4-transitive group of degree 11 is the Mathieu
 group `M₁₁`; that identification is cited, not proved here.
 -/
 import HypergraphDualization.WittData
 import HypergraphDualization.Symmetry
+import Mathlib.Data.Fin.VecNotation
 import Mathlib.GroupTheory.GroupAction.MultipleTransitivity
 import Mathlib.Data.Fintype.CardEmbedding
 
@@ -95,14 +99,13 @@ theorem eq_one_of_fixes_base {σ : Equiv.Perm (Fin 11)} (hσ : σ ∈ aut w11)
       omega
     · intro hx
       by_contra h
-      have := small (σ x) (by omega)
-      have := σ.injective this
-      subst this
+      have hσx : σ x = x := σ.injective (small (σ x) (by omega))
+      rw [hσx] at h
       omega
   have h₂ : ∀ x, σ x ≠ x → 4 ≤ x.val := fun x hx => by
     by_contra h
     exact hx (small x (by omega))
-  have hsub : σ.subtypePerm h₁ = 1 := by
+  have hsub : σ.subtypePerm (p := fun x : Fin 11 => 4 ≤ x.val) h₁ = 1 := by
     apply stab_check
     rw [Equiv.Perm.ofSubtype_subtypePerm h₁ h₂]
     exact mem_aut_iff_forall.1 hσ
@@ -122,12 +125,47 @@ def wit (t : Fin 4 → Fin 11) : Equiv.Perm (Fin 11) :=
   let d := pick wittU3 3 ((a * b * c).symm (t 3))
   a * b * c * d
 
-/-- For each of the 7920 ordered 4-tuples `t` of distinct points, `wit t` preserves `w11` and
-sends the base to `t`. -/
-theorem wit_check :
-    ∀ t : Fin 4 → Fin 11, Function.Injective t →
-      (∀ e ∈ w11, pmap (wit t) e ∈ w11) ∧ ∀ i, wit t (base i) = t i := by
+/-- An edge as the bitmask `Σ_{x∈e} 2^x`, so that `native_decide` tests membership by
+comparing numbers rather than finite sets. -/
+def mask (e : Finset (Fin 11)) : ℕ := ∑ x ∈ e, 2 ^ x.val
+
+/-- `mask` detects the blocks: a set whose mask is a block's mask is a block (all 2048 sets). -/
+theorem mem_of_mask : ∀ e : Finset (Fin 11), mask e ∈ w11L.map mask → e ∈ w11L := by
   native_decide
+
+/-- For each of the 7920 ordered 4-tuples `(a, b, c, d)` of distinct points, `wit` preserves
+`w11` and sends the base to the tuple. Written with `List.all` and `List.contains`: the
+`Decidable` instance of `∀ e ∈ L, _` is about 70 times slower under `native_decide`.
+Cost: `7920 · 66 · (20 lookups + 66 comparisons)`. -/
+def witCheck : Bool :=
+  let L := w11L
+  let W := L.map mask
+  (List.finRange 11).all fun a => (List.finRange 11).all fun b =>
+    (List.finRange 11).all fun c => (List.finRange 11).all fun d =>
+      !decide [a, b, c, d].Nodup ||
+        let σ := wit ![a, b, c, d]
+        (L.all fun e => W.contains (mask (pmap σ e))) &&
+          σ 0 == a && σ 1 == b && σ 2 == c && σ 3 == d
+
+theorem witCheck_eq : witCheck = true := by native_decide
+
+theorem wit_check (t : Fin 4 → Fin 11) (ht : Function.Injective t) :
+    (∀ e ∈ w11, pmap (wit t) e ∈ w11) ∧ ∀ i, wit t (base i) = t i := by
+  have h := witCheck_eq
+  unfold witCheck at h
+  simp only [List.all_eq_true, List.mem_finRange, forall_const, Bool.or_eq_true,
+    Bool.not_eq_true', decide_eq_false_iff_not, Bool.and_eq_true, List.contains_iff_mem,
+    beq_iff_eq] at h
+  have hnd : [t 0, t 1, t 2, t 3].Nodup := by
+    simp [ht.eq_iff]
+  rcases h (t 0) (t 1) (t 2) (t 3) with h | ⟨⟨⟨⟨he, h0⟩, h1⟩, h2⟩, h3⟩
+  · exact absurd hnd h
+  have hwt : wit ![t 0, t 1, t 2, t 3] = wit t := rfl
+  rw [hwt] at he h0 h1 h2 h3
+  refine ⟨fun e he' => List.mem_toFinset.2 (mem_of_mask _ (he e (List.mem_toFinset.1 he'))),
+    fun i => ?_⟩
+  fin_cases i
+  exacts [h0, h1, h2, h3]
 
 theorem wit_mem (t : Fin 4 ↪ Fin 11) : wit t ∈ aut w11 :=
   mem_aut_iff_forall.2 (wit_check t t.injective).1
@@ -154,10 +192,7 @@ theorem tuple_injective : Function.Injective tuple := by
   exact Subtype.ext (inv_mul_eq_one.1 this).symm
 
 theorem tuple_surjective : Function.Surjective tuple := fun t =>
-  ⟨⟨wit t, wit_mem t⟩, by
-    ext i
-    show wit t (base i) = t i
-    exact wit_base t i⟩
+  ⟨⟨wit t, wit_mem t⟩, Function.Embedding.ext fun i => wit_base t i⟩
 
 /-- **Theorem A2.** `|Aut(w11)| = 7920 = 11·10·9·8`. -/
 theorem card_aut_w11 : Nat.card (aut w11) = 7920 := by
@@ -168,8 +203,8 @@ theorem card_aut_w11 : Nat.card (aut w11) = 7920 := by
 /-- **Theorem A2.** `Aut(w11)` is 4-transitive on the points. -/
 instance w11_four_transitive : MulAction.IsMultiplyPretransitive (aut w11) (Fin 11) 4 where
   exists_smul_eq s t :=
-    ⟨⟨wit t * (wit s)⁻¹, (aut w11).mul_mem (wit_mem t) ((aut w11).inv_mem (wit_mem s))⟩, by
-      ext i
+    ⟨⟨wit t * (wit s)⁻¹, (aut w11).mul_mem (wit_mem t) ((aut w11).inv_mem (wit_mem s))⟩,
+      Function.Embedding.ext fun i => by
       show (wit t * (wit s)⁻¹) (s i) = t i
       rw [Equiv.Perm.mul_apply, ← wit_base s i, Equiv.Perm.inv_def, Equiv.symm_apply_apply,
         wit_base]⟩

@@ -15,6 +15,7 @@ importable library.
 | `selfdual_orbits.py` | Hunts self-dual families beyond the Fano plane as unions of transitive-group orbits. Writes `results/selfdual-orbits.md`. |
 | `witt_m11.py` | Re-derives the facts about the Witt design `S(4,5,11)` (Steiner property, self-transversality, `|Aut| = 7920`, the FK-A children's groups); `--lean` writes `lean/HypergraphDualization/WittData.lean`. |
 | `steiner_selftr.py` | Checks `d(r² − t) ≥ r(r − 1)` on self-transversal hypergraphs, lists the Steiner parameters with no two disjoint blocks, and scans the intersecting ones for 2-colourings. See `docs/research-prompt.md`. |
+| `eps_search.py` | Decides `eps(n) < p/q` by CP-SAT on the truth table of a monotone function; the table `n = 3..8` at the thesis' bounds. See `docs/research-2026-10.md` §3. |
 | `dedekind_atoms.py` | Classifies the 7581 MBFs on 5 variables into their 210 `S_5`-classes using the 30 four-variable classes as atoms, without enumerating them. Writes `results/dedekind-atoms.md`. |
 
 Core correctness claims belong in `tests/`, and normal runs belong in the `fka`

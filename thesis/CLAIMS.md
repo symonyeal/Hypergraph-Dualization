@@ -117,3 +117,15 @@ General theorems depend only on `propext`, `Classical.choice` and `Quot.sound`. 
 *Checked* are evaluations proved with `native_decide`, which adds the Lean compiler to the trust
 base; a kernel-only (`decide +kernel`) run was tried on 2026-10-21 and is practical only for the
 smallest instances. `lake build` reproduces everything; see [`lean/README.md`](../lean/README.md).
+
+## Research beyond the thesis (2026-10)
+
+New statements of the research program in [`docs/research-prompt.md`](../docs/research-prompt.md);
+each is written up in [`docs/research-2026-10.md`](../docs/research-2026-10.md).
+
+| Statement | Status | Lean |
+| --- | --- | --- |
+| Observation A1: `w11` is a Steiner system `S(4,5,11)`, self-transversal; distinct blocks meet in 1, 2 or 3 points (495, 660, 990 pairs) | Checked | `w11_steiner`, `w11_self_tr`, `w11_meet` |
+| Theorem A2: `|Aut(w11)| = 7920`, sharply 4-transitive, primitive | Proved (finite checks by `native_decide`) | `card_aut_w11`, `w11_four_transitive`, `w11_four_free`, `w11_preprimitive` |
+| Proposition A3: for Sperner `H` inside `U`, `Tr(H) = H` iff `H` is intersecting, `∅ ∉ H` and `H` is not 2-colourable; the Sperner hypothesis is needed | Proved | `tr_eq_self_iff`, `tr_eq_self_iff_needs_sperner` |
+| Theorem A4: intersecting, `r`-uniform, `d`-regular on `t` points gives `d(r² − t) ≥ r(r − 1)`, equality iff distinct edges meet in one point | Proved | `intersecting_regular_bound` |

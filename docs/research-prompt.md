@@ -177,8 +177,8 @@ along `(0,1)`, as `witt_m11.py` does), or the direct route (primal graph complet
 3. **Archived numbers are leads, not facts.** Figures quoted below from the August 2026
    research archive were computed in Python and never formalised; F2 and F3 above show two of
    them are wrong. Re-derive each one before relying on it.
-4. **Machine setup.** Install elan; `lake exe cache get` in `lean/`. On Windows with long paths
-   disabled, run lake from a `subst` drive. Write Lean with an editor, not shell heredocs,
+4. **Machine setup.** Install elan; `lake exe cache get` in `lean/`, from the repository's own
+   path (no drive mapping is needed). Write Lean with an editor, not shell heredocs,
    which can collapse backslashes.
 5. **Statement types.** Use the thesis vocabulary exactly: *Theorem* (general, proved),
    *Proposition* (general, proved, smaller), *Lemma* (a step), *Observation* (a finite or

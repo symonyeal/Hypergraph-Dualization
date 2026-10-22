@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from fka.automorphism import hypergraph_automorphisms  # noqa: E402
-from fka.hypergraph import Hypergraph, bits, verts  # noqa: E402
+from fka.hypergraph import Hypergraph, verts  # noqa: E402
 from fka.instances import load  # noqa: E402
 from fka.selfdual import is_primitive, is_transitive  # noqa: E402
 from fka.transversal import minimal_elements, transversal  # noqa: E402
@@ -73,7 +73,7 @@ print("transversal sizes", [len(u) for u in U])
 
 if "--lean" in sys.argv:
     def vec(p):
-        return "![" + ", ".join(str(i) for i in p) + "]"
+        return "#[" + ", ".join(str(i) for i in p) + "]"
 
     def inv(p):
         q = [0] * len(p)
@@ -90,20 +90,26 @@ if "--lean" in sys.argv:
         "and sends `k` to each possible image once.",
         "-/",
         "import HypergraphDualization.Algorithm",
-        "import Mathlib.Data.Fin.VecNotation",
         "",
         "namespace HD.Witt",
         "",
         "open HD",
         "",
-        "/-- A permutation of `Fin 11` from its table and the table of its inverse. -/",
-        "def mk (f g : Fin 11 → Fin 11) (h : ∀ x, g (f x) = x ∧ f (g x) = x := by decide) :",
-        "    Equiv.Perm (Fin 11) := ⟨f, g, fun x => (h x).1, fun x => (h x).2⟩",
+        "/-- A permutation of `Fin 11` from its table and the table of its inverse. Arrays, not",
+        "`![…]`, so that `native_decide` evaluates a point in O(1). -/",
+        "def mk (f g : Array (Fin 11))",
+        "    (h : ∀ x : Fin 11, g[(f[x.val]!).val]! = x ∧ f[(g[x.val]!).val]! = x := by decide) :",
+        "    Equiv.Perm (Fin 11) :=",
+        "  ⟨fun x => f[x.val]!, fun x => g[x.val]!, fun x => (h x).1, fun x => (h x).2⟩",
+        "",
+        "/-- The blocks of the Witt design `S(4,5,11)` as a list: `native_decide` iterates a list",
+        "literal cheaply, while the `insert` chain of a `Finset` literal is rebuilt on each use. -/",
+        "def w11L : List (Finset (Fin 11)) := [" + ", ".join(
+            "{" + ", ".join(str(v) for v in sorted(b)) + "}" for b in sorted(sorted(b) for b in blocks)
+        ) + "]",
         "",
         "/-- The Witt design `S(4,5,11)`. -/",
-        "def w11 : HG 11 := {" + ", ".join(
-            "{" + ", ".join(str(v) for v in sorted(b)) + "}" for b in sorted(sorted(b) for b in blocks)
-        ) + "}",
+        "def w11 : HG 11 := w11L.toFinset",
         "",
     ]
     for k, u in enumerate(U):

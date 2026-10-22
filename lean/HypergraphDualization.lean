@@ -19,3 +19,5 @@ import HypergraphDualization.Connections
 import HypergraphDualization.Corrections
 import HypergraphDualization.AltShape
 import HypergraphDualization.FanoCopies
+import HypergraphDualization.Witt
+import HypergraphDualization.SelfTransversal
