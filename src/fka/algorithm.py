@@ -54,7 +54,7 @@ __all__ = [
 ]
 
 VARIANTS = ("faithful", "modified")
-SPLIT_RULES = ("degree_sum", "frequency")
+SPLIT_RULES = ("degree_sum", "frequency", "leftmost", "guarded")
 
 
 # ----------------------------------------------------------------------
@@ -100,10 +100,23 @@ def choose_split_var(
     """The split variable, or ``None`` if every variable has degree 0.
 
     Ties go to the lowest index, which is what reproduces the published trees.
+    ``leftmost`` is the least live variable (Hertel's order). ``guarded`` is the
+    least variable with ``nC <= s deg_C`` or ``nD <= s deg_D``, ``s = floor(log2 N)``,
+    which FK96 Lemma 2.3.2 guarantees on a dual pair, else ``degree_sum``
+    (Lean ``guardRule``, research §4).
     """
     if rule not in SPLIT_RULES:
         raise ValueError(f"unknown split rule {rule!r}; expected one of {SPLIT_RULES}")
     n = max(cnf.n, dnf.n)
+    live = [x for x in range(n) if cnf.degree(x) + dnf.degree(x)]
+    if rule == "leftmost":
+        return live[0] if live else None
+    if rule == "guarded":
+        s = (len(cnf) + len(dnf)).bit_length() - 1
+        for x in live:
+            if len(cnf) <= s * cnf.degree(x) or len(dnf) <= s * dnf.degree(x):
+                return x
+        rule = "degree_sum"
     best: Optional[int] = None
     best_key = -1.0
     for x in range(n):

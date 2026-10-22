@@ -130,6 +130,34 @@ def test_delta_stays_linear_on_random_dual_pairs(rng):
         measured += 1
 
 
+@pytest.mark.parametrize("split_rule", ["leftmost", "guarded"])
+def test_new_rules_decide_and_match_the_tree(split_rule):
+    """Lean ``leftRule``, ``guardRule``: valid rules, so FK-A stays correct and memo = tree's DAG."""
+    for instance_id in LIBRARY:
+        inst = load(instance_id)
+        tree = fk_a(inst.cnf, inst.dnf, variant="modified", split_rule=split_rule)
+        run = fk_a_memo(inst.cnf, inst.dnf, split_rule=split_rule)
+        assert run.dual == tree.dual == is_dual_oracle(inst.cnf, inst.dnf), instance_id
+        assert run.nodes == dag_size(tree), instance_id
+
+
+def test_leftmost_bound_on_alternating_trees():
+    """``Fm.leftmost_delta``: ``delta <= 2n + 2`` with leaves in order; measured ``delta = n``."""
+    for C, n in [(gk(2), 8), (gk(3), 32), (tk(1), 4), (tk(2), 16)]:
+        assert fk_a_memo(C, transversal(C), split_rule="leftmost").nodes == n
+        assert fk_a_memo(C, transversal(C), split_rule="guarded").nodes == n
+
+
+def test_uniform_matroid_delta():
+    """``U(k, n)``: all degrees tie, every rule splits on the least live vertex, so a subproblem
+    is fixed by its minor type ``U(k', n')`` and ``delta`` is quadratic in ``n``."""
+    from itertools import combinations
+    for n, k, delta in [(6, 1, 8), (8, 3, 16), (10, 4, 25), (12, 6, 36)]:
+        C = Hypergraph.from_sets(n, [set(c) for c in combinations(range(n), k + 1)])
+        for rule in ("degree_sum", "leftmost", "guarded"):
+            assert fk_a_memo(C, transversal(C), split_rule=rule).nodes == delta
+
+
 def test_ro12_exceeds_2N():
     """The read-once pair of ``Blowup.ro12_delta``: ``tau = 59``, ``delta = 43 > 2N = 42``.
 
@@ -142,3 +170,6 @@ def test_ro12_exceeds_2N():
     assert run.dual is True
     assert len(fk_a(C, D, variant="modified")) == 59
     assert (len(C), len(D), run.nodes) == (12, 9, 43)
+    # ``RuleInstances.ro12_rules``: its labels interleave the copies, so a static order is worse
+    assert fk_a_memo(C, D, split_rule="leftmost").nodes == 91
+    assert fk_a_memo(C, D, split_rule="guarded").nodes == 91

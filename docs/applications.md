@@ -161,3 +161,38 @@ Ranked by how much of the existing work transfers. None has been started.
 5. **Keys and functional dependencies (§2.4).** UCI tables; minimal keys from agree sets.
 
 Data sources named in this section were not downloaded or inspected.
+
+## 4. Dictionary: FK-A's notions in other formulations
+
+§2 lists what `H` and `Tr(H)` are in each application. This section maps FK-A's own notions,
+for the formulations where the map transfers a theorem or technique in either direction with a
+consequence checkable here. Write `f` for the monotone function with DNF `G`. Throughout,
+deletion `G − x` is `f|x=0`, contraction `min(G/x)` is `f|x=1`, the split at `x` is the Shannon
+expansion `f = x̄·f|x=0 ∨ x·f|x=1`, and the subproblems are the restrictions `f|ρ` with a side tag
+(research §4, Theorem 4.7). The vocabulary of hypergraphs and normal forms is in
+[`dictionary.md`](dictionary.md). Status: *Lean*, *Python*, *Cited* (read), *Unchecked* (cited
+from memory or a secondary source); each row is a row of the review log, research §8.
+
+| Formulation | `(G, Tr G)` | FK-A's split; the memo DAG | frequency `ε` | Transfer, direction, check | Status |
+| --- | --- | --- | --- | --- | --- |
+| Knowledge compilation: OBDD, FBDD | `f`; its DNF and CNF | Shannon decision node; the memo DAG is an FBDD named by its functions (Thm 4.13), an OBDD under a static order | — | KC → FK-A: an FBDD lower bound for `f` bounds `δ` for every rule (Cor. 4.15); the OBDD of a read-once formula in leaf order has one node per variable, so `δ ≤ 2n + 2` under the leftmost rule (Thm 4.16). Check: `δ = n` on GK `f₂–f₅`, TK `S₁–S₄` | Lean (8 theorems), Rust |
+| Decision-DNNF, component caching (model counting) | — | FK-A has no decomposition node: on disjoint inputs its subproblems are pairs of input states (Lemma 4.17), where a decomposition node would make them a sum | — | KC → FK-A: split off disjoint components before branching. Check: the product structure is Lemma 4.17; the decomposing variant is not implemented | Lean (lemma); technique open |
+| DPLL, tree and regular resolution | `(G, H)` is dual iff cross-intersecting and `⋀_g ⋁_{i∈g} x̄ᵢ ∧ ⋀_h ⋁_{i∈h} xᵢ` (`N` clauses) is unsatisfiable | a DPLL branch; the tree is a tree-like refutation shape, the memo DAG a read-once branching program, the model of regular resolution | condition (iv), `Σ 2^{-\|c\|} ≥ 1`, is the counting bound for unsatisfiable CNFs | Proof complexity → FK-A: the short-clause lemma behind Ehrenfeucht–Haussler (Savický's proof) is FK96 Lemma 2.3.2; it also caps FBDD mixedness at `log₂ N` (research §4) | Lean (`kraft_sum`, `two_pow_shortest_le`, `exists_frequent_vertex`); reading cited |
+| Fault trees, coherent structure functions | top event `f`; minimal cut sets `G`, minimal path sets `Tr G` | Shannon decomposition on a basic event; the fault tree's BDD | Birnbaum importance (an influence) | FTA → FK-A: the depth-first left-most order for trees without repeated events is the leftmost rule; FK-A → FTA: its linear size is Theorem 4.16 | Lean for the bound; Rauzy 1993 unchecked |
+| Matroids | circuits of `M`; `Tr` = bases of `M*` | matroid deletion and contraction (Tutte's recursion); subproblems are minors `M\S/T` | — | Matroids → FK-A: `U(k, n)` has only the minor types `U(k′, n′)`; all degrees tie, so every rule follows the least live vertex and `δ` is quadratic in `n` (`(n/2)²` at `k = n/2`) | Matroid facts cited; `δ` Python (`results/split-rules.md`, `tests/test_memo.py`) |
+| Squarefree monomial ideals | `I_G = (x^g)`; minimal primes `(xᵢ : i ∈ T)`, `T ∈ Tr G`; Alexander dual `I_{Tr G}` | colon and sum `(I : x)`, `(I, x)`; pivot recursions for Hilbert series (Bigatti) and Roune's slice algorithm for the Alexander dual | — | Algebra → FK-A: pivot strategies are split rules. Check: the colon/sum identities are `Fm.dnf_restrict_true`, `Fm.dnf_restrict_false`; the strategies were not measured | Lean for the identities; sources unchecked |
+| Simple games, voting | minimal winning coalitions `G`; blocking coalitions `Tr G`; decisive games are `Tr G = G` | — | `deg_G x` is the numerator of Holler's public good index | FK-A → games: automorphisms preserve Banzhaf power, so anonymous games have equal power (`influence_aut`); decisive iff intersecting and not 2-colourable (`tr_eq_self_iff`) | Lean (existing); Holler unchecked, no transfer |
+| Percolation, sharp thresholds | crossing event and its dual | — | influences | `P_p(G) + P_{1−p}(Tr G) = 1`, self-dual threshold `1/2` (`bernoulli_dual`, `bernoulli_self_dual`; `openai-math-connections.md`) | Lean (existing) |
+
+Discarded, with the reason:
+
+- *Karchmer–Wigderson games.* On `(G, Tr G)` the monotone KW relation is the cross-intersection
+  `g ∩ h ≠ ∅` (`edges_meet`); no bound on `δ` or on split rules follows.
+- *Exact learning with membership queries; borders and Dualize-and-Advance; minimal keys and
+  Armstrong relations; Reiter's diagnoses; metabolic cut sets; network reliability; attack
+  trees; coteries.* Catalogued in §2 as instances of `Tr`; none transfers a statement about the
+  split rule or the memo DAG.
+- *Lehman's theorem, ideal clutters.* It concerns minimally non-ideal clutters; candidates for
+  D3 (research, Open problem 5.3) need not be, so it does not settle D3 at `r = 3`.
+- *Influence lemmas (KKL, Friedgut–Kalai) against FK96's frequent vertex.* Influence is not
+  frequency, and no implication between them was found.

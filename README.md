@@ -112,12 +112,23 @@ children (`fkADag_minor`, `fkA_comm`). A dual node is never pruned, so `d`-resil
 the children's overlap as surplus (`excess_split`). The distinct subproblems `δ` depend on the
 split rule. FK-A's most-frequent-vertex rule gives the read-once pair `ro12` on 12 points
 `δ = 43 > 2N = 42` (`ro12_delta`), refuting the conjecture `δ ≤ 2N` on read-once pairs, and
-GK `f₄` `δ = 67,247,387` on `N = 49,152`. The leftmost rule gives `δ = 128` on GK `f₄`
-(`experiments/readonce_dag`). D3 has no counterexample at rank 2 (`template_rank_two`).
+GK `f₄` `δ = 67,247,387` on `N = 49,152`. D3 has no counterexample at rank 2
+(`template_rank_two`).
+
+**The split rule is a variable order.** Under any valid symmetric split rule, memoised FK-A's
+subproblems form a free binary decision diagram (a read-once branching program) for the input
+function, of size at most `2δ + 2`; conversely every such diagram gives a rule with `δ` at most
+twice its size (`memo_fbdd`, `rule_of_fbdd`). So FBDD lower bounds are lower bounds for every
+rule. Splitting on the least vertex of a read-once formula with leaves in order gives
+`δ ≤ 2n + 2` (`leftmost_delta`, Hertel's Theorem 4.4.1); on GK `f₄` it gives `δ = 128`. A guarded
+rule keeps FK96's frequency guarantee at every node (`guardRule_frequent`) and gives `δ = 263` on
+GK `f₄`. The dictionary to knowledge compilation, resolution, fault trees, matroids and monomial
+ideals is §4 of [`docs/applications.md`](docs/applications.md).
 
 Open: the converse of the Steiner theorem, `ε(8)`, whether `δ/N` is unbounded on the
 alternating trees under FK-A's rule, D3 from rank 3, and an explicit family that is hard for
-memoised FK-A under every split rule. The list is §7 of the research write-up.
+memoised FK-A under every split rule: equivalently, up to a factor 2, a monotone function with
+small DNF and CNF but no small FBDD. The list is §7 of the research write-up.
 
 ## Layout
 

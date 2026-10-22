@@ -503,19 +503,17 @@ with fan-in up to 4 on at most 60 variables, leaves numbered left to right, the 
 gives `δ ≤ 1.07 n` and the degree-sum rule `δ/N` up to 25.4. Hertel's Theorem 4.4.1 (DPLLCache,
 `2k + 3` nodes, cited) is the bound for the leftmost rule. (Python and Rust.)
 
-*Reason (not formalised).* For a read-once `h`, the relevant variables of `h|x=b` are those of `h`
-less the leaves below the highest gate that the assignment makes constant (Remark 4.12). With
-leaves in left-to-right order these form an interval beginning at the leftmost live variable
-`x`. So the relevant variables are always a suffix of `0, …, n − 1`, and with the tag
-`δ ≤ 2n + 2`. The degree-sum rule picks the most frequent variable wherever it lies. It thereby
-interleaves disjoint subformulas, and the subproblems become combinations of their partial
-states: the product structure of `ro12`.
+The bound `δ ≤ 2n + 2` for the leftmost rule is now Theorem 4.16 (Lean). The degree-sum rule
+picks the most frequent variable wherever it lies. It thereby interleaves disjoint subformulas,
+and the subproblems become pairs of their partial states (Lemma 4.17): the product structure of
+`ro12`.
 
-**Remark 4.12.** A nonconstant restriction of a read-once formula is determined by its relevant
-variables `S`: a gate of the restricted formula is live iff its subtree meets `S`, and a constant
-child of a live gate holds that gate's identity element. This is the encoding of
-`experiments/readonce_dag`, where a node is `(S, tag)`, 17 bytes, in place of a formula.
-(Argument stated here, not in Lean.)
+**Remark 4.12.** A restriction of a read-once formula with nonempty support is determined by its
+support: two reduced minors of `dnf f` with the same nonempty support are equal. A gate of the
+restricted formula is live iff its subtree meets the support, and a constant input of a live gate
+holds that gate's identity element. This is the encoding of `experiments/readonce_dag`, where a
+node is `(S, tag)` in place of a formula.
+Lean: `Fm.rminor_determined` (by induction on the formula, through Lemma 4.17).
 
 So, to the thesis's question. The recursion tree is exponential because a dual node always
 recurses into both children (Theorem 4.9). Most of the tree repeats subproblems, and
@@ -525,6 +523,139 @@ interleaves independent parts of the instance (Observation 4.11). ETH forces mem
 be superpolynomial on some dual pairs (Proposition 4.6), a statement about `δ`. On the
 alternating trees FK-A's own rule already shows superlinear growth of `δ`, in this
 measurement.
+
+### The memo DAG is a branching program
+
+Modules `SplitRule`, `ReadOnceFormula`, `BranchingProgram`, `RuleInstances`. `fkAR r` and
+`fkADagR r` are FK-A and its subproblem set under a split rule `r`; the degree-sum instance is
+`fkA` (`fkAR_splitVar`, `fkADagR_splitVar`), and the verdict is correct under every rule
+(`fkAR_correct`). A rule is *valid* if it returns a vertex of `support C ∪ support D`, and one
+whenever that set is nonempty; `splitVar`, `leftRule` (the least live vertex) and `guardRule`
+(Proposition 4.18) are valid and symmetric (`valid_splitVar`, `valid_leftRule`,
+`valid_guardRule`).
+
+A *branching program named by its functions* is a set `𝒮` of Sperner hypergraphs with a label on
+each nonconstant `H ∈ 𝒮`: `H` tests `x ∈ support H`, its 0-successor is `H − x = f_H|x=0` and its
+1-successor `min(H/x) = f_H|x=1`, both in `𝒮`; `∅` and `{∅}` are the sinks. Following labels
+from `H` computes `f_H` (`run_correct`), and no path tests a variable twice (`path_nodup`). So `𝒮`
+is a free BDD (FBDD, a deterministic read-once branching program) of size `|𝒮|`; under a static
+order of the tested variables it is an OBDD.
+
+**Theorem 4.13** (the memo DAG is an FBDD). Let `r` be valid and symmetric, `G` Sperner, and the
+fuel larger than `|support G|`. The two sides of the subproblems of unmodified FK-A on
+`(G, Tr G)`, with the constants, form an FBDD for `f_G` labelled by `r`, of size at most
+`2δ + 2`. Under modified FK-A the same family is a branching program whose leaves are constants,
+single terms and single clauses.
+Lean: `memo_good`, `memo_fbdd`, `memo_bp`.
+
+*Proof.* Every subproblem is a dual pair `(K, Tr K)` or `(Tr K, K)`, and with enough fuel it is a
+leaf of the variant or has both children among the subproblems (`memo_good`; induction on the
+fuel, the support shrinking at each split). An unmodified leaf has `|C||D| ≤ 1`, so it is a
+constant or a literal `{{y}}`, which tests `y`. At a split of `(C, D)` at `x`, `C − x` and
+`min(D/x)` are the sides of the left child and `D − x`, `min(C/x)` those of the right child; the
+symmetric rule labels `C` and `D = Tr C` by the same vertex. ∎
+
+**Proposition 4.14** (converse). An FBDD `𝒮 ∋ G` named by its functions gives a rule (test the
+label of whichever side of the node lies in `𝒮`) with `δ ≤ 2|𝒮|` on `(G, Tr G)`, either variant.
+Lean: `rule_of_fbdd`.
+
+So the least `δ` over split rules and the least FBDD of `f` named by its functions agree within a
+factor 2. The latter is the least FBDD of `f`: in an FBDD `B` for a monotone `f`, each restriction
+`h` reached is computed by some node, and one with an essential test is found by following
+0-edges past inessential tests; labelling `h` by that test gives a family of size at most `|B|`.
+(This reduction is argued here, not in Lean; review row 29.)
+
+**Corollary 4.15.** Under every valid symmetric rule, unmodified FK-A has
+`δ ≥ (FBDD(f) − 2)/2`. A monotone family with `N` polynomial and FBDD size superpolynomial in `N`
+would therefore be an explicit family of dual pairs defeating every rule, the open item of
+Proposition 4.6. (For modified FK-A, each single-term or single-clause leaf expands to at most
+`n + 1` nodes, so `δ ≥ (FBDD(f) − 2)/(2(n + 1))`; argued, not in Lean.)
+
+*Literature.* Jukna, Razborov, Savický and Wegener (*Comput. Complexity* 8, 1999) separate
+deterministic size from `NP ∩ coNP` for decision trees and read-once branching programs. Their
+decision-tree separation, `N^{Ω(log N)}`, is the iterated NAND: the alternating trees, whose FBDDs
+are linear (Theorem 4.16). Their read-once separations are the pointer function, which is not
+monotone, and the blocking-set function `⋀_lines ⋁_{j ∈ L} x_j` of a projective plane, which is
+monotone but has every minimal blocking set as a term (Jukna, *Boolean Function Complexity*,
+2012 draft, §14.9, §16.2, Exercise 16.1, read 2026-10-22). Neither gives small `N` with large FBDD
+size. The standard criterion cannot give it either: an `m`-mixed function needs FBDD size `2^m`,
+but a monotone `f` is not `m`-mixed for `m > log₂ N`, since by condition (iv) some term or clause
+has at most `log₂ N` variables (`two_pow_shortest_le`), and two assignments to a set containing it
+that fix it alike give the same constant subfunction. No monotone family with polynomial `N` and
+superpolynomial FBDD size was found; one would need a lower-bound method other than mixedness.
+Novelty of Theorems 4.13–4.14 is not claimed: that DPLL with caching yields FBDDs is standard in
+knowledge compilation (Huang and Darwiche 2005, cited, not read).
+
+### Split rules
+
+**Theorem 4.16** (Observation 4.11; Hertel, Thm 4.4.1). Let `f` be a read-once formula with leaves
+numbered left to right. Under the leftmost rule every subproblem of FK-A on `(dnf f, dnf f^d)` is
+`(H, Tr H)` or `(Tr H, H)` with `H` a constant or one of at most `n` *states*, so `δ ≤ 2n + 2`,
+for either variant and any fuel.
+Lean: `Fm.St`, `Fm.card_St_le`, `Fm.St_closed`, `Fm.leftRule_closed`, `Fm.leftmost_delta`.
+
+*Proof.* The states of `g ∘ h` (`∘` an AND or OR gate) are `A ∘ h` for the states `A` of `g`,
+and the states of `h`; there are at most `|vars f|`. Since the leaves of `g` precede those of `h`,
+the least vertex of `A ∘ h` is that of `A`, and restricting it gives `A' ∘ h` with `A'` a state or
+a constant of `g`; `0 ∘ h` and `1 ∘ h` are constants or `h` itself (`St_closed`). So the states
+and the constants form a family closed under the rule, and every subproblem lies over it
+(`fkADagR_closed`). The constants contribute the two pairs `(∅, {∅})`, `({∅}, ∅)`. ∎
+
+In branching-program terms, the read-once formula's OBDD in leaf order has one node per variable.
+Fault-tree analysis uses this depth-first, left-most order for trees without repeated events
+(Rauzy 1993, cited, not read). The identities behind the proof hold for every monotone formula:
+`dnf(f|x=0) = dnf f − x`, `dnf(f|x=1) = dnf f / x`, `Tr(dnf f) = min dnf(f^d)`, and
+`Tr(dnf f) = dnf(f^d)` for read-once `f` (`Fm.dnf_restrict_false`, `Fm.dnf_restrict_true`,
+`Fm.tr_dnf`, `Fm.tr_dnf_readOnce`).
+
+**Lemma 4.17** (interleaving). For any `A`, `B`, a minor of `A ∪ B` (of `A ∧ B`) is, as a
+function, `A' ∪ B'` (`A' ∧ B'`) for minors `A'` of `A` and `B'` of `B`. On disjoint supports the
+parts are recovered from the union, `(A₀ ∪ B₀) ∩ 2^V = A₀`, and from the join,
+`{e ∩ V : e ∈ A₀ ∧ B₀} = A₀`. So below a gate on disjoint inputs the distinct subproblems are the
+distinct pairs of input states the rule reaches, and `δ` is at least their number.
+Lean: `Fm.minor_union`, `Fm.minor_join`, `Fm.union_left_part`, `Fm.join_left_part`.
+
+**Proposition 4.18** (a memo-friendly rule with FK96's guarantee). The guarded rule splits on the
+least vertex `x` with `|C| ≤ s·deg_C x` or `|D| ≤ s·deg_D x`, `s = ⌊log₂ N⌋`, and on the
+degree-sum vertex if there is none. It is valid and symmetric, so Theorem 4.13 applies to it. On
+every dual pair with both sides nonempty it splits on a vertex of frequency at least `1/⌊log₂ N⌋`
+on one side, the vertex FK96 Lemma 2.3.2 provides.
+Lean: `guardRule`, `guardRule_symm`, `valid_guardRule`, `guardRule_frequent`.
+
+So the frequency hypothesis of FK96's recursion analysis holds at every node of the guarded rule;
+the analysis itself is not formalised here. Within the frequent vertices the rule follows a fixed
+order, as an OBDD does. Measured (`results/split-rules.md`, `experiments/split_rules.py`; Rust
+rows by `readonce_dag`, masks widened to 512 bits, which reproduces `δ(GK f₄) = 67,247,387`):
+
+| pair | `n` | `N` | degree-sum | leftmost | guarded |
+| --- | --- | --- | --- | --- | --- |
+| GK `f₃` | 32 | 192 | 369 | 32 | 32 |
+| GK `f₄` | 128 | 49,152 | 67,247,387 | 128 | 263 |
+| GK `f₅` | 512 | 3,221,225,472 | not computed | 512 | 124,876 |
+| TK `S₃` | 64 | 16,512 | 4,139 | 64 | 64 |
+| TK `S₄` | 256 | 1,073,774,592 | not computed | 256 | 1,352 |
+| alternating, fan-in 3, depth 4 | 81 | 531,522 | 920 | 80 | 86 |
+| `ro12` | 12 | 21 | 43 | 91 | 91 |
+| `sdfp-sd-2` | 16 | 128 | 126 | 49 | 45 |
+| `w11` | 11 | 132 | 140 | 115 | 115 |
+| `6b` | 6 | 11 | 6 | 13 | 13 |
+
+On the alternating trees the leftmost rule attains `δ = n`, below the bound of Theorem 4.16; the
+guarded rule stays far below the degree-sum rule but above `n` from GK `f₄` on, because the least
+frequent vertex is not always the leftmost. A static order is only as good as the labelling: on
+`ro12`, whose labels interleave the two copies, both order-based rules give 91 against 43
+(`ro12_rules`, evaluation). On the small library instances that are not read-once the degree-sum
+rule is usually lower (e.g. `6b`); on the larger ones (`sdfp-sd-2`, `w11`, `w11-sd-1`, the words)
+the order-based rules are. For a uniform matroid `U(k, n)` all three agree, `δ` quadratic in `n`
+(the dictionary in `docs/applications.md`, §4).
+
+**Conjecture 4.19** (C2, the open part). Under FK-A's degree-sum rule, `δ/N` is unbounded on the
+GK family. *Evidence:* `δ/N = 0.67, 1.92, 1368` and `log δ / log N = 0.84, 1.12, 1.67` for
+`k = 2, 3, 4`; GK `f₅` (`N ≈ 3.2·10⁹`) is out of reach. *Search bound:* GK and TK to `k = 4`,
+alternating trees of fan-in 3 to depth 4, and `k ≤ 5` disjoint copies of `ro12`'s gadget, where
+`δ/N ≤ 1.91` and falls because `N` grows exponentially through one side. Since the FBDD of GK `fₖ`
+has at most `n + 2` nodes (Theorem 4.16), any growth is the rule's alone. A proof in the manner of
+`matching_law` would have to control `splitVar` along GK's interleaved states; it was not found.
 
 ### All dual pairs (C3)
 
@@ -610,8 +741,9 @@ That `P_p` is strictly increasing for a nonconstant monotone property is Russo�
 | A5d (Conjecture 2.12) | open; evidence for `v ≤ 100` |
 | B: `ε(8) = 2/5` (Conjecture 3.3) | open; CP-SAT infeasibility not Lean-certified |
 | B3: growth of `ε(n)` | `ε(n) ≥ 1/√n` (Theorem 3.1) and `ε(s²) ≤ 1/s` by `s` disjoint `s`-sets, so `ε(n) = Θ(n^{−1/2})`. These pairs have `N = s + s^s`, so `ε·log₂ N ≈ log₂ s → ∞`: minimising `ε` on `n` points does not approach the FK96 threshold `ε·log₂ N ≥ 1`. The upper bound for general `s` is not in Lean (`eps_four`, `eps_nine` cover `s = 2, 3`) |
-| C2: Conjecture 4.5 | **refuted**: `ro12` has `δ = 43 > 2N` (Lean, evaluation); GK `f₄` has `δ/N = 1368` (Rust). Open: is `δ/N` unbounded on GK under FK-A's rule (log-ratio 1.12 → 1.67)? Lean form of the leftmost bound `δ ≤ 2n + 2` (Observation 4.11) needs read-once formulas in Lean |
-| C3 | `δ ≤ 2N` refuted by `ro12`; no polynomial bound under ETH (Proposition 4.6); unboundedness of `δ/N` on an explicit family open |
+| C2: Conjecture 4.5 | **refuted**: `ro12` has `δ = 43 > 2N` (Lean, evaluation); GK `f₄` has `δ/N = 1368` (Rust). The leftmost bound `δ ≤ 2n + 2` is Theorem 4.16 (Lean). Open: Conjecture 4.19, `δ/N` unbounded on GK under FK-A's rule (log-ratio 0.84, 1.12, 1.67) |
+| C3 | `δ ≤ 2N` refuted by `ro12`; no polynomial bound under ETH (Proposition 4.6). An explicit family defeating every rule exists iff some monotone family has polynomial `N` and superpolynomial FBDD size, up to the factor-2 equivalence of Theorem 4.13 and Proposition 4.14; none is known, and mixedness cannot give one (§4, *Literature*) |
+| Track 3: a memo-friendly rule with FK96's guarantee | The guarded rule keeps the frequency `≥ 1/⌊log₂ N⌋` at every node (Proposition 4.18, Lean); `δ = 32, 263, 124,876` on GK `f₃–f₅`. Open: FK96's recursion bound for it in Lean; a rule with both the guarantee and `δ = O(n)` on read-once pairs |
 | D3 | `r = 2` settled, no (Proposition 5.4); open from `r = 3` (Open problem 5.3) |
 | E1: `|H| + |Tr H|` for the smallest explicit Ryser counterexample of `openai/math` family 162 | not started; needs the construction's transversals counted by structure |
 
@@ -645,8 +777,27 @@ been confirmed by the author.
 | 19 | An `r`-uniform pair on `r²` points needs only one regular side for singleton cross intersections; a non-read-once D3 candidate must have both sides irregular | Proposition 3.7 (Lean); Gurvich's theorem for the read-once consequence | Lean incidence theorem; cited structural implication |
 | 20 | Every FK-A subproblem of `(G, Tr G)` is `(H, Tr H)` or `(Tr H, H)` for a minor `H` of `G`; the two orientations have the same children | Theorem 4.7, Proposition 4.8 | Lean |
 | 21 | Deletion `G − x` is `f\|x=0` and contraction `G / x` is `f\|x=1` for the function with DNF `G` | Def. 2.2.5–2.2.6; `upHit_del`, `upHit_con` | Lean for the up-set form; the function reading is standard |
-| 22 | A nonconstant restriction of a read-once formula is determined by its relevant variables | Remark 4.12, a written argument | Unchecked; the Rust simulator rests on it and agrees with the formula simulator on 405 formulas |
+| 22 | A nonconstant restriction of a read-once formula is determined by its relevant variables | Remark 4.12, `Fm.rminor_determined` | Lean (2026-10-22; was unchecked) |
 | 23 | `δ(GK f₄) = 67,247,387`, `τ(GK f₄) ≈ 7.8·10¹⁹`, `τ(TK S₃) = 19,609,201,217`, leftmost `δ = n` on GK/TK | `experiments/readonce_dag` | Rust; validated against `readonce_sim.py`, which is validated against `fka.memo` |
 | 24 | `ro12` refutes Conjecture 4.5 and the claim `δ ≤ 2N` of `tree-vs-dag.md` §4 | `ro12_readOnce`, `ro12_delta`; `fka.memo` gives 43 | Lean (evaluation) |
-| 25 | Hertel's Theorem 4.4.1 is the leftmost-order case of Observation 4.11 | Review row 7; suffix argument in Observation 4.11 | Cited; the suffix argument is not formalised |
+| 25 | Hertel's Theorem 4.4.1 is the leftmost-order case of Observation 4.11 | Theorem 4.16, `Fm.leftmost_delta` | Lean for `δ ≤ 2n + 2`; the identification with Hertel's `2k + 3` count is cited |
 | 26 | The prime 2-uniform template on 4 points is `P₄`; `P₄` is not read-once | Proposition 5.4 (Lean); a cograph is `P₄`-free (cited) | Lean for the counts; non-read-once cited |
+| 27 | FK-A's memo DAG under a valid symmetric rule is an FBDD named by its functions, of size `≤ 2δ + 2` (unmodified); with term/clause leaves (modified) | Theorem 4.13; `memo_good`, `memo_bp`, `memo_fbdd`, `run_correct`, `path_nodup` | Lean |
+| 28 | An FBDD named by its functions, of size `s`, gives a rule with `δ ≤ 2s` | Proposition 4.14, `rule_of_fbdd` | Lean |
+| 29 | Every FBDD for a monotone `f` gives one named by its functions of no larger size; the modified-variant bound `δ ≥ (FBDD − 2)/(2(n+1))` | §4, argument after Proposition 4.14 and in Corollary 4.15 | Unchecked (written argument) |
+| 30 | `δ ≤ 2n + 2` under the leftmost rule on read-once formulas with leaves in order (Observation 4.11) | Theorem 4.16, `Fm.leftmost_delta` | Lean |
+| 31 | JRSW 1999: the decision-tree separation is the iterated NAND (alternating trees); the read-once separations are the pointer function (not monotone) and the blocking-set function (monotone, exponential DNF) | Jukna, *Boolean Function Complexity* (2012 draft, web.vu.lt/mif/s.jukna), §14.9, §16.2, Exercise 16.1, read 2026-10-22; the ECCC report TR97-023 itself was not legible as text | Cited |
+| 32 | No monotone family with polynomial `N` and superpolynomial FBDD size is known; `m`-mixedness gives at most `N` | Search of 2026-10-22 (JRSW, Jukna's book, Beame et al. on decision-DNNF); the mixedness bound from condition (iv), §4 | Unchecked; the search is not exhaustive |
+| 33 | `dnf(f\|x=0) = dnf f − x`, `dnf(f\|x=1) = dnf f / x` and `Tr(dnf f) = min dnf(f^d)` for every monotone formula; `= dnf(f^d)` for read-once | `Fm.dnf_restrict_false`, `Fm.dnf_restrict_true`, `Fm.tr_dnf`, `Fm.tr_dnf_readOnce` | Lean |
+| 34 | Minors of `A ∪ B`, `A ∧ B` are `A' ∪ B'`, `A' ∧ B'`; on disjoint supports the parts are recoverable | Lemma 4.17, `Fm.minor_union`, `Fm.minor_join`, `Fm.union_left_part`, `Fm.join_left_part` | Lean |
+| 35 | The guarded rule is valid, symmetric, and splits on a vertex of frequency `≥ 1/⌊log₂ N⌋` on every nonempty dual pair | Proposition 4.18, `guardRule_frequent` | Lean; FK96's recursion bound for it is not formalised |
+| 36 | `δ` under the three rules on GK `f₃–f₅`, TK `S₃–S₄`, fan-in-3 alternating trees, the library, `ro12` | `results/split-rules.md`; Rust `readonce_dag` (512-bit masks; reproduces `δ(GK f₄) = 67,247,387`), `fka.memo` | Rust and Python; `gk2_rules`, `ro12_rules` by evaluation |
+| 37 | The Python rules `leftmost`, `guarded` match the Lean `leftRule`, `guardRule` | `fka.algorithm.choose_split_var`; `ro12` and GK `f₂` give the Lean values; `tests/test_memo.py` | Python, checked on those instances |
+| 38 | Disjoint copies of a fixed gadget keep `δ/N` bounded | `results/split-rules.md` (OR and AND of `k ≤ 5` copies of `ro12`'s gadget) | Python |
+| 39 | Uniform matroids: FK-A's deletion and contraction are matroid deletion and contraction on circuits, `Tr(circuits of M)` = bases of `M*`; `δ` is quadratic in `n` | Standard matroid facts (cited); `results/split-rules.md`, `tests/test_memo.py` | Cited for the matroid facts; Python for `δ` |
+| 40 | `(G, H)` Sperner is dual iff cross-intersecting and the CNF `⋀_g ⋁_{i∈g} x̄ᵢ ∧ ⋀_h ⋁_{i∈h} xᵢ` is unsatisfiable; condition (iv) is the counting bound for unsatisfiable CNFs; FK96 Lemma 2.3.2 and Ehrenfeucht–Haussler (Savický's proof, Jukna Thm 14.32) rest on the same short-clause lemma | `kraft_sum`, `two_pow_shortest_le`, `exists_frequent_vertex` (Lean); Jukna §14.9 | Lean for the inequalities; the resolution reading is cited |
+| 41 | For a squarefree monomial ideal `I_G`, `(I : x)` and `(I, x)` are `I` of `min(G/x)` and of `G − x` (with `x`); the Alexander dual is `I_{Tr G}`; Roune's slice algorithm is a pivot-split dualization | `Fm.dnf_restrict_*` for the combinatorial identities; Roune 2009, Bigatti 1997 | Cited, not read |
+| 42 | Fault trees: minimal cut sets are `G`, minimal path sets `Tr G`; depth-first left-most BDD ordering for trees without repeated events | Rauzy 1993 (cited, not read); Theorem 4.16 | Cited; the size bound is Lean |
+| 43 | FK-A's degree `deg_G x` is the numerator of Holler's public good index of player `x` | Holler 1982 (cited, not read) | Cited; definitional, no transfer |
+| 44 | Discarded identifications: Karchmer–Wigderson games, exact learning with membership queries, borders, minimal keys, diagnosis, metabolic cut sets, network reliability, attack trees, Lehman's theorem for D3, influence lemmas against FK96's frequent vertex | `docs/applications.md` §4 gives the reason for each | Unchecked readings |
+| 45 | Conjecture 4.19: `δ/N` unbounded on GK under the degree-sum rule | §4, measured to `k = 4` | Rust |

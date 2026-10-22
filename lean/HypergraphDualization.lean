@@ -31,3 +31,7 @@ import HypergraphDualization.Substitution
 import HypergraphDualization.Influence
 import HypergraphDualization.FrequencyGap
 import HypergraphDualization.Blowup
+import HypergraphDualization.SplitRule
+import HypergraphDualization.ReadOnceFormula
+import HypergraphDualization.BranchingProgram
+import HypergraphDualization.RuleInstances

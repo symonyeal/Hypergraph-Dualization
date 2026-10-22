@@ -100,7 +100,20 @@ def degrees(f, dualised, m=1, out=None):
     return out
 
 
-def run(f):
+def split_var(g, rule):
+    """The split variable of node g under `degree_sum`, `leftmost` or `guarded` (fka.algorithm)."""
+    dg, dd = degrees(g, False), degrees(g, True)
+    if rule == "leftmost":
+        return min(dg)
+    if rule == "guarded":
+        s = (T[g] + TD[g]).bit_length() - 1
+        ok = [v for v in dg if T[g] <= s * dg[v] or TD[g] <= s * dd[v]]
+        if ok:
+            return min(ok)
+    return min(dg, key=lambda v: (-(dg[v] + dd[v]), v))
+
+
+def run(f, rule="degree_sum"):
     """(tau, delta) of modified FK-A on the pair (DNF f, DNF f^d)."""
     tau = {}
 
@@ -110,8 +123,7 @@ def run(f):
             if c * d <= 1 or c == 1 or d == 1:
                 tau[g] = 1
             else:
-                dg, dd = degrees(g, False), degrees(g, True)
-                x = min(dg, key=lambda v: (-(dg[v] + dd[v]), v))
+                x = split_var(g, rule)
                 tau[g] = 1 + node(restrict(g, x, 0)) + node(dual(restrict(g, x, 1)))
         return tau[g]
 
@@ -163,11 +175,12 @@ def sexpr(f):
     return "(" + OP[f] + " " + " ".join(sexpr(k) for k in KIDS[f]) + ")"
 
 
-def check(f, n):
+def check(f, n, rule="degree_sum"):
     """Compare the simulation with the hypergraph implementations."""
     C = Hypergraph.from_bitsets(n, sorted(dnf(f)))
     D = Hypergraph.from_bitsets(n, sorted(dnf(dual(f))))
-    return run(f) == (len(fk_a(C, D).nodes), fk_a_memo(C, D).nodes)
+    return run(f, rule) == (len(fk_a(C, D, split_rule=rule).nodes),
+                            fk_a_memo(C, D, split_rule=rule).nodes)
 
 
 if __name__ == "__main__":

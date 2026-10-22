@@ -157,7 +157,17 @@ New statements of the October 2026 research program, each written up in
 | Proposition 4.8: `τ(C, D) = τ(D, C)` on dual pairs | Proved | `fkA_comm`, `splitVar_comm` |
 | Theorem 4.9: `d`-resilient `G` has `τ ≥ 2^{d+1} − 1` | Proved | `tau_ge_of_resilient` |
 | Proposition 4.10: `δ ≤ τ`; `τ − δ ≥ (τ_L − δ_L) + (τ_R − δ_R) + |Δ_L ∩ Δ_R|` at a split | Proved | `card_fkADag_le`, `excess_split` |
-| Observation 4.11: the leftmost rule keeps `δ = n` on GK/TK, the degree-sum rule does not | Computed (`experiments/readonce_dag`); suffix argument not formalised | — |
+| Observation 4.11 / Theorem 4.16: under the leftmost rule, a read-once formula with leaves in order has `δ ≤ 2n + 2` (Hertel's Thm 4.4.1); measured `δ = n` on GK `f₂–f₅`, TK `S₁–S₄`, far below the degree-sum rule | Proved; measurements computed (`experiments/split_rules.py`) | `Fm.leftmost_delta`, `Fm.St_closed`, `Fm.card_St_le` |
+| Remark 4.12: a restriction of a read-once formula with nonempty support is determined by its support | Proved | `Fm.rminor_determined` |
+| `dnf(f\|x=0) = dnf f − x`, `dnf(f\|x=1) = dnf f / x`, `Tr(dnf f) = min dnf(f^d)` for every monotone formula; `= dnf(f^d)` for read-once `f` | Proved | `Fm.dnf_restrict_false`, `Fm.dnf_restrict_true`, `Fm.tr_dnf`, `Fm.tr_dnf_readOnce` |
+| FK-A under an arbitrary split rule is correct; the degree-sum instance is `fkA` | Proved | `fkAR_correct`, `fkAR_splitVar`, `fkADagR_splitVar` |
+| Theorem 4.13: under a valid symmetric rule the memo DAG is an FBDD for `f` of size `≤ 2δ + 2` (unmodified), with term and clause leaves (modified); an FBDD computes its functions and reads each variable once per path | Proved | `memo_fbdd`, `memo_bp`, `memo_good`, `run_correct`, `path_nodup` |
+| Proposition 4.14: an FBDD of size `s` named by its functions gives a rule with `δ ≤ 2s` | Proved | `rule_of_fbdd` |
+| Corollary 4.15: `δ ≥ (FBDD(f) − 2)/2` under every valid symmetric rule; an explicit family defeating every rule needs a monotone family with polynomial `N` and superpolynomial FBDD size | Proved for the bound; the FBDD reduction for arbitrary FBDDs argued; no such family known (literature, research §4) | `memo_fbdd` |
+| Lemma 4.17: minors of `A ∪ B`, `A ∧ B` are unions, joins of minors; parts recoverable on disjoint supports | Proved | `Fm.minor_union`, `Fm.minor_join`, `Fm.union_left_part`, `Fm.join_left_part` |
+| Proposition 4.18: the guarded rule is valid, symmetric, and splits on a vertex of frequency `≥ 1/⌊log₂ N⌋` (FK96 Lemma 2.3.2) | Proved | `guardRule_frequent`, `valid_guardRule`, `guardRule_symm` |
+| `δ` of GK `f₂` is 8 under all three rules; `ro12` has `δ = 91` under the leftmost and guarded rules | Checked | `gk2_rules`, `ro12_rules` |
+| Conjecture 4.19: `δ/N` is unbounded on GK under the degree-sum rule | Open; `δ/N = 0.67, 1.92, 1368` for `k = 2, 3, 4` (Rust) | — |
 | Proposition 4.6: under ETH no polynomial bounds `δ` on all dual pairs (C3 false) | Proved conditionally, from Kobayashi–Kurita–Wasa 2026 (cited) | — |
 | Theorem D1: `Tr(T[Γ]) = min(Tr(T)[Tr Γ])`; on disjoint supports no reduction, Sperner, `|T[Γ]| = Σ_t Π_i |Γ i|` | Proved | `tr_subst`, `tr_subst_of_disjoint`, `subst_isSperner`, `card_subst` |
 | Proposition D2: `(P)` `k·k* ≥ 8^{r−1}` is closed under composition | Proved | `card_subst_uniform`, `prop_P_comp` |

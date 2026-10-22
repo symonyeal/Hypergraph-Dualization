@@ -58,6 +58,10 @@ same cache from Mathlib's Azure storage account.
 | `Substitution` | substitution duality, disjoint-support Sperner and cardinality formulas; closure of `(P)`; D3 at `r = 2` (`template_rank_two`) |
 | `Influence` | automorphisms preserve pivotal probabilities; equal influences for Fano |
 | `Blowup` | why FK-A's subproblems multiply: subproblems are minors (`fkADag_minor`), `τ(C,D) = τ(D,C)` on dual pairs, the resilience bound `τ ≥ 2^{d+1} − 1`, superadditive repeated work `τ − δ`; the read-once `ro12` with `δ = 43 > 2N` (refutes Conjecture 4.5) |
+| `SplitRule` | FK-A under any split rule (`fkAR`, `fkADagR`), correct (`fkAR_correct`), the degree-sum instance is `fkA`; subproblems lie over any rule-closed family (`fkADagR_closed`); the leftmost rule |
+| `ReadOnceFormula` | monotone formulas, `dnf`, restriction and duality identities; the leftmost bound `δ ≤ 2n + 2` on read-once formulas with leaves in order (`leftmost_delta`, Observation 4.11); interleaving (`minor_union`, `minor_join`); Remark 4.12 (`rminor_determined`) |
+| `BranchingProgram` | branching programs named by their functions (`run_correct`, `path_nodup`); the memo DAG is an FBDD of size `≤ 2δ + 2` (`memo_fbdd`, `memo_bp`) and conversely (`rule_of_fbdd`); the guarded rule with FK96's frequency guarantee (`guardRule_frequent`) |
+| `RuleInstances` | `δ` of GK `f₂` and `ro12` under the three rules (evaluation) |
 
 ## Trust base
 
