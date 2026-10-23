@@ -18,6 +18,7 @@ importable library.
 | `readonce_sim.py` | Modified FK-A on read-once pairs simulated on formulas: `tau`, `delta` for GK, TK and random formulas, validated against `fka.algorithm` and `fka.memo`. `--sexpr gk 4` prints a formula for `readonce_dag`. See `docs/research-2026-10.md` §4. |
 | `readonce_dag/` | Rust: the same simulation keyed on live-variable sets, `n ≤ 512`, degree-sum, `--leftmost` or `--guarded` rule. `cargo build --release`, then `python experiments/readonce_sim.py --sexpr gk 4 \| readonce_dag/target/release/readonce_dag` prints `n N delta tau` (GK `f₄`: about five minutes). |
 | `iso_memo.py` | `delta` against the subproblems up to isomorphism (`d_shp`) and the nodes iso-memoised FK-A expands (`d_iso`) on GK and TK, under the three rules. `python experiments/iso_memo.py 4 3` takes about two minutes. See `docs/research-prompt.md`, Track S. |
+| `symmetry_depth.py` | Exact ordered incidence-graph isomorphism classes by depth on Fano, Witt and complete(10,3), under three rules and both variants. `--write` regenerates `results/symmetry-depth.md`; research Theorem 4.22 and Observation 4.23. |
 | `split_rules.py` | `delta` under the degree-sum, leftmost and guarded rules on read-once pairs, copies of a gadget, uniform matroids and the library; writes `results/split-rules.md`. `--deep` adds GK `f₄` under the degree-sum rule. See `docs/research-2026-10.md` §4. |
 
 Core correctness claims belong in `tests/`, and normal runs belong in the `fka`

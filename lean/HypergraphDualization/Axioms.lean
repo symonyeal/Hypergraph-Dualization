@@ -45,6 +45,7 @@ import HypergraphDualization.SplitRule
 import HypergraphDualization.ReadOnceFormula
 import HypergraphDualization.BranchingProgram
 import HypergraphDualization.RuleInstances
+import HypergraphDualization.SymmetryDepth
 
 open Lean Elab Command
 
@@ -67,6 +68,9 @@ elab "#assert_evaluation " ids:ident* : command => do
 /-! ### General theorems -/
 
 #assert_standard_axioms
+  HD.SD.Trace.normal HD.SD.fkADag_trace HD.SD.cut_pimg HD.SD.hom_of_transitive
+  HD.SD.depth_bound HD.SD.self_depth_bound HD.SD.upto_bound HD.SD.self_upto_bound
+  HD.SD.isoKey_eq_iff HD.SD.transitive_bound HD.SD.self_transitive_bound HD.SD.dual_transitive_bound
   HD.pimg_injective HD.tr_eq_pimg_iff HD.minimal_pimg HD.dual_pimg HD.fkAR_pimg
   HD.Data.fanoC HD.Fix.gem_chordal_five HD.Fix.gem_chordal_four HD.Fix.gem_not_distance_hereditary
   HD.Fix.printed_recurrence_fails HD.Fm.ReadOnce HD.Fm.St HD.Fm.St_closed HD.Fm.card_St_le

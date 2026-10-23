@@ -65,6 +65,7 @@ same cache from Mathlib's Azure storage account.
 | `BranchingProgram` | branching programs named by their functions (`run_correct`, `path_nodup`); the memo DAG is an FBDD of size `≤ 2δ + 2` under a valid symmetric rule (`memo_fbdd`, `memo_bp`) and conversely (`fbddRule`, `rule_of_fbdd`); the leftmost FBDD (`Fm.leftmost_fbdd`); the guarded rule with FK96's frequency guarantee (`guardRule_frequent`) |
 | `RuleInstances` | `δ` of GK `f₂` and `ro12` under the three rules (evaluation) |
 | `Axioms` | the trust base, checked: cited general theorems use only the standard axioms, checked facts are evaluations |
+| `SymmetryDepth` | FK-A split traces have a nonempty first deletion set at positive depth; multiple transitivity gives at most `2j` ordered classes at depth `j`, or `j` for equal sides; cumulative bounds `1+k(k+1)` and `1+k(k+1)/2`, linked to the actual FK-A DAG and its exact isomorphism quotient |
 
 ## Trust base
 

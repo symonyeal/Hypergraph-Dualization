@@ -35,4 +35,5 @@ import HypergraphDualization.SplitRule
 import HypergraphDualization.ReadOnceFormula
 import HypergraphDualization.BranchingProgram
 import HypergraphDualization.RuleInstances
+import HypergraphDualization.SymmetryDepth
 import HypergraphDualization.Axioms
