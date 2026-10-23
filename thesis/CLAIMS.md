@@ -197,3 +197,4 @@ New statements of the October 2026 research program, each written up in
 | Conjecture 4.38: on GK `f_{k+1}`, `k ≥ 4`, every pair of equal-size standalone `f_k` supports occurs jointly in blocks `a`, `c` | Withdrawn: the equal-size form fails at `k = 2, 3` (Observation 4.39) | — |
 | Observation 4.39: on GK `f₃`, `f₄` no pair of equal odd size occurs jointly; the share of target pairs occurring is `0.43`, `0.53` | Computed (Rust), equal-size counts checked against the formula engine at small levels | `results/block-probes/`, `tests/test_readonce_probe.py` |
 | Conjecture 4.40: on GK `J_{k+1} ≥ σ_k²/4`; for `k ≥ 4` and any `A < 513` in place of 4 it implies Conjecture 4.19 | Open; holds for `k ≤ 3` | — |
+| Observation 4.41: TK `S₄` degree sum, stopped at memory: `δ ≥ 330,149,945`, `δ/N ≥ 0.307`, `log δ/log N ≥ 0.943` | Computed (Rust, partial); lower bound only | — |

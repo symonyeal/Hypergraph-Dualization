@@ -1143,6 +1143,18 @@ projections come from distinct supports, `σ_{k+1} ≥ J_{k+1}`. With `σ₄ ≥
 for `k ≥ 4`, and only in the weaker form `J_{k+1} ≥ σ_k²/A` with `A < 513`. On TK the share falls
 (`0.56, 0.24`), which is consistent with TK's falling `δ/N` but decides nothing on GK.
 
+**Observation 4.41** (TK `S₄`'s degree-sum count, partial; computed, 2026-10-23). The joint probe
+on TK `S₄` under the degree-sum rule was run on the work laptop and stopped for memory before
+completion: it reached live-support sizes `256` down to `85` of `257` levels, using 3.6 GB of
+spill with under 2 GB of memory to spare. The running total at the stop gives a lower bound,
+`δ(S₄) ≥ 330,149,945`; the remaining 85 levels only add to it. Against `N₄ = 1,073,774,592`:
+`δ/N ≥ 0.307` and `log δ / log N ≥ 0.943`. The second continues the rise of Observation 4.35
+(`0.77, 0.82, 0.86` for `k = 1–3`). The first does not continue 4.35's fall past `k = 3`
+(`r₂ = 0.472`, `r₃ = 0.251`, `r₄ ≥ 0.307`), but a partial lower bound cannot refute a conjectured
+eventual fall either; whether `δ/N` turns up on TK stays open. The complete count needs the
+personal machine. *Data:* `hd-rust/tk4-joint.log` (work folder, not in the repository; the
+`--out` JSON was never written since the run did not finish).
+
 ### Where else this problem appears (literature, 2026-10-23)
 
 Eight Sonnet research agents read the literature of the fields that solve the same duality by
@@ -1339,3 +1351,4 @@ been confirmed by the author.
 | 86 | Conjecture 4.38 withdrawn | Observation 4.39(a): no equal odd-size pair occurs at GK `f₃` or `f₄` | Computed |
 | 87 | Conjecture 4.40 with `A < 513` suffices for Conjecture 4.19 | Proposition 4.37 with `σ₄ ≥ (δ₄ − 2)/2` | Written proof (arithmetic) |
 | 88 | The cross-field table of "Where else this problem appears" | Notes in the work folder `hd-lit/` (Sonnet agents, full texts where available); checked here: Huang–Darwiche JAIR 2007 Theorem 1, Calì–Razgon Theorem 21, Gajjar–Radhakrishnan Theorem 6(i), §1.2 and Lemma 14 | Unchecked except the rows marked *checked* |
+| 89 | `δ(TK S₄) ≥ 330,149,945`, a partial count stopped at memory; `δ/N ≥ 0.307`, `log δ/log N ≥ 0.943` | Observation 4.41 | Computed (Rust, stopped before completion) |
