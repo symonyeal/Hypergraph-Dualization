@@ -103,7 +103,7 @@ dual pair, FK-A's recursion tree is a decision tree with at most `n + 1` leaves 
 (`fkA_tree_dt`). Every decision tree for GK or TK on `n` vertices has at least `2·(27/16)^{n/4}`
 leaves, the bound of Jukna, Razborov, Savický and Wegener (1999) restated for these families
 (`gk_leaves`). Hence `τ ≥ 2·(27/16)^{n/4}/(n + 1) = N^{Ω(log N)}` under every valid rule
-(`fkA_gk_tree`), against `δ ≤ 2n + 2` with memoisation under the leftmost rule, and FK-A is
+(`fkA_gk_tree`), against `δ ≤ 2n + 2` with memoisation under the leftmost rule (`gk_memo_gap`), and FK-A is
 eventually slower than FK-B's bound `N^{o(log N)}` (FK96, cited). The open core C3 is the
 monotone case of a question those authors left open in 1997: does some function need FBDDs of
 size superpolynomial in `N`?

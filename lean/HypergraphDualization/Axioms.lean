@@ -46,7 +46,7 @@ import HypergraphDualization.ReadOnceFormula
 import HypergraphDualization.BranchingProgram
 import HypergraphDualization.RuleInstances
 import HypergraphDualization.SymmetryDepth
-import HypergraphDualization.FkaTree
+import HypergraphDualization.GkMemo
 
 open Lean Elab Command
 
@@ -71,6 +71,7 @@ elab "#assert_evaluation " ids:ident* : command => do
 #assert_standard_axioms
   HD.l1_le_leaves HD.wc_gk_succ HD.dsum_succ HD.dsum_zero HD.dsum_eq HD.gk_leaves
   HD.eval_fkDT HD.leaves_fkDT HD.fkA_tree_dt HD.fkA_gk_tree HD.fkA_gk_degree_sum
+  HD.ordered_coFm HD.dnf_coFm HD.dnf_coFm_gkH HD.gk_memo_gap
   HD.SD.Trace.normal HD.SD.fkADag_trace HD.SD.cut_pimg HD.SD.hom_of_transitive
   HD.SD.depth_bound HD.SD.self_depth_bound HD.SD.upto_bound HD.SD.self_upto_bound
   HD.SD.isoKey_eq_iff HD.SD.transitive_bound HD.SD.self_transitive_bound HD.SD.dual_transitive_bound
