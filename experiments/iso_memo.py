@@ -1,4 +1,4 @@
-"""FK-A's subproblems up to isomorphism on read-once pairs (research prompt, Track S).
+"""FK-A's subproblems up to isomorphism on read-once pairs (Track S, research Observation 4.20).
 
 Usage (from the repository root): python experiments/iso_memo.py [kmax_gk] [kmax_tk]
 

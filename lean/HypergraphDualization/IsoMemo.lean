@@ -1,7 +1,7 @@
 /-
 Copyright (c) 2026 Saimon Y. Islam. Released under the GPL-3.0-or-later.
 
-# FK-A with a memo keyed by isomorphism class (research prompt, Track S, S1)
+# FK-A with a memo keyed by isomorphism class (Track S, research Theorem 4.28)
 
 `fkAI r κ` is FK-A under the rule `r` with a memo of verdicts keyed by `κ (C, D)`, threaded
 through the recursion. The key function only has to send each pair to an isomorphic pair

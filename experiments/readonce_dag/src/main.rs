@@ -14,7 +14,7 @@
 //! formula is determined by its relevant variables S (Lean `Fm.rminor_determined`), so a node is
 //! the key (S, t) in place of a formula. Cost per node O(gates).
 //!
-//! Classes (research prompt, Track S).
+//! Classes (Track S, research Observation 4.29).
 //!   shp(S, t)  AHU form of h's formula pruned to S (dead leaves dropped, unary gates collapsed,
 //!              equal operators merged), AND and OR swapped when t = 1. Equal shp iff the pairs are
 //!              isomorphic, so d_shp = δ_iso (the AHU claim is iso_memo.py's, checked there).
