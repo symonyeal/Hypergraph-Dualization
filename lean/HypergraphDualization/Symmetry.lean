@@ -69,6 +69,11 @@ theorem pimg_one (H : Finset (Finset α)) : pimg 1 H = H := by
 theorem pimg_inv_pimg (σ : Equiv.Perm α) (H : Finset (Finset α)) : pimg σ⁻¹ (pimg σ H) = H := by
   rw [← pimg_mul, inv_mul_cancel, pimg_one]
 
+theorem pimg_injective (σ : Equiv.Perm α) : Function.Injective (pimg σ) := by
+  intro G H h
+  have := congrArg (pimg σ⁻¹) h
+  simpa only [pimg_inv_pimg] using this
+
 theorem mem_pimg {σ : Equiv.Perm α} {H : Finset (Finset α)} {e : Finset α} :
     pmap σ e ∈ pimg σ H ↔ e ∈ H :=
   ⟨fun h => by obtain ⟨f, hf, hfe⟩ := mem_image.1 h; rwa [← pmap_injective σ hfe], fun h =>
@@ -133,6 +138,24 @@ theorem tr_equivariant (σ : Equiv.Perm α) (H : Finset (Finset α)) :
   intro T hT
   have h2 := mem_image_of_mem (pmap σ) (this (mem_image_of_mem (pmap σ⁻¹) hT))
   rwa [← pmap_mul, mul_inv_cancel, pmap_one] at h2
+
+/-- A common relabelling preserves literal equality with the transversal family. -/
+theorem tr_eq_pimg_iff (σ : Equiv.Perm α) (C D : Finset (Finset α)) :
+    pimg σ C = tr univ (pimg σ D) ↔ C = tr univ D := by
+  rw [tr_equivariant]
+  exact (pimg_injective σ).eq_iff
+
+theorem minimal_pimg (σ : Equiv.Perm α) (H : Finset (Finset α)) :
+    minimal (pimg σ H) = pimg σ (minimal H) := by
+  rw [← tr_tr (U := univ) (H := pimg σ H) (fun _ _ => subset_univ _),
+    tr_equivariant, tr_equivariant, tr_tr (fun _ _ => subset_univ _)]
+
+/-- Duality is invariant under a common relabelling, including redundant edge families. -/
+theorem dual_pimg (σ : Equiv.Perm α) (C D : Finset (Finset α)) :
+    Dual univ (pimg σ C) (pimg σ D) ↔ Dual univ C D := by
+  rw [dual_iff_minimal_eq_tr (fun _ _ => subset_univ _) (fun _ _ => subset_univ _),
+    minimal_pimg, tr_eq_pimg_iff,
+    dual_iff_minimal_eq_tr (fun _ _ => subset_univ _) (fun _ _ => subset_univ _)]
 
 /-- Every automorphism of `H` is an automorphism of `Tr(H)`. -/
 theorem aut_le_aut_tr (H : Finset (Finset α)) : aut H ≤ aut (tr univ H) := by

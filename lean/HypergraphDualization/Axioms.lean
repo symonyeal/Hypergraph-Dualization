@@ -67,6 +67,7 @@ elab "#assert_evaluation " ids:ident* : command => do
 /-! ### General theorems -/
 
 #assert_standard_axioms
+  HD.pimg_injective HD.tr_eq_pimg_iff HD.minimal_pimg HD.dual_pimg HD.fkAR_pimg
   HD.Data.fanoC HD.Fix.gem_chordal_five HD.Fix.gem_chordal_four HD.Fix.gem_not_distance_hereditary
   HD.Fix.printed_recurrence_fails HD.Fm.ReadOnce HD.Fm.St HD.Fm.St_closed HD.Fm.card_St_le
   HD.Fm.cograph_dnf HD.Fm.conformal_dnf HD.Fm.dnf_restrict_false HD.Fm.dnf_restrict_true

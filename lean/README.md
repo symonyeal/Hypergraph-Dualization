@@ -68,6 +68,10 @@ same cache from Mathlib's Azure storage account.
 
 ## Trust base
 
+Track S's relabelling foundation is in `Symmetry` (`tr_eq_pimg_iff`, `dual_pimg`)
+and `Algorithm` (`fkAR_pimg`). Verdicts are invariant even when the split rule
+changes; node counts are not claimed invariant (research Proposition 4.21).
+
 General theorems depend only on the axioms `propext`, `Classical.choice` and `Quot.sound`.
 Facts about named finite instances are proved by evaluation with `native_decide`, which also
 trusts the Lean compiler; their docstrings and module headers say so. `Axioms.lean` lists every

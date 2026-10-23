@@ -13,8 +13,8 @@ Legend
            expanded, so d_iso <= d_shp <= delta
 
 The split rule breaks ties by least index, so it is not relabelling-equivariant and isomorphic
-nodes can have different subtrees; d_iso depends on the traversal order (depth-first, left
-child last pushed). `delta` is capped (CAP); GK f4 under degree_sum exceeds it (67,247,387 by
+nodes can have different subtrees; d_iso depends on the traversal order (depth-first, right
+child visited first). `delta` is capped (CAP); GK f4 under degree_sum exceeds it (67,247,387 by
 experiments/readonce_dag) and is printed as '>CAP'. GK f4 iso takes about 80 s.
 """
 import sys

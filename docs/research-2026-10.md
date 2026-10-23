@@ -699,6 +699,30 @@ dual family with `δ/N → ∞`. The GK family under FK-A's own rule is now an e
 `δ/N = 0.67, 1.92, 1368` for `k = 2, 3, 4` (Observation 4.4). Unboundedness is not proved, and
 under the leftmost rule the same family has `δ = n`.
 
+**Observation 4.20** (Track S; computed, 2026-10-23). Let `δ_iso` count the
+isomorphism classes of ordered pairs reached by labelled memoised FK-A, and
+`d_iso` the classes visited when an isomorphic cache hit stops expansion.
+On GK `f₃` under modified FK-A with the degree-sum rule, `δ = 369`,
+`δ_iso = 160` and `d_iso = 155`. The cache's split choices use vertex labels,
+so its representatives can avoid classes present in the labelled DAG.
+The decomposition `τ = (τ/δ)(δ/δ_iso)δ_iso` uses 160, giving repetition factor
+`369/160 = 2.30625`. The earlier f4 ratio `δ/d_iso ≈ 92` is an upper bound on
+that repetition factor, not its measurement. The bounded 15-row table and the
+independent incidence-graph checks are in [`../results/iso-memo.md`](../results/iso-memo.md).
+
+**Proposition 4.21** (Track S, relabelling foundation). For every permutation `σ`,
+`σC = Tr(σD)` iff `C = Tr(D)`. Duality, including on redundant edge families,
+is invariant under the same relabelling of both sides. Consequently the verdict
+of `fkAR r` on `(σC, σD)` equals that of `fkAR s` on `(C,D)` for any two split
+rules `r,s`, either variant and any fuel. This is a verdict statement; neither
+the recursion tree nor its distinct-state count is claimed invariant.
+Lean: `pimg_injective`, `tr_eq_pimg_iff`, `minimal_pimg`, `dual_pimg`, `fkAR_pimg`.
+
+*Proof.* `Tr` commutes with relabelling (`tr_equivariant`), and relabelling is
+injective. Applying `Tr` twice also makes Sperner reduction equivariant.
+Use `Dual C D ↔ min C = Tr D`, then `fkAR_correct`. A formal cache implementation
+and its invariant are still required for S1's algorithmic correctness claim.
+
 ## 5. Substitution (Track D)
 
 For a template `T` on points `ι` and hypergraphs `Γ i`, the substitution is
@@ -834,3 +858,5 @@ been confirmed by the author.
 | 53 | Correction 1.3 (both FK-A children of `w11` have `\|Aut\| = 720`, primitive) and Open problem 5.3's `AG(2,4)` splits | `experiments/witt_m11.py`; the `AG(2,4)` check | Python |
 | 54 | Thesis hypotheses that the proofs do not use: Lemma 2.1.1 and Prop. 2.2.4 and Cor. 2.3.1 without `G` Sperner; §2.2.2's split without `G, H ⊆ U`; §1.1.1 without `I ⊆ U` | `eq_tr_iff_partition`, `kraft_sum`, `two_pow_shortest_le`, `dual_split`, `isMinHit_compl_iff` | Lean (2026-10-22; hypotheses removed after the unused-variable linter) |
 | 55 | Every cited general theorem uses only `propext`, `Classical.choice`, `Quot.sound`; every *Checked* fact is an evaluation | `Axioms.lean` (`#assert_standard_axioms`, `#assert_evaluation`) | Lean, enforced by `lake build` |
+| 56 | Track S's reached-class count differs from its cache count: GK f3 has `δ_iso = 160`, `d_iso = 155`; the f4 factor 92 is `δ/d_iso`, an upper bound on `δ/δ_iso` | Observation 4.20; `python experiments/iso_memo.py 3 2`, rerun 2026-10-23; `results/iso-memo.md` | Computed; 18 targeted tests pass, including all 15 table rows against the hypergraph engine and 465 formula pairs against an incidence-graph oracle |
+| 57 | Relabelling preserves literal transversal equality, duality on redundant families and FK-A verdicts under arbitrary rules | Proposition 4.21; `tr_eq_pimg_iff`, `minimal_pimg`, `dual_pimg`, `fkAR_pimg`; `lake build` on 2026-10-23 | Lean, 1863 jobs; standard axioms enforced in `Axioms.lean`; cache implementation correctness remains open |
