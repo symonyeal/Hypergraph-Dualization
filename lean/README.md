@@ -66,6 +66,8 @@ same cache from Mathlib's Azure storage account.
 | `RuleInstances` | `δ` of GK `f₂` and `ro12` under the three rules (evaluation) |
 | `Axioms` | the trust base, checked: cited general theorems use only the standard axioms, checked facts are evaluations |
 | `SymmetryDepth` | FK-A split traces have a nonempty first deletion set at positive depth; multiple transitivity gives at most `2j` ordered classes at depth `j`, or `j` for equal sides; cumulative bounds `1+k(k+1)` and `1+k(k+1)/2`, linked to the actual FK-A DAG and its exact isomorphism quotient |
+| `DecisionTree` | decision trees and Fourier coefficients on a cube of subsets; a decision tree has at least `‖f̂‖₁` leaves (`l1_le_leaves`); JRSW's dense-coefficient recursion for `coalt` (`wc_gk_succ`, `dsum_eq`), so every decision tree for GK or TK has at least `2·(27/16)^{n/4}` leaves (`gk_leaves`) |
+| `FkaTree` | FK-A's recursion tree unfolds into a decision tree for `f_C` under every rule (`fkDT`, `eval_fkDT`) with at most `(n+1)τ` leaves on dual pairs under valid rules (`leaves_fkDT`, `fkA_tree_dt`); on GK and TK `τ ≥ 2·(27/16)^{n/4}/(n+1)` (`fkA_gk_tree`, `fkA_gk_degree_sum`) |
 
 ## Trust base
 

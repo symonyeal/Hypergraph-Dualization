@@ -51,7 +51,8 @@ verbatim in [`thesis/2024/`](thesis/2024). Among the corrections:
 - The §3.2 edge sets, the §4.2.3 recurrences and the transversal count of Definition 5.2.1.
 - Observation 5.2.3: `ε(7) = 3/7` is now proved, not only claimed (below).
 - Chapter 4 cited Hertel's bound for the alternating trees as an upper bound on subproblems; it is
-  a lower bound on every DPLL decision tree, hence on FK-A's recursion tree.
+  a lower bound on every DPLL decision tree, hence on FK-A's recursion tree. The stronger bound
+  `2^{Ω(n)}` now holds in Lean (`fkA_gk_tree`, below).
 
 ## New results (October 2026)
 
@@ -96,6 +97,16 @@ vertices the tree has `2^{v/2+1} − 3` nodes but only `v` distinct subproblems;
 graph both are `v − 1` (`matching_tau_delta`, `threshold_tau_delta`). Under the exponential-time
 hypothesis no polynomial bounds the number of distinct subproblems on all dual pairs
 (conditional, from Kobayashi–Kurita–Wasa 2026).
+
+**FK-A's recursion tree is exponential on the alternating trees, under every split rule.** On a
+dual pair, FK-A's recursion tree is a decision tree with at most `n + 1` leaves per node
+(`fkA_tree_dt`). Every decision tree for GK or TK on `n` vertices has at least `2·(27/16)^{n/4}`
+leaves, the bound of Jukna, Razborov, Savický and Wegener (1999) restated for these families
+(`gk_leaves`). Hence `τ ≥ 2·(27/16)^{n/4}/(n + 1) = N^{Ω(log N)}` under every valid rule
+(`fkA_gk_tree`), against `δ ≤ 2n + 2` with memoisation under the leftmost rule, and FK-A is
+eventually slower than FK-B's bound `N^{o(log N)}` (FK96, cited). The open core C3 is the
+monotone case of a question those authors left open in 1997: does some function need FBDDs of
+size superpolynomial in `N`?
 
 **Substitution.** For a template `T` and hypergraphs `Γᵢ`,
 `Tr(T[Γ]) = min(Tr(T)[Tr Γ])`; on disjoint vertex sets no reduction is needed and
