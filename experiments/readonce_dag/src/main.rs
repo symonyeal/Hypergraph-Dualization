@@ -34,6 +34,7 @@ use std::fs::{self, File};
 use std::hash::{BuildHasherDefault, Hash, Hasher};
 use std::io::{BufWriter, Read, Write};
 use std::path::PathBuf;
+mod probe;
 
 #[derive(Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord)]
 struct M<const W: usize>([u64; W]); // W 64-bit words: n ≤ 64·W
@@ -136,8 +137,11 @@ fn counts<const W: usize>(f: &F<W>, s: M<W>) -> (Vec<u128>, Vec<u128>) {
 #[derive(Clone, Copy, PartialEq)]
 enum Rule { DegreeSum, Leftmost, Guarded }
 
-/// Children of a node with live set s, or None at a leaf of modified FK-A.
-fn split<const W: usize>(f: &F<W>, s: M<W>, rule: Rule) -> Option<(K<W>, K<W>)> {
+// Pick: selected vertex x, least frequent-enough vertex g, degree-sum vertex b.
+struct Pick { x: usize, g: usize, b: usize }
+
+/// Split choice, or None at a leaf of modified FK-A.
+fn pick<const W: usize>(f: &F<W>, s: M<W>, rule: Rule) -> Option<Pick> {
     let m = f.op.len();
     let (t, td) = counts(f, s);
     let (c, d) = (t[m - 1], td[m - 1]);
@@ -168,11 +172,20 @@ fn split<const W: usize>(f: &F<W>, s: M<W>, rule: Rule) -> Option<(K<W>, K<W>)> 
         Rule::Guarded if guard != usize::MAX => guard,
         _ => best.1,
     };
+    Some(Pick { x, g: guard, b: best.1 })
+}
+
+fn children<const W: usize>(f: &F<W>, s: M<W>, x: usize) -> (K<W>, K<W>) {
     let key = |r: Result<M<W>, bool>, b: bool| match r {
         Err(v) => K::Const(v ^ b),
         Ok(s) => K::Live(s, b && s.ones() > 1),
     };
-    Some((key(restrict(f, s, x, false), false), key(restrict(f, s, x, true), true)))
+    (key(restrict(f, s, x, false), false), key(restrict(f, s, x, true), true))
+}
+
+/// Children of a node with live set s, or None at a leaf of modified FK-A.
+fn split<const W: usize>(f: &F<W>, s: M<W>, rule: Rule) -> Option<(K<W>, K<W>)> {
+    pick(f, s, rule).map(|p| children(f, s, p.x))
 }
 
 /// Hash-consed AHU nodes: id ↦ (code, sorted child ids). Codes: 0 variable, 1 AND, 2 OR,
@@ -416,7 +429,9 @@ fn main() {
     macro_rules! run {
         ($w:literal) => {{
             let f = parse::<$w>(&tok);
-            if arg("--classes") { classes(&f, rule, dir) } else if arg("--iso") { iso(&f, rule) }
+            if arg("--joint") || arg("--guard-trace") {
+                probe::run(&f, rule, dir, arg("--joint"), arg("--guard-trace"));
+            } else if arg("--classes") { classes(&f, rule, dir) } else if arg("--iso") { iso(&f, rule) }
             else { dfs(&f, rule, arg("--delta-only")) }
         }};
     }

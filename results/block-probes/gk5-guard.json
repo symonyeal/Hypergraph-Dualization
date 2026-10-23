@@ -1,0 +1,5128 @@
+{
+  "family": "gk",
+  "k": 5,
+  "mode": "guard",
+  "seconds": 1.960877800011076,
+  "source_sha256": {
+    "main.rs": "8aac5be81db6f8c7700a5d7fabb2f3af04e3467b615303917c39999c9029bbfc",
+    "probe.rs": "7ed8b52561fd0b6e56304fa546a07e4a3b2e26586f15297f58e488d2f0c6228c"
+  },
+  "formula": "(| (& (| (& (| (& (| (& (| 0 1) (| 2 3)) (& (| 4 5) (| 6 7))) (| (& (| 8 9) (| 10 11)) (& (| 12 13) (| 14 15)))) (& (| (& (| 16 17) (| 18 19)) (& (| 20 21) (| 22 23))) (| (& (| 24 25) (| 26 27)) (& (| 28 29) (| 30 31))))) (| (& (| (& (| 32 33) (| 34 35)) (& (| 36 37) (| 38 39))) (| (& (| 40 41) (| 42 43)) (& (| 44 45) (| 46 47)))) (& (| (& (| 48 49) (| 50 51)) (& (| 52 53) (| 54 55))) (| (& (| 56 57) (| 58 59)) (& (| 60 61) (| 62 63)))))) (& (| (& (| (& (| 64 65) (| 66 67)) (& (| 68 69) (| 70 71))) (| (& (| 72 73) (| 74 75)) (& (| 76 77) (| 78 79)))) (& (| (& (| 80 81) (| 82 83)) (& (| 84 85) (| 86 87))) (| (& (| 88 89) (| 90 91)) (& (| 92 93) (| 94 95))))) (| (& (| (& (| 96 97) (| 98 99)) (& (| 100 101) (| 102 103))) (| (& (| 104 105) (| 106 107)) (& (| 108 109) (| 110 111)))) (& (| (& (| 112 113) (| 114 115)) (& (| 116 117) (| 118 119))) (| (& (| 120 121) (| 122 123)) (& (| 124 125) (| 126 127))))))) (| (& (| (& (| (& (| 128 129) (| 130 131)) (& (| 132 133) (| 134 135))) (| (& (| 136 137) (| 138 139)) (& (| 140 141) (| 142 143)))) (& (| (& (| 144 145) (| 146 147)) (& (| 148 149) (| 150 151))) (| (& (| 152 153) (| 154 155)) (& (| 156 157) (| 158 159))))) (| (& (| (& (| 160 161) (| 162 163)) (& (| 164 165) (| 166 167))) (| (& (| 168 169) (| 170 171)) (& (| 172 173) (| 174 175)))) (& (| (& (| 176 177) (| 178 179)) (& (| 180 181) (| 182 183))) (| (& (| 184 185) (| 186 187)) (& (| 188 189) (| 190 191)))))) (& (| (& (| (& (| 192 193) (| 194 195)) (& (| 196 197) (| 198 199))) (| (& (| 200 201) (| 202 203)) (& (| 204 205) (| 206 207)))) (& (| (& (| 208 209) (| 210 211)) (& (| 212 213) (| 214 215))) (| (& (| 216 217) (| 218 219)) (& (| 220 221) (| 222 223))))) (| (& (| (& (| 224 225) (| 226 227)) (& (| 228 229) (| 230 231))) (| (& (| 232 233) (| 234 235)) (& (| 236 237) (| 238 239)))) (& (| (& (| 240 241) (| 242 243)) (& (| 244 245) (| 246 247))) (| (& (| 248 249) (| 250 251)) (& (| 252 253) (| 254 255)))))))) (& (| (& (| (& (| (& (| 256 257) (| 258 259)) (& (| 260 261) (| 262 263))) (| (& (| 264 265) (| 266 267)) (& (| 268 269) (| 270 271)))) (& (| (& (| 272 273) (| 274 275)) (& (| 276 277) (| 278 279))) (| (& (| 280 281) (| 282 283)) (& (| 284 285) (| 286 287))))) (| (& (| (& (| 288 289) (| 290 291)) (& (| 292 293) (| 294 295))) (| (& (| 296 297) (| 298 299)) (& (| 300 301) (| 302 303)))) (& (| (& (| 304 305) (| 306 307)) (& (| 308 309) (| 310 311))) (| (& (| 312 313) (| 314 315)) (& (| 316 317) (| 318 319)))))) (& (| (& (| (& (| 320 321) (| 322 323)) (& (| 324 325) (| 326 327))) (| (& (| 328 329) (| 330 331)) (& (| 332 333) (| 334 335)))) (& (| (& (| 336 337) (| 338 339)) (& (| 340 341) (| 342 343))) (| (& (| 344 345) (| 346 347)) (& (| 348 349) (| 350 351))))) (| (& (| (& (| 352 353) (| 354 355)) (& (| 356 357) (| 358 359))) (| (& (| 360 361) (| 362 363)) (& (| 364 365) (| 366 367)))) (& (| (& (| 368 369) (| 370 371)) (& (| 372 373) (| 374 375))) (| (& (| 376 377) (| 378 379)) (& (| 380 381) (| 382 383))))))) (| (& (| (& (| (& (| 384 385) (| 386 387)) (& (| 388 389) (| 390 391))) (| (& (| 392 393) (| 394 395)) (& (| 396 397) (| 398 399)))) (& (| (& (| 400 401) (| 402 403)) (& (| 404 405) (| 406 407))) (| (& (| 408 409) (| 410 411)) (& (| 412 413) (| 414 415))))) (| (& (| (& (| 416 417) (| 418 419)) (& (| 420 421) (| 422 423))) (| (& (| 424 425) (| 426 427)) (& (| 428 429) (| 430 431)))) (& (| (& (| 432 433) (| 434 435)) (& (| 436 437) (| 438 439))) (| (& (| 440 441) (| 442 443)) (& (| 444 445) (| 446 447)))))) (& (| (& (| (& (| 448 449) (| 450 451)) (& (| 452 453) (| 454 455))) (| (& (| 456 457) (| 458 459)) (& (| 460 461) (| 462 463)))) (& (| (& (| 464 465) (| 466 467)) (& (| 468 469) (| 470 471))) (| (& (| 472 473) (| 474 475)) (& (| 476 477) (| 478 479))))) (| (& (| (& (| 480 481) (| 482 483)) (& (| 484 485) (| 486 487))) (| (& (| 488 489) (| 490 491)) (& (| 492 493) (| 494 495)))) (& (| (& (| 496 497) (| 498 499)) (& (| 500 501) (| 502 503))) (| (& (| 504 505) (| 506 507)) (& (| 508 509) (| 510 511)))))))))",
+  "records": [
+    {
+      "kind": "level",
+      "level": 512,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 511,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 510,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 509,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 508,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 507,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 506,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 505,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 504,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 503,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 502,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 501,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 500,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 499,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 498,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 497,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 496,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 495,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "first_departure",
+      "level": 494,
+      "support": [
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119,
+        120,
+        121,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127,
+        128,
+        129,
+        130,
+        131,
+        132,
+        133,
+        134,
+        135,
+        136,
+        137,
+        138,
+        139,
+        140,
+        141,
+        142,
+        143,
+        144,
+        145,
+        146,
+        147,
+        148,
+        149,
+        150,
+        151,
+        152,
+        153,
+        154,
+        155,
+        156,
+        157,
+        158,
+        159,
+        160,
+        161,
+        162,
+        163,
+        164,
+        165,
+        166,
+        167,
+        168,
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186,
+        187,
+        188,
+        189,
+        190,
+        191,
+        192,
+        193,
+        194,
+        195,
+        196,
+        197,
+        198,
+        199,
+        200,
+        201,
+        202,
+        203,
+        204,
+        205,
+        206,
+        207,
+        208,
+        209,
+        210,
+        211,
+        212,
+        213,
+        214,
+        215,
+        216,
+        217,
+        218,
+        219,
+        220,
+        221,
+        222,
+        223,
+        224,
+        225,
+        226,
+        227,
+        228,
+        229,
+        230,
+        231,
+        232,
+        233,
+        234,
+        235,
+        236,
+        237,
+        238,
+        239,
+        240,
+        241,
+        242,
+        243,
+        244,
+        245,
+        246,
+        247,
+        248,
+        249,
+        250,
+        251,
+        252,
+        253,
+        254,
+        255,
+        256,
+        257,
+        258,
+        259,
+        260,
+        261,
+        262,
+        263,
+        264,
+        265,
+        266,
+        267,
+        268,
+        269,
+        270,
+        271,
+        272,
+        273,
+        274,
+        275,
+        276,
+        277,
+        278,
+        279,
+        280,
+        281,
+        282,
+        283,
+        284,
+        285,
+        286,
+        287,
+        288,
+        289,
+        290,
+        291,
+        292,
+        293,
+        294,
+        295,
+        296,
+        297,
+        298,
+        299,
+        300,
+        301,
+        302,
+        303,
+        304,
+        305,
+        306,
+        307,
+        308,
+        309,
+        310,
+        311,
+        312,
+        313,
+        314,
+        315,
+        316,
+        317,
+        318,
+        319,
+        320,
+        321,
+        322,
+        323,
+        324,
+        325,
+        326,
+        327,
+        328,
+        329,
+        330,
+        331,
+        332,
+        333,
+        334,
+        335,
+        336,
+        337,
+        338,
+        339,
+        340,
+        341,
+        342,
+        343,
+        344,
+        345,
+        346,
+        347,
+        348,
+        349,
+        350,
+        351,
+        352,
+        353,
+        354,
+        355,
+        356,
+        357,
+        358,
+        359,
+        360,
+        361,
+        362,
+        363,
+        364,
+        365,
+        366,
+        367,
+        368,
+        369,
+        370,
+        371,
+        372,
+        373,
+        374,
+        375,
+        376,
+        377,
+        378,
+        379,
+        380,
+        381,
+        382,
+        383,
+        384,
+        385,
+        386,
+        387,
+        388,
+        389,
+        390,
+        391,
+        392,
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        403,
+        404,
+        405,
+        406,
+        407,
+        408,
+        409,
+        410,
+        411,
+        412,
+        413,
+        414,
+        415,
+        416,
+        417,
+        418,
+        419,
+        420,
+        421,
+        422,
+        423,
+        424,
+        425,
+        426,
+        427,
+        428,
+        429,
+        430,
+        431,
+        432,
+        433,
+        434,
+        435,
+        436,
+        437,
+        438,
+        439,
+        440,
+        441,
+        442,
+        443,
+        444,
+        445,
+        446,
+        447,
+        448,
+        449,
+        450,
+        451,
+        452,
+        453,
+        454,
+        455,
+        456,
+        457,
+        458,
+        459,
+        460,
+        461,
+        462,
+        463,
+        464,
+        465,
+        466,
+        467,
+        468,
+        469,
+        470,
+        471,
+        472,
+        473,
+        474,
+        475,
+        476,
+        477,
+        478,
+        479,
+        480,
+        481,
+        482,
+        483,
+        484,
+        485,
+        486,
+        487,
+        488,
+        489,
+        490,
+        491,
+        492,
+        493,
+        494,
+        495,
+        496,
+        497,
+        498,
+        499,
+        500,
+        501,
+        502,
+        503,
+        504,
+        505,
+        506,
+        507,
+        508,
+        509,
+        510,
+        511
+      ],
+      "tag": true,
+      "leftmost": 18,
+      "chosen": 20,
+      "degree_sum": 256
+    },
+    {
+      "kind": "level",
+      "level": 494,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 493,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 492,
+      "nodes": 2,
+      "splits": 2,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 2
+    },
+    {
+      "kind": "level",
+      "level": 491,
+      "nodes": 2,
+      "splits": 2,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 2
+    },
+    {
+      "kind": "level",
+      "level": 490,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 489,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 488,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 487,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 486,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 485,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 484,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 483,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 482,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 481,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 480,
+      "nodes": 4,
+      "splits": 4,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 4
+    },
+    {
+      "kind": "level",
+      "level": 479,
+      "nodes": 4,
+      "splits": 4,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 4
+    },
+    {
+      "kind": "level",
+      "level": 478,
+      "nodes": 4,
+      "splits": 4,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 4
+    },
+    {
+      "kind": "level",
+      "level": 477,
+      "nodes": 4,
+      "splits": 4,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 4
+    },
+    {
+      "kind": "level",
+      "level": 476,
+      "nodes": 4,
+      "splits": 4,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 4
+    },
+    {
+      "kind": "level",
+      "level": 475,
+      "nodes": 4,
+      "splits": 4,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 4
+    },
+    {
+      "kind": "level",
+      "level": 474,
+      "nodes": 4,
+      "splits": 4,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 4
+    },
+    {
+      "kind": "level",
+      "level": 473,
+      "nodes": 4,
+      "splits": 4,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 4
+    },
+    {
+      "kind": "level",
+      "level": 472,
+      "nodes": 5,
+      "splits": 5,
+      "leftmost_ineligible": 4,
+      "fallbacks": 0,
+      "diff_degree_sum": 5
+    },
+    {
+      "kind": "level",
+      "level": 471,
+      "nodes": 5,
+      "splits": 5,
+      "leftmost_ineligible": 4,
+      "fallbacks": 0,
+      "diff_degree_sum": 5
+    },
+    {
+      "kind": "level",
+      "level": 470,
+      "nodes": 8,
+      "splits": 8,
+      "leftmost_ineligible": 7,
+      "fallbacks": 0,
+      "diff_degree_sum": 8
+    },
+    {
+      "kind": "level",
+      "level": 469,
+      "nodes": 8,
+      "splits": 8,
+      "leftmost_ineligible": 7,
+      "fallbacks": 0,
+      "diff_degree_sum": 8
+    },
+    {
+      "kind": "level",
+      "level": 468,
+      "nodes": 11,
+      "splits": 11,
+      "leftmost_ineligible": 10,
+      "fallbacks": 0,
+      "diff_degree_sum": 11
+    },
+    {
+      "kind": "level",
+      "level": 467,
+      "nodes": 11,
+      "splits": 11,
+      "leftmost_ineligible": 10,
+      "fallbacks": 0,
+      "diff_degree_sum": 11
+    },
+    {
+      "kind": "level",
+      "level": 466,
+      "nodes": 16,
+      "splits": 16,
+      "leftmost_ineligible": 15,
+      "fallbacks": 0,
+      "diff_degree_sum": 16
+    },
+    {
+      "kind": "level",
+      "level": 465,
+      "nodes": 16,
+      "splits": 16,
+      "leftmost_ineligible": 15,
+      "fallbacks": 0,
+      "diff_degree_sum": 16
+    },
+    {
+      "kind": "level",
+      "level": 464,
+      "nodes": 24,
+      "splits": 24,
+      "leftmost_ineligible": 24,
+      "fallbacks": 0,
+      "diff_degree_sum": 24
+    },
+    {
+      "kind": "level",
+      "level": 463,
+      "nodes": 24,
+      "splits": 24,
+      "leftmost_ineligible": 24,
+      "fallbacks": 0,
+      "diff_degree_sum": 24
+    },
+    {
+      "kind": "level",
+      "level": 462,
+      "nodes": 28,
+      "splits": 28,
+      "leftmost_ineligible": 28,
+      "fallbacks": 0,
+      "diff_degree_sum": 28
+    },
+    {
+      "kind": "level",
+      "level": 461,
+      "nodes": 28,
+      "splits": 28,
+      "leftmost_ineligible": 28,
+      "fallbacks": 0,
+      "diff_degree_sum": 28
+    },
+    {
+      "kind": "level",
+      "level": 460,
+      "nodes": 31,
+      "splits": 31,
+      "leftmost_ineligible": 31,
+      "fallbacks": 0,
+      "diff_degree_sum": 31
+    },
+    {
+      "kind": "level",
+      "level": 459,
+      "nodes": 31,
+      "splits": 31,
+      "leftmost_ineligible": 31,
+      "fallbacks": 0,
+      "diff_degree_sum": 31
+    },
+    {
+      "kind": "level",
+      "level": 458,
+      "nodes": 36,
+      "splits": 36,
+      "leftmost_ineligible": 36,
+      "fallbacks": 0,
+      "diff_degree_sum": 36
+    },
+    {
+      "kind": "level",
+      "level": 457,
+      "nodes": 36,
+      "splits": 36,
+      "leftmost_ineligible": 36,
+      "fallbacks": 0,
+      "diff_degree_sum": 36
+    },
+    {
+      "kind": "level",
+      "level": 456,
+      "nodes": 40,
+      "splits": 40,
+      "leftmost_ineligible": 40,
+      "fallbacks": 0,
+      "diff_degree_sum": 40
+    },
+    {
+      "kind": "level",
+      "level": 455,
+      "nodes": 40,
+      "splits": 40,
+      "leftmost_ineligible": 40,
+      "fallbacks": 0,
+      "diff_degree_sum": 40
+    },
+    {
+      "kind": "level",
+      "level": 454,
+      "nodes": 53,
+      "splits": 53,
+      "leftmost_ineligible": 53,
+      "fallbacks": 0,
+      "diff_degree_sum": 53
+    },
+    {
+      "kind": "level",
+      "level": 453,
+      "nodes": 53,
+      "splits": 53,
+      "leftmost_ineligible": 53,
+      "fallbacks": 0,
+      "diff_degree_sum": 53
+    },
+    {
+      "kind": "level",
+      "level": 452,
+      "nodes": 64,
+      "splits": 64,
+      "leftmost_ineligible": 64,
+      "fallbacks": 0,
+      "diff_degree_sum": 64
+    },
+    {
+      "kind": "level",
+      "level": 451,
+      "nodes": 64,
+      "splits": 64,
+      "leftmost_ineligible": 64,
+      "fallbacks": 0,
+      "diff_degree_sum": 64
+    },
+    {
+      "kind": "level",
+      "level": 450,
+      "nodes": 69,
+      "splits": 69,
+      "leftmost_ineligible": 69,
+      "fallbacks": 0,
+      "diff_degree_sum": 69
+    },
+    {
+      "kind": "level",
+      "level": 449,
+      "nodes": 69,
+      "splits": 69,
+      "leftmost_ineligible": 69,
+      "fallbacks": 0,
+      "diff_degree_sum": 69
+    },
+    {
+      "kind": "level",
+      "level": 448,
+      "nodes": 79,
+      "splits": 79,
+      "leftmost_ineligible": 78,
+      "fallbacks": 0,
+      "diff_degree_sum": 79
+    },
+    {
+      "kind": "level",
+      "level": 447,
+      "nodes": 79,
+      "splits": 79,
+      "leftmost_ineligible": 78,
+      "fallbacks": 0,
+      "diff_degree_sum": 79
+    },
+    {
+      "kind": "level",
+      "level": 446,
+      "nodes": 83,
+      "splits": 83,
+      "leftmost_ineligible": 83,
+      "fallbacks": 0,
+      "diff_degree_sum": 83
+    },
+    {
+      "kind": "level",
+      "level": 445,
+      "nodes": 83,
+      "splits": 83,
+      "leftmost_ineligible": 83,
+      "fallbacks": 0,
+      "diff_degree_sum": 83
+    },
+    {
+      "kind": "level",
+      "level": 444,
+      "nodes": 88,
+      "splits": 88,
+      "leftmost_ineligible": 87,
+      "fallbacks": 0,
+      "diff_degree_sum": 88
+    },
+    {
+      "kind": "level",
+      "level": 443,
+      "nodes": 88,
+      "splits": 88,
+      "leftmost_ineligible": 87,
+      "fallbacks": 0,
+      "diff_degree_sum": 88
+    },
+    {
+      "kind": "level",
+      "level": 442,
+      "nodes": 100,
+      "splits": 100,
+      "leftmost_ineligible": 100,
+      "fallbacks": 0,
+      "diff_degree_sum": 100
+    },
+    {
+      "kind": "level",
+      "level": 441,
+      "nodes": 100,
+      "splits": 100,
+      "leftmost_ineligible": 100,
+      "fallbacks": 0,
+      "diff_degree_sum": 100
+    },
+    {
+      "kind": "level",
+      "level": 440,
+      "nodes": 116,
+      "splits": 116,
+      "leftmost_ineligible": 116,
+      "fallbacks": 0,
+      "diff_degree_sum": 116
+    },
+    {
+      "kind": "level",
+      "level": 439,
+      "nodes": 116,
+      "splits": 116,
+      "leftmost_ineligible": 116,
+      "fallbacks": 0,
+      "diff_degree_sum": 116
+    },
+    {
+      "kind": "level",
+      "level": 438,
+      "nodes": 141,
+      "splits": 141,
+      "leftmost_ineligible": 141,
+      "fallbacks": 0,
+      "diff_degree_sum": 141
+    },
+    {
+      "kind": "level",
+      "level": 437,
+      "nodes": 141,
+      "splits": 141,
+      "leftmost_ineligible": 141,
+      "fallbacks": 0,
+      "diff_degree_sum": 141
+    },
+    {
+      "kind": "level",
+      "level": 436,
+      "nodes": 169,
+      "splits": 169,
+      "leftmost_ineligible": 169,
+      "fallbacks": 0,
+      "diff_degree_sum": 169
+    },
+    {
+      "kind": "level",
+      "level": 435,
+      "nodes": 169,
+      "splits": 169,
+      "leftmost_ineligible": 169,
+      "fallbacks": 0,
+      "diff_degree_sum": 169
+    },
+    {
+      "kind": "level",
+      "level": 434,
+      "nodes": 203,
+      "splits": 203,
+      "leftmost_ineligible": 203,
+      "fallbacks": 0,
+      "diff_degree_sum": 203
+    },
+    {
+      "kind": "level",
+      "level": 433,
+      "nodes": 203,
+      "splits": 203,
+      "leftmost_ineligible": 203,
+      "fallbacks": 0,
+      "diff_degree_sum": 203
+    },
+    {
+      "kind": "level",
+      "level": 432,
+      "nodes": 252,
+      "splits": 252,
+      "leftmost_ineligible": 251,
+      "fallbacks": 0,
+      "diff_degree_sum": 252
+    },
+    {
+      "kind": "level",
+      "level": 431,
+      "nodes": 252,
+      "splits": 252,
+      "leftmost_ineligible": 251,
+      "fallbacks": 0,
+      "diff_degree_sum": 252
+    },
+    {
+      "kind": "level",
+      "level": 430,
+      "nodes": 311,
+      "splits": 311,
+      "leftmost_ineligible": 311,
+      "fallbacks": 0,
+      "diff_degree_sum": 311
+    },
+    {
+      "kind": "level",
+      "level": 429,
+      "nodes": 311,
+      "splits": 311,
+      "leftmost_ineligible": 311,
+      "fallbacks": 0,
+      "diff_degree_sum": 311
+    },
+    {
+      "kind": "level",
+      "level": 428,
+      "nodes": 362,
+      "splits": 362,
+      "leftmost_ineligible": 361,
+      "fallbacks": 0,
+      "diff_degree_sum": 362
+    },
+    {
+      "kind": "level",
+      "level": 427,
+      "nodes": 361,
+      "splits": 361,
+      "leftmost_ineligible": 360,
+      "fallbacks": 0,
+      "diff_degree_sum": 361
+    },
+    {
+      "kind": "level",
+      "level": 426,
+      "nodes": 406,
+      "splits": 406,
+      "leftmost_ineligible": 404,
+      "fallbacks": 0,
+      "diff_degree_sum": 406
+    },
+    {
+      "kind": "level",
+      "level": 425,
+      "nodes": 400,
+      "splits": 400,
+      "leftmost_ineligible": 398,
+      "fallbacks": 0,
+      "diff_degree_sum": 400
+    },
+    {
+      "kind": "level",
+      "level": 424,
+      "nodes": 481,
+      "splits": 481,
+      "leftmost_ineligible": 462,
+      "fallbacks": 0,
+      "diff_degree_sum": 481
+    },
+    {
+      "kind": "level",
+      "level": 423,
+      "nodes": 465,
+      "splits": 465,
+      "leftmost_ineligible": 448,
+      "fallbacks": 0,
+      "diff_degree_sum": 465
+    },
+    {
+      "kind": "level",
+      "level": 422,
+      "nodes": 607,
+      "splits": 607,
+      "leftmost_ineligible": 543,
+      "fallbacks": 0,
+      "diff_degree_sum": 607
+    },
+    {
+      "kind": "level",
+      "level": 421,
+      "nodes": 579,
+      "splits": 579,
+      "leftmost_ineligible": 523,
+      "fallbacks": 0,
+      "diff_degree_sum": 579
+    },
+    {
+      "kind": "level",
+      "level": 420,
+      "nodes": 755,
+      "splits": 755,
+      "leftmost_ineligible": 645,
+      "fallbacks": 0,
+      "diff_degree_sum": 755
+    },
+    {
+      "kind": "level",
+      "level": 419,
+      "nodes": 717,
+      "splits": 717,
+      "leftmost_ineligible": 618,
+      "fallbacks": 0,
+      "diff_degree_sum": 717
+    },
+    {
+      "kind": "level",
+      "level": 418,
+      "nodes": 890,
+      "splits": 890,
+      "leftmost_ineligible": 749,
+      "fallbacks": 0,
+      "diff_degree_sum": 890
+    },
+    {
+      "kind": "level",
+      "level": 417,
+      "nodes": 842,
+      "splits": 842,
+      "leftmost_ineligible": 715,
+      "fallbacks": 0,
+      "diff_degree_sum": 842
+    },
+    {
+      "kind": "level",
+      "level": 416,
+      "nodes": 1031,
+      "splits": 1031,
+      "leftmost_ineligible": 860,
+      "fallbacks": 0,
+      "diff_degree_sum": 1031
+    },
+    {
+      "kind": "level",
+      "level": 415,
+      "nodes": 973,
+      "splits": 973,
+      "leftmost_ineligible": 823,
+      "fallbacks": 0,
+      "diff_degree_sum": 973
+    },
+    {
+      "kind": "level",
+      "level": 414,
+      "nodes": 1171,
+      "splits": 1171,
+      "leftmost_ineligible": 1016,
+      "fallbacks": 0,
+      "diff_degree_sum": 1171
+    },
+    {
+      "kind": "level",
+      "level": 413,
+      "nodes": 1129,
+      "splits": 1129,
+      "leftmost_ineligible": 986,
+      "fallbacks": 0,
+      "diff_degree_sum": 1129
+    },
+    {
+      "kind": "level",
+      "level": 412,
+      "nodes": 1362,
+      "splits": 1362,
+      "leftmost_ineligible": 1244,
+      "fallbacks": 0,
+      "diff_degree_sum": 1362
+    },
+    {
+      "kind": "level",
+      "level": 411,
+      "nodes": 1335,
+      "splits": 1335,
+      "leftmost_ineligible": 1224,
+      "fallbacks": 0,
+      "diff_degree_sum": 1335
+    },
+    {
+      "kind": "level",
+      "level": 410,
+      "nodes": 1664,
+      "splits": 1664,
+      "leftmost_ineligible": 1542,
+      "fallbacks": 0,
+      "diff_degree_sum": 1664
+    },
+    {
+      "kind": "level",
+      "level": 409,
+      "nodes": 1614,
+      "splits": 1614,
+      "leftmost_ineligible": 1504,
+      "fallbacks": 0,
+      "diff_degree_sum": 1614
+    },
+    {
+      "kind": "level",
+      "level": 408,
+      "nodes": 1992,
+      "splits": 1992,
+      "leftmost_ineligible": 1793,
+      "fallbacks": 0,
+      "diff_degree_sum": 1992
+    },
+    {
+      "kind": "level",
+      "level": 407,
+      "nodes": 1911,
+      "splits": 1911,
+      "leftmost_ineligible": 1737,
+      "fallbacks": 0,
+      "diff_degree_sum": 1911
+    },
+    {
+      "kind": "level",
+      "level": 406,
+      "nodes": 2347,
+      "splits": 2347,
+      "leftmost_ineligible": 1997,
+      "fallbacks": 0,
+      "diff_degree_sum": 2347
+    },
+    {
+      "kind": "level",
+      "level": 405,
+      "nodes": 2187,
+      "splits": 2187,
+      "leftmost_ineligible": 1883,
+      "fallbacks": 0,
+      "diff_degree_sum": 2187
+    },
+    {
+      "kind": "level",
+      "level": 404,
+      "nodes": 2590,
+      "splits": 2590,
+      "leftmost_ineligible": 2107,
+      "fallbacks": 0,
+      "diff_degree_sum": 2590
+    },
+    {
+      "kind": "level",
+      "level": 403,
+      "nodes": 2358,
+      "splits": 2358,
+      "leftmost_ineligible": 1935,
+      "fallbacks": 0,
+      "diff_degree_sum": 2358
+    },
+    {
+      "kind": "level",
+      "level": 402,
+      "nodes": 2597,
+      "splits": 2597,
+      "leftmost_ineligible": 2062,
+      "fallbacks": 0,
+      "diff_degree_sum": 2597
+    },
+    {
+      "kind": "level",
+      "level": 401,
+      "nodes": 2348,
+      "splits": 2348,
+      "leftmost_ineligible": 1871,
+      "fallbacks": 0,
+      "diff_degree_sum": 2348
+    },
+    {
+      "kind": "level",
+      "level": 400,
+      "nodes": 2470,
+      "splits": 2470,
+      "leftmost_ineligible": 1970,
+      "fallbacks": 0,
+      "diff_degree_sum": 2470
+    },
+    {
+      "kind": "level",
+      "level": 399,
+      "nodes": 2192,
+      "splits": 2192,
+      "leftmost_ineligible": 1744,
+      "fallbacks": 0,
+      "diff_degree_sum": 2192
+    },
+    {
+      "kind": "level",
+      "level": 398,
+      "nodes": 2237,
+      "splits": 2237,
+      "leftmost_ineligible": 1836,
+      "fallbacks": 0,
+      "diff_degree_sum": 2237
+    },
+    {
+      "kind": "level",
+      "level": 397,
+      "nodes": 1990,
+      "splits": 1990,
+      "leftmost_ineligible": 1629,
+      "fallbacks": 0,
+      "diff_degree_sum": 1990
+    },
+    {
+      "kind": "level",
+      "level": 396,
+      "nodes": 2059,
+      "splits": 2059,
+      "leftmost_ineligible": 1739,
+      "fallbacks": 0,
+      "diff_degree_sum": 2059
+    },
+    {
+      "kind": "level",
+      "level": 395,
+      "nodes": 1820,
+      "splits": 1820,
+      "leftmost_ineligible": 1527,
+      "fallbacks": 0,
+      "diff_degree_sum": 1820
+    },
+    {
+      "kind": "level",
+      "level": 394,
+      "nodes": 1851,
+      "splits": 1851,
+      "leftmost_ineligible": 1564,
+      "fallbacks": 0,
+      "diff_degree_sum": 1851
+    },
+    {
+      "kind": "level",
+      "level": 393,
+      "nodes": 1632,
+      "splits": 1632,
+      "leftmost_ineligible": 1373,
+      "fallbacks": 0,
+      "diff_degree_sum": 1632
+    },
+    {
+      "kind": "level",
+      "level": 392,
+      "nodes": 1681,
+      "splits": 1681,
+      "leftmost_ineligible": 1445,
+      "fallbacks": 0,
+      "diff_degree_sum": 1681
+    },
+    {
+      "kind": "level",
+      "level": 391,
+      "nodes": 1513,
+      "splits": 1513,
+      "leftmost_ineligible": 1294,
+      "fallbacks": 0,
+      "diff_degree_sum": 1513
+    },
+    {
+      "kind": "level",
+      "level": 390,
+      "nodes": 1542,
+      "splits": 1542,
+      "leftmost_ineligible": 1329,
+      "fallbacks": 0,
+      "diff_degree_sum": 1542
+    },
+    {
+      "kind": "level",
+      "level": 389,
+      "nodes": 1391,
+      "splits": 1391,
+      "leftmost_ineligible": 1194,
+      "fallbacks": 0,
+      "diff_degree_sum": 1391
+    },
+    {
+      "kind": "level",
+      "level": 388,
+      "nodes": 1406,
+      "splits": 1406,
+      "leftmost_ineligible": 1200,
+      "fallbacks": 0,
+      "diff_degree_sum": 1406
+    },
+    {
+      "kind": "level",
+      "level": 387,
+      "nodes": 1281,
+      "splits": 1281,
+      "leftmost_ineligible": 1090,
+      "fallbacks": 0,
+      "diff_degree_sum": 1281
+    },
+    {
+      "kind": "level",
+      "level": 386,
+      "nodes": 1335,
+      "splits": 1335,
+      "leftmost_ineligible": 1164,
+      "fallbacks": 0,
+      "diff_degree_sum": 1335
+    },
+    {
+      "kind": "level",
+      "level": 385,
+      "nodes": 1227,
+      "splits": 1227,
+      "leftmost_ineligible": 1064,
+      "fallbacks": 0,
+      "diff_degree_sum": 1227
+    },
+    {
+      "kind": "level",
+      "level": 384,
+      "nodes": 1257,
+      "splits": 1257,
+      "leftmost_ineligible": 1116,
+      "fallbacks": 0,
+      "diff_degree_sum": 1257
+    },
+    {
+      "kind": "level",
+      "level": 383,
+      "nodes": 1168,
+      "splits": 1168,
+      "leftmost_ineligible": 1037,
+      "fallbacks": 0,
+      "diff_degree_sum": 1168
+    },
+    {
+      "kind": "level",
+      "level": 382,
+      "nodes": 1128,
+      "splits": 1128,
+      "leftmost_ineligible": 1020,
+      "fallbacks": 0,
+      "diff_degree_sum": 1128
+    },
+    {
+      "kind": "level",
+      "level": 381,
+      "nodes": 1039,
+      "splits": 1039,
+      "leftmost_ineligible": 943,
+      "fallbacks": 0,
+      "diff_degree_sum": 1039
+    },
+    {
+      "kind": "level",
+      "level": 380,
+      "nodes": 1012,
+      "splits": 1012,
+      "leftmost_ineligible": 900,
+      "fallbacks": 0,
+      "diff_degree_sum": 1012
+    },
+    {
+      "kind": "level",
+      "level": 379,
+      "nodes": 910,
+      "splits": 910,
+      "leftmost_ineligible": 805,
+      "fallbacks": 0,
+      "diff_degree_sum": 910
+    },
+    {
+      "kind": "level",
+      "level": 378,
+      "nodes": 1000,
+      "splits": 1000,
+      "leftmost_ineligible": 840,
+      "fallbacks": 0,
+      "diff_degree_sum": 1000
+    },
+    {
+      "kind": "level",
+      "level": 377,
+      "nodes": 874,
+      "splits": 874,
+      "leftmost_ineligible": 730,
+      "fallbacks": 0,
+      "diff_degree_sum": 874
+    },
+    {
+      "kind": "level",
+      "level": 376,
+      "nodes": 1065,
+      "splits": 1065,
+      "leftmost_ineligible": 860,
+      "fallbacks": 0,
+      "diff_degree_sum": 1065
+    },
+    {
+      "kind": "level",
+      "level": 375,
+      "nodes": 933,
+      "splits": 933,
+      "leftmost_ineligible": 738,
+      "fallbacks": 0,
+      "diff_degree_sum": 933
+    },
+    {
+      "kind": "level",
+      "level": 374,
+      "nodes": 1029,
+      "splits": 1029,
+      "leftmost_ineligible": 787,
+      "fallbacks": 0,
+      "diff_degree_sum": 1029
+    },
+    {
+      "kind": "level",
+      "level": 373,
+      "nodes": 932,
+      "splits": 932,
+      "leftmost_ineligible": 704,
+      "fallbacks": 0,
+      "diff_degree_sum": 932
+    },
+    {
+      "kind": "level",
+      "level": 372,
+      "nodes": 970,
+      "splits": 970,
+      "leftmost_ineligible": 737,
+      "fallbacks": 0,
+      "diff_degree_sum": 970
+    },
+    {
+      "kind": "level",
+      "level": 371,
+      "nodes": 917,
+      "splits": 917,
+      "leftmost_ineligible": 689,
+      "fallbacks": 0,
+      "diff_degree_sum": 917
+    },
+    {
+      "kind": "level",
+      "level": 370,
+      "nodes": 987,
+      "splits": 987,
+      "leftmost_ineligible": 737,
+      "fallbacks": 0,
+      "diff_degree_sum": 987
+    },
+    {
+      "kind": "level",
+      "level": 369,
+      "nodes": 916,
+      "splits": 916,
+      "leftmost_ineligible": 673,
+      "fallbacks": 0,
+      "diff_degree_sum": 916
+    },
+    {
+      "kind": "level",
+      "level": 368,
+      "nodes": 1029,
+      "splits": 1029,
+      "leftmost_ineligible": 712,
+      "fallbacks": 0,
+      "diff_degree_sum": 1029
+    },
+    {
+      "kind": "level",
+      "level": 367,
+      "nodes": 912,
+      "splits": 912,
+      "leftmost_ineligible": 619,
+      "fallbacks": 0,
+      "diff_degree_sum": 912
+    },
+    {
+      "kind": "level",
+      "level": 366,
+      "nodes": 1051,
+      "splits": 1051,
+      "leftmost_ineligible": 642,
+      "fallbacks": 0,
+      "diff_degree_sum": 1051
+    },
+    {
+      "kind": "level",
+      "level": 365,
+      "nodes": 916,
+      "splits": 916,
+      "leftmost_ineligible": 544,
+      "fallbacks": 0,
+      "diff_degree_sum": 916
+    },
+    {
+      "kind": "level",
+      "level": 364,
+      "nodes": 993,
+      "splits": 993,
+      "leftmost_ineligible": 540,
+      "fallbacks": 0,
+      "diff_degree_sum": 993
+    },
+    {
+      "kind": "level",
+      "level": 363,
+      "nodes": 890,
+      "splits": 890,
+      "leftmost_ineligible": 466,
+      "fallbacks": 0,
+      "diff_degree_sum": 890
+    },
+    {
+      "kind": "level",
+      "level": 362,
+      "nodes": 955,
+      "splits": 955,
+      "leftmost_ineligible": 459,
+      "fallbacks": 0,
+      "diff_degree_sum": 955
+    },
+    {
+      "kind": "level",
+      "level": 361,
+      "nodes": 869,
+      "splits": 869,
+      "leftmost_ineligible": 401,
+      "fallbacks": 0,
+      "diff_degree_sum": 869
+    },
+    {
+      "kind": "level",
+      "level": 360,
+      "nodes": 969,
+      "splits": 969,
+      "leftmost_ineligible": 447,
+      "fallbacks": 0,
+      "diff_degree_sum": 969
+    },
+    {
+      "kind": "level",
+      "level": 359,
+      "nodes": 902,
+      "splits": 902,
+      "leftmost_ineligible": 399,
+      "fallbacks": 0,
+      "diff_degree_sum": 902
+    },
+    {
+      "kind": "level",
+      "level": 358,
+      "nodes": 918,
+      "splits": 918,
+      "leftmost_ineligible": 440,
+      "fallbacks": 0,
+      "diff_degree_sum": 918
+    },
+    {
+      "kind": "level",
+      "level": 357,
+      "nodes": 864,
+      "splits": 864,
+      "leftmost_ineligible": 402,
+      "fallbacks": 0,
+      "diff_degree_sum": 864
+    },
+    {
+      "kind": "level",
+      "level": 356,
+      "nodes": 832,
+      "splits": 832,
+      "leftmost_ineligible": 430,
+      "fallbacks": 0,
+      "diff_degree_sum": 832
+    },
+    {
+      "kind": "level",
+      "level": 355,
+      "nodes": 792,
+      "splits": 792,
+      "leftmost_ineligible": 401,
+      "fallbacks": 0,
+      "diff_degree_sum": 792
+    },
+    {
+      "kind": "level",
+      "level": 354,
+      "nodes": 723,
+      "splits": 723,
+      "leftmost_ineligible": 420,
+      "fallbacks": 0,
+      "diff_degree_sum": 723
+    },
+    {
+      "kind": "level",
+      "level": 353,
+      "nodes": 675,
+      "splits": 675,
+      "leftmost_ineligible": 390,
+      "fallbacks": 0,
+      "diff_degree_sum": 675
+    },
+    {
+      "kind": "level",
+      "level": 352,
+      "nodes": 590,
+      "splits": 590,
+      "leftmost_ineligible": 403,
+      "fallbacks": 0,
+      "diff_degree_sum": 590
+    },
+    {
+      "kind": "level",
+      "level": 351,
+      "nodes": 550,
+      "splits": 550,
+      "leftmost_ineligible": 374,
+      "fallbacks": 0,
+      "diff_degree_sum": 550
+    },
+    {
+      "kind": "level",
+      "level": 350,
+      "nodes": 500,
+      "splits": 500,
+      "leftmost_ineligible": 388,
+      "fallbacks": 0,
+      "diff_degree_sum": 500
+    },
+    {
+      "kind": "level",
+      "level": 349,
+      "nodes": 465,
+      "splits": 465,
+      "leftmost_ineligible": 359,
+      "fallbacks": 0,
+      "diff_degree_sum": 465
+    },
+    {
+      "kind": "level",
+      "level": 348,
+      "nodes": 447,
+      "splits": 447,
+      "leftmost_ineligible": 371,
+      "fallbacks": 0,
+      "diff_degree_sum": 447
+    },
+    {
+      "kind": "level",
+      "level": 347,
+      "nodes": 414,
+      "splits": 414,
+      "leftmost_ineligible": 341,
+      "fallbacks": 0,
+      "diff_degree_sum": 414
+    },
+    {
+      "kind": "level",
+      "level": 346,
+      "nodes": 416,
+      "splits": 416,
+      "leftmost_ineligible": 363,
+      "fallbacks": 0,
+      "diff_degree_sum": 416
+    },
+    {
+      "kind": "level",
+      "level": 345,
+      "nodes": 389,
+      "splits": 389,
+      "leftmost_ineligible": 336,
+      "fallbacks": 0,
+      "diff_degree_sum": 389
+    },
+    {
+      "kind": "level",
+      "level": 344,
+      "nodes": 438,
+      "splits": 438,
+      "leftmost_ineligible": 383,
+      "fallbacks": 0,
+      "diff_degree_sum": 438
+    },
+    {
+      "kind": "level",
+      "level": 343,
+      "nodes": 413,
+      "splits": 413,
+      "leftmost_ineligible": 363,
+      "fallbacks": 0,
+      "diff_degree_sum": 413
+    },
+    {
+      "kind": "level",
+      "level": 342,
+      "nodes": 440,
+      "splits": 440,
+      "leftmost_ineligible": 358,
+      "fallbacks": 0,
+      "diff_degree_sum": 440
+    },
+    {
+      "kind": "level",
+      "level": 341,
+      "nodes": 400,
+      "splits": 400,
+      "leftmost_ineligible": 328,
+      "fallbacks": 0,
+      "diff_degree_sum": 400
+    },
+    {
+      "kind": "level",
+      "level": 340,
+      "nodes": 455,
+      "splits": 455,
+      "leftmost_ineligible": 329,
+      "fallbacks": 0,
+      "diff_degree_sum": 455
+    },
+    {
+      "kind": "level",
+      "level": 339,
+      "nodes": 383,
+      "splits": 383,
+      "leftmost_ineligible": 282,
+      "fallbacks": 0,
+      "diff_degree_sum": 383
+    },
+    {
+      "kind": "level",
+      "level": 338,
+      "nodes": 467,
+      "splits": 467,
+      "leftmost_ineligible": 333,
+      "fallbacks": 0,
+      "diff_degree_sum": 467
+    },
+    {
+      "kind": "level",
+      "level": 337,
+      "nodes": 372,
+      "splits": 372,
+      "leftmost_ineligible": 260,
+      "fallbacks": 0,
+      "diff_degree_sum": 372
+    },
+    {
+      "kind": "level",
+      "level": 336,
+      "nodes": 370,
+      "splits": 370,
+      "leftmost_ineligible": 266,
+      "fallbacks": 0,
+      "diff_degree_sum": 370
+    },
+    {
+      "kind": "level",
+      "level": 335,
+      "nodes": 301,
+      "splits": 301,
+      "leftmost_ineligible": 214,
+      "fallbacks": 0,
+      "diff_degree_sum": 301
+    },
+    {
+      "kind": "level",
+      "level": 334,
+      "nodes": 280,
+      "splits": 280,
+      "leftmost_ineligible": 215,
+      "fallbacks": 0,
+      "diff_degree_sum": 280
+    },
+    {
+      "kind": "level",
+      "level": 333,
+      "nodes": 239,
+      "splits": 239,
+      "leftmost_ineligible": 182,
+      "fallbacks": 0,
+      "diff_degree_sum": 239
+    },
+    {
+      "kind": "level",
+      "level": 332,
+      "nodes": 204,
+      "splits": 204,
+      "leftmost_ineligible": 176,
+      "fallbacks": 0,
+      "diff_degree_sum": 204
+    },
+    {
+      "kind": "level",
+      "level": 331,
+      "nodes": 193,
+      "splits": 193,
+      "leftmost_ineligible": 166,
+      "fallbacks": 0,
+      "diff_degree_sum": 193
+    },
+    {
+      "kind": "level",
+      "level": 330,
+      "nodes": 155,
+      "splits": 155,
+      "leftmost_ineligible": 145,
+      "fallbacks": 0,
+      "diff_degree_sum": 155
+    },
+    {
+      "kind": "level",
+      "level": 329,
+      "nodes": 145,
+      "splits": 145,
+      "leftmost_ineligible": 135,
+      "fallbacks": 0,
+      "diff_degree_sum": 145
+    },
+    {
+      "kind": "level",
+      "level": 328,
+      "nodes": 158,
+      "splits": 158,
+      "leftmost_ineligible": 139,
+      "fallbacks": 0,
+      "diff_degree_sum": 158
+    },
+    {
+      "kind": "level",
+      "level": 327,
+      "nodes": 150,
+      "splits": 150,
+      "leftmost_ineligible": 135,
+      "fallbacks": 0,
+      "diff_degree_sum": 150
+    },
+    {
+      "kind": "level",
+      "level": 326,
+      "nodes": 147,
+      "splits": 147,
+      "leftmost_ineligible": 125,
+      "fallbacks": 0,
+      "diff_degree_sum": 147
+    },
+    {
+      "kind": "level",
+      "level": 325,
+      "nodes": 144,
+      "splits": 144,
+      "leftmost_ineligible": 125,
+      "fallbacks": 0,
+      "diff_degree_sum": 144
+    },
+    {
+      "kind": "level",
+      "level": 324,
+      "nodes": 147,
+      "splits": 147,
+      "leftmost_ineligible": 97,
+      "fallbacks": 0,
+      "diff_degree_sum": 147
+    },
+    {
+      "kind": "level",
+      "level": 323,
+      "nodes": 139,
+      "splits": 139,
+      "leftmost_ineligible": 97,
+      "fallbacks": 0,
+      "diff_degree_sum": 139
+    },
+    {
+      "kind": "level",
+      "level": 322,
+      "nodes": 151,
+      "splits": 151,
+      "leftmost_ineligible": 68,
+      "fallbacks": 0,
+      "diff_degree_sum": 151
+    },
+    {
+      "kind": "level",
+      "level": 321,
+      "nodes": 136,
+      "splits": 136,
+      "leftmost_ineligible": 67,
+      "fallbacks": 0,
+      "diff_degree_sum": 136
+    },
+    {
+      "kind": "level",
+      "level": 320,
+      "nodes": 147,
+      "splits": 147,
+      "leftmost_ineligible": 64,
+      "fallbacks": 0,
+      "diff_degree_sum": 147
+    },
+    {
+      "kind": "level",
+      "level": 319,
+      "nodes": 139,
+      "splits": 139,
+      "leftmost_ineligible": 59,
+      "fallbacks": 0,
+      "diff_degree_sum": 139
+    },
+    {
+      "kind": "level",
+      "level": 318,
+      "nodes": 167,
+      "splits": 167,
+      "leftmost_ineligible": 58,
+      "fallbacks": 0,
+      "diff_degree_sum": 167
+    },
+    {
+      "kind": "level",
+      "level": 317,
+      "nodes": 154,
+      "splits": 154,
+      "leftmost_ineligible": 52,
+      "fallbacks": 0,
+      "diff_degree_sum": 154
+    },
+    {
+      "kind": "level",
+      "level": 316,
+      "nodes": 174,
+      "splits": 174,
+      "leftmost_ineligible": 60,
+      "fallbacks": 0,
+      "diff_degree_sum": 174
+    },
+    {
+      "kind": "level",
+      "level": 315,
+      "nodes": 163,
+      "splits": 163,
+      "leftmost_ineligible": 60,
+      "fallbacks": 0,
+      "diff_degree_sum": 163
+    },
+    {
+      "kind": "level",
+      "level": 314,
+      "nodes": 195,
+      "splits": 195,
+      "leftmost_ineligible": 75,
+      "fallbacks": 0,
+      "diff_degree_sum": 195
+    },
+    {
+      "kind": "level",
+      "level": 313,
+      "nodes": 179,
+      "splits": 179,
+      "leftmost_ineligible": 73,
+      "fallbacks": 0,
+      "diff_degree_sum": 179
+    },
+    {
+      "kind": "level",
+      "level": 312,
+      "nodes": 247,
+      "splits": 247,
+      "leftmost_ineligible": 88,
+      "fallbacks": 0,
+      "diff_degree_sum": 247
+    },
+    {
+      "kind": "level",
+      "level": 311,
+      "nodes": 215,
+      "splits": 215,
+      "leftmost_ineligible": 80,
+      "fallbacks": 0,
+      "diff_degree_sum": 215
+    },
+    {
+      "kind": "level",
+      "level": 310,
+      "nodes": 255,
+      "splits": 255,
+      "leftmost_ineligible": 94,
+      "fallbacks": 0,
+      "diff_degree_sum": 255
+    },
+    {
+      "kind": "level",
+      "level": 309,
+      "nodes": 217,
+      "splits": 217,
+      "leftmost_ineligible": 86,
+      "fallbacks": 0,
+      "diff_degree_sum": 217
+    },
+    {
+      "kind": "level",
+      "level": 308,
+      "nodes": 255,
+      "splits": 255,
+      "leftmost_ineligible": 111,
+      "fallbacks": 0,
+      "diff_degree_sum": 255
+    },
+    {
+      "kind": "level",
+      "level": 307,
+      "nodes": 232,
+      "splits": 232,
+      "leftmost_ineligible": 109,
+      "fallbacks": 0,
+      "diff_degree_sum": 232
+    },
+    {
+      "kind": "level",
+      "level": 306,
+      "nodes": 287,
+      "splits": 287,
+      "leftmost_ineligible": 150,
+      "fallbacks": 0,
+      "diff_degree_sum": 287
+    },
+    {
+      "kind": "level",
+      "level": 305,
+      "nodes": 266,
+      "splits": 266,
+      "leftmost_ineligible": 144,
+      "fallbacks": 0,
+      "diff_degree_sum": 266
+    },
+    {
+      "kind": "level",
+      "level": 304,
+      "nodes": 295,
+      "splits": 295,
+      "leftmost_ineligible": 169,
+      "fallbacks": 0,
+      "diff_degree_sum": 295
+    },
+    {
+      "kind": "level",
+      "level": 303,
+      "nodes": 273,
+      "splits": 273,
+      "leftmost_ineligible": 158,
+      "fallbacks": 0,
+      "diff_degree_sum": 273
+    },
+    {
+      "kind": "level",
+      "level": 302,
+      "nodes": 353,
+      "splits": 353,
+      "leftmost_ineligible": 199,
+      "fallbacks": 0,
+      "diff_degree_sum": 353
+    },
+    {
+      "kind": "level",
+      "level": 301,
+      "nodes": 325,
+      "splits": 325,
+      "leftmost_ineligible": 186,
+      "fallbacks": 0,
+      "diff_degree_sum": 325
+    },
+    {
+      "kind": "level",
+      "level": 300,
+      "nodes": 449,
+      "splits": 449,
+      "leftmost_ineligible": 249,
+      "fallbacks": 0,
+      "diff_degree_sum": 449
+    },
+    {
+      "kind": "level",
+      "level": 299,
+      "nodes": 404,
+      "splits": 404,
+      "leftmost_ineligible": 235,
+      "fallbacks": 0,
+      "diff_degree_sum": 404
+    },
+    {
+      "kind": "level",
+      "level": 298,
+      "nodes": 516,
+      "splits": 516,
+      "leftmost_ineligible": 293,
+      "fallbacks": 0,
+      "diff_degree_sum": 516
+    },
+    {
+      "kind": "level",
+      "level": 297,
+      "nodes": 459,
+      "splits": 459,
+      "leftmost_ineligible": 263,
+      "fallbacks": 0,
+      "diff_degree_sum": 459
+    },
+    {
+      "kind": "level",
+      "level": 296,
+      "nodes": 566,
+      "splits": 566,
+      "leftmost_ineligible": 294,
+      "fallbacks": 0,
+      "diff_degree_sum": 566
+    },
+    {
+      "kind": "level",
+      "level": 295,
+      "nodes": 496,
+      "splits": 496,
+      "leftmost_ineligible": 264,
+      "fallbacks": 0,
+      "diff_degree_sum": 496
+    },
+    {
+      "kind": "level",
+      "level": 294,
+      "nodes": 592,
+      "splits": 592,
+      "leftmost_ineligible": 287,
+      "fallbacks": 0,
+      "diff_degree_sum": 592
+    },
+    {
+      "kind": "level",
+      "level": 293,
+      "nodes": 513,
+      "splits": 513,
+      "leftmost_ineligible": 243,
+      "fallbacks": 0,
+      "diff_degree_sum": 513
+    },
+    {
+      "kind": "level",
+      "level": 292,
+      "nodes": 576,
+      "splits": 576,
+      "leftmost_ineligible": 212,
+      "fallbacks": 0,
+      "diff_degree_sum": 576
+    },
+    {
+      "kind": "level",
+      "level": 291,
+      "nodes": 476,
+      "splits": 476,
+      "leftmost_ineligible": 174,
+      "fallbacks": 0,
+      "diff_degree_sum": 476
+    },
+    {
+      "kind": "level",
+      "level": 290,
+      "nodes": 515,
+      "splits": 515,
+      "leftmost_ineligible": 181,
+      "fallbacks": 0,
+      "diff_degree_sum": 515
+    },
+    {
+      "kind": "level",
+      "level": 289,
+      "nodes": 456,
+      "splits": 456,
+      "leftmost_ineligible": 150,
+      "fallbacks": 0,
+      "diff_degree_sum": 456
+    },
+    {
+      "kind": "level",
+      "level": 288,
+      "nodes": 472,
+      "splits": 472,
+      "leftmost_ineligible": 120,
+      "fallbacks": 0,
+      "diff_degree_sum": 472
+    },
+    {
+      "kind": "level",
+      "level": 287,
+      "nodes": 394,
+      "splits": 394,
+      "leftmost_ineligible": 101,
+      "fallbacks": 0,
+      "diff_degree_sum": 394
+    },
+    {
+      "kind": "level",
+      "level": 286,
+      "nodes": 390,
+      "splits": 390,
+      "leftmost_ineligible": 82,
+      "fallbacks": 0,
+      "diff_degree_sum": 390
+    },
+    {
+      "kind": "level",
+      "level": 285,
+      "nodes": 354,
+      "splits": 354,
+      "leftmost_ineligible": 59,
+      "fallbacks": 0,
+      "diff_degree_sum": 354
+    },
+    {
+      "kind": "level",
+      "level": 284,
+      "nodes": 344,
+      "splits": 344,
+      "leftmost_ineligible": 24,
+      "fallbacks": 0,
+      "diff_degree_sum": 344
+    },
+    {
+      "kind": "level",
+      "level": 283,
+      "nodes": 287,
+      "splits": 287,
+      "leftmost_ineligible": 23,
+      "fallbacks": 0,
+      "diff_degree_sum": 287
+    },
+    {
+      "kind": "level",
+      "level": 282,
+      "nodes": 291,
+      "splits": 291,
+      "leftmost_ineligible": 14,
+      "fallbacks": 0,
+      "diff_degree_sum": 291
+    },
+    {
+      "kind": "level",
+      "level": 281,
+      "nodes": 271,
+      "splits": 271,
+      "leftmost_ineligible": 14,
+      "fallbacks": 0,
+      "diff_degree_sum": 271
+    },
+    {
+      "kind": "level",
+      "level": 280,
+      "nodes": 235,
+      "splits": 235,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 235
+    },
+    {
+      "kind": "level",
+      "level": 279,
+      "nodes": 197,
+      "splits": 197,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 197
+    },
+    {
+      "kind": "level",
+      "level": 278,
+      "nodes": 197,
+      "splits": 197,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 197
+    },
+    {
+      "kind": "level",
+      "level": 277,
+      "nodes": 190,
+      "splits": 190,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 190
+    },
+    {
+      "kind": "level",
+      "level": 276,
+      "nodes": 139,
+      "splits": 139,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 139
+    },
+    {
+      "kind": "level",
+      "level": 275,
+      "nodes": 123,
+      "splits": 123,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 123
+    },
+    {
+      "kind": "level",
+      "level": 274,
+      "nodes": 160,
+      "splits": 160,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 160
+    },
+    {
+      "kind": "level",
+      "level": 273,
+      "nodes": 141,
+      "splits": 141,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 141
+    },
+    {
+      "kind": "level",
+      "level": 272,
+      "nodes": 153,
+      "splits": 153,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 153
+    },
+    {
+      "kind": "level",
+      "level": 271,
+      "nodes": 120,
+      "splits": 120,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 120
+    },
+    {
+      "kind": "level",
+      "level": 270,
+      "nodes": 131,
+      "splits": 131,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 131
+    },
+    {
+      "kind": "level",
+      "level": 269,
+      "nodes": 108,
+      "splits": 108,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 108
+    },
+    {
+      "kind": "level",
+      "level": 268,
+      "nodes": 127,
+      "splits": 127,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 127
+    },
+    {
+      "kind": "level",
+      "level": 267,
+      "nodes": 98,
+      "splits": 98,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 98
+    },
+    {
+      "kind": "level",
+      "level": 266,
+      "nodes": 81,
+      "splits": 81,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 81
+    },
+    {
+      "kind": "level",
+      "level": 265,
+      "nodes": 65,
+      "splits": 65,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 65
+    },
+    {
+      "kind": "level",
+      "level": 264,
+      "nodes": 52,
+      "splits": 52,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 52
+    },
+    {
+      "kind": "level",
+      "level": 263,
+      "nodes": 47,
+      "splits": 47,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 47
+    },
+    {
+      "kind": "level",
+      "level": 262,
+      "nodes": 33,
+      "splits": 33,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 33
+    },
+    {
+      "kind": "level",
+      "level": 261,
+      "nodes": 33,
+      "splits": 33,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 33
+    },
+    {
+      "kind": "level",
+      "level": 260,
+      "nodes": 25,
+      "splits": 25,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 25
+    },
+    {
+      "kind": "level",
+      "level": 259,
+      "nodes": 20,
+      "splits": 20,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 20
+    },
+    {
+      "kind": "level",
+      "level": 258,
+      "nodes": 12,
+      "splits": 12,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 12
+    },
+    {
+      "kind": "level",
+      "level": 257,
+      "nodes": 12,
+      "splits": 12,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 12
+    },
+    {
+      "kind": "level",
+      "level": 256,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 255,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 254,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 253,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 252,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 251,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 250,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 249,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 248,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 247,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 246,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 245,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 244,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 243,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 242,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 241,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 240,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 239,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 238,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 237,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 236,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 235,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 234,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 233,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 232,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 231,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 230,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 229,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 228,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 227,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 226,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 225,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 224,
+      "nodes": 2,
+      "splits": 2,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 2
+    },
+    {
+      "kind": "level",
+      "level": 223,
+      "nodes": 2,
+      "splits": 2,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 2
+    },
+    {
+      "kind": "level",
+      "level": 222,
+      "nodes": 2,
+      "splits": 2,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 2
+    },
+    {
+      "kind": "level",
+      "level": 221,
+      "nodes": 2,
+      "splits": 2,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 2
+    },
+    {
+      "kind": "level",
+      "level": 220,
+      "nodes": 2,
+      "splits": 2,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 2
+    },
+    {
+      "kind": "level",
+      "level": 219,
+      "nodes": 2,
+      "splits": 2,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 2
+    },
+    {
+      "kind": "level",
+      "level": 218,
+      "nodes": 2,
+      "splits": 2,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 2
+    },
+    {
+      "kind": "level",
+      "level": 217,
+      "nodes": 2,
+      "splits": 2,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 2
+    },
+    {
+      "kind": "level",
+      "level": 216,
+      "nodes": 2,
+      "splits": 2,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 215,
+      "nodes": 2,
+      "splits": 2,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 214,
+      "nodes": 2,
+      "splits": 2,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 2
+    },
+    {
+      "kind": "level",
+      "level": 213,
+      "nodes": 2,
+      "splits": 2,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 2
+    },
+    {
+      "kind": "level",
+      "level": 212,
+      "nodes": 2,
+      "splits": 2,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 2
+    },
+    {
+      "kind": "level",
+      "level": 211,
+      "nodes": 2,
+      "splits": 2,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 2
+    },
+    {
+      "kind": "level",
+      "level": 210,
+      "nodes": 2,
+      "splits": 2,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 2
+    },
+    {
+      "kind": "level",
+      "level": 209,
+      "nodes": 2,
+      "splits": 2,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 2
+    },
+    {
+      "kind": "level",
+      "level": 208,
+      "nodes": 2,
+      "splits": 2,
+      "leftmost_ineligible": 2,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 207,
+      "nodes": 2,
+      "splits": 2,
+      "leftmost_ineligible": 2,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 206,
+      "nodes": 2,
+      "splits": 2,
+      "leftmost_ineligible": 2,
+      "fallbacks": 0,
+      "diff_degree_sum": 2
+    },
+    {
+      "kind": "level",
+      "level": 205,
+      "nodes": 2,
+      "splits": 2,
+      "leftmost_ineligible": 2,
+      "fallbacks": 0,
+      "diff_degree_sum": 2
+    },
+    {
+      "kind": "level",
+      "level": 204,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 203,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 202,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 201,
+      "nodes": 4,
+      "splits": 4,
+      "leftmost_ineligible": 4,
+      "fallbacks": 0,
+      "diff_degree_sum": 4
+    },
+    {
+      "kind": "level",
+      "level": 200,
+      "nodes": 8,
+      "splits": 8,
+      "leftmost_ineligible": 7,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 199,
+      "nodes": 8,
+      "splits": 8,
+      "leftmost_ineligible": 6,
+      "fallbacks": 0,
+      "diff_degree_sum": 5
+    },
+    {
+      "kind": "level",
+      "level": 198,
+      "nodes": 9,
+      "splits": 9,
+      "leftmost_ineligible": 7,
+      "fallbacks": 0,
+      "diff_degree_sum": 6
+    },
+    {
+      "kind": "level",
+      "level": 197,
+      "nodes": 8,
+      "splits": 8,
+      "leftmost_ineligible": 5,
+      "fallbacks": 0,
+      "diff_degree_sum": 8
+    },
+    {
+      "kind": "level",
+      "level": 196,
+      "nodes": 13,
+      "splits": 13,
+      "leftmost_ineligible": 7,
+      "fallbacks": 0,
+      "diff_degree_sum": 12
+    },
+    {
+      "kind": "level",
+      "level": 195,
+      "nodes": 14,
+      "splits": 14,
+      "leftmost_ineligible": 8,
+      "fallbacks": 0,
+      "diff_degree_sum": 13
+    },
+    {
+      "kind": "level",
+      "level": 194,
+      "nodes": 19,
+      "splits": 19,
+      "leftmost_ineligible": 13,
+      "fallbacks": 0,
+      "diff_degree_sum": 19
+    },
+    {
+      "kind": "level",
+      "level": 193,
+      "nodes": 23,
+      "splits": 23,
+      "leftmost_ineligible": 17,
+      "fallbacks": 0,
+      "diff_degree_sum": 21
+    },
+    {
+      "kind": "level",
+      "level": 192,
+      "nodes": 31,
+      "splits": 31,
+      "leftmost_ineligible": 24,
+      "fallbacks": 0,
+      "diff_degree_sum": 25
+    },
+    {
+      "kind": "level",
+      "level": 191,
+      "nodes": 31,
+      "splits": 31,
+      "leftmost_ineligible": 22,
+      "fallbacks": 0,
+      "diff_degree_sum": 25
+    },
+    {
+      "kind": "level",
+      "level": 190,
+      "nodes": 35,
+      "splits": 35,
+      "leftmost_ineligible": 23,
+      "fallbacks": 0,
+      "diff_degree_sum": 28
+    },
+    {
+      "kind": "level",
+      "level": 189,
+      "nodes": 25,
+      "splits": 25,
+      "leftmost_ineligible": 13,
+      "fallbacks": 0,
+      "diff_degree_sum": 22
+    },
+    {
+      "kind": "level",
+      "level": 188,
+      "nodes": 27,
+      "splits": 27,
+      "leftmost_ineligible": 14,
+      "fallbacks": 0,
+      "diff_degree_sum": 21
+    },
+    {
+      "kind": "level",
+      "level": 187,
+      "nodes": 17,
+      "splits": 17,
+      "leftmost_ineligible": 9,
+      "fallbacks": 0,
+      "diff_degree_sum": 14
+    },
+    {
+      "kind": "level",
+      "level": 186,
+      "nodes": 13,
+      "splits": 13,
+      "leftmost_ineligible": 7,
+      "fallbacks": 0,
+      "diff_degree_sum": 11
+    },
+    {
+      "kind": "level",
+      "level": 185,
+      "nodes": 10,
+      "splits": 10,
+      "leftmost_ineligible": 7,
+      "fallbacks": 0,
+      "diff_degree_sum": 8
+    },
+    {
+      "kind": "level",
+      "level": 184,
+      "nodes": 9,
+      "splits": 9,
+      "leftmost_ineligible": 9,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 183,
+      "nodes": 8,
+      "splits": 8,
+      "leftmost_ineligible": 8,
+      "fallbacks": 0,
+      "diff_degree_sum": 4
+    },
+    {
+      "kind": "level",
+      "level": 182,
+      "nodes": 9,
+      "splits": 9,
+      "leftmost_ineligible": 9,
+      "fallbacks": 0,
+      "diff_degree_sum": 6
+    },
+    {
+      "kind": "level",
+      "level": 181,
+      "nodes": 7,
+      "splits": 7,
+      "leftmost_ineligible": 6,
+      "fallbacks": 0,
+      "diff_degree_sum": 7
+    },
+    {
+      "kind": "level",
+      "level": 180,
+      "nodes": 12,
+      "splits": 12,
+      "leftmost_ineligible": 9,
+      "fallbacks": 0,
+      "diff_degree_sum": 9
+    },
+    {
+      "kind": "level",
+      "level": 179,
+      "nodes": 9,
+      "splits": 9,
+      "leftmost_ineligible": 6,
+      "fallbacks": 0,
+      "diff_degree_sum": 6
+    },
+    {
+      "kind": "level",
+      "level": 178,
+      "nodes": 12,
+      "splits": 12,
+      "leftmost_ineligible": 7,
+      "fallbacks": 0,
+      "diff_degree_sum": 7
+    },
+    {
+      "kind": "level",
+      "level": 177,
+      "nodes": 10,
+      "splits": 10,
+      "leftmost_ineligible": 6,
+      "fallbacks": 0,
+      "diff_degree_sum": 7
+    },
+    {
+      "kind": "level",
+      "level": 176,
+      "nodes": 12,
+      "splits": 12,
+      "leftmost_ineligible": 6,
+      "fallbacks": 0,
+      "diff_degree_sum": 6
+    },
+    {
+      "kind": "level",
+      "level": 175,
+      "nodes": 11,
+      "splits": 11,
+      "leftmost_ineligible": 5,
+      "fallbacks": 0,
+      "diff_degree_sum": 6
+    },
+    {
+      "kind": "level",
+      "level": 174,
+      "nodes": 13,
+      "splits": 13,
+      "leftmost_ineligible": 5,
+      "fallbacks": 0,
+      "diff_degree_sum": 9
+    },
+    {
+      "kind": "level",
+      "level": 173,
+      "nodes": 11,
+      "splits": 11,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 9
+    },
+    {
+      "kind": "level",
+      "level": 172,
+      "nodes": 17,
+      "splits": 17,
+      "leftmost_ineligible": 4,
+      "fallbacks": 0,
+      "diff_degree_sum": 11
+    },
+    {
+      "kind": "level",
+      "level": 171,
+      "nodes": 10,
+      "splits": 10,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 7
+    },
+    {
+      "kind": "level",
+      "level": 170,
+      "nodes": 12,
+      "splits": 12,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 9
+    },
+    {
+      "kind": "level",
+      "level": 169,
+      "nodes": 7,
+      "splits": 7,
+      "leftmost_ineligible": 2,
+      "fallbacks": 0,
+      "diff_degree_sum": 4
+    },
+    {
+      "kind": "level",
+      "level": 168,
+      "nodes": 4,
+      "splits": 4,
+      "leftmost_ineligible": 2,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 167,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 2,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 166,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 2,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 165,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 2,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 164,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 2,
+      "fallbacks": 0,
+      "diff_degree_sum": 2
+    },
+    {
+      "kind": "level",
+      "level": 163,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 2,
+      "fallbacks": 0,
+      "diff_degree_sum": 2
+    },
+    {
+      "kind": "level",
+      "level": 162,
+      "nodes": 4,
+      "splits": 4,
+      "leftmost_ineligible": 2,
+      "fallbacks": 0,
+      "diff_degree_sum": 2
+    },
+    {
+      "kind": "level",
+      "level": 161,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 2,
+      "fallbacks": 0,
+      "diff_degree_sum": 2
+    },
+    {
+      "kind": "level",
+      "level": 160,
+      "nodes": 4,
+      "splits": 4,
+      "leftmost_ineligible": 2,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 159,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 2,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 158,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 2,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 157,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 2,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 156,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 2,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 155,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 154,
+      "nodes": 5,
+      "splits": 5,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 5
+    },
+    {
+      "kind": "level",
+      "level": 153,
+      "nodes": 5,
+      "splits": 5,
+      "leftmost_ineligible": 2,
+      "fallbacks": 0,
+      "diff_degree_sum": 5
+    },
+    {
+      "kind": "level",
+      "level": 152,
+      "nodes": 9,
+      "splits": 9,
+      "leftmost_ineligible": 7,
+      "fallbacks": 0,
+      "diff_degree_sum": 4
+    },
+    {
+      "kind": "level",
+      "level": 151,
+      "nodes": 11,
+      "splits": 11,
+      "leftmost_ineligible": 7,
+      "fallbacks": 0,
+      "diff_degree_sum": 6
+    },
+    {
+      "kind": "level",
+      "level": 150,
+      "nodes": 13,
+      "splits": 13,
+      "leftmost_ineligible": 9,
+      "fallbacks": 0,
+      "diff_degree_sum": 11
+    },
+    {
+      "kind": "level",
+      "level": 149,
+      "nodes": 15,
+      "splits": 15,
+      "leftmost_ineligible": 13,
+      "fallbacks": 0,
+      "diff_degree_sum": 13
+    },
+    {
+      "kind": "level",
+      "level": 148,
+      "nodes": 20,
+      "splits": 20,
+      "leftmost_ineligible": 14,
+      "fallbacks": 0,
+      "diff_degree_sum": 16
+    },
+    {
+      "kind": "level",
+      "level": 147,
+      "nodes": 23,
+      "splits": 23,
+      "leftmost_ineligible": 14,
+      "fallbacks": 0,
+      "diff_degree_sum": 18
+    },
+    {
+      "kind": "level",
+      "level": 146,
+      "nodes": 29,
+      "splits": 29,
+      "leftmost_ineligible": 17,
+      "fallbacks": 0,
+      "diff_degree_sum": 25
+    },
+    {
+      "kind": "level",
+      "level": 145,
+      "nodes": 35,
+      "splits": 35,
+      "leftmost_ineligible": 22,
+      "fallbacks": 0,
+      "diff_degree_sum": 25
+    },
+    {
+      "kind": "level",
+      "level": 144,
+      "nodes": 41,
+      "splits": 41,
+      "leftmost_ineligible": 23,
+      "fallbacks": 0,
+      "diff_degree_sum": 21
+    },
+    {
+      "kind": "level",
+      "level": 143,
+      "nodes": 38,
+      "splits": 38,
+      "leftmost_ineligible": 17,
+      "fallbacks": 0,
+      "diff_degree_sum": 21
+    },
+    {
+      "kind": "level",
+      "level": 142,
+      "nodes": 49,
+      "splits": 49,
+      "leftmost_ineligible": 23,
+      "fallbacks": 0,
+      "diff_degree_sum": 26
+    },
+    {
+      "kind": "level",
+      "level": 141,
+      "nodes": 32,
+      "splits": 32,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 32
+    },
+    {
+      "kind": "level",
+      "level": 140,
+      "nodes": 50,
+      "splits": 50,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 45
+    },
+    {
+      "kind": "level",
+      "level": 139,
+      "nodes": 27,
+      "splits": 27,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 21
+    },
+    {
+      "kind": "level",
+      "level": 138,
+      "nodes": 16,
+      "splits": 16,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 11
+    },
+    {
+      "kind": "level",
+      "level": 137,
+      "nodes": 7,
+      "splits": 7,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 4
+    },
+    {
+      "kind": "level",
+      "level": 136,
+      "nodes": 7,
+      "splits": 7,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 135,
+      "nodes": 5,
+      "splits": 5,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 134,
+      "nodes": 11,
+      "splits": 11,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 133,
+      "nodes": 11,
+      "splits": 11,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 132,
+      "nodes": 14,
+      "splits": 14,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 131,
+      "nodes": 14,
+      "splits": 14,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 130,
+      "nodes": 7,
+      "splits": 7,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 129,
+      "nodes": 5,
+      "splits": 5,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 128,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 127,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 126,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 125,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 124,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 123,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 122,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 121,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 120,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 119,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 118,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 117,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 116,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 115,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 114,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 113,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 112,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 111,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 110,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 109,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 108,
+      "nodes": 2,
+      "splits": 2,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 2
+    },
+    {
+      "kind": "level",
+      "level": 107,
+      "nodes": 2,
+      "splits": 2,
+      "leftmost_ineligible": 1,
+      "fallbacks": 0,
+      "diff_degree_sum": 2
+    },
+    {
+      "kind": "level",
+      "level": 106,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 105,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 104,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 103,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 102,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 101,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 100,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 99,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 98,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 97,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 96,
+      "nodes": 5,
+      "splits": 5,
+      "leftmost_ineligible": 4,
+      "fallbacks": 0,
+      "diff_degree_sum": 5
+    },
+    {
+      "kind": "level",
+      "level": 95,
+      "nodes": 5,
+      "splits": 5,
+      "leftmost_ineligible": 4,
+      "fallbacks": 0,
+      "diff_degree_sum": 5
+    },
+    {
+      "kind": "level",
+      "level": 94,
+      "nodes": 7,
+      "splits": 7,
+      "leftmost_ineligible": 6,
+      "fallbacks": 0,
+      "diff_degree_sum": 7
+    },
+    {
+      "kind": "level",
+      "level": 93,
+      "nodes": 7,
+      "splits": 7,
+      "leftmost_ineligible": 6,
+      "fallbacks": 0,
+      "diff_degree_sum": 7
+    },
+    {
+      "kind": "level",
+      "level": 92,
+      "nodes": 7,
+      "splits": 7,
+      "leftmost_ineligible": 5,
+      "fallbacks": 0,
+      "diff_degree_sum": 7
+    },
+    {
+      "kind": "level",
+      "level": 91,
+      "nodes": 7,
+      "splits": 7,
+      "leftmost_ineligible": 5,
+      "fallbacks": 0,
+      "diff_degree_sum": 7
+    },
+    {
+      "kind": "level",
+      "level": 90,
+      "nodes": 7,
+      "splits": 7,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 7
+    },
+    {
+      "kind": "level",
+      "level": 89,
+      "nodes": 7,
+      "splits": 7,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 7
+    },
+    {
+      "kind": "level",
+      "level": 88,
+      "nodes": 10,
+      "splits": 10,
+      "leftmost_ineligible": 4,
+      "fallbacks": 0,
+      "diff_degree_sum": 10
+    },
+    {
+      "kind": "level",
+      "level": 87,
+      "nodes": 8,
+      "splits": 8,
+      "leftmost_ineligible": 3,
+      "fallbacks": 0,
+      "diff_degree_sum": 8
+    },
+    {
+      "kind": "level",
+      "level": 86,
+      "nodes": 10,
+      "splits": 10,
+      "leftmost_ineligible": 4,
+      "fallbacks": 0,
+      "diff_degree_sum": 10
+    },
+    {
+      "kind": "level",
+      "level": 85,
+      "nodes": 8,
+      "splits": 8,
+      "leftmost_ineligible": 2,
+      "fallbacks": 0,
+      "diff_degree_sum": 8
+    },
+    {
+      "kind": "level",
+      "level": 84,
+      "nodes": 8,
+      "splits": 8,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 8
+    },
+    {
+      "kind": "level",
+      "level": 83,
+      "nodes": 6,
+      "splits": 6,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 6
+    },
+    {
+      "kind": "level",
+      "level": 82,
+      "nodes": 4,
+      "splits": 4,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 4
+    },
+    {
+      "kind": "level",
+      "level": 81,
+      "nodes": 4,
+      "splits": 4,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 4
+    },
+    {
+      "kind": "level",
+      "level": 80,
+      "nodes": 2,
+      "splits": 2,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 2
+    },
+    {
+      "kind": "level",
+      "level": 79,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 78,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 77,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 76,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 75,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 74,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 73,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 72,
+      "nodes": 2,
+      "splits": 2,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 2
+    },
+    {
+      "kind": "level",
+      "level": 71,
+      "nodes": 2,
+      "splits": 2,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 2
+    },
+    {
+      "kind": "level",
+      "level": 70,
+      "nodes": 4,
+      "splits": 4,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 4
+    },
+    {
+      "kind": "level",
+      "level": 69,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 68,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 67,
+      "nodes": 3,
+      "splits": 3,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 3
+    },
+    {
+      "kind": "level",
+      "level": 66,
+      "nodes": 5,
+      "splits": 5,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 5
+    },
+    {
+      "kind": "level",
+      "level": 65,
+      "nodes": 4,
+      "splits": 4,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 4
+    },
+    {
+      "kind": "level",
+      "level": 64,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 63,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 62,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 61,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 60,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 59,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 58,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 57,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 56,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 55,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 54,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 53,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 52,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 51,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 50,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 49,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 48,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 47,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 46,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 45,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 44,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 43,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 42,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 41,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 40,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 39,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 38,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 37,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 36,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 35,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 34,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 33,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 32,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 31,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 30,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 29,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 28,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 27,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 26,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 25,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 24,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 23,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 22,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 21,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 20,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 19,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 18,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 17,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 16,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 15,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 14,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 13,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 1
+    },
+    {
+      "kind": "level",
+      "level": 12,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 11,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 10,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 9,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 8,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 7,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 6,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 5,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 4,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 3,
+      "nodes": 1,
+      "splits": 1,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "level",
+      "level": 2,
+      "nodes": 1,
+      "splits": 0,
+      "leftmost_ineligible": 0,
+      "fallbacks": 0,
+      "diff_degree_sum": 0
+    },
+    {
+      "kind": "summary",
+      "n": 512,
+      "delta": 124876
+    }
+  ],
+  "totals": {
+    "nodes": 124875,
+    "splits": 124874,
+    "leftmost_ineligible": 92776,
+    "fallbacks": 0,
+    "diff_degree_sum": 124520
+  }
+}

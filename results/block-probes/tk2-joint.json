@@ -1,0 +1,41 @@
+{
+  "family": "tk",
+  "k": 2,
+  "mode": "joint",
+  "seconds": 0.06438799994066358,
+  "source_sha256": {
+    "main.rs": "8aac5be81db6f8c7700a5d7fabb2f3af04e3467b615303917c39999c9029bbfc",
+    "probe.rs": "7ed8b52561fd0b6e56304fa546a07e4a3b2e26586f15297f58e488d2f0c6228c"
+  },
+  "formula": "(& (| (& (| 0 1) (| 2 3)) (& (| 4 5) (| 6 7))) (| (& (| 8 9) (| 10 11)) (& (| 12 13) (| 14 15))))",
+  "records": [
+    {
+      "kind": "joint",
+      "targets": 3,
+      "a_states": 5,
+      "c_states": 5,
+      "pairs": 14,
+      "a_hits": 3,
+      "c_hits": 3,
+      "pair_hits": 5,
+      "pair_missing": 4
+    },
+    {
+      "kind": "missing",
+      "a": [
+        1,
+        2,
+        3
+      ],
+      "c": [
+        2,
+        3
+      ]
+    },
+    {
+      "kind": "summary",
+      "n": 16,
+      "delta": 34
+    }
+  ]
+}
