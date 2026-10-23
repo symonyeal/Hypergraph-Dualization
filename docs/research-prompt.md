@@ -37,7 +37,14 @@ Observation 4.29, inside block `a` the rule maximises `deg_a x + λ·deg_{a^d} x
 `λ = (|c^d| + |d^d|)/|b|`, not `λ = 1`. For `δ_iso`, use block shapes in place of live sets; they are
 an invariant only while no block's root gate collapses into its parent.
 
-*Falsify first* (Rust `--classes` on GK `f₄`, about 20 minutes, little memory). Index each block's
+*Falsification update (Observation 4.31).* At GK `f₃`, all seven nonempty standalone `f₂`
+supports occur in each marginal, but only 21 of their 49 pairs occur jointly. The unrestricted
+embedding is false at that level; the proposed squaring law from `k ≥ 4` remains open. The
+Rust `--joint` probe and `experiments/block_probe.py` reproduce the missing support witness.
+The probe tests nonempty targets, forgetting orientation; passing it is necessary but does not
+by itself certify the full embedding or its isomorphism analogue.
+
+*Next falsification* (Rust `--joint` on GK `f₄`, personal machine; runtime not measured). Index each block's
 live sets (at most 1,908) and record the joint `(S∩a, S∩c)` pairs in a 1,908² bitset. Check that
 (i) `f₃`'s reached live sets, moved onto block `a`, are among block `a`'s states, and (ii) the
 joint pairs include all pairs of them. If (i) fails, find the family of rules `argmax deg + λ·deg^d`
@@ -61,9 +68,12 @@ frequency `≥ 1/⌊log₂ N⌋` at every node (Proposition 4.18), but `δ = 32,
 *Question.* Is there a valid rule with the guarantee and `δ` polynomial in `n` on GK and TK? Or
 does every rule with the guarantee have `δ` superpolynomial in `n` on GK?
 
-*First step.* Count, per level, where the guarded rule falls back to the degree sum at GK `f₅`,
-and test fallbacks that stay close to leftmost (the least variable among those meeting the
-frequency bound). Then FK96's bound `τ ≤ N^{O(log² N)}` for the guarded rule, in Lean.
+*First step completed (Observation 4.32).* GK `f₅` has zero degree-sum fallbacks. The guarded
+rule already chooses the least eligible variable. It departs from leftmost at 92,776 of
+124,874 split states; first at live support `{18,…,511}`, choosing 20 rather than leftmost 18
+or degree-sum 256. The full per-support-size trace is `results/block-probes/gk5-guard.json`.
+Next: investigate eligibility-driven interleaving and alternative eligible choices. FK96's
+bound `τ ≤ N^{O(log² N)}` for the guarded rule still needs Lean formalisation.
 
 ## Q3. FK-A's worst-case exponent (T2)
 
@@ -88,6 +98,11 @@ guarantee.
 *Question.* Which statements of thesis Chapter 3 about `Aut` at nodes predict `δ/δ_Aut`, which
 predict `δ/δ_iso`, and which predict neither? Deliverable: a section of the research write-up with
 a review-log row for each identification.
+
+*Scope audit written:* Audit 4.33 and review rows 73–78 distinguish inherited input symmetries,
+local node automorphisms and maps between reached nodes. None of the Chapter 3 local group
+statements alone supplies either measured repetition factor. The revised chapter's retained
+§3.5 discussion still makes unsupported group-comparison claims; it has not been rewritten.
 
 ## Short items (one session each)
 

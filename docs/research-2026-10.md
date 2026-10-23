@@ -920,6 +920,84 @@ rule, `δ_iso/N` is unbounded on the GK family. *Evidence:* `δ_iso/N = 0.67, 0.
 own rule above `O(N)` subproblems on read-once pairs, where the leftmost rule needs `n` without
 any symmetry.
 
+### Joint block projections and guarded departures (Q1–Q2)
+
+**Observation 4.31** (computed, 2026-10-23; Rust). The proposed Cartesian embedding of
+standalone supports fails already from GK `f₂` into `f₃`. Let `T` be the **nonempty** supports
+reached by modified FK-A on the standalone block under the degree-sum rule, forgetting
+orientation. Normalize each block's increasing labels to `0,…,m−1`. At each nonconstant node
+of the larger instance, record `(S∩a,S∩c)` for its first and third top grandchildren.
+The complete traversals give:
+
+| larger instance | standalone block | `|T|` | target supports seen in `a`, `c` | pairs in `T×T` seen | missing |
+| --- | --- | ---: | --- | ---: | ---: |
+| GK `f₂` | `f₁` | 1 | 1, 1 | 1 / 1 | 0 |
+| GK `f₃` | `f₂` | 7 | 7, 7 | 21 / 49 | 28 |
+| TK `S₂` | `S₁` | 3 | 3, 3 | 5 / 9 | 4 |
+| TK `S₃` | `S₂` | 33 | 33, 33 | 259 / 1,089 | 830 |
+
+For GK `f₃`, `a={6,7}` and `c={1,2,3,4,5,6,7}` are individually reached standalone supports
+whose pair is absent. The two marginals each have 14 projected supports (including the empty
+support), and their joint set has 78 pairs. Thus even the weaker requirement restricted to
+nonempty standalone supports fails. Constants and orientation are not counted as distinct
+targets here; this test does not certify a full embedding when its missing count is zero.
+The inequality `δ(f₃) ≥ δ(f₂)²/4` still holds. Neither this counterexample nor the TK rows
+decide either squaring conjecture for `k ≥ 4`, or the isomorphism-class analogue.
+
+Evidence: [`block-probes.md`](../results/block-probes.md), exact JSON artifacts in
+`results/block-probes/`, and `tests/test_readonce_probe.py` against the independent formula
+representation. Reproduce with `python experiments/block_probe.py gk 3 joint --out OUT.json`.
+Search bound: exhaustive labelled DAGs only for the four rows above; GK `f₄` joint projections
+have not been run in this phase. No Lean certificate is claimed.
+
+**Observation 4.32** (computed, 2026-10-23; Rust). On GK `f₅` the guarded rule reaches
+124,876 ordered subproblems: 124,875 nonconstant states, including one modified leaf, and one
+constant. Among its 124,874 split states, the least live vertex fails the frequency test in
+92,776; the selected vertex differs from the degree-sum vertex in 124,520. The degree-sum
+fallback is used **zero** times. Levels here mean live-support size, not recursion depth.
+The first departure from leftmost, in descending support-size traversal, is at `|S|=494`,
+`S={18,…,511}`: the least eligible vertex is 20, while leftmost is 18 and degree sum chooses
+256 (zero-indexed). All larger support-size levels have no departure.
+
+The implementation already selects the least eligible vertex, the proposed alternative in Q2.
+The proof of `guardRule_frequent` in `BranchingProgram.lean` explicitly establishes that
+`find? frequent` is nonempty on a nonempty Sperner dual pair; this explains why the fallback
+branch is absent. That is a reading of the existing Proposition 4.18, not a new Lean build.
+The growth in this trace occurs while eligibility forces departures from leaf order.
+Whether another choice among eligible vertices has polynomial `δ` on GK and TK remains open.
+
+Evidence: `results/block-probes/gk5-guard.json` gives every occupied support-size level and
+the first support witness. Reproduce with
+`python experiments/block_probe.py gk 5 guard --out OUT.json --seconds 60`.
+The first witness's eligibility and degree-sum choice are independently checked from the
+pruned formula in `test_gk5_first_departure_certificate`; the full trace is a Rust computation.
+
+### What Chapter 3's symmetry statements identify (Q4)
+
+**Audit 4.33** (cited scope of existing results, 2026-10-23). The following identifications
+refer to the corrected statements in Chapter 3 and their existing Lean declarations. They
+do not assert a new quantitative bound. A node's automorphisms are self-isomorphisms of that
+node; counting repeated states requires maps between two reached nodes. The input group
+restricts those maps for `δ_Aut`, whereas `δ_iso` allows arbitrary common relabellings.
+
+| Part | Chapter 3 statement | Consequence for the measured quotients |
+| --- | --- | --- |
+| (a) | Claim 3.1.6, corrected: invariant vertex sets are unions of orbits (`invariant_eq_union_orbits`, `orbit_minimal`) | Identifies the action on vertex sets. To obtain `δ_Aut`, use the input group's action on reached **pairs**; vertex-orbit counts alone give neither repetition factor. |
+| (b) | Lemma 3.3.1, corrected: `Aut(H)=Aut(Tr H)` for Sperner `H` (`aut_tr_of_sperner`) | The same permutation acts on both sides of a node. This justifies using one side's group for ordered-pair automorphisms, but gives neither a count of input-group orbits nor a count of inter-node isomorphism classes. |
+| (c) | Lemma 3.3.2, corrected: the split-vertex stabilizer survives in both children (`stab_mem_aut_del`, `stab_mem_aut_con`); split vertices become isolated (`aut_child_moves_split_to_isolated`) | Describes inherited local symmetries. Input automorphisms that actually map one reached pair to another contribute to `δ/δ_Aut`; stabilizer orders at individual nodes do not measure that factor. The statement does not identify all maps counted by `δ/δ_iso`. |
+| (d) | Lemma 3.3.3, printed independent-cycle claim (`lemma_3_3_3_false`) | Refuted already; supports neither prediction. A cycle of an automorphism need not itself be an automorphism. |
+| (e) | Corollary 3.3.4, corrected: `Aut(H) ≤ Aut(min H)` (`aut_le_aut_minimal`, `cor_3_3_4_not_iso`) | Allows local symmetry gained by reduction. It does not say that two reached nodes become isomorphic, or that such an isomorphism extends to the input. Neither repetition factor follows from this inclusion alone. |
+| (f) | §3.5's gain/loss/unchanged discussion, read with the corrected Lemmas 3.3.2–3.3.3 | A local group change is not a measurement of either quotient. Its claims that a new automorphism implies a larger group, that a child group is a subgroup of its parent, and that a fixed split vertex guarantees equality are not established by the cited lemmas. Keep these as unsupported interpretations; the revised chapter still retains the old discussion. |
+
+The numerical examples are the existing computations of Observation 4.29, not new runs:
+GK `f₄` has `δ/δ_Aut≈56.8`, with the additional quotient `δ_Aut/δ_iso≈1.43` giving
+`δ/δ_iso≈81.3`; `w11` has both factors `δ/δ_Aut=δ/δ_iso=4`; `trivial-aut-1` has
+`δ/δ_Aut=1` and `δ/δ_iso=1.7`. The last example directly distinguishes inter-node
+isomorphism from input symmetry. Theorem 4.22 supplies an actual reached-class bound from
+input transitivity through a bounded depth; none of the Chapter 3 local group-order claims
+supplies an analogous total-DAG bound. Theorem 4.28 supplies verdict-cache soundness,
+independently of the amount of symmetry present. Review rows 73–78 record the six identifications.
+
 ## 5. Substitution (Track D)
 
 For a template `T` on points `ι` and hypergraphs `Γ i`, the substitution is
@@ -1072,3 +1150,11 @@ been confirmed by the author.
 | 68 | The same counts on the instance library | `iso_classes.library`; networkx isomorphism of coloured incidence graphs | Python, 2026-10-23; agrees with Rust on TK `S₂`; `trivial-aut-1` has one automorphism, by enumeration of the `8!` permutations |
 | 69 | A memo keyed by any relabelling map is sound under every rule | Theorem 4.28; `fkAI_correct`, `fkAI_eq_fkAR` | Lean, 2026-10-23; standard axioms enforced |
 | 70 | Symmetric component caching (van Bremen, Derkinderen, Sharma, Roy, Meel, AAAI 2021): soundness theorem, hashed canonical labellings, symmetry not needed in the input | AAAI-21 pp. 3922–3925 read 2026-10-23 | Cited |
+| 71 | The joint `(S∩a, S∩c)` projections of GK `f₃` miss 28 of the 49 pairs of standalone `f₂` supports; TK `S₂`, `S₃` miss 4 and 830 | Observation 4.31; `experiments/readonce_dag --joint`, `results/block-probes.md` | Rust, 2026-10-23; agrees with the formula engine (`tests/test_readonce_probe.py`) |
+| 72 | The guarded rule on GK `f₅` never falls back to the degree sum; its least live vertex is ineligible at 92,776 of 124,874 splits | Observation 4.32; `--guard-trace`; Proposition 4.18's proof (`guardRule_frequent`) explains the zero | Rust, 2026-10-23; first departure re-derived in Python |
+| 73 | Claim 3.1.6 (invariant sets are unions of orbits) identifies the action on vertex sets, not either repetition factor | Audit 4.33(a); `invariant_eq_union_orbits`, `orbit_minimal` | Reading of Lean statements; no new theorem |
+| 74 | Lemma 3.3.1 (`Aut(H) = Aut(Tr H)`) lets one side's group act on ordered pairs; it counts neither orbits nor classes | Audit 4.33(b); `aut_tr_of_sperner` | Reading of Lean statements |
+| 75 | Lemma 3.3.2 (stabilizers survive in both children) describes inherited symmetry; stabilizer orders do not measure `δ/δ_Aut` | Audit 4.33(c); `stab_mem_aut_del`, `stab_mem_aut_con`, `aut_child_moves_split_to_isolated` | Reading of Lean statements |
+| 76 | Lemma 3.3.3 as printed is false and predicts neither factor | Audit 4.33(d); `lemma_3_3_3_false` | Lean (refutation, existing) |
+| 77 | Corollary 3.3.4 (`Aut(H) ≤ Aut(min H)`) gives no isomorphism between reached nodes | Audit 4.33(e); `aut_le_aut_minimal`, `cor_3_3_4_not_iso` | Reading of Lean statements |
+| 78 | §3.5's gain/loss/unchanged discussion is not established by the corrected lemmas | Audit 4.33(f) | Unchecked interpretation; the chapter text is not rewritten |
