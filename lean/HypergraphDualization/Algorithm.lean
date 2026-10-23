@@ -25,6 +25,7 @@ equivalent separately (`dual_empty_left`, `dual_singleton_left`, `conds_of_dual`
 | `dual_singleton_left` | the `D₁,ₖ` rule of §5.1.1 |
 -/
 import HypergraphDualization.Decomposition
+import HypergraphDualization.Symmetry
 
 namespace HD
 
@@ -140,6 +141,14 @@ theorem fkAR_correct (r : Rule n) (fuel : ℕ) (modified : Bool) (C D : HG n) :
 theorem fkA_correct (fuel : ℕ) (modified : Bool) (C D : HG n) :
     (fkA fuel modified C D).1 = decide (Dual univ C D) :=
   fkAR_correct splitVar fuel modified C D
+
+/-- Relabelling preserves the verdict under any two split rules; node counts may differ. -/
+theorem fkAR_pimg (r s : Rule n) (fuel : ℕ) (modified : Bool)
+    (σ : Equiv.Perm (Fin n)) (C D : HG n) :
+    (fkAR r fuel modified (pimg σ C) (pimg σ D)).1 =
+      (fkAR s fuel modified C D).1 := by
+  rw [fkAR_correct, fkAR_correct, decide_eq_decide]
+  exact dual_pimg σ C D
 
 /-! ### The polynomial leaf rules -/
 

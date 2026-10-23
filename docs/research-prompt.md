@@ -41,10 +41,12 @@ formula's shape with labels forgotten.
 | TK `S₂` | 16 | 72 | degree sum | 34 | 29 | 1.2 |
 | TK `S₃` | 64 | 16,512 | degree sum | 4,139 | 762 | 5.4 |
 
-Under FK-A's own rule, isomorphic repetition accounts for a factor of 92 at GK `f₄`, and the
-factor grows with `k`. The rest does not collapse: `d_iso / N ≈ 15` at `f₄`, against 0.81 at
-`f₃`. So symmetry explains a large and growing share of the blow-up, but the data do not show
-that it explains all of it. That is the question for this phase.
+The factor 92 is `δ/d_iso`, a cache-count ratio. It is an upper bound on the
+isomorphic-repetition factor `δ/δ_iso`, since `d_iso ≤ δ_iso`. The distinction is
+strict already at GK `f₃`: the exact DAG has 160 classes, whereas the cache visits
+155. At `f₄`, `d_iso/N ≈ 15` is a lower bound on `δ_iso/N`; the exact class count
+was not measured. See the bounded rerun and independent checks in
+[`../results/iso-memo.md`](../results/iso-memo.md).
 
 **Related work.** Caching isomorphic components is known in model counting: van Bremen,
 Derkinderen, Sharma, Roy and Meel, *Symmetric component caching for model counting on
@@ -83,6 +85,9 @@ Then `d_iso ≤ δ_iso ≤ δ_Aut ≤ δ ≤ τ` and `δ_Aut ≥ δ / |Aut(G)|`.
 `σ • C = Tr (σ • D) ↔ C = Tr D`. Then iso-memoised FK-A, with any canonical-form function `κ`
 such that `κ p` is isomorphic to `p`, returns the verdict of `fkA` (`fkA_correct` plus the
 invariance). Small. It turns `d_iso` into a count for a correct algorithm.
+The foundation is now proved: `tr_eq_pimg_iff`, `dual_pimg`, `fkAR_pimg`
+(Proposition 4.21). A cache implementation and its invariant remain to be formalized;
+verdict invariance alone does not prove the cache algorithm correct.
 
 **S2. Early collapse under transitivity (Lean, general).** Target: *if `Aut(G)` acts
 `k`-transitively on the vertices, the subproblems at depth at most `k` fall into at most
@@ -97,7 +102,8 @@ halves to `(k+1)(k+2)/2`: check that first on Fano (2-transitive) and `w11` (sha
 
 **S3. The alternating trees (the main target).** Is `δ_iso` polynomial in `N` on GK `fₖ`
 under the degree-sum rule?
-- Fit `1, 8, 155, 734,303` and S0's `f₅` value. State only what the table shows.
+- Measure `δ_iso` separately from the cache counts `1, 8, 155, 734,303` before fitting
+  its growth. At `f₃`, `δ_iso = 160`; at `f₄` it remains unmeasured.
 - If the growth is polynomial, look for the recurrence. A subproblem of `fₖ` is a restriction
   of the alternating tree, and its shape is a pruned tree, so `δ_iso` counts the pruned shapes
   the degree-sum rule reaches. Prove the recurrence in Lean on the `alt` family (`Cotree`,
@@ -105,7 +111,7 @@ under the degree-sum rule?
 - If iso-memo with the degree-sum rule is polynomial on read-once pairs, it answers the §7
   item "a rule with FK96's frequency guarantee and small `δ` on read-once pairs" in a weaker
   form (memo by class, not by label). Say which form.
-- If `log d_iso / log N` keeps rising at `f₅` (0.96 at `f₃`, 1.25 at `f₄`), state Conjecture:
+- If `log d_iso / log N` keeps rising at `f₅` (about 0.96 at `f₃`, 1.25 at `f₄`), state Conjecture:
   `δ_iso / N` is unbounded on GK under the degree-sum rule. Conjecture 4.19 then holds for a
   reason beyond symmetry. That outcome is a result too.
 
@@ -138,5 +144,6 @@ the degree-sum rule, do S1 and S2, record S3's data as an Observation, and move 
 ## 5. Machines
 
 Lean builds and long searches run on the personal machine. The work laptop takes no multi-hour
-runs; for Lean there, build from a short `subst` path with the Mathlib cache. Commit after each
-phase with `lake build` and `pytest -m "not slow"` green, and push to `main`.
+runs. Lean builds use the repository path and the Mathlib cache; no drive mapping is needed.
+Commit after each phase with `lake build` and targeted tests for changed Python code green,
+and push to `main`. Ask before running the full Python suite.

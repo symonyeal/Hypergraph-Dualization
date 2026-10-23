@@ -175,3 +175,5 @@ New statements of the October 2026 research program, each written up in
 | Proposition D2: `(P)` `k·k* ≥ 8^{r−1}` is closed under composition | Proved | `card_subst_uniform`, `prop_P_comp` |
 | Proposition 5.4: D3 at `r = 2` has no counterexample; `(k, k*) ∈ {(2,4),(4,2),(3,3)}` | Checked (evaluation over 64 families) | `template_rank_two` |
 | Proposition E2: automorphisms preserve influences; Fano's seven influences agree at every `p` | Proved | `influence_aut`, `influence_eq_of_transitive`, `fano_influence_eq` |
+| Observation 4.20: GK f3 under modified degree-sum FK-A has 369 labelled states, 160 reached isomorphism classes and 155 cache visits | Computed; 15 bounded table rows checked against the hypergraph engine, shape equality checked against incidence-graph isomorphism | — |
+| Proposition 4.21: common relabelling preserves equality with the transversal family and duality, including redundant families; any two FK-A split rules give the same verdict on relabelled inputs | Proved; cache implementation correctness remains open | `pimg_injective`, `tr_eq_pimg_iff`, `minimal_pimg`, `dual_pimg`, `fkAR_pimg` |
