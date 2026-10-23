@@ -68,6 +68,14 @@ First departure from the leftmost vertex, scanning support sizes downward: `|S| 
 `tests/test_readonce_probe.py::test_gk5_first_departure_certificate` re-derives this choice
 from the pruned formula in Python.
 
+## TK `S₄`, degree-sum rule, partial (Observation 4.41)
+
+Stopped for memory on the work laptop (3.6 GB of spill, under 2 GB free) at live-support size 85
+of 257 levels, so this is a running total, not the final count: `δ ≥ 330,149,945`. Against
+`N₄ = 1,073,774,592`: `δ/N ≥ 0.307`, `log δ / log N ≥ 0.943`. Per-level trace in
+`hd-rust/tk4-joint.log` (work folder, not in the repository); no `--out` JSON, since the run did
+not reach level 0.
+
 ## Checks
 
 `tests/test_readonce_probe.py` compares the joint counts on GK `f₂–f₃` and TK `S₂–S₃` under all

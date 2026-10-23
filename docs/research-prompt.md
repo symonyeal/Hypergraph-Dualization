@@ -72,8 +72,10 @@ projections and from proof.
 *The TK contrast* (Observation 4.35). The step `δ_{k+1} ≥ δ_k²/4` holds at every measured step
 of TK too (`δ_{k+1}/δ_k² = 2.13, 3.58`), and `log δ / log N` rises there as well
 (`0.77, 0.82, 0.86`). TK's `δ/N` falls because `N_{k+1}/N_k² → 4` off balance while `r < 1`. A
-proof of the step need not use anything TK lacks. Open: whether `δ/N` turns up on TK; it needs TK
-`S₄` under the degree-sum rule (personal machine).
+proof of the step need not use anything TK lacks. Open: whether `δ/N` turns up on TK. A
+degree-sum run of TK `S₄` on the laptop was stopped at memory 85 levels short (Observation 4.41):
+`δ ≥ 330,149,945`, `δ/N ≥ 0.307` (above `r₃ = 0.251`, inconclusive on a lower bound),
+`log δ/log N ≥ 0.943` (continues the rise). The complete count still needs the personal machine.
 
 *Deliverable.* The reduction in Lean on `coalt` (sizes from `alt_shape`); the embedding lemma in
 Lean, or the failing step as an Observation.
