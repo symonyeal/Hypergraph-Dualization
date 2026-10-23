@@ -10,6 +10,7 @@ import hashlib
 import json
 import subprocess
 import time
+from contextlib import nullcontext
 from pathlib import Path
 
 import readonce_sim as rs
@@ -25,6 +26,7 @@ def main():
     p.add_argument("--out", type=Path, required=True)
     p.add_argument("--seconds", type=float, default=60)
     p.add_argument("--spill", type=Path)
+    p.add_argument("--log", type=Path, help="stream the per-level progress here (kept on timeout)")
     a = p.parse_args()
     if a.out.exists():
         p.error("--out already exists; choose a new evidence filename")
@@ -45,8 +47,9 @@ def main():
     src = {s.name: hashlib.sha256(s.read_bytes()).hexdigest()
            for s in (ROOT / "experiments/readonce_dag/src").glob("*.rs")}
     dt = time.perf_counter()
-    q = subprocess.run([str(exe), *flags], input=rs.sexpr(f), capture_output=True,
-                       text=True, timeout=a.seconds, check=True)
+    with open(a.log, "w", encoding="utf-8") if a.log else nullcontext(subprocess.PIPE) as e:
+        q = subprocess.run([str(exe), *flags], input=rs.sexpr(f), stdout=subprocess.PIPE,
+                           stderr=e, text=True, timeout=a.seconds, check=True)
     dt = time.perf_counter() - dt
     rows = [json.loads(s) for s in q.stdout.splitlines()]
     assert rows and rows[-1]["kind"] == "summary"

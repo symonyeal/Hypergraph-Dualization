@@ -194,4 +194,6 @@ New statements of the October 2026 research program, each written up in
 | Observation 4.35: `δ_{k+1} ≥ δ_k²/4` holds at every measured step of GK and TK; TK's falling `δ/N` comes from `N_{k+1}/N_k² → 4` | Computed from existing values | — |
 | Lemma 4.36: a top block's projected states are reached on the block by the hull rule | Argued, not in Lean | — |
 | Proposition 4.37: a squaring step losing `A·n_k` with `A < 2.004` settles Conjecture 4.19; for `δ_iso` only a constant `A < 12.6` | Written proof | — |
-| Conjecture 4.38: on GK `f_{k+1}`, `k ≥ 4`, every pair of equal-size standalone `f_k` supports occurs jointly in blocks `a`, `c` | Open; consistent with the three asynchronous witnesses of Observation 4.31; not tested | — |
+| Conjecture 4.38: on GK `f_{k+1}`, `k ≥ 4`, every pair of equal-size standalone `f_k` supports occurs jointly in blocks `a`, `c` | Withdrawn: the equal-size form fails at `k = 2, 3` (Observation 4.39) | — |
+| Observation 4.39: on GK `f₃`, `f₄` no pair of equal odd size occurs jointly; the share of target pairs occurring is `0.43`, `0.53` | Computed (Rust), equal-size counts checked against the formula engine at small levels | `results/block-probes/`, `tests/test_readonce_probe.py` |
+| Conjecture 4.40: on GK `J_{k+1} ≥ σ_k²/4`; for `k ≥ 4` and any `A < 513` in place of 4 it implies Conjecture 4.19 | Open; holds for `k ≤ 3` | — |

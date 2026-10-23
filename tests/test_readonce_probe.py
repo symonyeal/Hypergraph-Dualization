@@ -49,6 +49,22 @@ def test_joint_against_formula_states(family, k, rule):
         w = next(r for r in q if r["kind"] == "missing")
         a, c = [sum(1 << x for x in w[s]) for s in ("a", "c")]
         assert a in T and c in T and (a, c) not in P
+    eq = defaultdict(lambda: dict(targets=0, pairs=0, hits=0))
+    for a in T:
+        e = eq[a.bit_count()]
+        e["targets"] += 1
+        for c in T:
+            if c.bit_count() == a.bit_count():
+                e["pairs"] += 1
+                e["hits"] += (a, c) in P
+    got = {r["size"]: {k: r[k] for k in ("targets", "pairs", "hits")}
+           for r in q if r["kind"] == "equal_size"}
+    assert got == dict(eq)
+    w = [r for r in q if r["kind"] == "equal_size_missing"]
+    assert bool(w) == any(e["hits"] < e["pairs"] for e in eq.values())
+    if w:
+        a, c = [sum(1 << x for x in w[0][s]) for s in ("a", "c")]
+        assert a in T and c in T and a.bit_count() == c.bit_count() and (a, c) not in P
 
 
 @pytest.mark.parametrize("family,k", [(rs.gk, 3), (rs.gk, 4), (rs.tk, 3), (rs.tk, 4)])

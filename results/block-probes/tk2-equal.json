@@ -1,0 +1,75 @@
+{
+  "family": "tk",
+  "k": 2,
+  "mode": "joint",
+  "seconds": 0.06341139995492995,
+  "source_sha256": {
+    "main.rs": "8aac5be81db6f8c7700a5d7fabb2f3af04e3467b615303917c39999c9029bbfc",
+    "probe.rs": "8658dc98af7cdfaaf5c09321d6f679f91529ab22a792b52d51675fa0433fea07"
+  },
+  "formula": "(& (| (& (| 0 1) (| 2 3)) (& (| 4 5) (| 6 7))) (| (& (| 8 9) (| 10 11)) (& (| 12 13) (| 14 15))))",
+  "records": [
+    {
+      "kind": "joint",
+      "targets": 3,
+      "a_states": 5,
+      "c_states": 5,
+      "pairs": 14,
+      "a_hits": 3,
+      "c_hits": 3,
+      "pair_hits": 5,
+      "pair_missing": 4
+    },
+    {
+      "kind": "missing",
+      "a": [
+        1,
+        2,
+        3
+      ],
+      "c": [
+        2,
+        3
+      ]
+    },
+    {
+      "kind": "equal_size",
+      "size": 2,
+      "targets": 1,
+      "pairs": 1,
+      "hits": 1
+    },
+    {
+      "kind": "equal_size",
+      "size": 3,
+      "targets": 1,
+      "pairs": 1,
+      "hits": 0
+    },
+    {
+      "kind": "equal_size",
+      "size": 4,
+      "targets": 1,
+      "pairs": 1,
+      "hits": 1
+    },
+    {
+      "kind": "equal_size_missing",
+      "a": [
+        1,
+        2,
+        3
+      ],
+      "c": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "kind": "summary",
+      "n": 16,
+      "delta": 34
+    }
+  ]
+}
