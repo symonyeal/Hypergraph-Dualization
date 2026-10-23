@@ -144,7 +144,7 @@ alternating trees under FK-A's rule, D3 from rank 3, and an explicit family that
 memoised FK-A under every valid symmetric split rule: up to a factor 2, a monotone function with
 small DNF and CNF but no small FBDD named by its functions (research §7, C3). The list is §7 of the research write-up.
 The next phase, how much of FK-A's work is repetition up to isomorphism, is planned in
-[`docs/research-prompt.md`](docs/research-prompt.md).
+[`docs/research-prompt.md`](docs/research-prompt.md); its first results are the last paragraph below.
 
 **Symmetry depth.** If `Aut(G)` is `k`-transitive, FK-A reaches at most
 `1+k(k+1)` ordered isomorphism classes through depth `k`, under any rule choosing
@@ -152,6 +152,15 @@ live vertices. For self-transversal `G`, the bound is `1+k(k+1)/2`
 (`SD.dual_transitive_bound`, `SD.self_transitive_bound`). Fano and Witt attain
 the latter bound at depths 2 and 4 (computed). The [proof and limits](docs/symmetry-depth.md)
 separate these shallow-depth bounds from runtime and deeper recursion.
+
+**How much of FK-A's work is symmetry.** A memo keyed by isomorphism class is sound: FK-A with
+any key map that relabels each pair returns the right verdict under every split rule
+(`fkAI_correct`). Measured on the alternating trees and the instance library (computed): on GK
+and TK under the leftmost rule no two subproblems are isomorphic, so memoisation's whole saving
+is exact repetition. Under FK-A's rule the 67,247,387 subproblems of GK `f₄` fall into 827,175
+isomorphism classes, a factor of 81, yet 827,175 is still 16.8 times `N`, against 0.83 at `f₃`
+(Conjecture 4.30 says the ratio is unbounded). Tables in
+[`results/iso-memo.md`](results/iso-memo.md).
 
 ## Layout
 

@@ -39,4 +39,5 @@ import HypergraphDualization.SymmetryDepth
 import HypergraphDualization.DecisionTree
 import HypergraphDualization.FkaTree
 import HypergraphDualization.GkMemo
+import HypergraphDualization.IsoMemo
 import HypergraphDualization.Axioms

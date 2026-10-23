@@ -16,9 +16,21 @@ which up to a factor 2 is a monotone function with small DNF and CNF and no smal
 its functions. It is the monotone case of Question 1 of Jukna, Razborov, Savický and Wegener
 (ECCC TR97-023, 1997), still open (Proposition 4.27). The tree side is settled on GK and TK
 (Track T, 2026-10-23): `τ ≥ 2·(27/16)^{n/4}/(n+1)` under every valid rule, in Lean
-(`fkA_gk_tree`, Theorems 4.24–4.25), so memoisation saves an exponential factor there.
+(`fkA_gk_tree`, Theorems 4.24–4.25), so memoisation saves an exponential factor there. Track S's
+soundness theorem and measurements are research Theorem 4.28, Observation 4.29 and Conjecture
+4.30 (2026-10-23); §2 says what remains.
 
 ## 2. Focus: Track S, how much of FK-A's work is symmetry
+
+**Status 2026-10-23.** S0 is done for the read-once families and the library without Sage
+(Observation 4.29, `experiments/iso_classes.py`, `results/iso-memo.md`): at GK `f₄` under the
+degree-sum rule `δ_iso = 827,175`, `δ_Aut = 1,183,141`, so `δ/δ_iso = 81.3` and `δ_iso/N = 16.8`.
+S1 is Theorem 4.28 (`fkAI_correct`), S2 is Theorem 4.22. The stop rule does not apply: `δ/δ_iso`
+grows under the degree-sum rule on GK, TK and `alt3`. Left: S3's recurrence and Conjecture 4.30,
+and S4's reading of thesis Chapter 3. Not computed on the work laptop (about 1.7 GB free): the
+label-exact DAGs of GK `f₅`, TK `S₄` and `alt3 d₅` under the degree-sum rule; `--classes --spill`
+needs about 60,000 nodes per second and little memory, so these are runtime-bound (`alt3 d₅` has
+more than `10⁸` subproblems).
 
 **Question.** Split FK-A's cost into three factors:
 
@@ -106,7 +118,7 @@ halves to `(k+1)(k+2)/2`: check that first on Fano (2-transitive) and `w11` (sha
 **S3. The alternating trees (the main target).** Is `δ_iso` polynomial in `N` on GK `fₖ`
 under the degree-sum rule?
 - Measure `δ_iso` separately from the cache counts `1, 8, 155, 734,303` before fitting
-  its growth. At `f₃`, `δ_iso = 160`; at `f₄` it remains unmeasured.
+  its growth. Done: `δ_iso = 1, 8, 160, 827,175` for `k = 1–4`.
 - If the growth is polynomial, look for the recurrence. A subproblem of `fₖ` is a restriction
   of the alternating tree, and its shape is a pruned tree, so `δ_iso` counts the pruned shapes
   the degree-sum rule reaches. Prove the recurrence in Lean on the `alt` family (`Cotree`,
