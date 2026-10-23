@@ -998,6 +998,120 @@ input transitivity through a bounded depth; none of the Chapter 3 local group-or
 supplies an analogous total-DAG bound. Theorem 4.28 supplies verdict-cache soundness,
 independently of the amount of symmetry present. Review rows 73–78 record the six identifications.
 
+### The Q1 route after Observation 4.31
+
+Observation 4.31 rules out the Cartesian embedding. The entries below reset the target: what is
+exactly balanced on GK, what differs on TK, what a block's states can be, and how weak a
+squaring law may be and still settle Conjecture 4.19.
+
+**Proposition 4.34** (degree balance). On GK `f_{k+1} = Γ̄_{2k+1}` every vertex lies in as many
+terms as clauses: `deg_C v = deg_D v`. On TK `S_k = Γ̄_{2k}`, `deg_C v · |D| = deg_D v · |C|`, so
+`deg_C v = 2^{2^k−1} · deg_D v`.
+Lean: `gk_degree_balance`, `tk_degree_ratio` (from `alt_shape` and `alt_counts`).
+
+*Consequence* (argued from the degree product rules `degree_join_left`, `degree_union_left`).
+For `x` in a subtree `B` of a read-once formula, `deg_C x = M_C(B)·deg_{C(B)} x` and
+`deg_D x = M_D(B)·deg_{D(B)} x`, where `M_C(B)` is the product of `|C(s)|` over the siblings `s`
+at `B`'s AND ancestors and `M_D(B)` the product of `|D(s)|` over the siblings at its OR
+ancestors. If `B` is an OR-rooted subtree of GK, it is a copy of some `f_j`, and the proposition
+applied to `f_{k+1}` and to `B` gives `M_C(B) = M_D(B)`. So at the root every OR-rooted block
+weighs its own term and clause degrees equally, at every scale: the weight
+`λ = (|c^d| + |d^d|)/|b|` of Observation 4.29 starts at exactly 1. On TK `S_k` every OR-rooted
+block starts at `λ = 2^{1−2^k}` (`1/2, 1/8, 1/128, 1/32768` for `k = 1–4`).
+
+The counts behind this follow a flow. With `t = |C|/|D|`, an AND of two disjoint copies maps
+`(|C|, |D|)` to `(|C|², 2|D|)` and an OR to `(2|C|, |D|²)`. The GK step (OR of ANDs) sends
+`t ↦ t²/2`, and GK sits on its fixed point `t = 2`. The TK step (AND of ORs) sends `t ↦ 2t²`,
+whose fixed point is `t = 1/2`; TK starts at `t = 2` and leaves it (`t = 2, 8, 128, 32768`). The
+growth of `N` per step is `N_{k+1}/N_k² = (2t² + 4)/(t + 1)²` for the GK step and
+`(4t² + 2)/(t + 1)²` for the TK step. Each is least, `4/3`, at its fixed point and tends to `4`
+away from it. So balance is what makes GK's `N` grow as slowly as possible.
+
+**Observation 4.35** (the TK contrast is in `N`, not in the step for `δ`; computed from the
+values of Observations 4.4 and 4.29, no new run). The ratios `δ_{k+1}/δ_k²` are `8, 5.77, 494` on
+GK `f₁–f₄` and `2.13, 3.58` on TK `S₁–S₃`. So the step `δ_{k+1} ≥ δ_k²/4` of Q1 holds at every
+measured step of both families. The same holds for `δ_iso` (`8, 2.50, 32.3` on GK; `1.81, 0.91`
+on TK `S₁–S₃`). Also, `log δ / log N` rises on both: `0.84, 1.12, 1.67` on GK `f₂–f₄` and
+`0.77, 0.82, 0.86` on TK `S₁–S₃`. The two families differ in `N_{k+1}/N_k²`: it is exactly
+`4/3` on GK and `2, 3.19, 3.94` on TK. Since
+`r_{k+1}/r_k² = (δ_{k+1}/δ_k²)/(N_{k+1}/N_k²)`, this gives `6.0, 4.3, 370` on GK and
+`1.06, 1.12` on TK, where `r < 1`, so `r` falls. Consequence for Q1: a proof of a squaring step
+for `δ` need not use anything TK lacks. The GK-specific input is the exact recursion for `N`,
+which Proposition 4.34 explains. Whether `δ/N` eventually rises on TK is open. It needs TK `S₄`
+under the degree-sum rule, which has not been computed (`d_iso = 1,124,503` there).
+
+**Lemma 4.36** (a block's states come from a parametric rule; argued, not in Lean). Let `h` be a
+node of FK-A on a read-once formula under the degree-sum rule, and `B` a gate of the formula that
+is still relevant in `h`, with restriction `h_B`. By the product rules, the restrictions outside
+`B` enter the degrees of `x ∈ B` only through the two positive multipliers `M_C`, `M_D`. So a
+split of `h` inside `B` is at a maximiser of `deg_{C(h_B)} + λ·deg_{D(h_B)}` with
+`λ = M_D/M_C > 0`: a vertex on the upper-right convex hull of `B`'s degree points. A split
+outside `B` leaves `h_B` unchanged or makes `B` irrelevant. By induction along the path, the
+projection onto `B` of every reached node is empty or is reached on `B`'s subtree by the
+*hull rule*: FK-A in which every split may be at any maximiser of `deg_C + λ·deg_D`, for any
+`λ > 0` chosen afresh at each node. Write `R*(f_k)` for the supports the hull rule reaches on
+`f_k`. Then every top-block marginal of `f_{k+1}` lies in `R*(f_k)`, and so does the standalone
+reach of every fixed-weight rule. At GK `f₄` the marginals have 1,893 to 1,908 supports against
+`δ(f₃) = 369` (Observation 4.29), so `R*(f₃)` has at least 1,892 nonempty supports. Condition (i) of Q1 asks whether the
+environment drives `λ` back to 1 at the right moments; this lemma bounds what it can drive the
+block to.
+
+**Proposition 4.37** (how much loss a squaring law may have; written proof). On GK let `X_k` be
+`δ_k`, `δ_iso` of `f_k`, or the number `σ_k` of distinct supports, and suppose
+`X_{k+1} ≥ X_k²/(A·n_k^β)` for every `k ≥ k₀`, where `n_k = 2·4^{k−1}`. If
+`X_{k₀}/N_{k₀} > (4^{β+1}A/3)·n_{k₀}^β`, then `X_k/N_k → ∞`, doubly exponentially in `k`.
+
+*Proof.* With `r_k = X_k/N_k` and `N_{k+1} = (4/3)N_k²`, `r_{k+1} ≥ 3r_k²/(4A·n_k^β)`. Put
+`u_k = 3r_k/(4^{β+1}A·n_k^β)`. Since `n_{k+1} = 4n_k`, this gives `u_{k+1} ≥ u_k²`, and
+`u_{k₀} > 1`. ∎
+
+At `k₀ = 4` (`N = 49,152`, `n = 128`):
+
+| `X` | `r₄` | constant loss (`β = 0`) | loss `A·n_k` (`β = 1`) |
+| --- | ---: | --- | --- |
+| `δ` | 1,368.1 | any `A < 1,026` | any `A < 2.004` |
+| `σ ≥ (δ − 2)/2` | ≥ 684.1 | any `A < 513` | any `A < 1.002` |
+| `δ_iso` | 16.83 | any `A < 12.6` | only `A < 0.025` |
+
+So for `δ` the step may lose a factor of order `n_k`, not just a constant, but for `δ_iso` it may
+lose only a constant.
+
+**Conjecture 4.38** (synchronous embedding; replaces the embedding refuted by Observation 4.31).
+On GK `f_{k+1}`, `k ≥ 4`: if `A` and `C'` are supports the degree-sum rule reaches on standalone
+`f_k`, and `|A| = |C'|`, then `(A, C')` occurs as `(S∩a, S∩c)` for some reached `S`.
+
+Every missing pair found so far is asynchronous: `|A| = 2` against `|C'| = 7` at GK `f₃`, 3 against 2
+at TK `S₂`, 4 against 5 at TK `S₃` (Observation 4.31). The conjecture needs only pairs at equal
+progress. If `m_ℓ` standalone supports have size `ℓ`, Cauchy–Schwarz over the at most `n_k`
+sizes gives `σ_{k+1} ≥ Σ_ℓ m_ℓ² ≥ σ_k²/n_k`. By Proposition 4.37 (`β = 1`, `A = 1`, `X = σ`),
+that settles Conjecture 4.19, with almost no margin (`u₄ = 1.002`). The four-block form (all of
+`a, b, c, d` at one size) gives `σ_{k+1} ≥ Σ_ℓ m_ℓ⁴ ≥ σ_k⁴/n_k³`. That would make `δ`
+superpolynomial in `N` on GK. Measured, `log δ_{k+1} / log δ_k = 2.84, 3.05` on GK `f₂–f₄`,
+between the two forms.
+
+*Heuristic, not a proof.* At the root all four blocks tie. When the rule splits in a block, that
+block's own degrees tend to fall more than the other blocks' scores, so the next split tends to go
+elsewhere. The rule then acts
+like a max-weight scheduler serving four queues, which keeps them in near lockstep. Lockstep
+explains why asynchronous pairs are missing, and why the Cartesian embedding had to fail. It
+suggests synchronous pairs as the product that survives.
+
+*Search bound and tests.* Not tested. (1) Recount the GK `f₃` and TK `S₂–S₃` joint probes on
+equal-size pairs only: seconds with `--joint` plus a size filter. This tests the same statement
+at `k = 2`, which informs but does not decide the conjecture. (2) The GK `f₄` joint probe,
+for `k = 3 → 4`. (3) If equal size is too strict, use progress measured by the global score in
+place of support size; the counting argument needs only at most `n_k` classes.
+
+*Leads from other fields* (agent reports; only the first abstract read). The parametric shortest
+path has `n^{Ω(log n)}` breakpoints (Carstensen 1983; Mulmuley and Shah 2001; for planar graphs
+Gajjar and Radhakrishnan, arXiv:1811.05115, abstract read 2026-10-23). By an agent's account of
+that paper, the construction keeps two cost components balanced at every scale, and the count
+grows by a factor `n` per level. By a second agent's account, smoothed analysis removes it
+(Nikolova, Kelner, Brand and Mitzenmacher, ESA 2006). A third account, Pearl's game trees, has
+evaluation cost peaking at the critical leaf probability. Moore–Shannon and Valiant
+amplification iterate AND/OR maps with an unstable fixed point. These match the balance of
+Proposition 4.34. None was checked against its source.
+
 ## 5. Substitution (Track D)
 
 For a template `T` on points `ι` and hypergraphs `Γ i`, the substitution is
@@ -1063,7 +1177,7 @@ That `P_p` is strictly increasing for a nonconstant monotone property is Russo�
 | A5d (Conjecture 2.12) | open; evidence for `v ≤ 100` |
 | B: `ε(8) = 2/5` (Conjecture 3.3) | open; CP-SAT infeasibility not Lean-certified |
 | B3: growth of `ε(n)` | `ε(n) ≥ 1/√n` (Theorem 3.1) and `ε(s²) ≤ 1/s` by `s` disjoint `s`-sets, so `ε(n) = Θ(n^{−1/2})`. These pairs have `N = s + s^s`, so `ε·log₂ N ≈ log₂ s → ∞`: minimising `ε` on `n` points does not approach the FK96 threshold `ε·log₂ N ≥ 1`. The upper bound for general `s` is not in Lean (`eps_four`, `eps_nine` cover `s = 2, 3`) |
-| C2: Conjecture 4.5 | **refuted**: `ro12` has `δ = 43 > 2N` (Lean, evaluation); GK `f₄` has `δ/N = 1368` (Rust). The leftmost bound `δ ≤ 2n + 2` is Theorem 4.16 (Lean). Open: Conjecture 4.19, `δ/N` unbounded on GK under FK-A's rule (log-ratio 0.84, 1.12, 1.67) |
+| C2: Conjecture 4.5 | **refuted**: `ro12` has `δ = 43 > 2N` (Lean, evaluation); GK `f₄` has `δ/N = 1368` (Rust). The leftmost bound `δ ≤ 2n + 2` is Theorem 4.16 (Lean). Open: Conjecture 4.19, `δ/N` unbounded on GK under FK-A's rule (log-ratio 0.84, 1.12, 1.67). Route: Proposition 4.34 (Lean balance), Proposition 4.37 (a step losing `A·n_k`, `A < 2.004`, suffices), Conjecture 4.38 (equal-size embedding) |
 | C3 | `δ ≤ 2N` refuted by `ro12`; no polynomial bound under ETH (Proposition 4.6). For unmodified FK-A, an explicit family defeating every valid symmetric rule exists iff some monotone family has polynomial `N` and superpolynomial size of FBDDs named by their functions (Theorem 4.13, Proposition 4.14, Lean); replacing these by arbitrary FBDDs rests on the argued reduction of review row 29. None is known, and mixedness cannot give one (§4, *Literature*). This is the monotone case of JRSW's Question 1, open since 1997 (Proposition 4.27) |
 | Track S: symmetry in FK-A's work | Measured on GK `f₁–f₅`, TK `S₁–S₄`, `alt3 d₃–d₅` and the library (Observation 4.29); the iso-keyed memo is sound (Theorem 4.28, Lean). Under the leftmost rule there are no symmetric repeats; under the degree-sum rule `δ/δ_iso` grows (81.3 at GK `f₄`) and `δ_iso/N` too. Open: Conjecture 4.30; `δ_iso` at GK `f₅` and the label-exact `δ` of TK `S₄` under the degree-sum rule (not computed); a recurrence for the pruned shapes the rule reaches |
 | Track T: FK-A's recursion tree | On GK and TK `τ ≥ 2·(27/16)^{n/4}/(n + 1) = N^{Ω(log N)}` under every valid rule (Theorems 4.24–4.25, Lean), so FK-A is eventually slower than FK-B's bound and memoisation saves an exponential factor (Corollary 4.26). Open: FK-A's worst-case exponent between `N^{Ω(log N)}` and FK96's `N^{O(log² N)}`; a rule with `τ ≤ N^{O(log N)}` on every dual pair would remove JRSW's `log n` factor for monotone functions |
@@ -1158,3 +1272,9 @@ been confirmed by the author.
 | 76 | Lemma 3.3.3 as printed is false and predicts neither factor | Audit 4.33(d); `lemma_3_3_3_false` | Lean (refutation, existing) |
 | 77 | Corollary 3.3.4 (`Aut(H) ≤ Aut(min H)`) gives no isomorphism between reached nodes | Audit 4.33(e); `aut_le_aut_minimal`, `cor_3_3_4_not_iso` | Reading of Lean statements |
 | 78 | §3.5's gain/loss/unchanged discussion is not established by the corrected lemmas | Audit 4.33(f) | Unchecked interpretation; the chapter text is not rewritten |
+| 79 | On GK every vertex has equal term and clause degree; on TK they are in the ratio `|C| : |D|` | Proposition 4.34; `gk_degree_balance`, `tk_degree_ratio` | Lean, 2026-10-23, 1869 jobs; standard axioms enforced |
+| 80 | Every OR-rooted block of GK starts at weight `λ = 1`, of TK `S_k` at `2^{1−2^k}`; `N_{k+1}/N_k²` is least (`4/3`) at the fixed point of the count flow | Proposition 4.34, *Consequence*; degree product rules | Argued (written); the product rules are Lean |
+| 81 | The squaring step holds at every measured step of TK as well as GK; the TK contrast is in `N`'s growth | Observation 4.35, from the values of Observations 4.4 and 4.29 | Computed (arithmetic on existing values) |
+| 82 | Projections of reached nodes onto a block are reached on the block by the hull rule | Lemma 4.36 | Argued, not in Lean |
+| 83 | The loss budgets of Proposition 4.37 at `k₀ = 4` | Proposition 4.37 | Written proof (arithmetic) |
+| 84 | Parametric shortest paths (Carstensen 1983, Mulmuley–Shah 2001, Gajjar–Radhakrishnan 2019), game-tree criticality (Pearl), amplification (Moore–Shannon, Valiant) as analogues of the balance | Conjecture 4.38, *Leads*; Gajjar–Radhakrishnan abstract read 2026-10-23 | Unchecked: research-agent reports, sources not read |

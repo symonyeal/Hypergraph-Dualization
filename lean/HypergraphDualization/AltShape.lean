@@ -13,6 +13,7 @@ have `2^(k-1)`, `2^k`, `2^k`, `2^k` vertices, and the frequencies are `2^-k`, `2
 | --- | --- |
 | `alt_shape` | §4.3: uniform edge sizes and uniform vertex frequencies, for every level |
 | `degree_join_left`, `degree_union_left`, `degree_mapH_shift` | degrees under the operations of §4.1 |
+| `gk_degree_balance`, `tk_degree_ratio` | research Proposition 4.34: equal term and clause degrees on GK; ratio `|C| : |D|` on TK |
 -/
 import HypergraphDualization.Cotree
 
@@ -171,5 +172,31 @@ theorem alt_shape (i : ℕ) :
           rw [coalt, if_neg hp], e1, e2]
       rw [e1] at sA dC
       exact ⟨uS sA, jS wC sC, un wA nA dA, jl wC dC⟩
+
+/-- **Degree balance on GK** (research Proposition 4.34). In `f_{k+1} = Γ̄_{2k+1}` every vertex
+lies in as many terms as clauses, so FK-A's degree sum weighs the two sides equally. -/
+theorem gk_degree_balance (k : ℕ) :
+    ∀ v < 2 ^ (2 * k + 1), degree (coalt (2 * k + 1)) v = degree (alt (2 * k + 1)) v := by
+  intro v hv
+  obtain ⟨-, -, dA, dC⟩ := alt_shape (2 * k + 1)
+  obtain ⟨-, -, hA, hC⟩ := alt_counts k
+  have a := dA v hv
+  have c := dC v hv
+  rw [show (2 * k + 1) / 2 = k by omega, hA] at a
+  rw [show (2 * k + 1 + 1) / 2 = k + 1 by omega, hC] at c
+  have ht : 1 ≤ 2 ^ k := Nat.one_le_two_pow
+  refine Nat.eq_of_mul_eq_mul_right (Nat.two_pow_pos (k + 1)) ?_
+  rw [c, pow_succ, ← mul_assoc, a, ← pow_succ]
+  congr 1; omega
+
+/-- **Degree ratio on TK** (research Proposition 4.34). In `S_k = Γ̄_{2k}` the degrees of every
+vertex are in the ratio `|S_k| : |Tr S_k|`, which is `2^(2^k - 1)`. -/
+theorem tk_degree_ratio (k : ℕ) :
+    ∀ v < 2 ^ (2 * k), degree (coalt (2 * k)) v * (alt (2 * k)).card =
+      degree (alt (2 * k)) v * (coalt (2 * k)).card := by
+  intro v hv
+  obtain ⟨-, -, dA, dC⟩ := alt_shape (2 * k)
+  rw [← dA v hv, ← dC v hv, show 2 * k / 2 = k by omega, show (2 * k + 1) / 2 = k by omega]
+  exact Nat.mul_left_comm _ _ _
 
 end HD

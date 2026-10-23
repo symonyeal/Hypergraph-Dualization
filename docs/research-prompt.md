@@ -44,17 +44,35 @@ Rust `--joint` probe and `experiments/block_probe.py` reproduce the missing supp
 The probe tests nonempty targets, forgetting orientation; passing it is necessary but does not
 by itself certify the full embedding or its isomorphism analogue.
 
-*Next falsification* (Rust `--joint` on GK `f₄`, personal machine; runtime not measured). Index each block's
-live sets (at most 1,908) and record the joint `(S∩a, S∩c)` pairs in a 1,908² bitset. Check that
-(i) `f₃`'s reached live sets, moved onto block `a`, are among block `a`'s states, and (ii) the
-joint pairs include all pairs of them. If (i) fails, find the family of rules `argmax deg + λ·deg^d`
-whose reached states block `a` sees, and ask the squaring question for that family.
+*Route after 4.31* (research §4, "The Q1 route after Observation 4.31").
+- *Balance* (Proposition 4.34, Lean): on GK every vertex has equal term and clause degree, so
+  every OR-rooted block starts at weight `λ = 1`; GK sits on the fixed point of the count flow,
+  which is where `N_{k+1}/N_k²` is least (`4/3`).
+- *Target* (Proposition 4.37): for `δ` the step may lose a factor `A·n_k` with `A < 2.004` and
+  still settle Conjecture 4.19 from `r₄ = 1368`; for `δ_iso` only a constant `A < 12.6`.
+- *Block states* (Lemma 4.36): a top block's projections are reached by the hull rule (any
+  maximiser of `deg_C + λ·deg_D`, `λ > 0` free at each node), so condition (i) below is about
+  which `λ` the environment produces.
+- *New embedding* (Conjecture 4.38): only pairs of standalone supports of **equal size** must
+  occur jointly. Cauchy–Schwarz over the `n_k` sizes then gives the `β = 1` step. All three
+  known missing pairs are of unequal size. The four-block form would make `δ` superpolynomial
+  in `N`.
+
+*Next tests, in order.* (1) Recount the existing GK `f₃` and TK `S₂–S₃` joint probes on
+equal-size pairs: seconds. (2) Rust `--joint` on GK `f₄` (personal machine; runtime not
+measured). Index each block's live sets (at most 1,908) and record the joint `(S∩a, S∩c)` pairs
+in a 1,908² bitset. Check (i) that `f₃`'s reached live sets, moved onto block `a`, are among
+block `a`'s states, and (ii) that the equal-size pairs of them all occur. (3) Count `R*(f₃)`, the
+hull rule's reach, against the 1,893–1,908 marginal supports.
 
 *Not by enumeration.* If the law holds, `δ(f₅) ≥ 1.1·10¹⁵`; the evidence must come from `f₄`
 projections and from proof.
 
-*Explain the contrast.* On TK, `N_{k+1}/N_k² = 2, 3.19, 3.94` and `δ/N = 0.67, 0.47, 0.25` falls; a
-proof has to use what GK has and TK lacks.
+*The TK contrast* (Observation 4.35). The step `δ_{k+1} ≥ δ_k²/4` holds at every measured step
+of TK too (`δ_{k+1}/δ_k² = 2.13, 3.58`), and `log δ / log N` rises there as well
+(`0.77, 0.82, 0.86`). TK's `δ/N` falls because `N_{k+1}/N_k² → 4` off balance while `r < 1`. A
+proof of the step need not use anything TK lacks. Open: whether `δ/N` turns up on TK; it needs TK
+`S₄` under the degree-sum rule (personal machine).
 
 *Deliverable.* The reduction in Lean on `coalt` (sizes from `alt_shape`); the embedding lemma in
 Lean, or the failing step as an Observation.
