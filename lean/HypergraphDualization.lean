@@ -36,4 +36,6 @@ import HypergraphDualization.ReadOnceFormula
 import HypergraphDualization.BranchingProgram
 import HypergraphDualization.RuleInstances
 import HypergraphDualization.SymmetryDepth
+import HypergraphDualization.DecisionTree
+import HypergraphDualization.FkaTree
 import HypergraphDualization.Axioms

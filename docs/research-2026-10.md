@@ -751,6 +751,89 @@ The general complete-family constructions attaining both bounds for every
 `k` have a written proof in [symmetry-depth.md](symmetry-depth.md); that
 sharpness argument is not formalised. Priority is not asserted.
 
+### The recursion tree is a decision tree (Track T)
+
+Modules `DecisionTree`, `FkaTree`. A decision tree reads one vertex per node; its size is its
+number of leaves. Encode `true` as `−1` and write `f̂(S)` for the Fourier coefficients of `f` on
+the subsets of the ground set. `coalt (2k − 1)` is GK `f_k` and `coalt (2k)` is TK `S_k`
+(review row 1), on `n = 2^i` vertices.
+
+**Theorem 4.24** (JRSW 1999, Lemma 2.2 and Theorem 2.4, for the alternating trees). Every decision
+tree that computes `coalt i`, `i ≥ 2`, on the subsets of its `n = 2^i` vertices has at least
+`2·(27/16)^{n/4}` leaves.
+Lean: `l1_le_leaves`, `wc_gk_succ`, `dsum_succ`, `dsum_zero`, `dsum_eq`, `gk_leaves`.
+
+*Proof.* A decision tree has at least `Σ_S |f̂(S)|` leaves (`l1_le_leaves`): at a node reading `x`
+the coefficients split into the halves over `x ∉ X` and `x ∈ X`, each bounded by the `ℓ₁` norm of
+one subtree, and a leaf has norm 1. Call `S` *dense* at level 2 if it is nonempty, and at level
+`i + 1` if it is `S₁ ∪ (S₂ + 2^i)` with `S₁, S₂` dense at level `i`. A gate on the two copies has
+`2 sg(a ∘ b) = ±1 + sg a + sg b ± sg a · sg b`; for nonempty `S₁, S₂` the first three terms have an
+empty character sum, so the gate's coefficient at `S₁ ∪ (S₂ + 2^i)` is `±½ f̂(S₁) f̂(S₂)`
+(`wc_gk_succ`). The dense sums therefore satisfy `c_{i+1} = c_i² / 2`, and `c_2 = 27/8` (kernel
+evaluation by `decide`, `dsum_zero`), so `c_i = 2·(27/16)^{2^{i−2}}`. ∎
+
+JRSW state the bound for the iterated NAND, which is `coalt` with complemented inputs; the Lean
+proof works on `coalt` directly and rests on the standard axioms only.
+
+**Theorem 4.25** (FK-A's recursion tree is a decision tree). Let `r` be a valid split rule and
+`(C, D)` a dual pair on `n` vertices. FK-A's recursion tree on `(C, D)`, either variant, fuel
+`n + 1`, unfolds into a decision tree for `f_C` with at most `(n + 1)·τ` leaves, `τ` the node
+count of `fkAR`. Consequently, on GK and TK, under every valid rule,
+
+    τ ≥ 2·(27/16)^{n/4} / (n + 1).
+
+Lean: `fkDT`, `eval_fkDT`, `leaves_fkDT`, `fkA_tree_dt`, `fkA_gk_tree`; the degree-sum rule as
+published is `fkA_gk_degree_sum`.
+
+*Proof.* At a split of `(C, D)` at `x` the decision tree reads `x`. The left child `(C − x, D/x)`
+carries `f_C|x=0` on its first side and the right child `(D − x, C/x)` carries `f_C|x=1` on its
+second side; a tree asked for the second side uses the children the other way round. This holds
+on every input and under every rule (`eval_fkDT`). On a dual pair both children are dual, FK-A
+visits both, and every leaf has `|C| ≤ 1` or `|D| ≤ 1`; both sides are then constants, a single
+edge or singletons (`dual_empty_left`, `dual_singleton_left`), decided by a chain of at most `n`
+queries (`leaves_fkDT`). ∎
+
+This makes Hertel's simulation of FK-A by DPLL (review row 7) exact, and replaces his bound
+`n^{Ω(log^{1−o(1)} n)}` for DPLL trees on the alternating trees by `2^{Ω(n)}`. Measured
+(`experiments/readonce_sim.py`, modified FK-A): at `n = 32` the bound is 4, while `τ = 66,913`
+under the leftmost rule and `τ = 103,377` under the degree-sum rule. The bound is
+`2.9·10⁵` at `n = 128` and `4.8·10²⁶` at `n = 512`.
+
+**Corollary 4.26** (two separations on GK and TK).
+(a) *Tree against DAG.* Under the leftmost rule `δ ≤ 2n + 2` (Theorem 4.16) while
+`τ ≥ 2·(27/16)^{n/4}/(n + 1)`: memoisation saves a factor exponential in `n`. Both bounds are Lean
+theorems; they are stated on the read-once formula with leaves in order (`Fm.leftmost_delta`) and
+on `coalt` (`fkA_gk_tree`), and the identification of the two is by inspection (review row 63).
+(b) *FK-A against FK-B.* On GK `f_k`, `N = 3·2^{2^k − 2}` and `n = 2^{2k−1} ≥ (log₂ N)²/2`, so
+under every valid rule `τ ≥ N^{c log₂ N}/(n + 1)` with `c = log₂(27/16)/8 ≈ 0.094`. FK96 bound
+FK-B's running time by `N^{4χ(N)+O(1)}`, `χ(N)^{χ(N)} = N`, which is `N^{o(log N)}`. FK-A's
+running time on GK therefore exceeds FK-B's worst-case bound by a factor that tends to infinity,
+under every valid rule. The crossover needs `log₂ log₂ N` above about 48 even with FK-B's `O(1)`
+set to zero, so (b) says nothing about the measured ratios (52.96× on `gk-f3`). FK-B's bound is
+cited, not formalised.
+
+**Proposition 4.27** (C3 is a 1997 open problem). For monotone `f` the minimal DNF of `f` is its
+set of minterms and that of `¬f` its set of maxterms, so the weight `‖f‖ = dnf(f) + dnf(¬f)` of
+Jukna, Razborov, Savický and Wegener is `N = |C| + |Tr C|`. Their Question 1 (ECCC TR97-023,
+§4) asks whether some Boolean function requires read-once branching programs (FBDDs) of size
+superpolynomial in `‖f‖`. By Theorem 4.13 and Proposition 4.14, C3 for unmodified FK-A (an
+explicit family of dual pairs with `δ` superpolynomial in `N` under every valid symmetric rule) is
+equivalent, up to a factor 2 and the argued reduction of review row 29, to a positive answer to
+Question 1 for monotone functions. A negative answer to Question 1 would refute C3
+non-uniformly: every dual pair would have a rule with polynomial `δ`, without a way to find it.
+
+*Proof.* The identification of `‖f‖` with `N` is the uniqueness of the minimal DNF of a monotone
+function; the equivalence is Corollary 4.15 and Proposition 4.14. ∎
+
+JRSW also ask whether the factor `log n` in the Ehrenfeucht–Haussler bound `exp(O(log n log² N))`
+on decision-tree size can be removed. Theorem 4.24 shows that `N^{O(log N)}` would then be tight
+on GK. For monotone `f`, a valid rule with `τ ≤ N^{O(log N)}` on every dual pair would give such a
+decision tree (Theorem 4.25, and `n ≤ |C||Tr C| ≤ N²` because every vertex of a minimal minterm
+is private to a maxterm). FK96's analysis gives `τ ≤ N^{O(log² N)}` for rules with their
+frequency guarantee; between that and `N^{Ω(log N)}` the exponent of FK-A's worst case is open.
+A bounded search on 2026-10-23 (the ECCC report read in full, three web searches) found no answer
+to Question 1; Bollig (ECCC TR02-033) answers a different question from the same paper.
+
 ## 5. Substitution (Track D)
 
 For a template `T` on points `ι` and hypergraphs `Γ i`, the substitution is
@@ -817,7 +900,8 @@ That `P_p` is strictly increasing for a nonconstant monotone property is Russo�
 | B: `ε(8) = 2/5` (Conjecture 3.3) | open; CP-SAT infeasibility not Lean-certified |
 | B3: growth of `ε(n)` | `ε(n) ≥ 1/√n` (Theorem 3.1) and `ε(s²) ≤ 1/s` by `s` disjoint `s`-sets, so `ε(n) = Θ(n^{−1/2})`. These pairs have `N = s + s^s`, so `ε·log₂ N ≈ log₂ s → ∞`: minimising `ε` on `n` points does not approach the FK96 threshold `ε·log₂ N ≥ 1`. The upper bound for general `s` is not in Lean (`eps_four`, `eps_nine` cover `s = 2, 3`) |
 | C2: Conjecture 4.5 | **refuted**: `ro12` has `δ = 43 > 2N` (Lean, evaluation); GK `f₄` has `δ/N = 1368` (Rust). The leftmost bound `δ ≤ 2n + 2` is Theorem 4.16 (Lean). Open: Conjecture 4.19, `δ/N` unbounded on GK under FK-A's rule (log-ratio 0.84, 1.12, 1.67) |
-| C3 | `δ ≤ 2N` refuted by `ro12`; no polynomial bound under ETH (Proposition 4.6). For unmodified FK-A, an explicit family defeating every valid symmetric rule exists iff some monotone family has polynomial `N` and superpolynomial size of FBDDs named by their functions (Theorem 4.13, Proposition 4.14, Lean); replacing these by arbitrary FBDDs rests on the argued reduction of review row 29. None is known, and mixedness cannot give one (§4, *Literature*) |
+| C3 | `δ ≤ 2N` refuted by `ro12`; no polynomial bound under ETH (Proposition 4.6). For unmodified FK-A, an explicit family defeating every valid symmetric rule exists iff some monotone family has polynomial `N` and superpolynomial size of FBDDs named by their functions (Theorem 4.13, Proposition 4.14, Lean); replacing these by arbitrary FBDDs rests on the argued reduction of review row 29. None is known, and mixedness cannot give one (§4, *Literature*). This is the monotone case of JRSW's Question 1, open since 1997 (Proposition 4.27) |
+| Track T: FK-A's recursion tree | On GK and TK `τ ≥ 2·(27/16)^{n/4}/(n + 1) = N^{Ω(log N)}` under every valid rule (Theorems 4.24–4.25, Lean), so FK-A is eventually slower than FK-B's bound and memoisation saves an exponential factor (Corollary 4.26). Open: FK-A's worst-case exponent between `N^{Ω(log N)}` and FK96's `N^{O(log² N)}`; a rule with `τ ≤ N^{O(log N)}` on every dual pair would remove JRSW's `log n` factor for monotone functions |
 | Track 3: a memo-friendly rule with FK96's guarantee | The guarded rule keeps the frequency `≥ 1/⌊log₂ N⌋` at every node (Proposition 4.18, Lean); `δ = 32, 263, 124,876` on GK `f₃–f₅`. Open: FK96's recursion bound for it in Lean; a rule with both the guarantee and `δ = O(n)` on read-once pairs |
 | D3 | `r = 2` settled, no (Proposition 5.4); open from `r = 3` (Open problem 5.3) |
 | E1: `|H| + |Tr H|` for the smallest explicit Ryser counterexample of `openai/math` family 162 | not started; needs the construction's transversals counted by structure |
@@ -892,3 +976,8 @@ been confirmed by the author.
 | 59 | Through depth k: at most 1+k(k+1), or 1+k(k+1)/2 for a self-transversal input; rule need only choose live vertices | `SD.dual_transitive_bound`, `SD.self_transitive_bound` | Lean; no runtime or deeper-state bound |
 | 60 | Fano and Witt attain the smaller bound; complete(10,3) refutes the universal triangular shortcut | Observation 4.23; `experiments/symmetry_depth.py`, `tests/test_symmetry_depth.py` | Computed, exact ordered incidence-graph isomorphism; 18 configurations |
 | 61 | Complete uniform families attain both bounds for every k | `symmetry-depth.md`, rank recurrence and explicit parameter families | Written proof, not formalised; the upper-bound proofs do not rely on this claim |
+| 62 | JRSW Lemma 2.2 (`S = ∅`) and Theorem 2.4, restated for `coalt`: `dt ≥ ‖f̂‖₁ ≥ 2·(27/16)^{n/4}` with `c₂ = 27/8` | Theorem 4.24; `gk_leaves`; ECCC TR97-023 pp. 3–6 read 2026-10-23 (page images) | Lean, 2026-10-23; standard axioms enforced; `c₂` by `decide` |
+| 63 | Corollary 4.26(a): `Fm.leftmost_delta` (on an ordered read-once formula) and `fkA_gk_tree` (on `gkH`, `coalt` moved to `Fin (2^i)`) concern the same function | `coalt` is the alternating tree with leaves `0 … 2^i − 1` in order; no Lean term links the two encodings | By inspection |
+| 64 | On a dual pair FK-A's recursion tree is a decision tree with at most `(n + 1)τ` leaves, under every valid rule, either variant | Theorem 4.25; `fkA_tree_dt`, `eval_fkDT`, `leaves_fkDT` | Lean, 2026-10-23; standard axioms enforced |
+| 65 | FK96: algorithm B runs in time `N^{4χ(N)+O(1)}`, `χ(N)^{χ(N)} = N` | Fredman–Khachiyan, *J. Algorithms* 21 (1996); not re-read this session | Cited |
+| 66 | JRSW Question 1 (an FBDD superpolynomial in `dnf(f) + dnf(¬f)`) is open, and is C3 for monotone `f` | ECCC TR97-023 §4 read 2026-10-23; three web searches the same day found no answer, and Bollig (ECCC TR02-033) answers a different question of that paper | Unchecked beyond that search |

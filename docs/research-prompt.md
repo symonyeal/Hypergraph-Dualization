@@ -13,7 +13,10 @@ the symmetry of `H` shape FK-A's recursion?) to the subproblem DAG: `τ` the tre
 distinct subproblems, the memo DAG as an FBDD (Theorem 4.13), and split rules as variable orders.
 The open core is C3: an explicit family hard for memoised FK-A under every valid symmetric rule,
 which up to a factor 2 is a monotone function with small DNF and CNF and no small FBDD named by
-its functions. No route to it is in sight.
+its functions. It is the monotone case of Question 1 of Jukna, Razborov, Savický and Wegener
+(ECCC TR97-023, 1997), still open (Proposition 4.27). The tree side is settled on GK and TK
+(Track T, 2026-10-23): `τ ≥ 2·(27/16)^{n/4}/(n+1)` under every valid rule, in Lean
+(`fkA_gk_tree`, Theorems 4.24–4.25), so memoisation saves an exponential factor there.
 
 ## 2. Focus: Track S, how much of FK-A's work is symmetry
 
@@ -130,13 +133,15 @@ the degree-sum rule, do S1 and S2, record S3's data as an Observation, and move 
 | B: `ε(8) = 2/5` | The CP-SAT infeasibility of `experiments/eps_search.py` re-encoded as SAT, its LRAT proof checked in Lean (`bv_decide`'s LRAT checker), or the search split into `native_decide` cases. Otherwise it stays Conjecture 3.3 |
 | B3: `ε(s²) ≤ 1/s` for all `s` | Lean, generalising `eps_four` and `eps_nine` |
 | A6: the two FK-A children of `w11` | `|Aut| = 720` for both and primitivity, by evaluation (`WittData.lean` style) |
+| T1: one encoding of GK | A Lean term `gkFm i : Fm (2^i)` with `Ordered` and `dnf (gkFm i) = gkH i`, so that `Fm.leftmost_delta` and `fkA_gk_tree` meet in one theorem `τ/δ ≥ 2·(27/16)^{n/4}/((n+1)(2n+2))` (review row 63) |
+| T2: FK-A's worst-case exponent | Between `N^{Ω(log N)}` (Corollary 4.26) and FK96's `N^{O(log² N)}`. Either a family where every rule with the frequency guarantee needs `N^{ω(log N)}`, or a rule with `τ ≤ N^{O(log N)}` on all dual pairs; the second would remove JRSW's `log n` factor for monotone functions |
 | A5d for `t = 2, 3` | Conjecture 2.12 proved for `t = 2` (an intersecting `S(2,k,v)` is a projective plane: `n₀ = 0` gives `v = k² − k + 1`; then cite Bierbrauer for blocking sets in order `≥ 3`) and for `t = 3` from `n₀(3,k,v) = 0` |
 
 ## 4. Parked, with the reason
 
 | Item | Why parked |
 | --- | --- |
-| C3, the FBDD separation | No route. First do a bounded literature check of whether a monotone family with polynomial `N` and superpolynomial FBDD size is known: Jukna–Razborov–Savický–Wegener (ECCC TR97-023), Wegener's *Branching Programs and Binary Decision Diagrams* ch. 6–7, the Bollig–Wegener monotone 2-DNF lower bounds for OBDDs and read-once BPs (is the CNF also small?), Beame–Li–Roy–Suciu on decision-DNNF for query lineages. Record the verdict as a review-log row |
+| C3, the FBDD separation | It is JRSW Question 1 for monotone functions, open since 1997 (Proposition 4.27; literature check of 2026-10-23, review row 66). Mixedness cannot give it (§4). A lower-bound method that tolerates short terms and clauses would be needed; no candidate family is known |
 | D3 from `r = 3` | Both sides must be irregular (Proposition 3.7); the transitive groups of degree 16 search needs Sage and many hours |
 | E1, Ryser family 162 | Needs `Tr` counted by structure; no bridge to the focus |
 | Explorer site | Not research; handed back in the thesis redesign |
