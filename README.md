@@ -135,6 +135,13 @@ small DNF and CNF but no small FBDD named by its functions (research §7, C3). T
 The next phase, how much of FK-A's work is repetition up to isomorphism, is planned in
 [`docs/research-prompt.md`](docs/research-prompt.md).
 
+**Symmetry depth.** If `Aut(G)` is `k`-transitive, FK-A reaches at most
+`1+k(k+1)` ordered isomorphism classes through depth `k`, under any rule choosing
+live vertices. For self-transversal `G`, the bound is `1+k(k+1)/2`
+(`SD.dual_transitive_bound`, `SD.self_transitive_bound`). Fano and Witt attain
+the latter bound at depths 2 and 4 (computed). The [proof and limits](docs/symmetry-depth.md)
+separate these shallow-depth bounds from runtime and deeper recursion.
+
 ## Layout
 
 | Path | Contents |

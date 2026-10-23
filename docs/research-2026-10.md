@@ -723,6 +723,34 @@ injective. Applying `Tr` twice also makes Sperner reduction equivariant.
 Use `Dual C D ↔ min C = Tr D`, then `fkAR_correct`. A formal cache implementation
 and its invariant are still required for S1's algorithmic correctness claim.
 
+**Theorem 4.22** (Track S, symmetry depth). Suppose `0 ≤ k ≤ n` and `Aut(G)`
+is `k`-transitive. On `(G,Tr G)`, either FK-A variant under any live-vertex rule
+has at most `2j` ordered isomorphism classes at each positive depth `j ≤ k`,
+and at most `1+k(k+1)` through depth `k`. For `G=Tr G`, the bounds improve to
+`j` and `1+k(k+1)/2`. No equivariance or side-symmetry of the rule is needed.
+Lean: `SD.Trace.normal`, `SD.fkADag_trace`, `SD.hom_of_ktransitive`,
+`SD.depth_bound`, `SD.self_depth_bound`, `SD.dual_transitive_bound`,
+`SD.self_transitive_bound`; `SD.isoKey_eq_iff` identifies the quotient.
+
+*Proof.* Every nonroot state has normal form
+`(M(C,A,B),M(D,B,A))`, with the input sides possibly exchanged,
+`A∩B=∅`, `|A|+|B|=j` and `A≠∅`. Both FK-A children insert their latest
+split vertex into the first deletion set. Thus `|B|` has only `j` choices.
+Transitivity identifies all states with the same source side and `|B|`;
+equal input sides remove the source-side bit. Sum over depth. The
+[full proof and scope](symmetry-depth.md) give the formal recursion bridge.
+
+**Observation 4.23** (computed, 2026-10-23). Fano has layer counts `1,1,2`
+through depth 2; Witt has `1,1,2,3,4` through depth 4. Both attain Theorem
+4.22's self-transversal bound. The complete 3-uniform family on 10 points
+has `1,2,4` through depth 2, refuting the proposed universal triangular
+bound of 6. Original contraction count does not determine orientation:
+paths `LR` and `RR` give first-side ranks 7 and 2 while each fixes one
+original one. See the [18-configuration table](../results/symmetry-depth.md).
+The general complete-family constructions attaining both bounds for every
+`k` have a written proof in [symmetry-depth.md](symmetry-depth.md); that
+sharpness argument is not formalised. Priority is not asserted.
+
 ## 5. Substitution (Track D)
 
 For a template `T` on points `ι` and hypergraphs `Γ i`, the substitution is
@@ -860,3 +888,7 @@ been confirmed by the author.
 | 55 | Every cited general theorem uses only `propext`, `Classical.choice`, `Quot.sound`; every *Checked* fact is an evaluation | `Axioms.lean` (`#assert_standard_axioms`, `#assert_evaluation`) | Lean, enforced by `lake build` |
 | 56 | Track S's reached-class count differs from its cache count: GK f3 has `δ_iso = 160`, `d_iso = 155`; the f4 factor 92 is `δ/d_iso`, an upper bound on `δ/δ_iso` | Observation 4.20; `python experiments/iso_memo.py 3 2`, rerun 2026-10-23; `results/iso-memo.md` | Computed; 18 targeted tests pass, including all 15 table rows against the hypergraph engine and 465 formula pairs against an incidence-graph oracle |
 | 57 | Relabelling preserves literal transversal equality, duality on redundant families and FK-A verdicts under arbitrary rules | Proposition 4.21; `tr_eq_pimg_iff`, `minimal_pimg`, `dual_pimg`, `fkAR_pimg`; `lake build` on 2026-10-23 | Lean, 1863 jobs; standard axioms enforced in `Axioms.lean`; cache implementation correctness remains open |
+| 58 | At depth j, the first deletion set is nonempty; common j-transitivity gives at most 2j ordered classes, or j for equal sides | Theorem 4.22; `SD.Trace.normal`, `SD.fkADag_trace`, `SD.hom_of_transitive`, `SD.depth_bound`, `SD.self_depth_bound`, `SD.isoKey_eq_iff` | Lean; standard axioms enforced |
+| 59 | Through depth k: at most 1+k(k+1), or 1+k(k+1)/2 for a self-transversal input; rule need only choose live vertices | `SD.dual_transitive_bound`, `SD.self_transitive_bound` | Lean; no runtime or deeper-state bound |
+| 60 | Fano and Witt attain the smaller bound; complete(10,3) refutes the universal triangular shortcut | Observation 4.23; `experiments/symmetry_depth.py`, `tests/test_symmetry_depth.py` | Computed, exact ordered incidence-graph isomorphism; 18 configurations |
+| 61 | Complete uniform families attain both bounds for every k | `symmetry-depth.md`, rank recurrence and explicit parameter families | Written proof, not formalised; the upper-bound proofs do not rely on this claim |
