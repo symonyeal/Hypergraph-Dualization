@@ -32,6 +32,24 @@ One missing target pair per run, in block labels:
 A zero in the missing column is necessary for the embedding of Q1, not sufficient: the probe
 forgets orientation and constants.
 
+## Equal-size target pairs and GK `f₄` (Observation 4.39)
+
+The probe also counts, for each support size, the target pairs of that size and how many occur
+jointly (`equal_size` records). Files `gk2-equal.json`, `gk3-equal.json`, `tk2-equal.json`,
+`tk3-equal.json` repeat the runs above with these records; `gk4-joint.json` is GK `f₄` (219 s).
+
+| larger instance | targets | target pairs occurring | equal even sizes | equal odd sizes |
+| --- | ---: | ---: | ---: | ---: |
+| GK `f₂` | 1 | 1 / 1 | 1 / 1 | — |
+| GK `f₃` | 7 | 21 / 49 | 4 / 4 | 0 / 3 |
+| GK `f₄` | 348 | 64,155 / 121,104 | 2,573 / 3,102 | 0 / 2,786 |
+| TK `S₂` | 3 | 5 / 9 | 2 / 2 | 0 / 1 |
+| TK `S₃` | 33 | 259 / 1,089 | 19 / 50 | 0 / 41 |
+
+GK `f₄`: blocks `a` and `c` take 1,904 and 1,893 projected supports (empty included) and 664,275
+joint pairs; first missing target pair `{2,3}` against `{11,…,15, 18, 19, 28,…,31}`; first missing
+equal-size pair `({5,6,7}, {5,6,7})`; `δ = 67,247,387`, as in Observation 4.4.
+
 ## Guarded rule on GK `f₅` (`--guard-trace --guarded`)
 
 Distinct ordered nodes, counted by live-support size (`gk5-guard.json`, 1.96 s):

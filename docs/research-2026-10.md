@@ -1102,15 +1102,72 @@ at `k = 2`, which informs but does not decide the conjecture. (2) The GK `f₄` 
 for `k = 3 → 4`. (3) If equal size is too strict, use progress measured by the global score in
 place of support size; the counting argument needs only at most `n_k` classes.
 
-*Leads from other fields* (agent reports; only the first abstract read). The parametric shortest
-path has `n^{Ω(log n)}` breakpoints (Carstensen 1983; Mulmuley and Shah 2001; for planar graphs
-Gajjar and Radhakrishnan, arXiv:1811.05115, abstract read 2026-10-23). By an agent's account of
-that paper, the construction keeps two cost components balanced at every scale, and the count
-grows by a factor `n` per level. By a second agent's account, smoothed analysis removes it
-(Nikolova, Kelner, Brand and Mitzenmacher, ESA 2006). A third account, Pearl's game trees, has
-evaluation cost peaking at the critical leaf probability. Moore–Shannon and Valiant
-amplification iterate AND/OR maps with an unstable fixed point. These match the balance of
-Proposition 4.34. None was checked against its source.
+*Leads from other fields.* Superseded by "Where else this problem appears" below, which also
+corrects the reading of Gajjar and Radhakrishnan given here at first.
+
+**Observation 4.39** (computed, 2026-10-23; Rust). The equal-size recount of Observation 4.31's
+probes and the GK `f₄` joint probe (`block_probe.py gk 4 joint`, 219 s). `T` is the set of
+nonempty standalone supports of the block (`|T| = σ_k`), and a target pair is a pair in `T × T`.
+
+| larger instance | `|T|` | target pairs occurring | share | equal even sizes | equal odd sizes |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| GK `f₂` | 1 | 1 / 1 | 1 | 1 / 1 | — |
+| GK `f₃` | 7 | 21 / 49 | 0.43 | 4 / 4 | 0 / 3 |
+| GK `f₄` | 348 | 64,155 / 121,104 | 0.53 | 2,573 / 3,102 | 0 / 2,786 |
+| TK `S₂` | 3 | 5 / 9 | 0.56 | 2 / 2 | 0 / 1 |
+| TK `S₃` | 33 | 259 / 1,089 | 0.24 | 19 / 50 | 0 / 41 |
+
+At GK `f₄` the blocks `a` and `c` take 1,904 and 1,893 projected supports and 664,275 joint pairs.
+Three things follow.
+
+(a) Conjecture 4.38 fails in its stated form at `k = 2` and `k = 3`. No pair of equal odd size
+occurs, not even the diagonal pair `({5,6,7}, {5,6,7})` at either level. It is withdrawn: it was
+stated for `k ≥ 4`, and nothing now supports it there.
+
+(b) On both families, two standalone states of equal odd size never occur together, while most
+pairs of equal even size do. Each odd-size state of standalone `f₂` holds a variable alone under
+its gate: `x₁` in `{1,…,7}`, `x₃` in `{3,…,7}`, `x₅` in `{5,6,7}`. *Hypothesis* (not tested):
+once a block holds such a variable, the rule splits in that block again before it touches
+another, so two blocks never hold one at the same time. Test: count the reached nodes of GK `f₄`
+at which two top blocks each hold a lone variable.
+
+(c) The share of target pairs that occur is `1, 0.43, 0.53` for `k = 1, 2, 3` on GK, far above
+what Proposition 4.37 needs.
+
+**Conjecture 4.40** (joint squaring; replaces Conjecture 4.38). On GK, for every `k ≥ 1`, at
+least a quarter of the pairs of nonempty standalone supports of `f_k` occur jointly as
+`(S∩a, S∩c)` on `f_{k+1}`: `J_{k+1} ≥ σ_k²/4`. *Evidence:* shares `1, 0.43, 0.53` for `k = 1–3`
+(Observation 4.39). *Search bound:* `k ≤ 3`; `f₅` cannot be enumerated. Since distinct pairs of
+projections come from distinct supports, `σ_{k+1} ≥ J_{k+1}`. With `σ₄ ≥ (δ₄ − 2)/2`, so
+`σ₄/N₄ ≥ 684`, Proposition 4.37 (`β = 0`) then gives Conjecture 4.19. It needs the conjecture only
+for `k ≥ 4`, and only in the weaker form `J_{k+1} ≥ σ_k²/A` with `A < 513`. On TK the share falls
+(`0.56, 0.24`), which is consistent with TK's falling `δ/N` but decides nothing on GK.
+
+### Where else this problem appears (literature, 2026-10-23)
+
+Eight Sonnet research agents read the literature of the fields that solve the same duality by
+pivoting. Their notes, with the read status of every source, are outside the repository in the
+work folder `hd-lit/`. Rows marked *checked* were confirmed against the source text in this
+session; the rest are agent readings (review row 88).
+
+| Field and object | Pivot or branching rule there | Parts and reuse | What bears on Q1–Q3 |
+| --- | --- | --- | --- |
+| Commutative algebra: Alexander duals, Hilbert series of monomial ideals | "popvar", the variable dividing the most minimal generators (Roune and Sáenz-de-Cabezón, arXiv:1112.4523, §3.5), which is CoCoA's rule (quoted by Dickenstein and Tobis, arXiv:1003.3508, §2) | Independence split at every node: `msm(I) = msm(I∩k[A]) × msm(I∩k[B])` (Roune, slice algorithm, arXiv:0806.3680, Prop. 26); no cache | Same rule, and the decomposition at every node prevents interleaving; only random ideals are benchmarked |
+| Knowledge compilation: DPLL with caching | Any heuristic | Traces of caching DPLL are FBDDs (Huang and Darwiche, JAIR 2007, Theorem 1, *checked*), with components decision-DNNF (Theorem 3) | Theorem 4.13 is this correspondence; no trace-size bound for a named heuristic was found |
+| Reliability: fault trees without repeated events | Variable orders for BDDs | Modules solved separately (Dutuit and Rauzy 1996, through secondary accounts) | Depth-first left-most order is optimal with `n` nodes (Mo et al. 2012, Theorem 1), as in Theorem 4.16; no frequency or dynamic order is measured on such trees |
+| Diagnosis and hitting-set enumeration | The element hitting most conflicts (Pill, Quaritsch, Wotawa 2016) | HS-DAG node reuse (Greiner, Smith, Wilkerson 1989); decomposition `Tr H = ⋀_c Tr H_c` (Gainer-Dewar and Vera-Licona, arXiv:1601.02939, Lemma 4.5); disjoint-join nodes for bounded treewidth (Kenig and Mizrahi, ICDT 2025) | An FK implementation is the slowest in Murakami and Uno's benchmark (arXiv:1102.3813); on disjoint Fano products its time grows faster than its output, unexplained there |
+| Sequential evaluation of read-once formulas | The variable in the most implicants and implicates (Kaplan, Kushilevitz, Mansour, STOC 2005, through Ünlüyurt's review arXiv:2511.15742; not read) | — | FK-A's degree-sum rule as an evaluation heuristic, with query-cost guarantees only; depth-first strategies are optimal at depth 2 and not at depth 3 (Greiner, Hayward, Molloy, AAAI 2002, Theorem 4, Observation 5) |
+| Game-tree search | Most-proving node | Transposition tables | Proof numbers are smallest proof-set sizes, not counts (Allis 1994, Definitions 2.3–2.4); no counterpart of the degree-sum rule |
+| Parametric optimisation | — | — | Gajjar and Radhakrishnan (arXiv:1811.05115, *checked*): pieces grow by a factor `n` per level (Theorem 6(i), `f(n, 2^k) ≥ n^k`), and for one parameter `f(n, 2^k − 1) ≤ 2n·f(n, 2^{k−1} − 1)` (§1.2). The constants are rescaled per level, not kept equal. One weight cannot square a count per level; in FK-A every block has its own weight, so that bound does not apply |
+| Monotone dualization | FK's frequent variable | Memoised FK-B, empirical only (Sedaghat, Stephen, Chindelevitch, SEA 2018) | No bound on FK-A's memo count was found; JRSW's Question 1 is open in every source found through October 2026; JRSW p. 11 gives the alternating trees an oblivious read-once branching program of size `O(n²)` |
+| AND/OR evaluation | Directional (depth-first) algorithms | — | Optimal for uniform NAND trees (Saks and Wigderson, through Leonardos, arXiv:2203.17168, Theorem 1); fixed points there are of leaf probabilities (Brodsky and Pippenger, Lemma 5.2), not of the term and clause counts of Proposition 4.34 |
+
+So the most-frequent pivot is standard in four of these fields. Every field that meets
+tree-structured inputs avoids interleaving, either by a depth-first order or by splitting into
+independent parts at every node. None measures or bounds the number of distinct subproblems of a
+frequency pivot on such inputs. In this search, the blow-up of Conjecture 4.19 and the balance
+of Proposition 4.34 are not in the literature. The search is not exhaustive: Bigatti 1997,
+Roune's thesis, Rauzy 1993, Reiter 1987 and Kaplan–Kushilevitz–Mansour were not read.
 
 ## 5. Substitution (Track D)
 
@@ -1177,7 +1234,7 @@ That `P_p` is strictly increasing for a nonconstant monotone property is Russo�
 | A5d (Conjecture 2.12) | open; evidence for `v ≤ 100` |
 | B: `ε(8) = 2/5` (Conjecture 3.3) | open; CP-SAT infeasibility not Lean-certified |
 | B3: growth of `ε(n)` | `ε(n) ≥ 1/√n` (Theorem 3.1) and `ε(s²) ≤ 1/s` by `s` disjoint `s`-sets, so `ε(n) = Θ(n^{−1/2})`. These pairs have `N = s + s^s`, so `ε·log₂ N ≈ log₂ s → ∞`: minimising `ε` on `n` points does not approach the FK96 threshold `ε·log₂ N ≥ 1`. The upper bound for general `s` is not in Lean (`eps_four`, `eps_nine` cover `s = 2, 3`) |
-| C2: Conjecture 4.5 | **refuted**: `ro12` has `δ = 43 > 2N` (Lean, evaluation); GK `f₄` has `δ/N = 1368` (Rust). The leftmost bound `δ ≤ 2n + 2` is Theorem 4.16 (Lean). Open: Conjecture 4.19, `δ/N` unbounded on GK under FK-A's rule (log-ratio 0.84, 1.12, 1.67). Route: Proposition 4.34 (Lean balance), Proposition 4.37 (a step losing `A·n_k`, `A < 2.004`, suffices), Conjecture 4.38 (equal-size embedding) |
+| C2: Conjecture 4.5 | **refuted**: `ro12` has `δ = 43 > 2N` (Lean, evaluation); GK `f₄` has `δ/N = 1368` (Rust). The leftmost bound `δ ≤ 2n + 2` is Theorem 4.16 (Lean). Open: Conjecture 4.19, `δ/N` unbounded on GK under FK-A's rule (log-ratio 0.84, 1.12, 1.67). Route: Proposition 4.34 (Lean balance), Proposition 4.37 (loss budgets), Conjecture 4.40 (a constant share of standalone pairs occurs jointly; measured `0.43, 0.53` at `k = 2, 3`) |
 | C3 | `δ ≤ 2N` refuted by `ro12`; no polynomial bound under ETH (Proposition 4.6). For unmodified FK-A, an explicit family defeating every valid symmetric rule exists iff some monotone family has polynomial `N` and superpolynomial size of FBDDs named by their functions (Theorem 4.13, Proposition 4.14, Lean); replacing these by arbitrary FBDDs rests on the argued reduction of review row 29. None is known, and mixedness cannot give one (§4, *Literature*). This is the monotone case of JRSW's Question 1, open since 1997 (Proposition 4.27) |
 | Track S: symmetry in FK-A's work | Measured on GK `f₁–f₅`, TK `S₁–S₄`, `alt3 d₃–d₅` and the library (Observation 4.29); the iso-keyed memo is sound (Theorem 4.28, Lean). Under the leftmost rule there are no symmetric repeats; under the degree-sum rule `δ/δ_iso` grows (81.3 at GK `f₄`) and `δ_iso/N` too. Open: Conjecture 4.30; `δ_iso` at GK `f₅` and the label-exact `δ` of TK `S₄` under the degree-sum rule (not computed); a recurrence for the pruned shapes the rule reaches |
 | Track T: FK-A's recursion tree | On GK and TK `τ ≥ 2·(27/16)^{n/4}/(n + 1) = N^{Ω(log N)}` under every valid rule (Theorems 4.24–4.25, Lean), so FK-A is eventually slower than FK-B's bound and memoisation saves an exponential factor (Corollary 4.26). Open: FK-A's worst-case exponent between `N^{Ω(log N)}` and FK96's `N^{O(log² N)}`; a rule with `τ ≤ N^{O(log N)}` on every dual pair would remove JRSW's `log n` factor for monotone functions |
@@ -1277,4 +1334,8 @@ been confirmed by the author.
 | 81 | The squaring step holds at every measured step of TK as well as GK; the TK contrast is in `N`'s growth | Observation 4.35, from the values of Observations 4.4 and 4.29 | Computed (arithmetic on existing values) |
 | 82 | Projections of reached nodes onto a block are reached on the block by the hull rule | Lemma 4.36 | Argued, not in Lean |
 | 83 | The loss budgets of Proposition 4.37 at `k₀ = 4` | Proposition 4.37 | Written proof (arithmetic) |
-| 84 | Parametric shortest paths (Carstensen 1983, Mulmuley–Shah 2001, Gajjar–Radhakrishnan 2019), game-tree criticality (Pearl), amplification (Moore–Shannon, Valiant) as analogues of the balance | Conjecture 4.38, *Leads*; Gajjar–Radhakrishnan abstract read 2026-10-23 | Unchecked: research-agent reports, sources not read |
+| 84 | Parametric shortest paths (Carstensen 1983, Mulmuley–Shah 2001, Gajjar–Radhakrishnan 2019), game-tree criticality (Pearl), amplification (Moore–Shannon, Valiant) as analogues of the balance | Conjecture 4.38, *Leads*; Gajjar–Radhakrishnan abstract read 2026-10-23 | Corrected 2026-10-23: Gajjar–Radhakrishnan rescale their constants per level rather than keep them equal, and grow by a factor `n` per level (row 88) |
+| 85 | Equal-size and joint target-pair counts on GK `f₂–f₄`, TK `S₂–S₃` | Observation 4.39; `--joint` with equal-size records, `results/block-probes/*-equal.json`, `gk4-joint.json` | Rust, 2026-10-23; equal-size counts checked against the formula engine on GK `f₂–f₃`, TK `S₂–S₃` (`tests/test_readonce_probe.py`) |
+| 86 | Conjecture 4.38 withdrawn | Observation 4.39(a): no equal odd-size pair occurs at GK `f₃` or `f₄` | Computed |
+| 87 | Conjecture 4.40 with `A < 513` suffices for Conjecture 4.19 | Proposition 4.37 with `σ₄ ≥ (δ₄ − 2)/2` | Written proof (arithmetic) |
+| 88 | The cross-field table of "Where else this problem appears" | Notes in the work folder `hd-lit/` (Sonnet agents, full texts where available); checked here: Huang–Darwiche JAIR 2007 Theorem 1, Calì–Razgon Theorem 21, Gajjar–Radhakrishnan Theorem 6(i), §1.2 and Lemma 14 | Unchecked except the rows marked *checked* |

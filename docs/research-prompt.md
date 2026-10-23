@@ -53,17 +53,18 @@ by itself certify the full embedding or its isomorphism analogue.
 - *Block states* (Lemma 4.36): a top block's projections are reached by the hull rule (any
   maximiser of `deg_C + λ·deg_D`, `λ > 0` free at each node), so condition (i) below is about
   which `λ` the environment produces.
-- *New embedding* (Conjecture 4.38): only pairs of standalone supports of **equal size** must
-  occur jointly. Cauchy–Schwarz over the `n_k` sizes then gives the `β = 1` step. All three
-  known missing pairs are of unequal size. The four-block form would make `δ` superpolynomial
-  in `N`.
+- *Target now* (Conjecture 4.40): a constant share of the pairs of standalone supports occurs
+  jointly, `J_{k+1} ≥ σ_k²/4`; for `k ≥ 4` any `A < 513` in place of 4 settles Conjecture 4.19.
+  Measured shares `1, 0.43, 0.53` for `k = 1–3` (Observation 4.39; GK `f₄` joint probe, 219 s).
+  The equal-size form (Conjecture 4.38) is withdrawn: no pair of equal odd size ever occurs.
 
-*Next tests, in order.* (1) Recount the existing GK `f₃` and TK `S₂–S₃` joint probes on
-equal-size pairs: seconds. (2) Rust `--joint` on GK `f₄` (personal machine; runtime not
-measured). Index each block's live sets (at most 1,908) and record the joint `(S∩a, S∩c)` pairs
-in a 1,908² bitset. Check (i) that `f₃`'s reached live sets, moved onto block `a`, are among
-block `a`'s states, and (ii) that the equal-size pairs of them all occur. (3) Count `R*(f₃)`, the
-hull rule's reach, against the 1,893–1,908 marginal supports.
+*Next.* (1) Prove Conjecture 4.40, starting from why pairs fail. All known failures involve a
+block holding a variable left alone under its gate; test the hypothesis of Observation 4.39(b)
+by counting nodes of GK `f₄` where two top blocks hold one. (2) Count `R*(f₃)`, the hull rule's
+reach, against the 1,893–1,908 marginal supports. (3) The literature search of 2026-10-23
+(research §4, "Where else this problem appears") found no bound on a frequency pivot's memo on
+tree-structured inputs in any of eight fields; the fields that meet such inputs decompose into
+independent parts at every node, which is a candidate for Q2.
 
 *Not by enumeration.* If the law holds, `δ(f₅) ≥ 1.1·10¹⁵`; the evidence must come from `f₄`
 projections and from proof.

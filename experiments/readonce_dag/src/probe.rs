@@ -10,7 +10,8 @@
 //! q row/column index; v pending level; st DFS stack; seen visited ordered states;
 //! nt nonterminal nodes; nl leftmost ineligible; nf degree-sum fallbacks;
 //! nd chosen vertex differs from degree sum; first first leftmost departure;
-//! delta distinct ordered states; cst reached constants; lv level queue.
+//! delta distinct ordered states; cst reached constants; lv level queue;
+//! eq equal-size target pairs by size (targets, pairs, hits); miss first equal-size missing pair.
 
 use super::*;
 
@@ -113,6 +114,24 @@ impl<const W: usize> Joint<W> {
                  self.r.len() * self.r.len() - hit);
         if let Some((a, c)) = first {
             println!("{{\"kind\":\"missing\",\"a\":{:?},\"c\":{:?}}}", labels(a), labels(c));
+        }
+        // Conjecture 4.38 needs only target pairs of equal support size.
+        let mut eq: std::collections::BTreeMap<u32, (u64, u64, u64)> = Default::default();
+        let mut miss = None;
+        for &a in &self.r {
+            eq.entry(a.ones()).or_default().0 += 1;
+            for &c in &self.r {
+                if a.ones() != c.ones() { continue; }
+                let e = eq.get_mut(&a.ones()).unwrap();
+                e.1 += 1;
+                if self.has(a, c) { e.2 += 1; } else if miss.is_none() { miss = Some((a, c)); }
+            }
+        }
+        for (l, (m, p, h)) in &eq {
+            println!("{{\"kind\":\"equal_size\",\"size\":{l},\"targets\":{m},\"pairs\":{p},\"hits\":{h}}}");
+        }
+        if let Some((a, c)) = miss {
+            println!("{{\"kind\":\"equal_size_missing\",\"a\":{:?},\"c\":{:?}}}", labels(a), labels(c));
         }
     }
 }

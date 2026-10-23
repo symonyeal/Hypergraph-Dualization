@@ -1,0 +1,107 @@
+{
+  "family": "gk",
+  "k": 3,
+  "mode": "joint",
+  "seconds": 0.06649799994193017,
+  "source_sha256": {
+    "main.rs": "8aac5be81db6f8c7700a5d7fabb2f3af04e3467b615303917c39999c9029bbfc",
+    "probe.rs": "8658dc98af7cdfaaf5c09321d6f679f91529ab22a792b52d51675fa0433fea07"
+  },
+  "formula": "(| (& (| (& (| 0 1) (| 2 3)) (& (| 4 5) (| 6 7))) (| (& (| 8 9) (| 10 11)) (& (| 12 13) (| 14 15)))) (& (| (& (| 16 17) (| 18 19)) (& (| 20 21) (| 22 23))) (| (& (| 24 25) (| 26 27)) (& (| 28 29) (| 30 31)))))",
+  "records": [
+    {
+      "kind": "joint",
+      "targets": 7,
+      "a_states": 14,
+      "c_states": 14,
+      "pairs": 78,
+      "a_hits": 7,
+      "c_hits": 7,
+      "pair_hits": 21,
+      "pair_missing": 28
+    },
+    {
+      "kind": "missing",
+      "a": [
+        6,
+        7
+      ],
+      "c": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "kind": "equal_size",
+      "size": 2,
+      "targets": 1,
+      "pairs": 1,
+      "hits": 1
+    },
+    {
+      "kind": "equal_size",
+      "size": 3,
+      "targets": 1,
+      "pairs": 1,
+      "hits": 0
+    },
+    {
+      "kind": "equal_size",
+      "size": 4,
+      "targets": 1,
+      "pairs": 1,
+      "hits": 1
+    },
+    {
+      "kind": "equal_size",
+      "size": 5,
+      "targets": 1,
+      "pairs": 1,
+      "hits": 0
+    },
+    {
+      "kind": "equal_size",
+      "size": 6,
+      "targets": 1,
+      "pairs": 1,
+      "hits": 1
+    },
+    {
+      "kind": "equal_size",
+      "size": 7,
+      "targets": 1,
+      "pairs": 1,
+      "hits": 0
+    },
+    {
+      "kind": "equal_size",
+      "size": 8,
+      "targets": 1,
+      "pairs": 1,
+      "hits": 1
+    },
+    {
+      "kind": "equal_size_missing",
+      "a": [
+        5,
+        6,
+        7
+      ],
+      "c": [
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "kind": "summary",
+      "n": 32,
+      "delta": 369
+    }
+  ]
+}
