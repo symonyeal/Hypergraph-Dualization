@@ -677,7 +677,8 @@ GK family. *Evidence:* `δ/N = 0.67, 1.92, 1368` and `log δ / log N = 0.84, 1.1
 alternating trees of fan-in 3 to depth 4, and `k ≤ 5` disjoint copies of `ro12`'s gadget, where
 `δ/N ≤ 1.91` and falls because `N` grows exponentially through one side. Since GK `fₖ` has an
 FBDD with at most `n + 2` nodes (`Fm.leftmost_fbdd`), any growth is the rule's alone. A proof in the manner of
-`matching_law` would have to control `splitVar` along GK's interleaved states; it was not found.
+`matching_law` would have to control `splitVar` along GK's interleaved states; it was not found. Observation 4.29 splits `δ/N = 1368`
+at `f₄` into a symmetry factor 81.3 and `δ_iso/N = 16.8`, and Conjecture 4.30 strengthens this one.
 
 ### All dual pairs (C3)
 
@@ -707,7 +708,7 @@ On GK `f₃` under modified FK-A with the degree-sum rule, `δ = 369`,
 so its representatives can avoid classes present in the labelled DAG.
 The decomposition `τ = (τ/δ)(δ/δ_iso)δ_iso` uses 160, giving repetition factor
 `369/160 = 2.30625`. The earlier f4 ratio `δ/d_iso ≈ 92` is an upper bound on
-that repetition factor, not its measurement. The bounded 15-row table and the
+that repetition factor, not its measurement; Observation 4.29 measures it, 81.3. The bounded 15-row table and the
 independent incidence-graph checks are in [`../results/iso-memo.md`](../results/iso-memo.md).
 
 **Proposition 4.21** (Track S, relabelling foundation). For every permutation `σ`,
@@ -720,8 +721,8 @@ Lean: `pimg_injective`, `tr_eq_pimg_iff`, `minimal_pimg`, `dual_pimg`, `fkAR_pim
 
 *Proof.* `Tr` commutes with relabelling (`tr_equivariant`), and relabelling is
 injective. Applying `Tr` twice also makes Sperner reduction equivariant.
-Use `Dual C D ↔ min C = Tr D`, then `fkAR_correct`. A formal cache implementation
-and its invariant are still required for S1's algorithmic correctness claim.
+Use `Dual C D ↔ min C = Tr D`, then `fkAR_correct`. The cache implementation
+and its invariant are Theorem 4.28.
 
 **Theorem 4.22** (Track S, symmetry depth). Suppose `0 ≤ k ≤ n` and `Aut(G)`
 is `k`-transitive. On `(G,Tr G)`, either FK-A variant under any live-vertex rule
@@ -834,6 +835,91 @@ frequency guarantee; between that and `N^{Ω(log N)}` the exponent of FK-A's wor
 A bounded search on 2026-10-23 (the ECCC report read in full, three web searches) found no answer
 to Question 1; Bollig (ECCC TR02-033) answers a different question from the same paper.
 
+### How much of FK-A's work is symmetry (Track S, measured)
+
+Module `IsoMemo`; `experiments/readonce_dag` (`--classes`, `--iso`) and
+`experiments/iso_classes.py`, which writes [`../results/iso-memo.md`](../results/iso-memo.md). For
+a split rule and a dual input `(G, Tr G)`, `δ` counts the distinct subproblems, `δ_Aut` their
+`Aut(G)`-orbits, `δ_iso` their isomorphism classes as ordered pairs, and `d_iso` the nodes expanded
+when the memo is keyed by isomorphism class. Always `d_iso ≤ δ_iso ≤ δ_Aut ≤ δ ≤ τ`, and
+`τ = (τ/δ)·(δ/δ_iso)·δ_iso`: exact repeats, symmetric repeats and distinct work.
+
+**Theorem 4.28** (S1: a memo keyed by isomorphism class is sound). Let `κ` send every pair
+`(C, D)` to a relabelling `(σC, σD)` of it, `σ` depending on the pair. FK-A under any rule, with a
+memo of verdicts keyed by `κ` of the reduced pair and threaded through both recursive calls,
+returns `Dual(C, D)` for every fuel and either variant, and every verdict it stores is that of a
+pair with the stored key. From an empty memo its verdict is that of FK-A without a memo.
+Lean: `fkAI`, `dual_of_key_eq`, `fkAI_correct`, `fkAI_eq_fkAR`.
+
+*Proof.* Induction on the fuel, carrying the invariant on the memo. On a hit the stored verdict
+belongs to a pair `q` with `κ q = κ p`, so `σp = σ'q` for the two relabellings and
+`Dual p ↔ Dual q` by Proposition 4.21. On a miss the step is FK-A's split, correct by
+`dual_split` as in `fkAR_correct`; the two calls preserve the invariant by induction, and the new
+entry `(κ p, Dual p)` satisfies it. ∎
+
+`κ` need not be a canonical labelling, need not be computable, and need not be compatible with the
+rule; a canonical form is the case that makes the memo useful. The argument is van Bremen,
+Derkinderen, Sharma, Roy and Meel's soundness theorem for symmetric component caching in model
+counting (AAAI 2021, Theorem 1), with duality in place of the model count. Their cache stores a
+hash of the canonical labelling, so it is correct with high probability; `fkAI` stores keys. The
+memo's final length is the number of nodes expanded, so `d_iso` counts the work of a correct
+algorithm.
+
+**Observation 4.29** (S0; computed, 2026-10-23). Under modified FK-A, leaves numbered left to
+right:
+
+| pair | rule | `N` | `δ` | `δ_Aut` | `δ_iso` | `d_iso` | `δ/δ_iso` | `δ_iso/N` |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| GK `f₂` | degree sum | 12 | 8 | 8 | 8 | 8 | 1 | 0.67 |
+| GK `f₃` | degree sum | 192 | 369 | 176 | 160 | 155 | 2.31 | 0.83 |
+| GK `f₄` | degree sum | 49,152 | 67,247,387 | 1,183,141 | 827,175 | 734,303 | 81.3 | 16.8 |
+| GK `f₅` | guarded | 3,221,225,472 | 124,876 | 26,698 | 23,099 | 21,299 | 5.41 | 7.2·10⁻⁶ |
+| TK `S₃` | degree sum | 16,512 | 4,139 | 814 | 769 | 762 | 5.38 | 0.047 |
+| TK `S₄` | degree sum | 1,073,774,592 | not computed | | | 1,124,503 | | |
+| TK `S₄` | guarded | 1,073,774,592 | 1,352 | 911 | 855 | 855 | 1.58 | 8.0·10⁻⁷ |
+| `alt3 d₄` | degree sum | 531,522 | 920 | 335 | 335 | 335 | 2.75 | 6.3·10⁻⁴ |
+| `alt3 d₅` | degree sum | 2,125,764 | `≥ 104,621,934` | | `≥ 266,227` | 266,227 | | |
+| `w11` | degree sum | 132 | 140 | 35 | 35 | | 4.00 | 0.27 |
+| `trivial-aut-1` | degree sum | 66 | 34 | 34 | 20 | | 1.70 | 0.30 |
+
+(a) Under the leftmost rule `δ = δ_Aut = δ_iso = d_iso = n` on GK `f₂–f₅` and TK `S₁–S₄`: there
+are no symmetric repeats, and the whole saving over `τ` is exact repetition. (b) Under the
+degree-sum rule symmetry removes a factor that grows on all three read-once families
+(`δ/δ_iso = 1, 2.31, 81.3` on GK `f₂–f₄`; `1.17, 5.38` on TK `S₂–S₃`; `1.63, 2.75` on
+`alt3 d₃–d₄`), and most of it is the input's own symmetry (`δ/δ_Aut = 56.8` of the 81.3 at GK
+`f₄`). (c) What remains still outgrows `N` on GK: `δ_iso/N = 0.67, 0.83, 16.8` and
+`log δ_iso / log N = 0.84, 0.97, 1.26` for `k = 2, 3, 4`. Of `δ/N = 1368` at `f₄`, symmetry
+accounts for the factor 81.3 and distinct work for 16.8. (d) A subproblem can repeat up to
+isomorphism without any symmetry of the input: `trivial-aut-1` has `|Aut| = 1`, so `δ_Aut = δ = 34`,
+yet `δ_iso = 20`; van Bremen et al. make the same observation for components. The `alt3 d₅` row
+is a 40-minute run stopped at the subproblems with at least 97 live variables; its `δ_iso` bound is `d_iso`, since `d_iso ≤ δ_iso`. GK `f₅` under the
+degree-sum rule was not run. `δ = 67,247,387` and `τ = 78,146,658,241,629,218,193` at GK `f₄`
+reproduce review row 23 by a different traversal (by levels of `|S|`, `τ` as the sum of root-path
+counts). Validation is in `results/iso-memo.md` and `tests/test_readonce_dag.py`.
+
+*Where the states come from* (Conjecture 4.19). Write GK `f_{k+1} = (a ∧ b) ∨ (c ∧ d)` for the
+four top blocks, copies of `f_k` on disjoint variables, restricted at a node where all four are
+nonconstant. Counting the terms of `h` and of `h^d` that contain `x`, for `x` in block `a`,
+
+    deg_C x + deg_D x  =  |b|·deg_a x  +  (|c^d| + |d^d|)·deg_{a^d} x,
+
+where `|g|` is the number of terms of `g`. Within a block the degree-sum rule therefore maximises
+`deg_a x + λ·deg_{a^d} x`, with a weight `λ = (|c^d| + |d^d|)/|b|` set by the other three blocks,
+and moves to another block when that block's best score is larger. As the other blocks are split
+the weight changes, so a block is driven through more states than `f_k`'s own rule reaches. At GK
+`f₄` each top block is left in 1,893 to 1,908 distinct live sets (the empty set included), against
+`δ(f₃) = 369`; at `f₃`, 13 or 14, against `δ(f₂) = 8`. The two halves `a ∧ b` and `c ∧ d` take
+213,009 and 205,660 live sets at `f₄` (62 and 62 at `f₃`). This explains the growth; it does not
+bound it.
+
+**Conjecture 4.30** (S3; strengthens Conjecture 4.19, since `δ_iso ≤ δ`). Under FK-A's degree-sum
+rule, `δ_iso/N` is unbounded on the GK family. *Evidence:* `δ_iso/N = 0.67, 0.83, 16.8` for
+`k = 2, 3, 4` (Observation 4.29). *Search bound:* `k ≤ 4`. The algorithm of Theorem 4.28 expands
+`d_iso ≤ δ_iso` nodes, so its cost needs the conjecture for `d_iso`, whose evidence is the same
+(`d_iso/N = 0.67, 0.81, 14.9`). If that holds, keying the memo by isomorphism class leaves FK-A's
+own rule above `O(N)` subproblems on read-once pairs, where the leftmost rule needs `n` without
+any symmetry.
+
 ## 5. Substitution (Track D)
 
 For a template `T` on points `ι` and hypergraphs `Γ i`, the substitution is
@@ -901,6 +987,7 @@ That `P_p` is strictly increasing for a nonconstant monotone property is Russo�
 | B3: growth of `ε(n)` | `ε(n) ≥ 1/√n` (Theorem 3.1) and `ε(s²) ≤ 1/s` by `s` disjoint `s`-sets, so `ε(n) = Θ(n^{−1/2})`. These pairs have `N = s + s^s`, so `ε·log₂ N ≈ log₂ s → ∞`: minimising `ε` on `n` points does not approach the FK96 threshold `ε·log₂ N ≥ 1`. The upper bound for general `s` is not in Lean (`eps_four`, `eps_nine` cover `s = 2, 3`) |
 | C2: Conjecture 4.5 | **refuted**: `ro12` has `δ = 43 > 2N` (Lean, evaluation); GK `f₄` has `δ/N = 1368` (Rust). The leftmost bound `δ ≤ 2n + 2` is Theorem 4.16 (Lean). Open: Conjecture 4.19, `δ/N` unbounded on GK under FK-A's rule (log-ratio 0.84, 1.12, 1.67) |
 | C3 | `δ ≤ 2N` refuted by `ro12`; no polynomial bound under ETH (Proposition 4.6). For unmodified FK-A, an explicit family defeating every valid symmetric rule exists iff some monotone family has polynomial `N` and superpolynomial size of FBDDs named by their functions (Theorem 4.13, Proposition 4.14, Lean); replacing these by arbitrary FBDDs rests on the argued reduction of review row 29. None is known, and mixedness cannot give one (§4, *Literature*). This is the monotone case of JRSW's Question 1, open since 1997 (Proposition 4.27) |
+| Track S: symmetry in FK-A's work | Measured on GK `f₁–f₅`, TK `S₁–S₄`, `alt3 d₃–d₅` and the library (Observation 4.29); the iso-keyed memo is sound (Theorem 4.28, Lean). Under the leftmost rule there are no symmetric repeats; under the degree-sum rule `δ/δ_iso` grows (81.3 at GK `f₄`) and `δ_iso/N` too. Open: Conjecture 4.30; `δ_iso` at GK `f₅` and the label-exact `δ` of TK `S₄` under the degree-sum rule (not computed); a recurrence for the pruned shapes the rule reaches |
 | Track T: FK-A's recursion tree | On GK and TK `τ ≥ 2·(27/16)^{n/4}/(n + 1) = N^{Ω(log N)}` under every valid rule (Theorems 4.24–4.25, Lean), so FK-A is eventually slower than FK-B's bound and memoisation saves an exponential factor (Corollary 4.26). Open: FK-A's worst-case exponent between `N^{Ω(log N)}` and FK96's `N^{O(log² N)}`; a rule with `τ ≤ N^{O(log N)}` on every dual pair would remove JRSW's `log n` factor for monotone functions |
 | Track 3: a memo-friendly rule with FK96's guarantee | The guarded rule keeps the frequency `≥ 1/⌊log₂ N⌋` at every node (Proposition 4.18, Lean); `δ = 32, 263, 124,876` on GK `f₃–f₅`. Open: FK96's recursion bound for it in Lean; a rule with both the guarantee and `δ = O(n)` on read-once pairs |
 | D3 | `r = 2` settled, no (Proposition 5.4); open from `r = 3` (Open problem 5.3) |
@@ -981,3 +1068,7 @@ been confirmed by the author.
 | 64 | On a dual pair FK-A's recursion tree is a decision tree with at most `(n + 1)τ` leaves, under every valid rule, either variant | Theorem 4.25; `fkA_tree_dt`, `eval_fkDT`, `leaves_fkDT` | Lean, 2026-10-23; standard axioms enforced |
 | 65 | FK96: algorithm B runs in time `N^{4χ(N)+O(1)}`, `χ(N)^{χ(N)} = N` | Fredman–Khachiyan, *J. Algorithms* 21 (1996); not re-read this session | Cited |
 | 66 | JRSW Question 1 (an FBDD superpolynomial in `dnf(f) + dnf(¬f)`) is open, and is C3 for monotone `f` | ECCC TR97-023 §4 read 2026-10-23; three web searches the same day found no answer, and Bollig (ECCC TR02-033) answers a different question of that paper | Unchecked beyond that search |
+| 67 | `d_iso` on GK `f₁–f₅` (not `f₅` under the degree-sum rule), TK `S₁–S₄`, `alt3 d₃–d₅`, and `δ`, `δ_Aut`, `δ_iso`, `τ` where the label-exact DAG was completed, under three rules; GK `f₄` degree sum `δ_iso = 827,175`, `δ_Aut = 1,183,141` | Observation 4.29; `experiments/readonce_dag --classes/--iso`, `experiments/iso_classes.py`, `results/iso-memo.md` | Rust, 2026-10-23; agrees with `iso_memo.py`, an orbit canon and a `2^15`-element group enumeration (`tests/test_readonce_dag.py`) |
+| 68 | The same counts on the instance library | `iso_classes.library`; networkx isomorphism of coloured incidence graphs | Python, 2026-10-23; agrees with Rust on TK `S₂`; `trivial-aut-1` has one automorphism, by enumeration of the `8!` permutations |
+| 69 | A memo keyed by any relabelling map is sound under every rule | Theorem 4.28; `fkAI_correct`, `fkAI_eq_fkAR` | Lean, 2026-10-23; standard axioms enforced |
+| 70 | Symmetric component caching (van Bremen, Derkinderen, Sharma, Roy, Meel, AAAI 2021): soundness theorem, hashed canonical labellings, symmetry not needed in the input | AAAI-21 pp. 3922–3925 read 2026-10-23 | Cited |
