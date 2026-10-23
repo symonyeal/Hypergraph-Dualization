@@ -190,3 +190,8 @@ New statements of the October 2026 research program, each written up in
 | Observation 4.31: the joint top-block projections of GK `f₃` contain only 21 of the 49 pairs of standalone `f₂` supports, so the unrestricted embedding route to Q1 fails | Computed (Rust), checked against the formula engine | `experiments/block_probe.py`, `results/block-probes.md`, `tests/test_readonce_probe.py` |
 | Observation 4.32: on GK `f₅` the guarded rule never falls back to the degree sum and leaves the leftmost vertex at 92,776 of 124,874 splits | Computed (Rust); first departure re-derived in Python | `results/block-probes/gk5-guard.json`, `tests/test_readonce_probe.py` |
 | Audit 4.33: no Chapter 3 statement about `Aut` at a node predicts `δ/δ_Aut` or `δ/δ_iso` | Reading of existing Lean statements; review rows 73–78 | — |
+| Proposition 4.34: on GK `deg_C v = deg_D v` for every vertex; on TK `deg_C v · |D| = deg_D v · |C|` | Proved | `gk_degree_balance`, `tk_degree_ratio` |
+| Observation 4.35: `δ_{k+1} ≥ δ_k²/4` holds at every measured step of GK and TK; TK's falling `δ/N` comes from `N_{k+1}/N_k² → 4` | Computed from existing values | — |
+| Lemma 4.36: a top block's projected states are reached on the block by the hull rule | Argued, not in Lean | — |
+| Proposition 4.37: a squaring step losing `A·n_k` with `A < 2.004` settles Conjecture 4.19; for `δ_iso` only a constant `A < 12.6` | Written proof | — |
+| Conjecture 4.38: on GK `f_{k+1}`, `k ≥ 4`, every pair of equal-size standalone `f_k` supports occurs jointly in blocks `a`, `c` | Open; consistent with the three asynchronous witnesses of Observation 4.31; not tested | — |
