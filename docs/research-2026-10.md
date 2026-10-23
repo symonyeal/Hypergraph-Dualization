@@ -753,7 +753,7 @@ sharpness argument is not formalised. Priority is not asserted.
 
 ### The recursion tree is a decision tree (Track T)
 
-Modules `DecisionTree`, `FkaTree`. A decision tree reads one vertex per node; its size is its
+Modules `DecisionTree`, `FkaTree`, `GkMemo`. A decision tree reads one vertex per node; its size is its
 number of leaves. Encode `true` as `−1` and write `f̂(S)` for the Fourier coefficients of `f` on
 the subsets of the ground set. `coalt (2k − 1)` is GK `f_k` and `coalt (2k)` is TK `S_k`
 (review row 1), on `n = 2^i` vertices.
@@ -801,9 +801,9 @@ under the leftmost rule and `τ = 103,377` under the degree-sum rule. The bound 
 
 **Corollary 4.26** (two separations on GK and TK).
 (a) *Tree against DAG.* Under the leftmost rule `δ ≤ 2n + 2` (Theorem 4.16) while
-`τ ≥ 2·(27/16)^{n/4}/(n + 1)`: memoisation saves a factor exponential in `n`. Both bounds are Lean
-theorems; they are stated on the read-once formula with leaves in order (`Fm.leftmost_delta`) and
-on `coalt` (`fkA_gk_tree`), and the identification of the two is by inspection (review row 63).
+`τ ≥ 2·(27/16)^{n/4}/(n + 1)`: memoisation saves a factor exponential in `n`. One Lean theorem
+states both for the same pair: `coFm` writes `coalt` as an ordered read-once formula whose DNF is
+`gkH` (`dnf_coFm_gkH`), so Theorem 4.16 applies to it (`gk_memo_gap`).
 (b) *FK-A against FK-B.* On GK `f_k`, `N = 3·2^{2^k − 2}` and `n = 2^{2k−1} ≥ (log₂ N)²/2`, so
 under every valid rule `τ ≥ N^{c log₂ N}/(n + 1)` with `c = log₂(27/16)/8 ≈ 0.094`. FK96 bound
 FK-B's running time by `N^{4χ(N)+O(1)}`, `χ(N)^{χ(N)} = N`, which is `N^{o(log N)}`. FK-A's
@@ -977,7 +977,7 @@ been confirmed by the author.
 | 60 | Fano and Witt attain the smaller bound; complete(10,3) refutes the universal triangular shortcut | Observation 4.23; `experiments/symmetry_depth.py`, `tests/test_symmetry_depth.py` | Computed, exact ordered incidence-graph isomorphism; 18 configurations |
 | 61 | Complete uniform families attain both bounds for every k | `symmetry-depth.md`, rank recurrence and explicit parameter families | Written proof, not formalised; the upper-bound proofs do not rely on this claim |
 | 62 | JRSW Lemma 2.2 (`S = ∅`) and Theorem 2.4, restated for `coalt`: `dt ≥ ‖f̂‖₁ ≥ 2·(27/16)^{n/4}` with `c₂ = 27/8` | Theorem 4.24; `gk_leaves`; ECCC TR97-023 pp. 3–6 read 2026-10-23 (page images) | Lean, 2026-10-23; standard axioms enforced; `c₂` by `decide` |
-| 63 | Corollary 4.26(a): `Fm.leftmost_delta` (on an ordered read-once formula) and `fkA_gk_tree` (on `gkH`, `coalt` moved to `Fin (2^i)`) concern the same function | `coalt` is the alternating tree with leaves `0 … 2^i − 1` in order; no Lean term links the two encodings | By inspection |
+| 63 | Corollary 4.26(a): the ordered formula `coFm` and `gkH` (`coalt` on `Fin (2^i)`) are the same hypergraph | `dnf_coFm_gkH`, `ordered_coFm`, `gk_memo_gap` | Lean, 2026-10-23; standard axioms enforced |
 | 64 | On a dual pair FK-A's recursion tree is a decision tree with at most `(n + 1)τ` leaves, under every valid rule, either variant | Theorem 4.25; `fkA_tree_dt`, `eval_fkDT`, `leaves_fkDT` | Lean, 2026-10-23; standard axioms enforced |
 | 65 | FK96: algorithm B runs in time `N^{4χ(N)+O(1)}`, `χ(N)^{χ(N)} = N` | Fredman–Khachiyan, *J. Algorithms* 21 (1996); not re-read this session | Cited |
 | 66 | JRSW Question 1 (an FBDD superpolynomial in `dnf(f) + dnf(¬f)`) is open, and is C3 for monotone `f` | ECCC TR97-023 §4 read 2026-10-23; three web searches the same day found no answer, and Bollig (ECCC TR02-033) answers a different question of that paper | Unchecked beyond that search |
