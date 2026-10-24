@@ -40,6 +40,4 @@ import HypergraphDualization.DecisionTree
 import HypergraphDualization.FkaTree
 import HypergraphDualization.GkMemo
 import HypergraphDualization.IsoMemo
-import HypergraphDualization.DegreeMinor
-import HypergraphDualization.GkDegreeSum
 import HypergraphDualization.Axioms

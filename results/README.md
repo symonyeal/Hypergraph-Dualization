@@ -1,7 +1,7 @@
 # Results
 
-Every run of either algorithm, in one place. Regenerable; nothing here is
-authored by hand.
+Committed algorithm runs and computational research records. The per-instance files below
+are generated; the Markdown research notes interpret the computations and state their limits.
 
 ## Per-instance runs
 
@@ -62,8 +62,7 @@ readers to look for a difference that is not there.
 
 Generate it any time with `python -m fkb run --all --variant multiple --dot`.
 The variant keeps its baseline in every instance file and its own row in
-`python -m fkb verify`. The withdrawal, and the measurement behind it, is
-[`../_archive/20260804-redundant-fkb-multiple-artifacts/`](../_archive/20260804-redundant-fkb-multiple-artifacts/).
+`python -m fkb verify`. The retired duplicate files remain in git history.
 
 ## Cross-algorithm report
 

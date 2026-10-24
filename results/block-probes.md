@@ -1,6 +1,7 @@
 # Joint block projections and guarded departures
 
-Evidence for research Observations 4.31 and 4.32 (Q1 and Q2 of `docs/research-prompt.md`).
+Evidence for research Observations 4.31 and 4.32 (the growth and guarded-rule questions in
+[`research-agenda.md`](../docs/research-agenda.md)).
 Every count is computed by `experiments/readonce_dag` (Rust, `src/probe.rs`) through
 `python experiments/block_probe.py FAMILY K MODE --out OUT.json`; the JSON files in
 `block-probes/` hold each run's records and the SHA-256 of the Rust sources. Modified FK-A,
@@ -75,6 +76,19 @@ of 257 levels, so this is a running total, not the final count: `δ ≥ 330,149,
 `N₄ = 1,073,774,592`: `δ/N ≥ 0.307`, `log δ / log N ≥ 0.943`. Per-level trace in
 `hd-rust/tk4-joint.log` (work folder, not in the repository); no `--out` JSON, since the run did
 not reach level 0.
+
+## Same-profile targets (Observation 4.48)
+
+A complete `f₄` run (161 s, 600-second cap, original labels, modified stops, decreasing-support
+level traversal, no seed or iso pruning) reproduced `δ=67,247,387`. Among 182 standalone
+`f₃` supports consisting of whole bottom pairs, only 578 of 696 same-profile pairings
+occurred. Profiles include both edge counts and the full paired-degree multiset.
+After forgetting labels in the original block orientation, five of 71 shape diagonals
+were absent across all standalone support variants. Thus endpoint profiles do not repair
+the embedding. This computation settles neither growth conjecture and is not Lean-certified.
+The scripts, raw matrix and longer analysis are archived outside the repository; their
+[versioned snapshot](https://github.com/symonyeal/Hypergraph-Dualization/tree/b294502/results)
+preserves the evidence. The auxiliary proof-search modules have been retired.
 
 ## Checks
 

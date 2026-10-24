@@ -48,8 +48,6 @@ import HypergraphDualization.RuleInstances
 import HypergraphDualization.SymmetryDepth
 import HypergraphDualization.GkMemo
 import HypergraphDualization.IsoMemo
-import HypergraphDualization.DegreeMinor
-import HypergraphDualization.GkDegreeSum
 
 open Lean Elab Command
 
@@ -72,14 +70,6 @@ elab "#assert_evaluation " ids:ident* : command => do
 /-! ### General theorems -/
 
 #assert_standard_axioms
-  HD.degree_del_le HD.degree_con_le HD.degree_minimal_del_le HD.degree_minimal_con_le
-  HD.degree_del_eq_of_separate HD.con_isSperner_of_together HD.degree_con_eq_of_together
-  HD.key_left_child_le HD.key_right_child_le HD.splitVar_of_least_max HD.splitVar_earlier
-  HD.splitVar_successor HD.splitVar_or_mate HD.splitVar_and_mate
-  HD.fkADagR_stable HD.fkADagR_singleton HD.GK.reach_stable HD.GK.isoDelta_le
-  HD.GK.labelledGrowth_of_isoGrowth HD.squaring_unbounded HD.squaring_ratio_unbounded
-  HD.GK.map_gkH HD.GK.card_gkH HD.GK.card_tr_gkH HD.GK.edges_eq HD.GK.edges_pos HD.GK.edges_succ
-  HD.GK.growth_of_squaring HD.GK.isoGrowth_of_squaring HD.GK.labelledGrowth_of_squaring
   HD.l1_le_leaves HD.wc_gk_succ HD.dsum_succ HD.dsum_zero HD.dsum_eq HD.gk_leaves
   HD.eval_fkDT HD.leaves_fkDT HD.fkA_tree_dt HD.fkA_gk_tree HD.fkA_gk_degree_sum
   HD.ordered_coFm HD.dnf_coFm HD.dnf_coFm_gkH HD.gk_memo_gap
@@ -142,7 +132,6 @@ elab "#assert_evaluation " ids:ident* : command => do
 /-! ### Evaluations (*Checked*, *Observation (evaluation)*) -/
 
 #assert_evaluation
-  HD.gk2_embedded_singleton
   HD.Data.eightVer_eps HD.Data.eightVer_printed_not_dual HD.Data.eightVer_tree
   HD.Data.eightVer_uniform HD.Data.faithful_nodes HD.Data.fano_self_tr
   HD.Data.k3_refutes_printed_cor_2_3_1 HD.Data.k3_self_tr HD.Data.pg23_not_self_dual
