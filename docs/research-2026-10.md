@@ -948,7 +948,7 @@ Evidence: [`block-probes.md`](../results/block-probes.md), exact JSON artifacts 
 `results/block-probes/`, and `tests/test_readonce_probe.py` against the independent formula
 representation. Reproduce with `python experiments/block_probe.py gk 3 joint --out OUT.json`.
 Search bound: exhaustive labelled DAGs only for the four rows above; GK `f₄` joint projections
-have not been run in this phase. No Lean certificate is claimed.
+were subsequently measured in Observation 4.39. No Lean certificate is claimed.
 
 **Observation 4.32** (computed, 2026-10-23; Rust). On GK `f₅` the guarded rule reaches
 124,876 ordered subproblems: 124,875 nonconstant states, including one modified leaf, and one
@@ -987,7 +987,7 @@ restricts those maps for `δ_Aut`, whereas `δ_iso` allows arbitrary common rela
 | (c) | Lemma 3.3.2, corrected: the split-vertex stabilizer survives in both children (`stab_mem_aut_del`, `stab_mem_aut_con`); split vertices become isolated (`aut_child_moves_split_to_isolated`) | Describes inherited local symmetries. Input automorphisms that actually map one reached pair to another contribute to `δ/δ_Aut`; stabilizer orders at individual nodes do not measure that factor. The statement does not identify all maps counted by `δ/δ_iso`. |
 | (d) | Lemma 3.3.3, printed independent-cycle claim (`lemma_3_3_3_false`) | Refuted already; supports neither prediction. A cycle of an automorphism need not itself be an automorphism. |
 | (e) | Corollary 3.3.4, corrected: `Aut(H) ≤ Aut(min H)` (`aut_le_aut_minimal`, `cor_3_3_4_not_iso`) | Allows local symmetry gained by reduction. It does not say that two reached nodes become isomorphic, or that such an isomorphism extends to the input. Neither repetition factor follows from this inclusion alone. |
-| (f) | §3.5's gain/loss/unchanged discussion, read with the corrected Lemmas 3.3.2–3.3.3 | A local group change is not a measurement of either quotient. Its claims that a new automorphism implies a larger group, that a child group is a subgroup of its parent, and that a fixed split vertex guarantees equality are not established by the cited lemmas. Keep these as unsupported interpretations; the revised chapter still retains the old discussion. |
+| (f) | §3.5's gain/loss/unchanged discussion, read with the corrected Lemmas 3.3.2–3.3.3 | A local group change is not a measurement of either quotient. Its claims that a new automorphism implies a larger group, that a child group is a subgroup of its parent, and that a fixed split vertex guarantees equality are not established by the cited lemmas. The revised §3.5 now states the inherited-permutation inclusions and removes these unsupported comparisons. |
 
 The numerical examples are the existing computations of Observation 4.29, not new runs:
 GK `f₄` has `δ/δ_Aut≈56.8`, with the additional quotient `δ_Aut/δ_iso≈1.43` giving
@@ -1048,11 +1048,10 @@ split of `h` inside `B` is at a maximiser of `deg_{C(h_B)} + λ·deg_{D(h_B)}` w
 `λ = M_D/M_C > 0`: a vertex on the upper-right convex hull of `B`'s degree points. A split
 outside `B` leaves `h_B` unchanged or makes `B` irrelevant. By induction along the path, the
 projection onto `B` of every reached node is empty or is reached on `B`'s subtree by the
-*open-block hull rule*: every split may be at a maximiser of `deg_C + λ·deg_D`, for any
-`λ > 0` chosen afresh at each node, with the original least-label tie convention. The local
-singleton-edge stop is **suppressed**; a block can keep changing after its standalone
-modified FK-A would stop (Observation 4.44). For supports it suffices to stop at constants
-and literals. Write `R*(f_k)` for the supports this relaxation reaches on
+*hull process*: a maximiser of `deg_C + λ·deg_D`, with `λ > 0` chosen afresh at each node,
+and local singleton-edge stops suppressed. Standalone modified `f₁` stops with counts
+`(2,1)`, but its block inside `f₂` reaches support `{1}` after the first zero split.
+Write `R*(f_k)` for the supports this open-block process reaches on
 `f_k`. Then every top-block marginal of `f_{k+1}` lies in `R*(f_k)`, and so does the standalone
 reach of every fixed-weight rule. At GK `f₄` the marginals have 1,893 to 1,908 supports against
 `δ(f₃) = 369` (Observation 4.29), so `R*(f₃)` has at least 1,892 nonempty supports. Condition (i) of Q1 asks whether the
@@ -1158,108 +1157,26 @@ eventual fall either; whether `δ/N` turns up on TK stays open. The complete cou
 personal machine. *Data:* `hd-rust/tk4-joint.log` (work folder, not in the repository; the
 `--out` JSON was never written since the run did not finish).
 
-### Where else this problem appears (literature, 2026-10-23)
+### Related algorithmic methods
 
-Eight Sonnet research agents read the literature of the fields that solve the same duality by
-pivoting. Their notes, with the read status of every source, are outside the repository in the
-work folder `hd-lit/`. Rows marked *checked* were confirmed against the source text in this
-session; the rest are agent readings (review row 88).
+Huang and Darwiche (JAIR 2007, Theorems 1 and 3) identify caching-DPLL traces
+as FBDDs, and traces with component decomposition as decision-DNNF. The former
+corresponds to Theorem 4.13; component decomposition is a candidate modification,
+not an implemented FK-A bound.
 
-| Field and object | Pivot or branching rule there | Parts and reuse | What bears on Q1–Q3 |
-| --- | --- | --- | --- |
-| Commutative algebra: Alexander duals, Hilbert series of monomial ideals | "popvar", the variable dividing the most minimal generators (Roune and Sáenz-de-Cabezón, arXiv:1112.4523, §3.5), which is CoCoA's rule (quoted by Dickenstein and Tobis, arXiv:1003.3508, §2) | Independence split at every node: `msm(I) = msm(I∩k[A]) × msm(I∩k[B])` (Roune, slice algorithm, arXiv:0806.3680, Prop. 26); no cache | Same rule, and the decomposition at every node prevents interleaving; only random ideals are benchmarked |
-| Knowledge compilation: DPLL with caching | Any heuristic | Traces of caching DPLL are FBDDs (Huang and Darwiche, JAIR 2007, Theorem 1, *checked*), with components decision-DNNF (Theorem 3) | Theorem 4.13 is this correspondence; no trace-size bound for a named heuristic was found |
-| Reliability: fault trees without repeated events | Variable orders for BDDs | Modules solved separately (Dutuit and Rauzy 1996, through secondary accounts) | Depth-first left-most order is optimal with `n` nodes (Mo et al. 2012, Theorem 1), as in Theorem 4.16; no frequency or dynamic order is measured on such trees |
-| Diagnosis and hitting-set enumeration | The element hitting most conflicts (Pill, Quaritsch, Wotawa 2016) | HS-DAG node reuse (Greiner, Smith, Wilkerson 1989); decomposition `Tr H = ⋀_c Tr H_c` (Gainer-Dewar and Vera-Licona, arXiv:1601.02939, Lemma 4.5); disjoint-join nodes for bounded treewidth (Kenig and Mizrahi, ICDT 2025) | An FK implementation is the slowest in Murakami and Uno's benchmark (arXiv:1102.3813); on disjoint Fano products its time grows faster than its output, unexplained there |
-| Sequential evaluation of formulas given by DNF and CNF | Alternating separate maximum term-frequency and clause-frequency queries (Kaplan, Kushilevitz, Mansour, STOC 2005, §2.2, Theorem 2.7; author PDF read) | — | Uniform query costs and uniform input distribution; expected query-cost guarantee, no memo-state bound. This is not the degree-sum pivot (review row 92). Depth-first strategies are optimal at depth 2 and not at depth 3 (Greiner, Hayward, Molloy, AAAI 2002, Theorem 4, Observation 5) |
-| Game-tree search | Most-proving node | Transposition tables | Proof numbers are smallest proof-set sizes, not counts (Allis 1994, Definitions 2.3–2.4); no counterpart of the degree-sum rule |
-| Parametric optimisation | — | — | Gajjar and Radhakrishnan (arXiv:1811.05115, *checked*): pieces grow by a factor `n` per level (Theorem 6(i), `f(n, 2^k) ≥ n^k`), and for one parameter `f(n, 2^k − 1) ≤ 2n·f(n, 2^{k−1} − 1)` (§1.2). The constants are rescaled per level, not kept equal. One weight cannot square a count per level; in FK-A every block has its own weight, so that bound does not apply |
-| Monotone dualization | FK's frequent variable | Memoised FK-B, empirical only (Sedaghat, Stephen, Chindelevitch, SEA 2018) | No bound on FK-A's memo count was found; JRSW's Question 1 is open in every source found through October 2026; JRSW p. 11 gives the alternating trees an oblivious read-once branching program of size `O(n²)` |
-| AND/OR evaluation | Directional (depth-first) algorithms | — | Optimal for uniform NAND trees (Saks and Wigderson, through Leonardos, arXiv:2203.17168, Theorem 1); fixed points there are of leaf probabilities (Brodsky and Pippenger, Lemma 5.2), not of the term and clause counts of Proposition 4.34 |
+Kaplan–Kushilevitz–Mansour (*Learning with Attribute Costs*, STOC 2005, §2.2,
+Theorem 2.7) alternate separate term-frequency and clause-frequency maxima.
+Their expected query-cost guarantee assumes uniform costs and distribution;
+it supplies no bound on the degree-sum memo count (review row 91).
 
-So frequency-based pivots occur in four of these fields, with different selection rules. Every field that meets
-tree-structured inputs avoids interleaving, either by a depth-first order or by splitting into
-independent parts at every node. None measures or bounds the number of distinct subproblems of a
-frequency pivot on such inputs. In this search, the blow-up of Conjecture 4.19 and the balance
-of Proposition 4.34 are not in the literature. The search is not exhaustive: Bigatti 1997,
-Roune's thesis, Rauzy 1993, Reiter 1987 and Kaplan–Kushilevitz–Mansour were not read.
+The earlier cross-field survey supplied no additional proved bound or tested
+algorithm and has been retired. It establishes no novelty claim for Conjectures
+4.19 or 4.30. Review row 88 records the scope of that reading.
 
-### Degree-sum GK: bottom-pair reduction and its limits
-
-The investigation against revision `49d86eb` leaves both Conjectures 4.19 and 4.30 open.
-Proofs, exact conventions, route obstructions and reproducible data are in
-[`../results/cherry-probes.md`](../results/cherry-probes.md).
-
-**Proposition 4.42** (local mate completion). Deletion, contraction and reduction cannot
-increase any vertex degree. The actual `splitVar` gives every earlier label a strictly
-smaller score than its returned vertex. If consecutive OR siblings tie and the smaller
-one is selected, its identity child preserves both degrees of its mate, and selects that
-mate next if recursion continues. The AND version exchanges sides. The precise edge
-separation/cooccurrence hypotheses and the least-label argument are Lean theorems:
-`degree_minimal_del_le`, `degree_minimal_con_le`, `splitVar_earlier`, `splitVar_or_mate`,
-`splitVar_and_mate`. **Written GK corollary, not yet Lean:** at most one original bottom
-pair is half live in any reached state. Thus two disjoint top blocks cannot both have odd
-support size. This explains the odd/odd obstruction, not every missing pair of 4.31.
-
-**Proposition 4.43** (weighted whole-pair reduction; written proof, finite checks).
-At a state with all surviving original bottom OR pairs intact, replace each by one atom.
-Its local term/clause counts are `(2,1)`, so the exact pivot maximizes
-`Σ_(e∋i)2^(|e|-1) + deg_(Tr H)(i)`, with original pair-index ties. Resolving that atom
-gives its zero restriction in primal orientation and its one restriction in dual orientation,
-plus a transient singleton-mate state shared by both parent orientations. The transient
-is nonterminal whenever its whole-pair GK parent is nonterminal. Thus if `E` counts
-labelled whole-pair states, `E≤δ≤2E`. This is no constant-factor assertion about classes.
-Computed on `f₃`: 203 whole-pair states and 166 transients, in 92 and 68 ordered classes.
-The remaining difficulty is the exact weighted macro scheduler's reachable shapes.
-
-**Observation 4.44** (local stopping correction; evaluation and computation).
-Standalone `f₁` stops with counts `(2,1)` under every rule. The first zero child of `f₂`
-already has singleton projection `{1}` onto that block. Lean: `gk2_embedded_singleton`
-(evaluation), `fkADagR_singleton` (general). Lemma 4.36 therefore uses an open-block hull,
-not standalone modified FK-A. Complete bounded runs on `f₃`: unrestricted open hull
-8,992 ordered states/6,604 supports; forced-mate open hull 2,712/2,387. Empty support is
-included. The latter still exceeds the recorded 1,893–1,908 marginals inside `f₄`.
-`experiments/cherry_probe.py` and `results/cherry-probes.json` give caps, traversal and hashes.
-
-**Lemma 4.45** (shape counting with visible boundaries; written proof).
-The reduced read-once cotree is recovered recursively from the connected components of
-the minimal-DNF cooccurrence graph, or its complement. Thus operation-coloured AHU equality
-characterizes ordered dual-pair isomorphism at fixed ambient size, with separate constants
-and retained isolates. If all four top blocks retain their nonconstant OR roots, one global
-ordered class has at most eight ordered opposite-half block-shape pairs. Hence `P` such
-shape pairs give at least `P/8` global classes. No uniform large reachable subclass meeting
-these hypotheses is proved; the existing labelled support-pair table is insufficient.
-
-**Proposition 4.46** (exact target, fuel and conditional growth reduction; Lean).
-`GK.reach`, `GK.edges`, `GK.delta` and `GK.isoDelta` define the exact requested quantities
-with zero index denoting `f₁`. `fkADagR_stable` and `GK.reach_stable` prove fuel `n+1`
-sufficient. `GK.edges_succ` proves `3N_(k+1)=4N_k²` for the actual finite-ground-set inputs.
-`GK.isoGrowth_of_squaring` derives the exact quantified Conjecture 4.30 from a uniform
-squaring step and strict seed; `GK.labelledGrowth_of_squaring` does so for 4.19 separately.
-`GK.labelledGrowth_of_isoGrowth` proves the implication from 4.30 to 4.19. The recurrence
-and seed remain hypotheses. No essential asymptotic finite base is certified here.
-
-**Observation 4.47** (obstruction to a shape-only upper bound; written proof).
-Whole-pair restrictions of `f₂` include three OR-rooted shapes. With `b` such block shapes,
-the next level has at least `binom(binom(b+1,2)+1,2)≥b⁴/8` distinct OR-rooted minor shapes.
-Thus whole-pair minors alone already give `2*(3/2)^(4^(k-2))` shapes from `k=2`, exponential
-in `n_k`. This is about all minors, not degree-sum reach. A linear upper bound would need
-a new restriction on the weighted pivot histories; mate completion alone cannot give it.
-
-**Observation 4.48** (even same-profile shape synchronization fails; computed).
-Among the 182 whole-pair standalone `f₃` targets there are 71 full degree profiles and
-71 underlying primal shapes. On `f₄`, only 578 of 696 same-profile labelled pairs occur;
-only 66 of the 71 corresponding shape diagonals occur, even allowing all standalone
-label variants. A missing diagonal has edge counts `(14,6)`, degree points
-`2×(1,6), 4×(2,3), 6×(4,2)` and representative support
-`{10,11,12,13,14,15,20,21,22,23,30,31}`; none of its four two-variant pairings occurs.
-This is an even-support, shape-level obstruction beyond Observation 4.39's parity failure.
-It refutes this finite replacement embedding candidate, not the eventual squaring law.
-The complete run (161 s, 600-second cap, decreasing-support levels, original labels,
-modified stops, no iso pruning) reproduces `δ=67,247,387` and every earlier joint/equal-size
-record. Raw target matrix and analysis: `results/block-probes/gk4-{incidence,profiles}.json`.
-The five missing shapes and exact witness are discussed in `results/cherry-probes.md`.
-The computation is not Lean-certified and is not an asymptotic base case.
+**Observation 4.48** (computed failed route). Even equal-profile whole-pair targets need
+not occur jointly, including after labels are forgotten. The compact record and archived
+evidence are in [`../results/block-probes.md`](../results/block-probes.md).
+Conjectures 4.19 and 4.30 remain open.
 
 ## 5. Substitution (Track D)
 
@@ -1407,7 +1324,7 @@ been confirmed by the author.
 | 62 | JRSW Lemma 2.2 (`S = ∅`) and Theorem 2.4, restated for `coalt`: `dt ≥ ‖f̂‖₁ ≥ 2·(27/16)^{n/4}` with `c₂ = 27/8` | Theorem 4.24; `gk_leaves`; ECCC TR97-023 pp. 3–6 read 2026-10-23 (page images) | Lean, 2026-10-23; standard axioms enforced; `c₂` by `decide` |
 | 63 | Corollary 4.26(a): the ordered formula `coFm` and `gkH` (`coalt` on `Fin (2^i)`) are the same hypergraph | `dnf_coFm_gkH`, `ordered_coFm`, `gk_memo_gap` | Lean, 2026-10-23; standard axioms enforced |
 | 64 | On a dual pair FK-A's recursion tree is a decision tree with at most `(n + 1)τ` leaves, under every valid rule, either variant | Theorem 4.25; `fkA_tree_dt`, `eval_fkDT`, `leaves_fkDT` | Lean, 2026-10-23; standard axioms enforced |
-| 65 | FK96: algorithm B runs in time `N^{4χ(N)+O(1)}`, `χ(N)^{χ(N)} = N` | Fredman–Khachiyan, *J. Algorithms* 21 (1996); not re-read this session | Cited |
+| 65 | FK96: algorithm B runs in time `N^{4χ(N)+O(1)}`, `χ(N)^{χ(N)} = N` | Fredman–Khachiyan, *J. Algorithms* 21 (1996); cited, not independently rechecked | Cited |
 | 66 | JRSW Question 1 (an FBDD superpolynomial in `dnf(f) + dnf(¬f)`) is open, and is C3 for monotone `f` | ECCC TR97-023 §4 read 2026-10-23; three web searches the same day found no answer, and Bollig (ECCC TR02-033) answers a different question of that paper | Unchecked beyond that search |
 | 67 | `d_iso` on GK `f₁–f₅` (not `f₅` under the degree-sum rule), TK `S₁–S₄`, `alt3 d₃–d₅`, and `δ`, `δ_Aut`, `δ_iso`, `τ` where the label-exact DAG was completed, under three rules; GK `f₄` degree sum `δ_iso = 827,175`, `δ_Aut = 1,183,141` | Observation 4.29; `experiments/readonce_dag --classes/--iso`, `experiments/iso_classes.py`, `results/iso-memo.md` | Rust, 2026-10-23; agrees with `iso_memo.py`, an orbit canon and a `2^15`-element group enumeration (`tests/test_readonce_dag.py`) |
 | 68 | The same counts on the instance library | `iso_classes.library`; networkx isomorphism of coloured incidence graphs | Python, 2026-10-23; agrees with Rust on TK `S₂`; `trivial-aut-1` has one automorphism, by enumeration of the `8!` permutations |
@@ -1430,15 +1347,11 @@ been confirmed by the author.
 | 85 | Equal-size and joint target-pair counts on GK `f₂–f₄`, TK `S₂–S₃` | Observation 4.39; `--joint` with equal-size records, `results/block-probes/*-equal.json`, `gk4-joint.json` | Rust, 2026-10-23; equal-size counts checked against the formula engine on GK `f₂–f₃`, TK `S₂–S₃` (`tests/test_readonce_probe.py`) |
 | 86 | Conjecture 4.38 withdrawn | Observation 4.39(a): no equal odd-size pair occurs at GK `f₃` or `f₄` | Computed |
 | 87 | Conjecture 4.40 with `A < 513` suffices for Conjecture 4.19 | Proposition 4.37 with `σ₄ ≥ (δ₄ − 2)/2` | Written proof (arithmetic) |
-| 88 | The cross-field table of "Where else this problem appears" | Notes in the work folder `hd-lit/` (Sonnet agents, full texts where available); checked here: Huang–Darwiche JAIR 2007 Theorem 1, Calì–Razgon Theorem 21, Gajjar–Radhakrishnan Theorem 6(i), §1.2 and Lemma 14 | Unchecked except the rows marked *checked* |
+| 88 | Cross-field survey retired: it provided no bound on the degree-sum memo | Checked readings: Huang–Darwiche, Theorems 1 and 3; Calì–Razgon, Theorem 21; Gajjar–Radhakrishnan, Theorem 6(i), §1.2, Lemma 14. Other comparisons were not independently checked | Reading record only; no theorem or novelty claim transferred |
 | 89 | `δ(TK S₄) ≥ 330,149,945`, a partial count stopped at memory; `δ/N ≥ 0.307`, `log δ/log N ≥ 0.943` | Observation 4.41 | Computed (Rust, stopped before completion) |
-| 90 | Degree-sum GK investigation reconciled with the requested base revision | Fetched `origin/main = 49d86eb`, no subsequent commits; read the live prompt, §4/§7, `iso-memo.md`, `block-probes.md`, `Dag`, `GkMemo`, `SymmetryDepth`, `BranchingProgram` and `IsoMemo` | Source audit, 2026-10-23; no new growth theorem |
-| 91 | The hull projection argument must not apply the modified singleton-edge stop to an embedded block | Standalone `f₁` has counts `(2,1)` and stops; the first zero child of `f₂` already has block-a support `{1}` | Concrete counterexample to that stopping convention; local score identity unaffected |
-| 92 | Kaplan–Kushilevitz–Mansour does not analyze the degree-sum pivot | *Learning with Attribute Costs*, STOC 2005, §2.2, Theorem 2.7, author PDF `https://www.tau.ac.il/~mansour/papers/05stoc.pdf`, pp. 5: alternates a maximum term-frequency query and a maximum clause-frequency query; uniform query costs and uniform input distribution | Primary text read 2026-10-23. Expected query-cost guarantee, not a memo-state bound; no theorem transferred |
-| 93 | Degree scores decrease in either reduced child; exact least-label pivot and conditional mate completion | Proposition 4.42, `DegreeMinor.lean`; reductions, side exchange and tie convention checked in the declarations | Lean; the all-reached-state GK corollary has a written proof, not a Lean declaration |
-| 94 | Whole-pair GK states admit the exact weighted macro recursion; its transient does not stop early | Proposition 4.43, `results/cherry-probes.md`; full labelled macro reach compared with formula and hypergraph engines on `f₁–f₃` | Written proof; finite computations checked, no asymptotic conclusion |
-| 95 | Modified standalone hull reach excludes a genuine embedded projection; corrected open hull counts | Observation 4.44; Lean evaluation `gk2_embedded_singleton`, general `fkADagR_singleton`, `results/cherry-probes.json` | Checked finite witness; hull counts computed with rational feasible-weight intervals, cap 200,000 and 60 s per run, all complete |
-| 96 | AHU shapes characterize ordered dual-pair isomorphism at fixed ambient size; visible top boundaries give loss at most eight | Lemma 4.45; cooccurrence graph/cotree proof; inspected Python `mk`/`shp` and Rust `Tab::get`, `Cls::comb`, `Cls::shp`, `Cls::of_key` | Written proof, not Lean; no applicability claim for boundary-collapsed states |
-| 97 | Exact GK quotient target, sufficient fuel, input-edge identity and conditional squaring implication | Proposition 4.46, `GkDegreeSum.lean` | Lean, standard axioms; recurrence and seed remain unproved hypotheses |
-| 98 | At most one half pair does not bound the quotient of all minors by `O(N)` | Observation 4.47; three whole-pair seed shapes and intact-boundary unordered-pair construction | Written proof about all minors only; no refutation of Conjecture 4.30 |
-| 99 | Equal whole-pair degree profiles do not ensure joint reach, even after passing to shapes | Observation 4.48; complete 161-second `f₄` run with 600-second cap; target matrix checked entrywise on all 12 small family/rule configurations; five shape diagonals absent | Computed, not Lean-certified. All 29 targeted tests pass, including the complete-count comparison and full two-variant witness fiber; both growth conjectures remain open |
+| 90 | Lemma 4.36 must suppress local singleton-edge stopping | Standalone `f₁` stops, but the first zero child of `f₂` projects to `{1}` in its first block | Direct finite witness; auxiliary formalization archived |
+| 91 | Kaplan–Kushilevitz–Mansour uses separate alternating frequency maxima | [Author PDF](https://www.tau.ac.il/~mansour/papers/05stoc.pdf), §2.2, Theorem 2.7 | Primary text read; expected query cost under uniform costs/distribution, no degree-sum memo bound |
+| 92 | Same endpoint degree profiles do not ensure joint shape reach | Observation 4.48; `results/block-probes.md` and linked archived computation | Computed; both growth conjectures open |
+| 93 | Archive retirement must preserve the decomposition log and the two verbatim thesis instances | Generator and `load_archived` callers; targeted tests initially failed on all three missing inputs and pass after retention | Corrected, 2026-10-23 |
+| 94 | Revised §3.5's group-size and equality comparisons exceed the corrected lemmas | Audit 4.33(f); `stab_mem_aut_del`, `stab_mem_aut_con`, `aut_le_aut_minimal` prove inclusions, not those comparisons | Corrected in the revision generator; original 2024 sources unchanged |
+| 95 | Application catalogue and unrelated manuscript survey supplied no executed application result | Their own scope statements; the supplier-panel study lives in its linked repository. Lean bridge declarations prove only their stated identities | Scope corrected; speculative catalogue retired and bridge-check wording narrowed |

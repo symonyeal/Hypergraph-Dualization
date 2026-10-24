@@ -56,9 +56,9 @@ Lastly, thank you to ChatGPT for helping me resolve countless \LaTeX{} errors an
 
 \chapter*{On this Edition}
 \addtoToC{On this Edition}
-This is a revised edition of the thesis deposited in 2024. The original \LaTeX{} source was lost; it was recovered from the deposited PDF in 2026, and that verbatim recovery is kept beside this edition. Every statement the thesis makes on its own authority was then checked in the Lean~4 proof assistant against Mathlib. Results cited from the literature are attributed and were not re-proved.
+This is a revised edition of the thesis deposited in 2024. The original \LaTeX{} source was lost; it was recovered from the deposited PDF in 2026, and that verbatim recovery is kept beside this edition. The audited statements and their status are recorded in the claim register, with proofs in Lean~4 against Mathlib where available. Results cited from the literature are attributed and were not re-proved.
 
-Most statements hold as printed. The following were corrected. Each correction is proved in Lean, together with a counterexample to the printed form where one exists.
+The following corrections follow the Lean declarations named in the text. Section~3.5 also withdraws group comparisons that do not follow from those declarations.
 \begin{itemize}
 \item Corollary~2.3.1: the inequality is reversed; the shortest edge has $s\le\log_2 n$ vertices.
 \item Claim~3.1.6: invariant vertex sets are unions of orbits, the orbits being the minimal ones.
@@ -66,6 +66,7 @@ Most statements hold as printed. The following were corrected. Each correction i
 \item Lemma~3.3.1 requires $H$ to be Sperner; Corollary~3.3.4 holds only as an inclusion.
 \item Lemma~3.3.2 is replaced by a precise statement; Lemma~3.3.3 is false and is replaced by a counterexample.
 \item The example of Section~3.4 used a permutation that is not a primal-graph automorphism; Observation~3.4.5 is stated precisely.
+\item Section~3.5: inherited automorphism inclusions replace unsupported group-size and equality comparisons.
 \item Section~4.2.3: the two cases of the edge-count recurrences were exchanged.
 \item Lemma~4.4.13 holds for every graph, not only for distance-hereditary ones.
 \item Chapter~5: the edge sets of 6-A and 8-Ver, four group labels in the automorphism trees, the transversal count of Definition~5.2.1, and the proof of Observation~5.2.3, which the 2024 edition did not give for $n=7$.

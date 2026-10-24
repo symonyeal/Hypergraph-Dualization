@@ -3,10 +3,9 @@
 *Tracing the Effects of Symmetry in Hypergraphs On the Fredman–Khachiyan Algorithm*, Saimon Y.
 Islam, MSc thesis, Simon Fraser University, 2024.
 
-**In plain terms.** The original LaTeX source of the thesis was lost. It was rebuilt from the
-deposited PDF, and every result was then checked by a proof assistant (Lean). This folder holds
-two editions: the recovered 2024 text exactly as deposited, and a revised edition in which every
-error found by that check is corrected.
+The original LaTeX source was lost and rebuilt from the deposited PDF. This folder holds the
+recovered 2024 text and a revised edition. `CLAIMS.md` records the audited statements,
+their Lean proofs, corrections and remaining open claims.
 
 | Folder | Contents |
 | --- | --- |

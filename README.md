@@ -39,10 +39,10 @@ makes the build fail otherwise.
 
 ## The thesis in Lean
 
-The source was recovered from the deposited PDF in October 2026 and every statement the thesis
-makes on its own authority was checked. Most hold as printed. The revised edition
-([`thesis/revised/main.pdf`](thesis/revised/main.pdf)) applies the corrections, tags each
-statement with its Lean proof and lists the corrections in its preface; the 2024 text is kept
+The source was recovered from the deposited PDF in October 2026. The claim register records
+the audited statements, their corrections and the remaining open claims. The revised edition
+([`thesis/revised/main.pdf`](thesis/revised/main.pdf)) applies the corrections, tags proved
+statements with their Lean declarations and lists the corrections in its preface; the 2024 text is kept
 verbatim in [`thesis/2024/`](thesis/2024). Among the corrections:
 
 - Corollary 2.3.1: the inequality is reversed; the shortest hyperedge has `s ≤ log₂ n` vertices.
@@ -136,8 +136,7 @@ rule with `δ` at most twice its size (`memo_fbdd`, `rule_of_fbdd`). Research §
 qualifications. Splitting on the least vertex of a read-once formula with leaves in order gives
 `δ ≤ 2n + 2` (`leftmost_delta`; cf. Hertel's Theorem 4.4.1); on GK `f₄` it gives `δ = 128`
 (computed). A guarded rule keeps FK96's frequency guarantee at every node (`guardRule_frequent`)
-and gives `δ = 263` on GK `f₄` (computed). The dictionary to knowledge compilation, resolution, fault trees, matroids and monomial
-ideals is §4 of [`docs/applications.md`](docs/applications.md).
+and gives `δ = 263` on GK `f₄` (computed). The algorithmic dictionary is in [`docs/applications.md`](docs/applications.md).
 
 Open: the converse of the Steiner theorem, `ε(8)`, whether `δ/N` is unbounded on the
 alternating trees under FK-A's rule, D3 from rank 3, and an explicit family that is hard for
@@ -145,7 +144,7 @@ memoised FK-A under every valid symmetric split rule: up to a factor 2, a monoto
 small DNF and CNF but no small FBDD named by its functions (research §7, C3). The list is §7 of the research write-up.
 How much of FK-A's work is repetition up to isomorphism is the last paragraph below. The next
 questions (a squaring law for FK-A's subproblems on GK, a split rule with FK96's guarantee and few
-subproblems, FK-A's worst-case exponent) are in [`docs/research-prompt.md`](docs/research-prompt.md).
+subproblems, FK-A's worst-case exponent) are in [`docs/research-agenda.md`](docs/research-agenda.md).
 
 **Symmetry depth.** If `Aut(G)` is `k`-transitive, FK-A reaches at most
 `1+k(k+1)` ordered isomorphism classes through depth `k`, under any rule choosing
@@ -170,14 +169,14 @@ isomorphism classes, a factor of 81, yet 827,175 is still 16.8 times `N`, agains
 | [`lean/`](lean) | The Lean library: thesis statements, corrections, new results ([module index](lean/README.md)) |
 | [`thesis/`](thesis) | The 2024 text as deposited and recovered, the revised edition, [`CLAIMS.md`](thesis/CLAIMS.md) |
 | [`docs/research-2026-10.md`](docs/research-2026-10.md) | The new results, with proofs and Lean names |
-| [`docs/applications.md`](docs/applications.md) | Where TransHyp is used, by what `H` and `Tr(H)` are, with a shortlist |
+| [`docs/applications.md`](docs/applications.md) | The executed supplier-panel study and algorithmic dictionary |
 | `docs/` (other) | Computational notes from the Python engine: FK-A against FK-B, hard instances, hard classes, tree against distinct subproblems; the code's vocabulary ([`dictionary.md`](docs/dictionary.md)) |
 | `src/fka`, `src/fkb` | FK-A (faithful and the thesis's modified variant), FK-B, Berge's sequential method as an independent check, automorphism groups, memoisation |
 | `data/instances/` | The thesis hypergraphs and the later instances (`w11` is `S(4,5,11)`), as JSON with provenance |
 | `results/` | Recursion trees of both algorithms on every instance (JSON, DOT, HTML) |
 | `experiments/` | Searches and generators, each seeded ([index](experiments/README.md)) |
 | `tests/` | The engine checked against the printed recursion trees and the MATLAB FK-B reference |
-| `_archive/` | Superseded material, each folder with a note |
+| `_archive/` | Original source log and withdrawn thesis instances required to reproduce the corrections |
 
 The code is written in the monotone Boolean register of the FK-B reference (`cnf` for `H`, `dnf`
 for `Tr(H)`); [`docs/dictionary.md`](docs/dictionary.md) gives the correspondence with the

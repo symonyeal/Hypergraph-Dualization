@@ -7,14 +7,6 @@ surveyed on 2026-10-20 from the repository's `CONTENTS.md`, `overview.tex` and
 [`lean/HypergraphDualization/Connections.lean`](../lean/HypergraphDualization/Connections.lean);
 statements about the `openai/math` results are theirs and are cited, not re-proved.
 
-**In plain terms.** Three groups of results in that collection are about the same objects as the
-thesis. One group disproves an old conjecture about covering intersecting families, which is the
-transversal question the thesis studies. Another proves conjectures about the sharp threshold
-where a random set acquires a monotone property, and transversal duality turns out to be exactly
-the symmetry between such a property and its complement. A third group is about sensitivity and
-small circuits for Boolean functions, which is related background with no direct overlap. None of
-the 719 manuscripts studies the Fredman–Khachiyan algorithm or the symmetry of its recursion.
-
 ## Direct connections
 
 | Family | Result | Bridge to the thesis | Lean |
@@ -29,18 +21,10 @@ The definitions `IsCover`, `Intersecting`, `coverCardinalities`, `coverNumber`,
 theorems are statements about the same objects. The `openai/math` library itself is not imported:
 it pins Lean `v4.34.1` and this project pins `v4.35.0`.
 
-## Related, no formal bridge
-
-| Family | Result | Relation |
-| --- | --- | --- |
-| 132 | A counterexample to the quadratic sensitivity conjecture | Sensitivity of Boolean functions; for monotone functions (this thesis' setting) sensitivity, block sensitivity and certificate complexity coincide (Nisan, 1991), so the counterexample is necessarily non-monotone |
-| 127 | The asymptotic Gotsman–Linial conjecture | Average sensitivity of threshold functions; no overlap with dualization |
-| 112 | Beyond the square-root exponent for depth-three circuits | OR–AND–OR circuits; converting a DNF to a CNF is dualization, whose output can be exponentially larger (`alt_counts`), but the result concerns lower bounds for explicit languages |
-| 185 | Counterexamples to infinite matroid intersection and packing/covering | Self-dual matroids on infinite ground sets; the thesis works with finite self-transversal hypergraphs only |
-
 ## Reproduction
 
-`lake build HypergraphDualization.Connections` from `lean/` checks every row of the first table.
+`lake build HypergraphDualization.Connections` from `lean/` checks the bridge declarations
+named in the table. It does not check the cited manuscripts or their identifications.
 The candidates were drawn from the theoretical computer science, combinatorics and group theory
 sections of `overview.tex`, read entry by entry, and from a keyword search of the whole catalogue
 (transversal, hypergraph, covering, monotone, Boolean, DNF, threshold, self-dual, automorphism,

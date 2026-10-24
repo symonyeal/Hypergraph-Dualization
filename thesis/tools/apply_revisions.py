@@ -171,6 +171,44 @@ The \FKA{} recursive decomposition method induces a minor map between the primal
  r"""\begin{observation}[\leanref{primal_children_le}]
 Let \FKA{} split the pair $(C,D)$ on $v$. The primal graph of each subproblem, after Sperner reduction, is a subgraph of $G(C)-v$ or of $G(D)-v$. It is therefore a minor of the parent's primal graph, obtained by deleting $v$ and edges only.
 \end{observation}"""),
+(r"""\section{Symmetry in \FKA{} Recursion}
+
+\FKA{} recursion process involves a decomposition, creating two smaller subproblems. To understand the effect of this operation on the symmetric structure of the input hypergraphs, it suffices to analyze the symmetry of one of the input hypergraphs, say $G$. By transversality, the other hypergraph $H$ will inherit symmetry restrictions from $G$. Depending on whether the input hypergraphs $G$ and $H$ have a nontrivial automorphism group and the choice of the vertex $v_i$, hypergraphs in \FKA{} recursion can gain symmetry, lose symmetry, or no changes in symmetry.
+
+The minor operation \textbf{L} applied to $G$ produces a subhypergraph $G_1$ by deleting a vertex $v_i$ and all hyperedges incident to it while \textbf{R} contains $G_0\vee G_1$. Looking at the symmetric changes in \textbf{L} on $G$ to get $G_1$ is sufficient considering a similar operation can be described for $H$ and $H_1$ which is the transversal of $G_0\vee G_1$ and has the same symmetry. This operation can affect the automorphism group of $G$ in three distinct ways:
+
+First, the hypergraph can \emph{gain} symmetry. Suppose $G_1$ has a new automorphism $\sigma$ such that $\sigma\notin\Aut(G)$. For $\sigma$ to permute two vertices $u,v\in V(G_1)$, the deletion of $v_i$ must remove hyperedges that previously prevented this symmetry. Specifically, in the hyperedges of $G$ incident to $v_i$, there must exist a structural conflict where $\sigma(u)\neq v$, meaning $u$ and $v$ were distinguished in $G$ but become indistinguishable in $G_1$ after the removal of $v_i$. This situation leads to a larger automorphism group for $G_1$ compared to $G$.
+
+Second, the hypergraph can \emph{lose} symmetry. Suppose $G$ has a nontrivial automorphism group, and $\sigma\in\Aut(G)$. If $v_i$ participates in transpositions or permutations that are part of a generator of $\Aut(G)$, then removing $v_i$ invalidates all symmetries involving $v_i$. For example, if $\sigma$ contains a transposition $(v_i\,u)$, deleting $v_i$ disrupts the symmetry, reducing the automorphism group of $G_1$ to a subgroup of $\Aut(G)$. This case is rigorously outlined in \ref{lem:break}.
+
+Finally, the symmetry of the hypergraph may remain \emph{unchanged}. If the vertex $v_i$ being removed does not participate in any transpositions within the automorphism group of $G$, the automorphism group of $G_1$ will be identical to $\Aut(G)$. This is explained in \ref{lem:independent}.
+
+Understanding the nature of induced symmetries during \FKA{} recursion is challenging due to their hierarchical and modular structure. As we can see, depending on the choice of vertex, a variety of symmetries or no symmetries might emerge.""",
+ r"""\section{Symmetry in \FKA{} Recursion}
+
+For a Sperner hypergraph $G$, the equality $\Aut(G)=\Aut(\Tr(G))$
+allows the same permutations to act on both sides of a dual pair
+\leanref{aut_tr_of_sperner}. If the split vertex is $v$, every automorphism
+of $G$ fixing $v$ remains an automorphism after deletion or contraction
+\leanref{stab_mem_aut_del}, \leanref{stab_mem_aut_con}. Sperner reduction
+also preserves every existing automorphism \leanref{aut_le_aut_minimal}.
+
+These statements concern inherited permutations on the fixed ambient vertex
+set. They do not order the full parent and child groups by inclusion or size:
+some parent permutations may fail to survive, while the child may acquire new
+ones. In particular, finding a new child automorphism does not by itself prove
+that the child group is larger, and fixing the split vertex in every parent
+automorphism proves inclusion, not equality.
+
+The 2024 discussion asserted these stronger comparisons from
+Lemmas~\ref{lem:break} and~\ref{lem:independent}. Those comparisons do not
+follow from the corrected statements. The independent-cycle assertion of
+the latter lemma is false \leanref{lemma_3_3_3_false}.
+
+Local automorphism orders also do not count repeated subproblems. That count
+requires isomorphisms between distinct reached pairs. Isomorphisms inherited
+from the input group form a further restriction; an isomorphism between two
+subproblems need not extend to an automorphism of the input."""),
 ],
 "ch4-hard-classes.tex": [
 (r"""conjecturing that these hypergraphs are challenging for \FKA{} and presented a superpolynomial upper bound of $n^{\omega(\log^{1-\mathcal{O}(1)}n)}$ on the number of subproblems.""",

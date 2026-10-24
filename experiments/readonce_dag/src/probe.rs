@@ -133,11 +133,6 @@ impl<const W: usize> Joint<W> {
         if let Some((a, c)) = miss {
             println!("{{\"kind\":\"equal_size_missing\",\"a\":{:?},\"c\":{:?}}}", labels(a), labels(c));
         }
-        // Preserve the target-pair relation so new profile hypotheses need no repeated traversal.
-        let targets: Vec<_> = self.r.iter().map(|&s| labels(s)).collect();
-        let rows: Vec<String> = self.r.iter().map(|&a|
-            self.r.iter().map(|&c| if self.has(a, c) { '1' } else { '0' }).collect()).collect();
-        println!("{{\"kind\":\"target_incidence\",\"targets\":{:?},\"rows\":{:?}}}", targets, rows);
     }
 }
 

@@ -3,9 +3,9 @@
 Archived on 2026-08-04 while consolidating the research project into the
 maintained `src/fka`, `data/instances`, `tests`, and `results` workflow.
 
-These files are preserved as evidence for the original implementation and
-published runs. They are not the maintained executable code. Known defects and
-the migration rationale are recorded in `../../docs/legacy-assessment.md`.
+`#Trivial Aut 1 fk-A Decomposition.txt` is retained because `build_instances.py`
+parses its incidence matrices and `test_thesis_reproduction.py` checks all 41
+nodes against its split log. The maintained implementation is in `src/fka`.
 
-`LEGACY README.md` is the original README and retains the authorship and GPL
-notice. No notebook, source file, GAP note, or decomposition log was deleted.
+The retired notebooks, source code and notes are preserved in git history and
+the external archive; they are not required to run this repository.

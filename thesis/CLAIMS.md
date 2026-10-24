@@ -6,10 +6,8 @@ Corneil–Lerchs–Burlingham, Cameron, Ang–Gurvich–Tarjan) are attributed i
 listed. Lean names are in [`lean/HypergraphDualization/`](../lean/HypergraphDualization); vertices
 there are 0-indexed (thesis `v_i` is `i - 1`).
 
-**In plain terms.** The thesis was checked statement by statement against a computer-verified
-proof library. Most statements hold as printed. Where a statement was false, vague or mislabelled,
-the revised edition states a corrected version, and the library proves the correction. Where
-possible it also gives a concrete example on which the printed version fails.
+The register distinguishes proved corrections from finite checks, computations and open
+claims. Where available, the library includes a counterexample to the printed statement.
 
 ## Status key
 
@@ -45,6 +43,10 @@ possible it also gives a concrete example on which the printed version fails.
 | Algorithm 1 decides `Trans-Hyp` | Proved for every input, both leaf rules and every split rule | `fkAR_correct`, `fkA_correct`, `conds_of_dual` |
 
 ## Chapter 3
+
+The revised §3.5 retains the stabilizer and reduction inclusions below. Its former
+claims of larger child groups, child subgroups and equality when the split vertex
+is fixed are withdrawn; they do not follow from those inclusions (research Audit 4.33).
 
 | Statement | Status | Lean |
 | --- | --- | --- |
@@ -198,10 +200,4 @@ New statements of the October 2026 research program, each written up in
 | Observation 4.39: on GK `f₃`, `f₄` no pair of equal odd size occurs jointly; the share of target pairs occurring is `0.43`, `0.53` | Computed (Rust), equal-size counts checked against the formula engine at small levels | `results/block-probes/`, `tests/test_readonce_probe.py` |
 | Conjecture 4.40: on GK `J_{k+1} ≥ σ_k²/4`; for `k ≥ 4` and any `A < 513` in place of 4 it implies Conjecture 4.19 | Open; holds for `k ≤ 3` | — |
 | Observation 4.41: TK `S₄` degree sum, stopped at memory: `δ ≥ 330,149,945`, `δ/N ≥ 0.307`, `log δ/log N ≥ 0.943` | Computed (Rust, partial); lower bound only | — |
-| Proposition 4.42: reduced-child degree monotonicity, exact least-label maximality, and consecutive OR/AND mate completion under stated edge hypotheses | Proved locally; all-reached-state GK parity corollary has a written proof, not Lean | `degree_minimal_del_le`, `degree_minimal_con_le`, `splitVar_earlier`, `splitVar_or_mate`, `splitVar_and_mate` |
-| Proposition 4.43: exact weighted whole-pair recursion on GK and `E≤δ≤2E` for labelled whole-pair states | Written proof; macro reach checked against formula and hypergraph engines on `f₁–f₃`; no class-count recurrence | `experiments/cherry_probe.py`, `results/cherry-probes.md` |
-| Observation 4.44: Lemma 4.36 must suppress local singleton stops; `f₂` embeds a singleton projection absent from standalone modified `f₁`; open hull on `f₃` has 6,604 supports, forced-mate hull 2,387 | Finite witness Checked; hull counts Computed, complete within stated caps | `gk2_embedded_singleton` (evaluation), `fkADagR_singleton`; `results/cherry-probes.json` |
-| Lemma 4.45: normalized AHU equality characterizes ordered dual-pair isomorphism at fixed ground-set size; intact four-block boundaries give projection-shape multiplicity at most eight | Written proof, not Lean; no reachability or large-subclass assertion | `results/cherry-probes.md` |
-| Proposition 4.46: exact GK growth predicates, sufficient fuel, edge squaring and conditional growth from a uniform squaring step with strict seed | Proved; uniform recurrence and sufficient seed remain hypotheses, Conjectures 4.19 and 4.30 open | `GK.reach_stable`, `GK.edges_succ`, `GK.isoGrowth_of_squaring`, `GK.labelledGrowth_of_squaring`, `GK.labelledGrowth_of_isoGrowth` |
-| Observation 4.47: even whole-pair minors have exponentially many shapes, so mate completion alone cannot supply an `O(N)` shape cover | Written proof about all minors; no claim that degree sum reaches this subclass | `results/cherry-probes.md` |
-| Observation 4.48: on `f₄`, 118 of 696 equal-profile whole-pair target pairings are absent; five of 71 underlying shape diagonals are absent across all standalone label variants | Computed, complete bounded traversal; not Lean-certified, does not refute either growth conjecture | `results/block-probes/gk4-incidence.json`, `gk4-profiles.json`; `test_even_shape_diagonal_counterexample` |
+| Observation 4.48: equal endpoint degree profiles do not ensure joint reach, even for whole-pair shapes | Computed; neither growth conjecture settled; auxiliary material archived | `results/block-probes.md`; evidence snapshot `b294502` |
