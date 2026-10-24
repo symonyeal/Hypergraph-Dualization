@@ -249,6 +249,9 @@ Reproduce the analysis with
 The test file checks this witness across its whole shape fiber and checks preservation of
 the previous complete counts. All 29 targeted tests across `test_cherry_probe.py`,
 `test_readonce_probe.py` and `test_block_profiles.py` pass. The full Python suite was not run.
+With the Rust executable unavailable, the profile tests give three passes and one skip;
+the saved-evidence checks still run, while the executable comparison follows the existing
+Rust-test skip convention.
 The `f₄` absence is a computation, not a Lean-certified finite theorem.
 
 ## Unresolved lemma
