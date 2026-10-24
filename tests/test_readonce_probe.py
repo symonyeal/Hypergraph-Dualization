@@ -60,6 +60,13 @@ def test_joint_against_formula_states(family, k, rule):
     got = {r["size"]: {k: r[k] for k in ("targets", "pairs", "hits")}
            for r in q if r["kind"] == "equal_size"}
     assert got == dict(eq)
+    incidence = next(r for r in q if r["kind"] == "target_incidence")
+    targets = [sum(1 << x for x in xs) for xs in incidence["targets"]]
+    assert len(targets) == len(T) and set(targets) == T
+    assert len(incidence["rows"]) == len(targets)
+    for a, row in zip(targets, incidence["rows"]):
+        assert len(row) == len(targets) and set(row) <= {"0", "1"}
+        assert [v == "1" for v in row] == [(a, c) in P for c in targets]
     w = [r for r in q if r["kind"] == "equal_size_missing"]
     assert bool(w) == any(e["hits"] < e["pairs"] for e in eq.values())
     if w:

@@ -60,7 +60,7 @@ def main():
         r["totals"] = {s: sum(q[s] for q in lv) for s in
                        ("nodes", "splits", "leftmost_ineligible", "fallbacks", "diff_degree_sum")}
     a.out.parent.mkdir(parents=True, exist_ok=True)
-    a.out.write_text(json.dumps(r, indent=2) + "\n", encoding="utf-8")
+    a.out.write_text(json.dumps(r, indent=2) + "\n", encoding="utf-8", newline="\n")
     print(json.dumps({s: v for s, v in r.items() if s not in ("records", "formula", "source_sha256")}))
     for q in rows:
         if q["kind"] not in ("level", "first_departure"):
