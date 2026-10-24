@@ -3,13 +3,16 @@ import json
 import sys
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "experiments"))
 
 import block_profiles as bp
-from test_readonce_probe import probe
+from test_readonce_probe import EXE, probe
 
 
+@pytest.mark.skipif(not EXE.exists(), reason="readonce_dag not built")
 def test_same_profile_pairs_against_direct_reach():
     fm = bp.fm
     f, g = fm.gk(2), fm.gk(3)
