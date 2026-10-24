@@ -50,18 +50,32 @@ by itself certify the full embedding or its isomorphism analogue.
   which is where `N_{k+1}/N_k²` is least (`4/3`).
 - *Target* (Proposition 4.37): for `δ` the step may lose a factor `A·n_k` with `A < 2.004` and
   still settle Conjecture 4.19 from `r₄ = 1368`; for `δ_iso` only a constant `A < 12.6`.
-- *Block states* (Lemma 4.36): a top block's projections are reached by the hull rule (any
+- *Block states* (Lemma 4.36, corrected by Observation 4.44): a top block's projections are reached by the open-block hull rule (any
   maximiser of `deg_C + λ·deg_D`, `λ > 0` free at each node), so condition (i) below is about
-  which `λ` the environment produces.
+  which `λ` the environment produces. Suppress local singleton-edge stops: a block can
+  keep changing after its standalone modified recursion stops.
 - *Target now* (Conjecture 4.40): a constant share of the pairs of standalone supports occurs
   jointly, `J_{k+1} ≥ σ_k²/4`; for `k ≥ 4` any `A < 513` in place of 4 settles Conjecture 4.19.
   Measured shares `1, 0.43, 0.53` for `k = 1–3` (Observation 4.39; GK `f₄` joint probe, 219 s).
   The equal-size form (Conjecture 4.38) is withdrawn: no pair of equal odd size ever occurs.
 
-*Next.* (1) Prove Conjecture 4.40, starting from why pairs fail. All known failures involve a
-block holding a variable left alone under its gate; test the hypothesis of Observation 4.39(b)
-by counting nodes of GK `f₄` where two top blocks hold one. (2) Count `R*(f₃)`, the hull rule's
-reach, against the 1,893–1,908 marginal supports. (3) The literature search of 2026-10-23
+*New reduction* (4.42–4.46; `results/cherry-probes.md`). An original consecutive bottom pair
+is completed immediately after its identity split: local score/tie lemmas in Lean, a written
+all-reached-state GK application. Hence at most one original pair is half live, explaining
+the odd/odd obstruction. Whole pairs admit an exact weighted macro pivot with local atom
+counts `(2,1)`, but no count recurrence is proved. The complete open hull on `f₃` has 6,604
+supports; forcing mate completion reduces it to 2,387, still above the measured marginals.
+Even whole-pair targets with identical endpoint degree profiles need not occur jointly:
+the complete `f₄` target incidence matrix has five missing shape diagonals (Observation 4.48).
+Thus a replacement embedding must control histories beyond these endpoint statistics.
+`GK.isoGrowth_of_squaring` formalizes the conditional reduction, including exact input sizes
+and sufficient fuel; both the uniform step and strict seed remain hypotheses.
+
+*Next.* (1) Bound the shapes actually reached by the weighted macro scheduler; control
+environmental histories, not arbitrary positive weights. (2) Prove a sufficiently large
+joint shape-pair subclass while retaining the block boundaries needed for the loss-eight
+isomorphism bound of Lemma 4.45. Conjecture 4.40 alone is a labelled support assertion.
+(3) The literature search of 2026-10-23
 (research §4, "Where else this problem appears") found no bound on a frequency pivot's memo on
 tree-structured inputs in any of eight fields; the fields that meet such inputs decompose into
 independent parts at every node, which is a candidate for Q2.

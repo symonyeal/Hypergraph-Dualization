@@ -70,6 +70,8 @@ same cache from Mathlib's Azure storage account.
 | `FkaTree` | FK-A's recursion tree unfolds into a decision tree for `f_C` under every rule (`fkDT`, `eval_fkDT`) with at most `(n+1)τ` leaves on dual pairs under valid rules (`leaves_fkDT`, `fkA_tree_dt`); on GK and TK `τ ≥ 2·(27/16)^{n/4}/(n+1)` (`fkA_gk_tree`, `fkA_gk_degree_sum`) |
 | `GkMemo` | `coalt` as an ordered read-once formula with DNF `gkH` (`dnf_coFm_gkH`); under the leftmost rule `δ ≤ 2n + 2` and `τ ≥ 2·(27/16)^{n/4}/(n+1)` on the same pair (`gk_memo_gap`) |
 | `IsoMemo` | FK-A with a memo keyed by any map `κ` that relabels each pair (`fkAI`): its verdict is `Dual` under every rule and fuel, and the memo stays sound (`fkAI_correct`, `fkAI_eq_fkAR`) |
+| `DegreeMinor` | Degree monotonicity under reduced minors, the actual least-label tie convention, and conditional consecutive OR/AND mate completion (`splitVar_or_mate`, `splitVar_and_mate`) |
+| `GkDegreeSum` | Exact labelled and ordered-quotient growth predicates, sufficient-fuel stability, input-edge squaring, the checked local-stop counterexample, and conditional squaring-to-growth implications; neither growth conjecture is proved |
 
 ## Trust base
 
