@@ -689,6 +689,12 @@ conditionally:
 **Proposition 4.6** (conditional; cited). If the exponential-time hypothesis holds, then no polynomial
 `p` satisfies `δ ≤ p(N)` on all dual pairs.
 
+*Status, 28 October 2026.* New SAT manuscripts from OpenAI and Anthropic claim
+subexponential algorithms refuting ETH, with accompanying Lean formalizations.
+These external proofs have not been independently checked here. If correct, they
+remove this proposition's hardness premise; they do not establish a polynomial
+bound on `δ`. See [the source assessment](complexity-update-2026-10.md).
+
 *Proof.* Each subproblem of memoised FK-A costs time polynomial in `N`. If `δ ≤ p(N)` held on dual
 pairs, then running memoised FK-A and answering "not dual" as soon as it meets more than `p(N)`
 subproblems would decide duality in polynomial time. Kobayashi, Kurita and Wasa
@@ -1355,3 +1361,6 @@ been confirmed by the author.
 | 93 | Archive retirement must preserve the decomposition log and the two verbatim thesis instances | Generator and `load_archived` callers; targeted tests initially failed on all three missing inputs and pass after retention | Corrected, 2026-10-23 |
 | 94 | Revised §3.5's group-size and equality comparisons exceed the corrected lemmas | Audit 4.33(f); `stab_mem_aut_del`, `stab_mem_aut_con`, `aut_le_aut_minimal` prove inclusions, not those comparisons | Corrected in the revision generator; original 2024 sources unchanged |
 | 95 | Application catalogue and unrelated manuscript survey supplied no executed application result | Their own scope statements; the supplier-panel study lives in its linked repository. Lean bridge declarations prove only their stated identities | Scope corrected; speculative catalogue retired and bridge-check wording narrowed |
+| 96 | October SAT claims directly challenge Proposition 4.6's ETH premise; unconditional FK-A results and GK growth questions survive | 2026-10-28: OpenAI manuscript Theorem 1.1 and introductory scope, Anthropic manuscript Main Theorem and limitations, Anthropic `MainResults.lean` definitions and README, OpenAI release announcement; linked in `complexity-update-2026-10.md` | Primary statements read; full proofs and external Lean builds not audited or reproduced |
+| 97 | A fast SAT algorithm does not follow the KKW reduction backwards; the direct non-duality CNF can have unbounded width on either side | 2026-10-28: KKW abstract and reduction direction; encoding argument in `complexity-update-2026-10.md`; Mary's bounded-dimension abstract also read | Written implication assessment, not formalized; no runtime improvement established |
+| 98 | Ryser and threshold connections already appear in this repository; no new GK recurrence, FBDD separation or D3 template identified | 2026-10-28: current `openai/math` catalogue entries compared with `openai-math-connections.md`, research agenda and result register; targeted literature searches | Bounded search, not an exhaustive literature or proof audit |
