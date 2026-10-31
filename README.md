@@ -19,9 +19,9 @@ highly symmetric families, the alternating trees (the GK- and TK-families, which
 and the Fano plane, make its recursion tree superpolynomial. The thesis studies how the symmetry of a hypergraph,
 through its automorphism group `Aut(H)` and its underlying graph, interacts with that recursion.
 
-## Policy: a result is a Lean declaration
+## Evidence
 
-Every statement in this repository is one of:
+Research results have one of these statuses:
 
 - **proved** in Lean 4 against Mathlib, for every input;
 - **refuted** by a counterexample that Lean checks;
@@ -54,7 +54,7 @@ verbatim in [`thesis/2024/`](thesis/2024). Among the corrections:
   a lower bound on every DPLL decision tree, hence on FK-A's recursion tree. The stronger bound
   `2^{Ω(n)}` now holds in Lean (`fkA_gk_tree`, below).
 
-## New results (October 2026)
+## Research results (October 2026)
 
 Written up in [`docs/research-2026-10.md`](docs/research-2026-10.md). Lean names are given in
 parentheses; a statement without one is cited or conditional, and says so.
@@ -138,13 +138,12 @@ qualifications. Splitting on the least vertex of a read-once formula with leaves
 (computed). A guarded rule keeps FK96's frequency guarantee at every node (`guardRule_frequent`)
 and gives `δ = 263` on GK `f₄` (computed). The algorithmic dictionary is in [`docs/applications.md`](docs/applications.md).
 
-Open: the converse of the Steiner theorem, `ε(8)`, whether `δ/N` is unbounded on the
-alternating trees under FK-A's rule, D3 from rank 3, and an explicit family that is hard for
-memoised FK-A under every valid symmetric split rule: up to a factor 2, a monotone function with
-small DNF and CNF but no small FBDD named by its functions (research §7, C3). The list is §7 of the research write-up.
-How much of FK-A's work is repetition up to isomorphism is the last paragraph below. The next
-questions (a squaring law for FK-A's subproblems on GK, a split rule with FK96's guarantee and few
-subproblems, FK-A's worst-case exponent) are in [`docs/research-agenda.md`](docs/research-agenda.md).
+Open problems include the converse of the Steiner theorem, `ε(8)`, whether `δ/N` is unbounded
+on the alternating trees under FK-A's rule, D3 from rank 3, and an explicit family that is hard
+for memoised FK-A under every valid symmetric split rule: up to a factor 2, a monotone function
+with small DNF and CNF but no small FBDD named by its functions (research §7, C3). Further
+questions concern a squaring law for FK-A's subproblems on GK, a split rule with FK96's guarantee
+and few subproblems, and FK-A's worst-case exponent; see [`docs/research-agenda.md`](docs/research-agenda.md).
 
 **Symmetry depth.** If `Aut(G)` is `k`-transitive, FK-A reaches at most
 `1+k(k+1)` ordered isomorphism classes through depth `k`, under any rule choosing
@@ -153,7 +152,7 @@ live vertices. For self-transversal `G`, the bound is `1+k(k+1)/2`
 the latter bound at depths 2 and 4 (computed). The [proof and limits](docs/symmetry-depth.md)
 separate these shallow-depth bounds from runtime and deeper recursion.
 
-**How much of FK-A's work is symmetry.** A memo keyed by isomorphism class is sound: FK-A with
+**Isomorphism memoisation.** A memo keyed by isomorphism class is sound: FK-A with
 any key map that relabels each pair returns the right verdict under every split rule
 (`fkAI_correct`). Measured on the alternating trees and the instance library (computed): on GK
 and TK under the leftmost rule no two subproblems are isomorphic, so memoisation's whole saving
