@@ -3,6 +3,7 @@ import HypergraphDualization.Duality
 import HypergraphDualization.Conditions
 import HypergraphDualization.Decomposition
 import HypergraphDualization.Algorithm
+import HypergraphDualization.FkB
 import HypergraphDualization.Symmetry
 import HypergraphDualization.Operations
 import HypergraphDualization.Data

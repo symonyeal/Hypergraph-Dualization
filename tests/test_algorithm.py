@@ -192,7 +192,7 @@ def test_certificates_certify_the_root_instance(rng):
         MBF = random_sperner(n, rng.randint(1, 5), rng)
         if not cnf.edges or not MBF.edges:
             continue
-        tree = fk_a(cnf, MBF)
+        tree = fk_a(cnf, MBF, exact_ca=True)
         if tree.dual or tree.verdict is None or tree.verdict.CA is None:
             continue
         assert verify_CA(cnf, MBF, tree.verdict.CA), (
@@ -205,3 +205,47 @@ def test_certificates_certify_the_root_instance(rng):
 def test_is_dual_convenience_wrapper():
     inst = load("fano")
     assert is_dual(inst.cnf, inst.dnf) is True
+
+
+# ----------------------------------------------------------------------
+# certificate search is opt-in; annotation past the 20-vertex cap; CLI exit codes
+# ----------------------------------------------------------------------
+def test_failed_condition_does_not_search_for_a_certificate():
+    """k disjoint pairs against one triple fail a condition at the root.
+
+    The exact certificate search enumerates ``Tr(cnf)``, which has ``2^k``
+    members here; it must run only on request.
+    """
+    import time
+
+    k = 18
+    cnf = Hypergraph.from_sets(2 * k, [[2 * i, 2 * i + 1] for i in range(k)])
+    dnf = Hypergraph.from_sets(2 * k, [[0, 2, 4]])
+    t0 = time.perf_counter()
+    tree = fk_a(cnf, dnf)
+    assert not tree.dual and len(tree) == 1
+    assert time.perf_counter() - t0 < 1.0
+
+
+def test_analyse_past_the_cograph_cap():
+    from fka.properties import analyse
+
+    n = 25
+    path = Hypergraph.from_sets(n, [[i, i + 1] for i in range(n - 1)])
+    assert analyse(path, graph_classes=False).read_once is False
+
+
+def test_cli_run_exits_nonzero_on_baseline_mismatch(tmp_path, monkeypatch):
+    import dataclasses
+
+    from fka import cli
+    from fkb import cli as cli_b
+
+    inst = load("f2g2")
+    wrong = dataclasses.replace(inst, expected={**inst.expected, "dual": not inst.expected["dual"]})
+    monkeypatch.setattr(cli, "load", lambda _id: wrong)
+    monkeypatch.setattr(cli_b, "load", lambda _id: wrong)
+    assert cli.main(["run", "f2g2", "--out", str(tmp_path), "--no-annotate"]) == 1
+    assert cli_b.main(["run", "f2g2", "--out", str(tmp_path), "--no-annotate"]) == 1
+    monkeypatch.setattr(cli, "load", lambda _id: inst)
+    assert cli.main(["run", "f2g2", "--out", str(tmp_path), "--no-annotate"]) == 0

@@ -41,6 +41,7 @@ claims. Where available, the library includes a counterexample to the printed st
 | Lemma 2.3.2, a vertex of frequency `≥ 1/log n` | Proved (as `≥ 1/s` with `2^s ≤ n`) | `exists_frequent_vertex` |
 | §2.2.2, `(G, H)` dual iff both FK-A subproblems are | Proved, generalised: `G`, `H` need not lie in `U` | `dual_split` |
 | Algorithm 1 decides `Trans-Hyp` | Proved for every input and every split rule; leaves are decided by the definition of duality (`Dual`), and the leaf rules are proved equivalent separately (`dual_empty_left`, `dual_singleton_left`, `conds_of_dual`) | `fkAR_correct`, `fkA_correct`, `conds_of_dual` |
+| FK-B decides `Trans-Hyp` | Proved for every split rule, every `μ`-frequency test and every fuel; the model has the same leaf convention as FK-A (leaves, including the `min(nC, nD) ≤ 2` case, are decided by `Dual`) and FK-A's necessary conditions `conds`; not modelled: the arithmetic of `μ(n) = log n / log log n` (the test is a parameter `mf`), node counts, FK-B's own Check_Conditions and Easy_case, and certificates (conflicting assignments). The per-clause and per-monomial branches are proved exact (`dual_muD`) | `fkBR_correct`, `fkB_correct`, `dual_muD` |
 
 ## Chapter 3
 

@@ -13,6 +13,7 @@ import HypergraphDualization.Duality
 import HypergraphDualization.Conditions
 import HypergraphDualization.Decomposition
 import HypergraphDualization.Algorithm
+import HypergraphDualization.FkB
 import HypergraphDualization.Symmetry
 import HypergraphDualization.Operations
 import HypergraphDualization.Data
@@ -128,6 +129,9 @@ elab "#assert_evaluation " ids:ident* : command => do
   HD.transitive_of_edge_transitive HD.twins_map HD.twins_mem_aut_cliques HD.two_pow_shortest_le
   HD.upHit_con HD.upHit_del HD.upHit_pimg HD.upHit_subst HD.valid_fbddRule HD.valid_guardRule
   HD.valid_leftRule HD.valid_splitVar HD.witt_tr_eq
+
+#assert_standard_axioms
+  HD.cnfv_iff HD.dual_iff_fun HD.dual_split_univ HD.dual_muD HD.fkBR_correct HD.fkB_correct
 
 /-! ### Evaluations (*Checked*, *Observation (evaluation)*) -/
 

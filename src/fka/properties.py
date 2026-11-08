@@ -113,7 +113,7 @@ def is_read_once(MBF: Hypergraph, g: Optional[Graph] = None) -> bool:
     if not MBF.edges:
         return True
     g = primal_graph(MBF) if g is None else g
-    return is_conformal(MBF, g) and is_cograph(g)
+    return is_conformal(MBF, g) and is_cograph(g, max_vertices=None)
 
 
 @dataclass(frozen=True, slots=True)
@@ -185,7 +185,7 @@ def analyse(MBF: Hypergraph, *, graph_classes: bool = True) -> Properties:
         conformal=conformal,
         nonconformal_clique=bad_clique,
         alpha_acyclic=is_alpha_acyclic(MBF),
-        read_once=(conformal and is_cograph(g)) if MBF.edges else True,
+        read_once=(conformal and is_cograph(g, max_vertices=None)) if MBF.edges else True,
         graph_classes=classify_graph(g) if graph_classes else None,
         isolated_vertices=MBF.isolated_vertices(),
     )

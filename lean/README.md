@@ -34,6 +34,7 @@ same cache from Mathlib's Azure storage account.
 | `Conditions` | Props. 2.2.1–2.2.4, Cor. 2.3.1 (corrected), Lemma 2.3.2 |
 | `Decomposition` | deletion and contraction; the FK-A split |
 | `Algorithm` | FK-A under a split rule (`fkAR`; `fkA` is the degree-sum instance) and its correctness `fkAR_correct` |
+| `FkB` | FK-B under a split rule and a `μ`-frequency test (`fkBR`, `fkB`), with the per-clause branch `dual_muD` and the verdict `fkBR_correct`, `fkB_correct`; leaves by `Dual`, no node count |
 | `Symmetry` | automorphism groups; Lemma 3.3.1, Cor. 3.3.4 (corrected), orbits |
 | `Operations`, `Families` | union and join; Hertel's alternating trees and their edge counts |
 | `AltShape` | uniform edge sizes and vertex frequencies of the alternating trees (§4.3) |

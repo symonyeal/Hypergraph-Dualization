@@ -1,6 +1,7 @@
 """The Fredman-Khachiyan algorithm FK-B.
 
-A port of the MATLAB reference in ``FK- B/FK-master/src`` (``FK_B.m``,
+Implemented from the published listing and checked against the MATLAB reference in
+``FK- B/FK-master/src`` (``FK_B.m``,
 ``MFK_B.m``, ``Check_Conditions.m``, ``Easy_case.m``, ``Choose_SplitVar.m``,
 ``mu_*.m``), following the listing in *How to apply SAT-solving for the
 equivalence test of monotone normal forms*, p.5. Line-number comments below cite

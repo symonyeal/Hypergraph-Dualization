@@ -99,7 +99,8 @@ def cmd_show(args: argparse.Namespace) -> int:
     return 0
 
 
-def _run_one(inst: Instance, args: argparse.Namespace, outdir: Path) -> dict:
+def _run_one(inst: Instance, args: argparse.Namespace, outdir: Path) -> bool:
+    """Run one instance; ``False`` when the result contradicts the recorded baseline."""
     tree = fk_a(
         inst.cnf,
         inst.dnf,
@@ -141,7 +142,7 @@ def _run_one(inst: Instance, args: argparse.Namespace, outdir: Path) -> dict:
     )
     for p in outputs:
         print(f"                 -> {p}")
-    return summary
+    return not flag
 
 
 def cmd_run(args: argparse.Namespace) -> int:
@@ -155,11 +156,12 @@ def cmd_run(args: argparse.Namespace) -> int:
         print("give an instance id, or --all. Available: " + ", ".join(list_ids()))
         return 2
     variants = VARIANTS if args.all_variants else (args.variant,)
+    ok = True
     for inst in targets:
         for variant in variants:
             args.variant = variant
-            _run_one(inst, args, outdir)
-    return 0
+            ok &= _run_one(inst, args, outdir)
+    return 0 if ok else 1
 
 
 def cmd_verify(args: argparse.Namespace) -> int:

@@ -325,9 +325,13 @@ def fk_a(
     instance: str = "",
     validate: bool = False,
     max_nodes: Optional[int] = None,
+    exact_ca: bool = False,
 ) -> Tree:
     """Decide whether ``cnf = Tr(dnf)``, returning the full recursion tree.
 
+    ``exact_ca=True`` also searches ``Tr(cnf)`` for an equation 2.1 assignment at
+    a failed condition that gives none; that search is exponential in the size
+    of ``Tr(cnf)``, so it is off by default.
     ``validate=True`` re-checks every conflicting assignment against equation
     2.1 at the node that built it; the tests turn it on. ``max_nodes`` aborts
     once the tree passes that size -- the tree is the thing that can blow up.
@@ -400,7 +404,7 @@ def fk_a(
             # checked independently at every ancestor after the lifts -- but not
             # every degenerate pair admits one in this orientation, so the
             # structural verdict stands when the exact search returns None.
-            if failed.CA is None:
+            if exact_ca and failed.CA is None:
                 found = find_CA(C, D)
                 if found is not None:
                     failed = replace(failed, CA=found)
