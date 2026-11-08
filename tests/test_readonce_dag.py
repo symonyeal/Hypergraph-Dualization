@@ -1,6 +1,6 @@
 """experiments/readonce_dag's class counts against iso_memo.py and an orbit oracle.
 
-Skipped when the Rust binary is not built (`cargo build --release` in experiments/readonce_dag).
+Skipped locally when the Rust binary is not built (`cargo build --release` in experiments/readonce_dag); a failure when CI is set.
 
 Legend
   S, t     live set and orientation of an FK-A node: g = h or h^d, h = f pruned to S
@@ -8,6 +8,7 @@ Legend
            binary tree: the sorted concatenation of the children's canons
 """
 
+import os
 import subprocess
 import sys
 from itertools import permutations
@@ -22,7 +23,7 @@ import iso_memo as im  # noqa: E402
 rs = im.rs
 EXE = ROOT / "experiments" / "readonce_dag" / "target" / "release" / "readonce_dag"
 EXE = EXE.with_suffix(".exe") if EXE.with_suffix(".exe").exists() else EXE
-pytestmark = pytest.mark.skipif(not EXE.exists(), reason="readonce_dag not built")
+pytestmark = pytest.mark.skipif(not EXE.exists() and not os.environ.get("CI"), reason="readonce_dag not built")
 FLAG = {"degree_sum": [], "leftmost": ["--leftmost"], "guarded": ["--guarded"]}
 CASES = [(rs.gk, 1), (rs.gk, 2), (rs.gk, 3), (rs.tk, 1), (rs.tk, 2), (rs.tk, 3)]
 

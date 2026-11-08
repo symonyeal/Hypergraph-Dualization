@@ -5,6 +5,7 @@ xs block labels; A,C projected supports; P joint pairs; T standalone targets;
 q JSON record; lv counts by live-support size; dc,dd degrees of the two sides.
 """
 import json
+import os
 import subprocess
 from collections import defaultdict
 from pathlib import Path
@@ -13,7 +14,7 @@ import pytest
 
 from test_readonce_dag import EXE, FLAG, im, reached, rs
 
-pytestmark = pytest.mark.skipif(not EXE.exists(), reason="readonce_dag not built")
+pytestmark = pytest.mark.skipif(not EXE.exists() and not os.environ.get("CI"), reason="readonce_dag not built")
 
 
 def probe(f, *args):
