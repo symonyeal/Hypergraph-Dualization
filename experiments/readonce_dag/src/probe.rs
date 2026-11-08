@@ -24,7 +24,7 @@ fn norm<const W: usize>(s: M<W>, xs: &[usize]) -> M<W> {
             m.0[i] = s.0[q + i] >> b;
             if b != 0 && q + i + 1 < W { m.0[i] |= s.0[q + i + 1] << (64 - b); }
         }
-        if xs.len() % 64 != 0 { m.0[xs.len() / 64] &= (1 << (xs.len() % 64)) - 1; }
+        if !xs.len().is_multiple_of(64) { m.0[xs.len() / 64] &= (1 << (xs.len() % 64)) - 1; }
         return m;
     }
     xs.iter().enumerate().fold(M::zero(), |m, (i, &x)| {

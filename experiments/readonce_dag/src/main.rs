@@ -7,6 +7,9 @@
 //! else on FK-A's largest degree sum.
 //! Prints `n N delta tau` (tau = 0 under `--delta-only`); under `--classes`,
 //! `n N delta d_shp d_aut tau` and a line `blocks ...`; under `--iso`, `n N d_iso`.
+//! Counts are exact through u128; unrepresentable term/degree/tree counts fail with an error.
+//! For a tree count beyond u128 use `--classes` (approximate tau) or `--delta-only`.
+//! `--spill DIR` creates DIR if needed and requires it to be empty; existing files are preserved.
 //!
 //! A node of FK-A on a dual pair is (h, t): h = f|ρ, t the last value ρ assigned, and the pair is
 //! (DNF h, DNF h^d) for t = 0, swapped for t = 1. Both children of (h, t) are (h|x=0, 0) and
@@ -73,6 +76,15 @@ impl Hasher for Fx {
 type Map<A, B> = HashMap<A, B, BuildHasherDefault<Fx>>;
 type Set<A> = HashSet<A, BuildHasherDefault<Fx>>;
 
+fn prepare_spill(d: &std::path::Path) -> std::io::Result<()> {
+    fs::create_dir_all(d)?;
+    if fs::read_dir(d)?.next().is_some() {
+        return Err(std::io::Error::new(std::io::ErrorKind::AlreadyExists,
+                                      format!("spill directory {} must be empty", d.display())));
+    }
+    Ok(())
+}
+
 fn tokens(s: &str) -> Vec<String> {
     s.replace('(', " ( ").replace(')', " ) ").split_whitespace().map(String::from).collect()
 }
@@ -125,11 +137,17 @@ fn counts<const W: usize>(f: &F<W>, s: M<W>) -> (Vec<u128>, Vec<u128>) {
     for g in 0..m {
         if !f.mask[g].and(s).any() { continue; }
         let live = f.kids[g].iter().filter(|&&k| f.mask[k].and(s).any());
-        (t[g], td[g]) = match f.op[g] {
-            Op::Var(_) => (1, 1),
-            Op::And => live.fold((1, 0), |(a, b), &k| (a * t[k], b + td[k])),
-            Op::Or => live.fold((0, 1), |(a, b), &k| (a + t[k], b * td[k])),
-        };
+        let (mut a, mut b) = match f.op[g] { Op::Var(_) => (1u128, 1u128), Op::And => (1, 0), Op::Or => (0, 1) };
+        for &k in live {
+            (a, b) = match f.op[g] {
+                Op::Var(_) => (1, 1),
+                Op::And => (a.checked_mul(t[k]).expect("term count exceeds u128"),
+                            b.checked_add(td[k]).expect("dual term count exceeds u128")),
+                Op::Or => (a.checked_add(t[k]).expect("term count exceeds u128"),
+                           b.checked_mul(td[k]).expect("dual term count exceeds u128")),
+            };
+        }
+        (t[g], td[g]) = (a, b);
     }
     (t, td)
 }
@@ -145,25 +163,32 @@ fn pick<const W: usize>(f: &F<W>, s: M<W>, rule: Rule) -> Option<Pick> {
     let m = f.op.len();
     let (t, td) = counts(f, s);
     let (c, d) = (t[m - 1], td[m - 1]);
-    if c * d <= 1 || c == 1 || d == 1 { return None; }
+    // The complete FK-A leaf condition (c*d <= 1 || c == 1 || d == 1)
+    // is equivalent to either side having at most one term.
+    if c <= 1 || d <= 1 { return None; }
     // deg_C x and deg_D x by one top-down pass: at AND a child's term count multiplies by its
     // siblings' (C side), at OR by its siblings' clause count (dual side).
     let (mut mt, mut mtd) = (vec![0u128; m], vec![0u128; m]);
     (mt[m - 1], mtd[m - 1]) = (1, 1);
-    let lg = 127 - (c + d).leading_zeros() as u128;      // s = ⌊log₂ N⌋
+    let total = c.checked_add(d).expect("total term count exceeds u128");
+    let lg = 127 - total.leading_zeros() as u128;        // s = ⌊log₂ N⌋
     let (mut best, mut guard) = ((0u128, usize::MAX), usize::MAX);
     for g in (0..m).rev() {
         if !f.mask[g].and(s).any() { continue; }
         match f.op[g] {
             Op::Var(x) => {
-                let k = mt[g] + mtd[g];
+                let k = mt[g].checked_add(mtd[g]).expect("combined degree exceeds u128");
                 if k > best.0 || (k == best.0 && x < best.1) { best = (k, x); }
-                if (c <= lg * mt[g] || d <= lg * mtd[g]) && x < guard { guard = x; }
+                if (lg.checked_mul(mt[g]).is_none_or(|v| c <= v)
+                    || lg.checked_mul(mtd[g]).is_none_or(|v| d <= v)) && x < guard { guard = x; }
             }
             op => for &k in &f.kids[g] {
                 if !f.mask[k].and(s).any() { continue; }
-                (mt[k], mtd[k]) = if op == Op::And { (mt[g] * (t[g] / t[k]), mtd[g]) }
-                                  else { (mt[g], mtd[g] * (td[g] / td[k])) };
+                (mt[k], mtd[k]) = if op == Op::And {
+                    (mt[g].checked_mul(t[g] / t[k]).expect("clause degree exceeds u128"), mtd[g])
+                } else {
+                    (mt[g], mtd[g].checked_mul(td[g] / td[k]).expect("dual degree exceeds u128"))
+                };
             },
         }
     }
@@ -299,13 +324,15 @@ fn dfs<const W: usize>(f: &F<W>, rule: Rule, delta_only: bool) {
             }
         } else {
             let (a, b) = split(f, s, rule).unwrap();
-            let v = 1u128.saturating_add(tau[&a]).saturating_add(tau[&b]);
+            let v = tau[&a].checked_add(tau[&b]).and_then(|v| v.checked_add(1))
+                .expect("recursion tree count exceeds u128; use --classes or --delta-only");
             tau.insert(k, v);
         }
     }
     let (t, td) = counts(f, root);
     let m = f.op.len();
-    println!("{} {} {} {}", root.ones(), t[m - 1] + td[m - 1], tau.len(), if delta_only { 0 } else { tau[&r] });
+    let total = t[m - 1].checked_add(td[m - 1]).expect("total term count exceeds u128");
+    println!("{} {} {} {}", root.ones(), total, tau.len(), if delta_only { 0 } else { tau[&r] });
 }
 
 fn iso<const W: usize>(f: &F<W>, rule: Rule) {
@@ -321,7 +348,8 @@ fn iso<const W: usize>(f: &F<W>, rule: Rule) {
     }
     let (t, td) = counts(f, root);
     let m = f.op.len();
-    println!("{} {} {}", root.ones(), t[m - 1] + td[m - 1], seen.len());
+    let total = t[m - 1].checked_add(td[m - 1]).expect("total term count exceeds u128");
+    println!("{} {} {}", root.ones(), total, seen.len());
 }
 
 /// A pending node: (S, t) and the number of root paths reaching it, exact (saturating) and as f64.
@@ -337,7 +365,8 @@ impl<const W: usize> Lv<W> {
             None => self.mem[l].push(r),
             Some(d) => {
                 let w = self.out[l].get_or_insert_with(|| BufWriter::with_capacity(1 << 16,
-                    File::create(d.join(format!("{l}.bin"))).unwrap()));
+                    File::options().write(true).create_new(true).open(d.join(format!("{l}.bin")))
+                        .unwrap_or_else(|e| panic!("cannot create spill level {l} in {}: {e}", d.display()))));
                 for x in r.0.0 { w.write_all(&x.to_le_bytes()).unwrap(); }
                 w.write_all(&[r.1 as u8]).unwrap();
                 w.write_all(&r.2.to_le_bytes()).unwrap();
@@ -350,10 +379,12 @@ impl<const W: usize> Lv<W> {
         let mut v = match &self.dir {
             None => std::mem::take(&mut self.mem[l]),
             Some(d) => {
-                let Some(w) = self.out[l].take() else { return vec![] };
+                let Some(mut w) = self.out[l].take() else { return vec![] };
+                w.flush().expect("failed to flush spill level");
                 drop(w);
                 let p = d.join(format!("{l}.bin"));
                 let b = fs::read(&p).unwrap();
+                assert_eq!(b.len() % (8 * W + 25), 0, "incomplete spill level record");
                 fs::remove_file(&p).unwrap();
                 b.chunks_exact(8 * W + 25).map(|r| {
                     let mut s = M::zero();
@@ -364,7 +395,7 @@ impl<const W: usize> Lv<W> {
                 }).collect()
             }
         };
-        v.sort_unstable_by(|a, b| (a.0, a.1).cmp(&(b.0, b.1)));
+        v.sort_unstable_by_key(|a| (a.0, a.1));
         v.dedup_by(|a, b| {
             let eq = (a.0, a.1) == (b.0, b.1);
             if eq { b.2 = b.2.saturating_add(a.2); b.3 += a.3; }
@@ -425,10 +456,18 @@ fn main() {
     let arg = |a: &str| args.iter().any(|x| x == a);
     let rule = if arg("--leftmost") { Rule::Leftmost } else if arg("--guarded") { Rule::Guarded } else { Rule::DegreeSum };
     let dir = args.iter().position(|x| x == "--spill").map(|i| PathBuf::from(&args[i + 1]));
+    if let Some(d) = &dir {
+        prepare_spill(d).unwrap_or_else(|e| panic!("cannot prepare spill directory {}: {e}", d.display()));
+    }
     let n = tok.iter().filter_map(|t| t.trim_start_matches('x').parse::<usize>().ok()).max().unwrap() + 1;
     macro_rules! run {
         ($w:literal) => {{
             let f = parse::<$w>(&tok);
+            let root = *f.mask.last().unwrap();
+            let (t, td) = counts(&f, root);
+            t[f.op.len() - 1].checked_add(td[f.op.len() - 1])
+                .expect("total term count exceeds u128");
+            let _ = pick(&f, root, rule);
             if arg("--joint") || arg("--guard-trace") {
                 probe::run(&f, rule, dir, arg("--joint"), arg("--guard-trace"));
             } else if arg("--classes") { classes(&f, rule, dir) } else if arg("--iso") { iso(&f, rule) }

@@ -10,6 +10,15 @@ permissions:
   contents: read
 
 jobs:
+  rust:
+    name: Read-once DAG safety
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo clippy --manifest-path experiments/readonce_dag/Cargo.toml --all-targets --locked -- -D warnings
+      - run: cargo test --manifest-path experiments/readonce_dag/Cargo.toml --release --locked
+
   python:
     name: Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
