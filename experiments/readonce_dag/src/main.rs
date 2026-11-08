@@ -43,40 +43,107 @@ mod probe;
 struct M<const W: usize>([u64; W]); // W 64-bit words: n ≤ 64·W
 
 impl<const W: usize> M<W> {
-    fn zero() -> Self { M([0; W]) }
-    fn bit(x: usize) -> Self { let mut m = Self::zero(); m.0[x / 64] = 1 << (x % 64); m }
-    fn or(self, o: Self) -> Self { let mut m = self; for i in 0..W { m.0[i] |= o.0[i]; } m }
-    fn and(self, o: Self) -> Self { let mut m = self; for i in 0..W { m.0[i] &= o.0[i]; } m }
-    fn andnot(self, o: Self) -> Self { let mut m = self; for i in 0..W { m.0[i] &= !o.0[i]; } m }
-    fn any(self) -> bool { self.0.iter().any(|&w| w != 0) }
-    fn ones(self) -> u32 { self.0.iter().map(|w| w.count_ones()).sum() }
-    fn low(self) -> usize { for i in 0..W { if self.0[i] != 0 { return 64 * i + self.0[i].trailing_zeros() as usize; } } usize::MAX }
+    fn zero() -> Self {
+        M([0; W])
+    }
+    fn bit(x: usize) -> Self {
+        let mut m = Self::zero();
+        m.0[x / 64] = 1 << (x % 64);
+        m
+    }
+    fn or(self, o: Self) -> Self {
+        let mut m = self;
+        for i in 0..W {
+            m.0[i] |= o.0[i];
+        }
+        m
+    }
+    fn and(self, o: Self) -> Self {
+        let mut m = self;
+        for i in 0..W {
+            m.0[i] &= o.0[i];
+        }
+        m
+    }
+    fn andnot(self, o: Self) -> Self {
+        let mut m = self;
+        for i in 0..W {
+            m.0[i] &= !o.0[i];
+        }
+        m
+    }
+    fn any(self) -> bool {
+        self.0.iter().any(|&w| w != 0)
+    }
+    fn ones(self) -> u32 {
+        self.0.iter().map(|w| w.count_ones()).sum()
+    }
+    fn low(self) -> usize {
+        for i in 0..W {
+            if self.0[i] != 0 {
+                return 64 * i + self.0[i].trailing_zeros() as usize;
+            }
+        }
+        usize::MAX
+    }
 }
 
 #[derive(Clone, Copy, PartialEq)]
-enum Op { Var(usize), And, Or }
+enum Op {
+    Var(usize),
+    And,
+    Or,
+}
 
 #[derive(Clone, Copy, Hash, PartialEq, Eq)]
-enum K<const W: usize> { Live(M<W>, bool), Const(bool) } // Const(c): C = {∅} iff c, else C = ∅
+enum K<const W: usize> {
+    Live(M<W>, bool),
+    Const(bool),
+} // Const(c): C = {∅} iff c, else C = ∅
 
 /// Gates in post-order: children before parents, the root last.
-struct F<const W: usize> { op: Vec<Op>, kids: Vec<Vec<usize>>, par: Vec<usize>, mask: Vec<M<W>>, leaf: Vec<usize> }
+struct F<const W: usize> {
+    op: Vec<Op>,
+    kids: Vec<Vec<usize>>,
+    par: Vec<usize>,
+    mask: Vec<M<W>>,
+    leaf: Vec<usize>,
+}
 
 #[derive(Default)]
 struct Fx(u64);
 impl Hasher for Fx {
-    fn finish(&self) -> u64 { self.0 }
-    fn write(&mut self, b: &[u8]) { for &c in b { self.0 = (self.0.rotate_left(5) ^ c as u64).wrapping_mul(0x51_7c_c1_b7_27_22_0a_95); } }
-    fn write_u64(&mut self, v: u64) { self.0 = (self.0.rotate_left(5) ^ v).wrapping_mul(0x51_7c_c1_b7_27_22_0a_95); }
-    fn write_u8(&mut self, v: u8) { self.write_u64(v as u64); }
-    fn write_u32(&mut self, v: u32) { self.write_u64(v as u64); }
-    fn write_usize(&mut self, v: usize) { self.write_u64(v as u64); }
-    fn write_isize(&mut self, v: isize) { self.write_u64(v as u64); }
+    fn finish(&self) -> u64 {
+        self.0
+    }
+    fn write(&mut self, b: &[u8]) {
+        for &c in b {
+            self.0 = (self.0.rotate_left(5) ^ c as u64).wrapping_mul(0x51_7c_c1_b7_27_22_0a_95);
+        }
+    }
+    fn write_u64(&mut self, v: u64) {
+        self.0 = (self.0.rotate_left(5) ^ v).wrapping_mul(0x51_7c_c1_b7_27_22_0a_95);
+    }
+    fn write_u8(&mut self, v: u8) {
+        self.write_u64(v as u64);
+    }
+    fn write_u32(&mut self, v: u32) {
+        self.write_u64(v as u64);
+    }
+    fn write_usize(&mut self, v: usize) {
+        self.write_u64(v as u64);
+    }
+    fn write_isize(&mut self, v: isize) {
+        self.write_u64(v as u64);
+    }
 }
 type Map<A, B> = HashMap<A, B, BuildHasherDefault<Fx>>;
 type Set<A> = HashSet<A, BuildHasherDefault<Fx>>;
 
-struct SpillLease { path: PathBuf, file: Option<File> }
+struct SpillLease {
+    path: PathBuf,
+    file: Option<File>,
+}
 
 impl Drop for SpillLease {
     fn drop(&mut self) {
@@ -88,21 +155,36 @@ impl Drop for SpillLease {
 fn prepare_spill(d: &std::path::Path) -> std::io::Result<SpillLease> {
     fs::create_dir_all(d)?;
     if fs::read_dir(d)?.next().is_some() {
-        return Err(std::io::Error::new(std::io::ErrorKind::AlreadyExists,
-                                      format!("spill directory {} must be empty", d.display())));
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::AlreadyExists,
+            format!("spill directory {} must be empty", d.display()),
+        ));
     }
     // Keep ownership across levels: their files disappear as the search consumes them.
     let path = d.join(".readonce.lock");
     let file = File::options().write(true).create_new(true).open(&path)?;
-    Ok(SpillLease { path, file: Some(file) })
+    Ok(SpillLease {
+        path,
+        file: Some(file),
+    })
 }
 
 fn tokens(s: &str) -> Vec<String> {
-    s.replace('(', " ( ").replace(')', " ) ").split_whitespace().map(String::from).collect()
+    s.replace('(', " ( ")
+        .replace(')', " ) ")
+        .split_whitespace()
+        .map(String::from)
+        .collect()
 }
 
 fn parse<const W: usize>(tok: &[String]) -> F<W> {
-    let mut f = F { op: vec![], kids: vec![], par: vec![], mask: vec![], leaf: vec![usize::MAX; 64 * W] };
+    let mut f = F {
+        op: vec![],
+        kids: vec![],
+        par: vec![],
+        mask: vec![],
+        leaf: vec![usize::MAX; 64 * W],
+    };
     fn go<const W: usize>(t: &[String], i: &mut usize, f: &mut F<W>) -> usize {
         let g;
         let token = t.get(*i).expect("incomplete formula");
@@ -114,21 +196,35 @@ fn parse<const W: usize>(tok: &[String]) -> F<W> {
             };
             *i += 2;
             let mut ks = vec![];
-            while t.get(*i).expect("unclosed gate") != ")" { ks.push(go(t, i, f)); }
+            while t.get(*i).expect("unclosed gate") != ")" {
+                ks.push(go(t, i, f));
+            }
             assert!(!ks.is_empty(), "gate must have at least one child");
             *i += 1;
             let m = ks.iter().fold(M::zero(), |a, &k| a.or(f.mask[k]));
             g = f.op.len();
-            for &k in &ks { f.par[k] = g; }
-            f.op.push(op); f.kids.push(ks); f.mask.push(m);
+            for &k in &ks {
+                f.par[k] = g;
+            }
+            f.op.push(op);
+            f.kids.push(ks);
+            f.mask.push(m);
         } else {
-            let x: usize = token.strip_prefix('x').unwrap_or(token).parse()
+            let x: usize = token
+                .strip_prefix('x')
+                .unwrap_or(token)
+                .parse()
                 .expect("expected a variable id");
             assert!(x < 64 * W, "variable id must be below 512");
-            assert!(f.leaf[x] == usize::MAX, "formula must be read-once: repeated variable {x}");
+            assert!(
+                f.leaf[x] == usize::MAX,
+                "formula must be read-once: repeated variable {x}"
+            );
             *i += 1;
             g = f.op.len();
-            f.op.push(Op::Var(x)); f.kids.push(vec![]); f.mask.push(M::bit(x));
+            f.op.push(Op::Var(x));
+            f.kids.push(vec![]);
+            f.mask.push(M::bit(x));
             f.leaf[x] = g;
         }
         f.par.push(usize::MAX);
@@ -145,10 +241,14 @@ fn restrict<const W: usize>(f: &F<W>, s: M<W>, x: usize, b: bool) -> Result<M<W>
     let (mut c, v) = (f.leaf[x], b);
     loop {
         let p = f.par[c];
-        if p == usize::MAX { return Err(v); }
-        let id = f.op[p] == Op::And;                       // identity of p: 1 for AND, 0 for OR
-        if v == id && f.mask[p].and(s).andnot(f.mask[c]).any() { return Ok(s.andnot(f.mask[c])); }
-        c = p;                                             // p is constant: v if absorbing, else id = v
+        if p == usize::MAX {
+            return Err(v);
+        }
+        let id = f.op[p] == Op::And; // identity of p: 1 for AND, 0 for OR
+        if v == id && f.mask[p].and(s).andnot(f.mask[c]).any() {
+            return Ok(s.andnot(f.mask[c]));
+        }
+        c = p; // p is constant: v if absorbing, else id = v
     }
 }
 
@@ -157,16 +257,26 @@ fn counts<const W: usize>(f: &F<W>, s: M<W>) -> (Vec<u128>, Vec<u128>) {
     let m = f.op.len();
     let (mut t, mut td) = (vec![0u128; m], vec![0u128; m]);
     for g in 0..m {
-        if !f.mask[g].and(s).any() { continue; }
+        if !f.mask[g].and(s).any() {
+            continue;
+        }
         let live = f.kids[g].iter().filter(|&&k| f.mask[k].and(s).any());
-        let (mut a, mut b) = match f.op[g] { Op::Var(_) => (1u128, 1u128), Op::And => (1, 0), Op::Or => (0, 1) };
+        let (mut a, mut b) = match f.op[g] {
+            Op::Var(_) => (1u128, 1u128),
+            Op::And => (1, 0),
+            Op::Or => (0, 1),
+        };
         for &k in live {
             (a, b) = match f.op[g] {
                 Op::Var(_) => (1, 1),
-                Op::And => (a.checked_mul(t[k]).expect("term count exceeds u128"),
-                            b.checked_add(td[k]).expect("dual term count exceeds u128")),
-                Op::Or => (a.checked_add(t[k]).expect("term count exceeds u128"),
-                           b.checked_mul(td[k]).expect("dual term count exceeds u128")),
+                Op::And => (
+                    a.checked_mul(t[k]).expect("term count exceeds u128"),
+                    b.checked_add(td[k]).expect("dual term count exceeds u128"),
+                ),
+                Op::Or => (
+                    a.checked_add(t[k]).expect("term count exceeds u128"),
+                    b.checked_mul(td[k]).expect("dual term count exceeds u128"),
+                ),
             };
         }
         (t[g], td[g]) = (a, b);
@@ -175,10 +285,18 @@ fn counts<const W: usize>(f: &F<W>, s: M<W>) -> (Vec<u128>, Vec<u128>) {
 }
 
 #[derive(Clone, Copy, PartialEq)]
-enum Rule { DegreeSum, Leftmost, Guarded }
+enum Rule {
+    DegreeSum,
+    Leftmost,
+    Guarded,
+}
 
 // Pick: selected vertex x, least frequent-enough vertex g, degree-sum vertex b.
-struct Pick { x: usize, g: usize, b: usize }
+struct Pick {
+    x: usize,
+    g: usize,
+    b: usize,
+}
 
 /// Split choice, or None at a leaf of modified FK-A.
 fn pick<const W: usize>(f: &F<W>, s: M<W>, rule: Rule) -> Option<Pick> {
@@ -187,31 +305,57 @@ fn pick<const W: usize>(f: &F<W>, s: M<W>, rule: Rule) -> Option<Pick> {
     let (c, d) = (t[m - 1], td[m - 1]);
     // The complete FK-A leaf condition (c*d <= 1 || c == 1 || d == 1)
     // is equivalent to either side having at most one term.
-    if c <= 1 || d <= 1 { return None; }
+    if c <= 1 || d <= 1 {
+        return None;
+    }
     // deg_C x and deg_D x by one top-down pass: at AND a child's term count multiplies by its
     // siblings' (C side), at OR by its siblings' clause count (dual side).
     let (mut mt, mut mtd) = (vec![0u128; m], vec![0u128; m]);
     (mt[m - 1], mtd[m - 1]) = (1, 1);
     let total = c.checked_add(d).expect("total term count exceeds u128");
-    let lg = 127 - total.leading_zeros() as u128;        // s = ⌊log₂ N⌋
+    let lg = 127 - total.leading_zeros() as u128; // s = ⌊log₂ N⌋
     let (mut best, mut guard) = ((0u128, usize::MAX), usize::MAX);
     for g in (0..m).rev() {
-        if !f.mask[g].and(s).any() { continue; }
+        if !f.mask[g].and(s).any() {
+            continue;
+        }
         match f.op[g] {
             Op::Var(x) => {
-                let k = mt[g].checked_add(mtd[g]).expect("combined degree exceeds u128");
-                if k > best.0 || (k == best.0 && x < best.1) { best = (k, x); }
+                let k = mt[g]
+                    .checked_add(mtd[g])
+                    .expect("combined degree exceeds u128");
+                if k > best.0 || (k == best.0 && x < best.1) {
+                    best = (k, x);
+                }
                 if (lg.checked_mul(mt[g]).is_none_or(|v| c <= v)
-                    || lg.checked_mul(mtd[g]).is_none_or(|v| d <= v)) && x < guard { guard = x; }
+                    || lg.checked_mul(mtd[g]).is_none_or(|v| d <= v))
+                    && x < guard
+                {
+                    guard = x;
+                }
             }
-            op => for &k in &f.kids[g] {
-                if !f.mask[k].and(s).any() { continue; }
-                (mt[k], mtd[k]) = if op == Op::And {
-                    (mt[g].checked_mul(t[g] / t[k]).expect("clause degree exceeds u128"), mtd[g])
-                } else {
-                    (mt[g], mtd[g].checked_mul(td[g] / td[k]).expect("dual degree exceeds u128"))
-                };
-            },
+            op => {
+                for &k in &f.kids[g] {
+                    if !f.mask[k].and(s).any() {
+                        continue;
+                    }
+                    (mt[k], mtd[k]) = if op == Op::And {
+                        (
+                            mt[g]
+                                .checked_mul(t[g] / t[k])
+                                .expect("clause degree exceeds u128"),
+                            mtd[g],
+                        )
+                    } else {
+                        (
+                            mt[g],
+                            mtd[g]
+                                .checked_mul(td[g] / td[k])
+                                .expect("dual degree exceeds u128"),
+                        )
+                    };
+                }
+            }
         }
     }
     let x = match rule {
@@ -219,7 +363,11 @@ fn pick<const W: usize>(f: &F<W>, s: M<W>, rule: Rule) -> Option<Pick> {
         Rule::Guarded if guard != usize::MAX => guard,
         _ => best.1,
     };
-    Some(Pick { x, g: guard, b: best.1 })
+    Some(Pick {
+        x,
+        g: guard,
+        b: best.1,
+    })
 }
 
 fn children<const W: usize>(f: &F<W>, s: M<W>, x: usize) -> (K<W>, K<W>) {
@@ -227,7 +375,10 @@ fn children<const W: usize>(f: &F<W>, s: M<W>, x: usize) -> (K<W>, K<W>) {
         Err(v) => K::Const(v ^ b),
         Ok(s) => K::Live(s, b && s.ones() > 1),
     };
-    (key(restrict(f, s, x, false), false), key(restrict(f, s, x, true), true))
+    (
+        key(restrict(f, s, x, false), false),
+        key(restrict(f, s, x, true), true),
+    )
 }
 
 /// Children of a node with live set s, or None at a leaf of modified FK-A.
@@ -237,24 +388,47 @@ fn split<const W: usize>(f: &F<W>, s: M<W>, rule: Rule) -> Option<(K<W>, K<W>)> 
 
 /// Hash-consed AHU nodes: id ↦ (code, sorted child ids). Codes: 0 variable, 1 AND, 2 OR,
 /// 3 marked leaf, 4 unmarked leaf.
-struct Tab { ix: Map<u64, u32>, nx: Vec<u32>, at: Vec<u32>, code: Vec<u8>, dat: Vec<u32> }
+struct Tab {
+    ix: Map<u64, u32>,
+    nx: Vec<u32>,
+    at: Vec<u32>,
+    code: Vec<u8>,
+    dat: Vec<u32>,
+}
 
 impl Tab {
-    fn new() -> Tab { Tab { ix: Map::default(), nx: vec![], at: vec![0], code: vec![], dat: vec![] } }
-    fn kids(&self, i: u32) -> &[u32] { &self.dat[self.at[i as usize] as usize..self.at[i as usize + 1] as usize] }
+    fn new() -> Tab {
+        Tab {
+            ix: Map::default(),
+            nx: vec![],
+            at: vec![0],
+            code: vec![],
+            dat: vec![],
+        }
+    }
+    fn kids(&self, i: u32) -> &[u32] {
+        &self.dat[self.at[i as usize] as usize..self.at[i as usize + 1] as usize]
+    }
     fn get(&mut self, code: u8, ks: &[u32]) -> u32 {
         let mut h = Fx::default();
         h.write_u8(code);
-        for &k in ks { h.write_u32(k); }
+        for &k in ks {
+            h.write_u32(k);
+        }
         let h = h.finish();
         let head = self.ix.get(&h).copied().unwrap_or(u32::MAX);
         let mut i = head;
         while i != u32::MAX {
-            if self.code[i as usize] == code && self.kids(i) == ks { return i; }
+            if self.code[i as usize] == code && self.kids(i) == ks {
+                return i;
+            }
             i = self.nx[i as usize];
         }
         let i = self.code.len() as u32;
-        self.code.push(code); self.nx.push(head); self.dat.extend_from_slice(ks); self.at.push(self.dat.len() as u32);
+        self.code.push(code);
+        self.nx.push(head);
+        self.dat.extend_from_slice(ks);
+        self.at.push(self.dat.len() as u32);
         self.ix.insert(h, i);
         i
     }
@@ -262,15 +436,47 @@ impl Tab {
 
 /// shp and orb tables, with the forms of whole subtrees precomputed: full[g][t] (all of g's leaves
 /// live), live[g] and dead[g] (all marked, none marked).
-struct Cls { shp: Tab, orb: Tab, full: Vec<[u32; 2]>, live: Vec<u32>, dead: Vec<u32>, one: u32, zero: u32 }
+struct Cls {
+    shp: Tab,
+    orb: Tab,
+    full: Vec<[u32; 2]>,
+    live: Vec<u32>,
+    dead: Vec<u32>,
+    one: u32,
+    zero: u32,
+}
 
 fn code(op: Op, t: bool) -> u8 {
-    match op { Op::Var(_) => 0, Op::And => if t { 2 } else { 1 }, Op::Or => if t { 1 } else { 2 } }
+    match op {
+        Op::Var(_) => 0,
+        Op::And => {
+            if t {
+                2
+            } else {
+                1
+            }
+        }
+        Op::Or => {
+            if t {
+                1
+            } else {
+                2
+            }
+        }
+    }
 }
 
 impl Cls {
     fn new<const W: usize>(f: &F<W>) -> Cls {
-        let mut c = Cls { shp: Tab::new(), orb: Tab::new(), full: vec![], live: vec![], dead: vec![], one: 0, zero: 0 };
+        let mut c = Cls {
+            shp: Tab::new(),
+            orb: Tab::new(),
+            full: vec![],
+            live: vec![],
+            dead: vec![],
+            one: 0,
+            zero: 0,
+        };
         let var = c.shp.get(0, &[]);
         c.one = c.shp.get(1, &[]);
         c.zero = c.shp.get(2, &[]);
@@ -283,23 +489,36 @@ impl Cls {
                 }
             }
             c.full.push(fl);
-            let (lv, dd) = if matches!(f.op[g], Op::Var(_)) { (c.orb.get(3, &[]), c.orb.get(4, &[])) } else {
+            let (lv, dd) = if matches!(f.op[g], Op::Var(_)) {
+                (c.orb.get(3, &[]), c.orb.get(4, &[]))
+            } else {
                 let mut a: Vec<u32> = f.kids[g].iter().map(|&k| c.live[k]).collect();
                 let mut b: Vec<u32> = f.kids[g].iter().map(|&k| c.dead[k]).collect();
-                a.sort_unstable(); b.sort_unstable();
-                (c.orb.get(code(f.op[g], false), &a), c.orb.get(code(f.op[g], false), &b))
+                a.sort_unstable();
+                b.sort_unstable();
+                (
+                    c.orb.get(code(f.op[g], false), &a),
+                    c.orb.get(code(f.op[g], false), &b),
+                )
             };
-            c.live.push(lv); c.dead.push(dd);
+            c.live.push(lv);
+            c.dead.push(dd);
         }
         c
     }
 
     /// A gate with code o over live children of shapes ks: collapse, merge, sort, intern.
     fn comb(&mut self, o: u8, ks: Vec<u32>) -> u32 {
-        if ks.len() == 1 { return ks[0]; }
+        if ks.len() == 1 {
+            return ks[0];
+        }
         let mut l = Vec::with_capacity(ks.len());
         for k in ks {
-            if self.shp.code[k as usize] == o { l.extend_from_slice(self.shp.kids(k)); } else { l.push(k); }
+            if self.shp.code[k as usize] == o {
+                l.extend_from_slice(self.shp.kids(k));
+            } else {
+                l.push(k);
+            }
         }
         l.sort_unstable();
         self.shp.get(o, &l)
@@ -307,8 +526,14 @@ impl Cls {
 
     /// shp of the subformula at g pruned to s (g must have a leaf in s).
     fn shp<const W: usize>(&mut self, f: &F<W>, g: usize, s: M<W>, t: bool) -> u32 {
-        if !f.mask[g].andnot(s).any() { return self.full[g][t as usize]; }
-        let ks: Vec<usize> = f.kids[g].iter().filter(|&&k| f.mask[k].and(s).any()).copied().collect();
+        if !f.mask[g].andnot(s).any() {
+            return self.full[g][t as usize];
+        }
+        let ks: Vec<usize> = f.kids[g]
+            .iter()
+            .filter(|&&k| f.mask[k].and(s).any())
+            .copied()
+            .collect();
         let ks: Vec<u32> = ks.into_iter().map(|k| self.shp(f, k, s, t)).collect();
         self.comb(code(f.op[g], t), ks)
     }
@@ -316,15 +541,32 @@ impl Cls {
     /// orb of the subtree at g with the leaves in s marked.
     fn orb<const W: usize>(&mut self, f: &F<W>, g: usize, s: M<W>) -> u32 {
         let m = f.mask[g].and(s);
-        if !m.any() { return self.dead[g]; }
-        if m == f.mask[g] { return self.live[g]; }
-        let mut ks: Vec<u32> = f.kids[g].clone().into_iter().map(|k| self.orb(f, k, s)).collect();
+        if !m.any() {
+            return self.dead[g];
+        }
+        if m == f.mask[g] {
+            return self.live[g];
+        }
+        let mut ks: Vec<u32> = f.kids[g]
+            .clone()
+            .into_iter()
+            .map(|k| self.orb(f, k, s))
+            .collect();
         ks.sort_unstable();
         self.orb.get(code(f.op[g], false), &ks)
     }
 
     fn of_key<const W: usize>(&mut self, f: &F<W>, k: K<W>) -> u32 {
-        match k { K::Const(v) => if v { self.one } else { self.zero }, K::Live(s, t) => self.shp(f, f.op.len() - 1, s, t) }
+        match k {
+            K::Const(v) => {
+                if v {
+                    self.one
+                } else {
+                    self.zero
+                }
+            }
+            K::Live(s, t) => self.shp(f, f.op.len() - 1, s, t),
+        }
     }
 }
 
@@ -334,27 +576,55 @@ fn dfs<const W: usize>(f: &F<W>, rule: Rule, delta_only: bool) {
     let r = K::Live(root, false);
     let mut st = vec![(r, false)];
     while let Some((k, done)) = st.pop() {
-        let s = match k { K::Live(s, _) => s, K::Const(_) => { tau.insert(k, 1); continue; } };
+        let s = match k {
+            K::Live(s, _) => s,
+            K::Const(_) => {
+                tau.insert(k, 1);
+                continue;
+            }
+        };
         if !done {
-            if tau.contains_key(&k) { continue; }
+            if tau.contains_key(&k) {
+                continue;
+            }
             match split(f, s, rule) {
-                None => { tau.insert(k, 1); }
+                None => {
+                    tau.insert(k, 1);
+                }
                 Some((a, b)) => {
-                    if delta_only { tau.insert(k, 0); } else { st.push((k, true)); }
-                    for c in [a, b] { if !tau.contains_key(&c) { st.push((c, false)); } }
+                    if delta_only {
+                        tau.insert(k, 0);
+                    } else {
+                        st.push((k, true));
+                    }
+                    for c in [a, b] {
+                        if !tau.contains_key(&c) {
+                            st.push((c, false));
+                        }
+                    }
                 }
             }
         } else {
             let (a, b) = split(f, s, rule).unwrap();
-            let v = tau[&a].checked_add(tau[&b]).and_then(|v| v.checked_add(1))
+            let v = tau[&a]
+                .checked_add(tau[&b])
+                .and_then(|v| v.checked_add(1))
                 .expect("recursion tree count exceeds u128; use --classes or --delta-only");
             tau.insert(k, v);
         }
     }
     let (t, td) = counts(f, root);
     let m = f.op.len();
-    let total = t[m - 1].checked_add(td[m - 1]).expect("total term count exceeds u128");
-    println!("{} {} {} {}", root.ones(), total, tau.len(), if delta_only { 0 } else { tau[&r] });
+    let total = t[m - 1]
+        .checked_add(td[m - 1])
+        .expect("total term count exceeds u128");
+    println!(
+        "{} {} {} {}",
+        root.ones(),
+        total,
+        tau.len(),
+        if delta_only { 0 } else { tau[&r] }
+    );
 }
 
 fn iso<const W: usize>(f: &F<W>, rule: Rule) {
@@ -363,14 +633,21 @@ fn iso<const W: usize>(f: &F<W>, rule: Rule) {
     let mut seen: Set<u32> = Set::default();
     let mut st = vec![K::Live(root, false)];
     while let Some(k) = st.pop() {
-        if !seen.insert(c.of_key(f, k)) { continue; }
+        if !seen.insert(c.of_key(f, k)) {
+            continue;
+        }
         if let K::Live(s, _) = k {
-            if let Some((a, b)) = split(f, s, rule) { st.push(a); st.push(b); }
+            if let Some((a, b)) = split(f, s, rule) {
+                st.push(a);
+                st.push(b);
+            }
         }
     }
     let (t, td) = counts(f, root);
     let m = f.op.len();
-    let total = t[m - 1].checked_add(td[m - 1]).expect("total term count exceeds u128");
+    let total = t[m - 1]
+        .checked_add(td[m - 1])
+        .expect("total term count exceeds u128");
     println!("{} {} {}", root.ones(), total, seen.len());
 }
 
@@ -378,7 +655,11 @@ fn iso<const W: usize>(f: &F<W>, rule: Rule) {
 type Rec<const W: usize> = (M<W>, bool, u128, f64);
 
 /// Pending nodes of one level |S| = l: in memory, or appended to DIR/l.bin.
-struct Lv<const W: usize> { dir: Option<PathBuf>, mem: Vec<Vec<Rec<W>>>, out: Vec<Option<BufWriter<File>>> }
+struct Lv<const W: usize> {
+    dir: Option<PathBuf>,
+    mem: Vec<Vec<Rec<W>>>,
+    out: Vec<Option<BufWriter<File>>>,
+}
 
 impl<const W: usize> Lv<W> {
     fn push(&mut self, r: Rec<W>) {
@@ -386,10 +667,21 @@ impl<const W: usize> Lv<W> {
         match &self.dir {
             None => self.mem[l].push(r),
             Some(d) => {
-                let w = self.out[l].get_or_insert_with(|| BufWriter::with_capacity(1 << 16,
-                    File::options().write(true).create_new(true).open(d.join(format!("{l}.bin")))
-                        .unwrap_or_else(|e| panic!("cannot create spill level {l} in {}: {e}", d.display()))));
-                for x in r.0.0 { w.write_all(&x.to_le_bytes()).unwrap(); }
+                let w = self.out[l].get_or_insert_with(|| {
+                    BufWriter::with_capacity(
+                        1 << 16,
+                        File::options()
+                            .write(true)
+                            .create_new(true)
+                            .open(d.join(format!("{l}.bin")))
+                            .unwrap_or_else(|e| {
+                                panic!("cannot create spill level {l} in {}: {e}", d.display())
+                            }),
+                    )
+                });
+                for x in r.0 .0 {
+                    w.write_all(&x.to_le_bytes()).unwrap();
+                }
                 w.write_all(&[r.1 as u8]).unwrap();
                 w.write_all(&r.2.to_le_bytes()).unwrap();
                 w.write_all(&r.3.to_le_bytes()).unwrap();
@@ -403,26 +695,39 @@ impl<const W: usize> Lv<W> {
         let mut v = match &self.dir {
             None => std::mem::take(&mut self.mem[l]),
             Some(d) => {
-                let Some(mut w) = self.out[l].take() else { return vec![] };
+                let Some(mut w) = self.out[l].take() else {
+                    return vec![];
+                };
                 w.flush().expect("failed to flush spill level");
                 drop(w);
                 let p = d.join(format!("{l}.bin"));
                 let b = fs::read(&p).unwrap();
                 assert_eq!(b.len() % (8 * W + 25), 0, "incomplete spill level record");
                 fs::remove_file(&p).unwrap();
-                b.chunks_exact(8 * W + 25).map(|r| {
-                    let mut s = M::zero();
-                    for i in 0..W { s.0[i] = u64::from_le_bytes(r[8 * i..8 * i + 8].try_into().unwrap()); }
-                    let q = 8 * W + 1;
-                    (s, r[8 * W] == 1, u128::from_le_bytes(r[q..q + 16].try_into().unwrap()),
-                     f64::from_le_bytes(r[q + 16..q + 24].try_into().unwrap()))
-                }).collect()
+                b.chunks_exact(8 * W + 25)
+                    .map(|r| {
+                        let mut s = M::zero();
+                        for i in 0..W {
+                            s.0[i] = u64::from_le_bytes(r[8 * i..8 * i + 8].try_into().unwrap());
+                        }
+                        let q = 8 * W + 1;
+                        (
+                            s,
+                            r[8 * W] == 1,
+                            u128::from_le_bytes(r[q..q + 16].try_into().unwrap()),
+                            f64::from_le_bytes(r[q + 16..q + 24].try_into().unwrap()),
+                        )
+                    })
+                    .collect()
             }
         };
         v.sort_unstable_by_key(|a| (a.0, a.1));
         v.dedup_by(|a, b| {
             let eq = (a.0, a.1) == (b.0, b.1);
-            if eq { b.2 = b.2.saturating_add(a.2); b.3 += a.3; }
+            if eq {
+                b.2 = b.2.saturating_add(a.2);
+                b.3 += a.3;
+            }
             eq
         });
         v
@@ -434,10 +739,21 @@ fn classes<const W: usize>(f: &F<W>, rule: Rule, dir: Option<PathBuf>) {
     let root = f.mask[m - 1];
     let n = root.ones() as usize;
     let mut c = Cls::new(f);
-    let mut lv = Lv { dir, mem: vec![vec![]; n + 1], out: (0..=n).map(|_| None).collect() };
-    let grand: Vec<usize> = f.kids[m - 1].iter().flat_map(|&k| f.kids[k].clone()).collect();
+    let mut lv = Lv {
+        dir,
+        mem: vec![vec![]; n + 1],
+        out: (0..=n).map(|_| None).collect(),
+    };
+    let grand: Vec<usize> = f.kids[m - 1]
+        .iter()
+        .flat_map(|&k| f.kids[k].clone())
+        .collect();
     let mut bl: Vec<Set<M<W>>> = vec![Set::default(); grand.len() + f.kids[m - 1].len()];
-    let bm: Vec<M<W>> = grand.iter().chain(&f.kids[m - 1]).map(|&b| f.mask[b]).collect();
+    let bm: Vec<M<W>> = grand
+        .iter()
+        .chain(&f.kids[m - 1])
+        .map(|&b| f.mask[b])
+        .collect();
     let (mut shp, mut orb): (Set<u32>, Set<u64>) = (Set::default(), Set::default());
     let mut cst = [false; 2];
     let (mut delta, mut tau, mut tauf) = (0u64, 0u128, 0f64);
@@ -449,25 +765,48 @@ fn classes<const W: usize>(f: &F<W>, rule: Rule, dir: Option<PathBuf>) {
             (tau, tauf) = (tau.saturating_add(p), tauf + pf);
             shp.insert(c.shp(f, m - 1, s, t));
             orb.insert((c.orb(f, m - 1, s) as u64) << 1 | t as u64);
-            for (i, &b) in bm.iter().enumerate() { bl[i].insert(s.and(b)); }
+            for (i, &b) in bm.iter().enumerate() {
+                bl[i].insert(s.and(b));
+            }
             if let Some((a, b)) = split(f, s, rule) {
                 for k in [a, b] {
                     match k {
-                        K::Const(x) => { cst[x as usize] = true; (tau, tauf) = (tau.saturating_add(p), tauf + pf); }
+                        K::Const(x) => {
+                            cst[x as usize] = true;
+                            (tau, tauf) = (tau.saturating_add(p), tauf + pf);
+                        }
                         K::Live(s2, t2) => lv.push((s2, t2, p, pf)),
                     }
                 }
             }
         }
         if !v.is_empty() {
-            eprintln!("level {l}: {} nodes, delta {delta}, shapes {}, orbits {}, tables {}/{}",
-                      v.len(), shp.len(), orb.len(), c.shp.code.len(), c.orb.code.len());
+            eprintln!(
+                "level {l}: {} nodes, delta {delta}, shapes {}, orbits {}, tables {}/{}",
+                v.len(),
+                shp.len(),
+                orb.len(),
+                c.shp.code.len(),
+                c.orb.code.len()
+            );
         }
     }
     let k = cst.iter().filter(|&&x| x).count();
     let (t, td) = counts(f, root);
-    let tau = if tau == u128::MAX { format!("~{tauf:e}") } else { tau.to_string() };
-    println!("{} {} {} {} {} {}", n, t[m - 1] + td[m - 1], delta + k as u64, shp.len() + k, orb.len() + k, tau);
+    let tau = if tau == u128::MAX {
+        format!("~{tauf:e}")
+    } else {
+        tau.to_string()
+    };
+    println!(
+        "{} {} {} {} {} {}",
+        n,
+        t[m - 1] + td[m - 1],
+        delta + k as u64,
+        shp.len() + k,
+        orb.len() + k,
+        tau
+    );
     let b: Vec<String> = bl.iter().map(|x| x.len().to_string()).collect();
     println!("blocks {}", b.join(" "));
 }
@@ -480,30 +819,72 @@ fn main() {
     let mut i = 1;
     while i < args.len() {
         match args[i].as_str() {
-            "--delta-only" | "--classes" | "--iso" | "--leftmost" | "--guarded"
-                | "--joint" | "--guard-trace" => {},
+            "--delta-only" | "--classes" | "--iso" | "--leftmost" | "--guarded" | "--joint"
+            | "--guard-trace" => {}
             "--spill" => {
                 i += 1;
-                assert!(args.get(i).is_some_and(|s| !s.starts_with("--")), "--spill requires a directory");
-            },
+                assert!(
+                    args.get(i).is_some_and(|s| !s.starts_with("--")),
+                    "--spill requires a directory"
+                );
+            }
             a => panic!("unknown option {a}"),
         }
         i += 1;
     }
     let arg = |a: &str| args.iter().any(|x| x == a);
-    for flag in ["--delta-only", "--classes", "--iso", "--leftmost", "--guarded", "--joint", "--guard-trace", "--spill"] {
-        assert!(args.iter().filter(|x| x.as_str() == flag).count() <= 1, "duplicate option {flag}");
+    for flag in [
+        "--delta-only",
+        "--classes",
+        "--iso",
+        "--leftmost",
+        "--guarded",
+        "--joint",
+        "--guard-trace",
+        "--spill",
+    ] {
+        assert!(
+            args.iter().filter(|x| x.as_str() == flag).count() <= 1,
+            "duplicate option {flag}"
+        );
     }
-    assert!(!(arg("--leftmost") && arg("--guarded")), "choose one split rule");
+    assert!(
+        !(arg("--leftmost") && arg("--guarded")),
+        "choose one split rule"
+    );
     let probe = arg("--joint") || arg("--guard-trace");
-    assert!([arg("--delta-only"), arg("--classes"), arg("--iso"), probe].into_iter().filter(|b| *b).count() <= 1,
-            "choose one output mode");
-    assert!(!arg("--guard-trace") || arg("--guarded"), "--guard-trace requires --guarded");
-    assert!(!arg("--spill") || arg("--classes") || probe, "--spill requires --classes or a probe");
-    let rule = if arg("--leftmost") { Rule::Leftmost } else if arg("--guarded") { Rule::Guarded } else { Rule::DegreeSum };
-    let dir = args.iter().position(|x| x == "--spill").map(|i| PathBuf::from(&args[i + 1]));
-    let n = tok.iter().filter_map(|t| t.strip_prefix('x').unwrap_or(t).parse::<usize>().ok())
-        .max().expect("formula must contain a variable");
+    assert!(
+        [arg("--delta-only"), arg("--classes"), arg("--iso"), probe]
+            .into_iter()
+            .filter(|b| *b)
+            .count()
+            <= 1,
+        "choose one output mode"
+    );
+    assert!(
+        !arg("--guard-trace") || arg("--guarded"),
+        "--guard-trace requires --guarded"
+    );
+    assert!(
+        !arg("--spill") || arg("--classes") || probe,
+        "--spill requires --classes or a probe"
+    );
+    let rule = if arg("--leftmost") {
+        Rule::Leftmost
+    } else if arg("--guarded") {
+        Rule::Guarded
+    } else {
+        Rule::DegreeSum
+    };
+    let dir = args
+        .iter()
+        .position(|x| x == "--spill")
+        .map(|i| PathBuf::from(&args[i + 1]));
+    let n = tok
+        .iter()
+        .filter_map(|t| t.strip_prefix('x').unwrap_or(t).parse::<usize>().ok())
+        .max()
+        .expect("formula must contain a variable");
     assert!(n < 512, "variable id must be below 512");
     let n = n + 1;
     macro_rules! run {
@@ -511,18 +892,33 @@ fn main() {
             let f = parse::<$w>(&tok);
             let root = *f.mask.last().unwrap();
             let (t, td) = counts(&f, root);
-            t[f.op.len() - 1].checked_add(td[f.op.len() - 1])
+            t[f.op.len() - 1]
+                .checked_add(td[f.op.len() - 1])
                 .expect("total term count exceeds u128");
             let _ = pick(&f, root, rule);
-            let _lease = dir.as_ref().map(|d| prepare_spill(d)
-                .unwrap_or_else(|e| panic!("cannot prepare spill directory {}: {e}", d.display())));
+            let _lease = dir.as_ref().map(|d| {
+                prepare_spill(d).unwrap_or_else(|e| {
+                    panic!("cannot prepare spill directory {}: {e}", d.display())
+                })
+            });
             if arg("--joint") || arg("--guard-trace") {
                 probe::run(&f, rule, dir, arg("--joint"), arg("--guard-trace"));
-            } else if arg("--classes") { classes(&f, rule, dir) } else if arg("--iso") { iso(&f, rule) }
-            else { dfs(&f, rule, arg("--delta-only")) }
+            } else if arg("--classes") {
+                classes(&f, rule, dir)
+            } else if arg("--iso") {
+                iso(&f, rule)
+            } else {
+                dfs(&f, rule, arg("--delta-only"))
+            }
         }};
     }
-    if n <= 128 { run!(2) } else if n <= 256 { run!(4) } else { run!(8) }
+    if n <= 128 {
+        run!(2)
+    } else if n <= 256 {
+        run!(4)
+    } else {
+        run!(8)
+    }
 }
 
 #[cfg(test)]
@@ -531,9 +927,19 @@ mod tests {
 
     #[test]
     fn spill_lease_owns_the_directory_between_levels() {
-        let root: PathBuf = std::env::var_os("READONCE_TEST_ROOT").map(Into::into)
-            .unwrap_or_else(|| std::env::current_exe().unwrap().parent().unwrap().to_path_buf());
-        let stamp = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_nanos();
+        let root: PathBuf = std::env::var_os("READONCE_TEST_ROOT")
+            .map(Into::into)
+            .unwrap_or_else(|| {
+                std::env::current_exe()
+                    .unwrap()
+                    .parent()
+                    .unwrap()
+                    .to_path_buf()
+            });
+        let stamp = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_nanos();
         let dir = root.join(format!("readonce-lease-{}-{stamp}", std::process::id()));
         let lease = prepare_spill(&dir).unwrap();
         assert!(prepare_spill(&dir).is_err());

@@ -2,14 +2,26 @@ use std::fs;
 use std::process::{Command, Stdio};
 
 fn test_root() -> std::path::PathBuf {
-    std::env::var_os("READONCE_TEST_ROOT").map(Into::into).unwrap_or_else(|| {
-        std::env::current_exe().unwrap().parent().unwrap().to_path_buf()
-    })
+    std::env::var_os("READONCE_TEST_ROOT")
+        .map(Into::into)
+        .unwrap_or_else(|| {
+            std::env::current_exe()
+                .unwrap()
+                .parent()
+                .unwrap()
+                .to_path_buf()
+        })
 }
 
 fn unique_dir(label: &str) -> std::path::PathBuf {
-    let stamp = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_nanos();
-    let d = test_root().join(format!("readonce-dag-{label}-{}-{stamp}", std::process::id()));
+    let stamp = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .unwrap()
+        .as_nanos();
+    let d = test_root().join(format!(
+        "readonce-dag-{label}-{}-{stamp}",
+        std::process::id()
+    ));
     fs::create_dir(&d).unwrap();
     d
 }
@@ -81,9 +93,18 @@ fn representable_large_counts_do_not_overflow_split_test() {
         .unwrap();
     use std::io::Write;
     let mut child = output;
-    child.stdin.take().unwrap().write_all(input.as_bytes()).unwrap();
+    child
+        .stdin
+        .take()
+        .unwrap()
+        .write_all(input.as_bytes())
+        .unwrap();
     let output = child.wait_with_output().unwrap();
-    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
     let fields: Vec<u128> = String::from_utf8(output.stdout)
         .unwrap()
         .split_whitespace()
@@ -95,9 +116,17 @@ fn representable_large_counts_do_not_overflow_split_test() {
     // Its recursion tree exceeds u128 even though N fits.
     let mut child = Command::new(env!("CARGO_BIN_EXE_readonce_dag"))
         .arg("--leftmost")
-        .stdin(Stdio::piped()).stdout(Stdio::piped()).stderr(Stdio::piped())
-        .spawn().unwrap();
-    child.stdin.take().unwrap().write_all(input.as_bytes()).unwrap();
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .unwrap();
+    child
+        .stdin
+        .take()
+        .unwrap()
+        .write_all(input.as_bytes())
+        .unwrap();
     let output = child.wait_with_output().unwrap();
     assert!(!output.status.success());
     assert!(output.stdout.is_empty());
@@ -113,12 +142,24 @@ fn spill_and_memory_classes_match() {
         if let Some(d) = spill {
             command.arg("--spill").arg(d);
         }
-        command.stdin(Stdio::piped()).stdout(Stdio::piped()).stderr(Stdio::piped());
+        command
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped());
         let mut child = command.spawn().unwrap();
         use std::io::Write;
-        child.stdin.take().unwrap().write_all(input.as_bytes()).unwrap();
+        child
+            .stdin
+            .take()
+            .unwrap()
+            .write_all(input.as_bytes())
+            .unwrap();
         let output = child.wait_with_output().unwrap();
-        assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+        assert!(
+            output.status.success(),
+            "{}",
+            String::from_utf8_lossy(&output.stderr)
+        );
         output.stdout
     };
     let spill = unique_dir("valid-spill");
@@ -145,13 +186,25 @@ fn invalid_formulas_and_options_emit_no_result() {
     ];
     for &(input, args) in cases {
         let mut child = Command::new(env!("CARGO_BIN_EXE_readonce_dag"))
-            .args(args).stdin(Stdio::piped()).stdout(Stdio::piped()).stderr(Stdio::piped())
-            .spawn().unwrap();
+            .args(args)
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn()
+            .unwrap();
         use std::io::Write;
-        child.stdin.take().unwrap().write_all(input.as_bytes()).unwrap();
+        child
+            .stdin
+            .take()
+            .unwrap()
+            .write_all(input.as_bytes())
+            .unwrap();
         let output = child.wait_with_output().unwrap();
         assert!(!output.status.success(), "accepted {input:?} {args:?}");
-        assert!(output.stdout.is_empty(), "published result for {input:?} {args:?}");
+        assert!(
+            output.stdout.is_empty(),
+            "published result for {input:?} {args:?}"
+        );
     }
 }
 
@@ -159,9 +212,13 @@ fn invalid_formulas_and_options_emit_no_result() {
 fn invalid_formula_does_not_start_spill_queue() {
     let spill = unique_dir("invalid-formula");
     let mut child = Command::new(env!("CARGO_BIN_EXE_readonce_dag"))
-        .args(["--classes", "--spill"]).arg(&spill)
-        .stdin(Stdio::piped()).stdout(Stdio::piped()).stderr(Stdio::piped())
-        .spawn().unwrap();
+        .args(["--classes", "--spill"])
+        .arg(&spill)
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .unwrap();
     use std::io::Write;
     child.stdin.take().unwrap().write_all(b"(& 0 0)").unwrap();
     let output = child.wait_with_output().unwrap();
@@ -174,10 +231,18 @@ fn invalid_formula_does_not_start_spill_queue() {
 fn valid_sparse_and_prefixed_variables_agree() {
     let run = |input: &str| {
         let mut child = Command::new(env!("CARGO_BIN_EXE_readonce_dag"))
-            .stdin(Stdio::piped()).stdout(Stdio::piped()).stderr(Stdio::piped())
-            .spawn().unwrap();
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn()
+            .unwrap();
         use std::io::Write;
-        child.stdin.take().unwrap().write_all(input.as_bytes()).unwrap();
+        child
+            .stdin
+            .take()
+            .unwrap()
+            .write_all(input.as_bytes())
+            .unwrap();
         let output = child.wait_with_output().unwrap();
         assert!(output.status.success());
         output.stdout
