@@ -136,11 +136,11 @@ class Hypergraph:
         packed = []
         for i, row in enumerate(rows):
             for j, val in enumerate(row):
-                if int(val) not in (0, 1):
+                if val not in (0, 1):
                     raise ValueError(
                         f"incidence matrix entry ({i},{j}) is {val!r}; expected 0 or 1"
                     )
-            packed.append(bits(j for j, val in enumerate(row) if int(val)))
+            packed.append(bits(j for j, val in enumerate(row) if val == 1))
         return cls.from_bitsets(n, packed)
 
     @classmethod

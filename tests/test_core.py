@@ -43,6 +43,16 @@ def test_rejects_ragged_incidence():
         Hypergraph.from_incidence([[1, 0], [1, 0, 1]])
 
 
+@pytest.mark.parametrize("val", [0.5, 1.9, -0.5, "0", "1", float("nan"), float("inf")])
+def test_rejects_nonbinary_incidence(val):
+    with pytest.raises(ValueError, match="expected 0 or 1"):
+        Hypergraph.from_incidence([[val]])
+
+
+def test_accepts_exact_binary_incidence():
+    assert Hypergraph.from_incidence([[0.0, 1.0], [True, False]]).edges == (1, 2)
+
+
 def test_phi_x_matches_thesis_example():
     """Thesis Example 2.2.7 (p.15).
 

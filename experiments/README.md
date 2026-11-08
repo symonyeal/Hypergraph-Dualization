@@ -21,6 +21,13 @@ importable library.
 | `symmetry_depth.py` | Exact ordered incidence-graph isomorphism classes by depth on Fano, Witt and complete(10,3), under three rules and both variants. `--write` regenerates `results/symmetry-depth.md`; research Theorem 4.22 and Observation 4.23. |
 | `split_rules.py` | `delta` under the degree-sum, leftmost and guarded rules on read-once pairs, copies of a gadget, uniform matroids and the library; writes `results/split-rules.md`. `--deep` adds GK `f₄` under the degree-sum rule. See `docs/research-2026-10.md` §4. |
 
+`readonce_dag` accepts one nonempty read-once formula: gates are `&` or `|`,
+and variable ids (optionally prefixed by `x`) are distinct integers in `0..511`.
+Malformed formulas and conflicting or unknown flags fail before a spill queue is created.
+Spill runs hold `.readonce.lock` until exit; an interrupted run may leave that lock and
+pending levels, so preserve the directory and choose a fresh one. `block_probe.py` also
+requires fresh output and log paths; a competing writer's file is preserved.
+
 Core correctness claims belong in `tests/`, and normal runs belong in the `fka`
 and `fkb` CLIs. Avoid adding notebooks or unstructured output logs. Naming
 follows [`../docs/dictionary.md`](../docs/dictionary.md), the same as `src/`.

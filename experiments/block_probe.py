@@ -47,7 +47,7 @@ def main():
     src = {s.name: hashlib.sha256(s.read_bytes()).hexdigest()
            for s in (ROOT / "experiments/readonce_dag/src").glob("*.rs")}
     dt = time.perf_counter()
-    with open(a.log, "w", encoding="utf-8") if a.log else nullcontext(subprocess.PIPE) as e:
+    with open(a.log, "x", encoding="utf-8") if a.log else nullcontext(subprocess.PIPE) as e:
         q = subprocess.run([str(exe), *flags], input=rs.sexpr(f), stdout=subprocess.PIPE,
                            stderr=e, text=True, timeout=a.seconds, check=True)
     dt = time.perf_counter() - dt
@@ -60,7 +60,8 @@ def main():
         r["totals"] = {s: sum(q[s] for q in lv) for s in
                        ("nodes", "splits", "leftmost_ineligible", "fallbacks", "diff_degree_sum")}
     a.out.parent.mkdir(parents=True, exist_ok=True)
-    a.out.write_text(json.dumps(r, indent=2) + "\n", encoding="utf-8", newline="\n")
+    with a.out.open("x", encoding="utf-8", newline="\n") as out:
+        out.write(json.dumps(r, indent=2) + "\n")
     print(json.dumps({s: v for s, v in r.items() if s not in ("records", "formula", "source_sha256")}))
     for q in rows:
         if q["kind"] not in ("level", "first_departure"):

@@ -124,3 +124,63 @@ fn spill_and_memory_classes_match() {
     let spill = unique_dir("valid-spill");
     assert_eq!(run(None), run(Some(&spill)));
 }
+
+#[test]
+fn invalid_formulas_and_options_emit_no_result() {
+    let cases: &[(&str, &[&str])] = &[
+        ("(& 0 0)", &[]),
+        ("(^ 0 1)", &[]),
+        ("(& 0 1) (| 2 3)", &[]),
+        ("(&)", &[]),
+        ("(& 0", &[]),
+        ("", &[]),
+        ("512", &[]),
+        ("xx0", &[]),
+        ("(& 0 1)", &["--guardedd"]),
+        ("(& 0 1)", &["--leftmost", "--guarded"]),
+        ("(& 0 1)", &["--classes", "--iso"]),
+        ("(& 0 1)", &["--spill"]),
+        ("(& 0 1)", &["--spill", "--classes"]),
+        ("(& 0 1)", &["--spill", "unused"]),
+    ];
+    for &(input, args) in cases {
+        let mut child = Command::new(env!("CARGO_BIN_EXE_readonce_dag"))
+            .args(args).stdin(Stdio::piped()).stdout(Stdio::piped()).stderr(Stdio::piped())
+            .spawn().unwrap();
+        use std::io::Write;
+        child.stdin.take().unwrap().write_all(input.as_bytes()).unwrap();
+        let output = child.wait_with_output().unwrap();
+        assert!(!output.status.success(), "accepted {input:?} {args:?}");
+        assert!(output.stdout.is_empty(), "published result for {input:?} {args:?}");
+    }
+}
+
+#[test]
+fn invalid_formula_does_not_start_spill_queue() {
+    let spill = unique_dir("invalid-formula");
+    let mut child = Command::new(env!("CARGO_BIN_EXE_readonce_dag"))
+        .args(["--classes", "--spill"]).arg(&spill)
+        .stdin(Stdio::piped()).stdout(Stdio::piped()).stderr(Stdio::piped())
+        .spawn().unwrap();
+    use std::io::Write;
+    child.stdin.take().unwrap().write_all(b"(& 0 0)").unwrap();
+    let output = child.wait_with_output().unwrap();
+    assert!(!output.status.success());
+    assert!(output.stdout.is_empty());
+    assert_eq!(fs::read_dir(&spill).unwrap().count(), 0);
+}
+
+#[test]
+fn valid_sparse_and_prefixed_variables_agree() {
+    let run = |input: &str| {
+        let mut child = Command::new(env!("CARGO_BIN_EXE_readonce_dag"))
+            .stdin(Stdio::piped()).stdout(Stdio::piped()).stderr(Stdio::piped())
+            .spawn().unwrap();
+        use std::io::Write;
+        child.stdin.take().unwrap().write_all(input.as_bytes()).unwrap();
+        let output = child.wait_with_output().unwrap();
+        assert!(output.status.success());
+        output.stdout
+    };
+    assert_eq!(run("(& 0 1)"), run("(& x0 x511)"));
+}

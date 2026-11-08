@@ -76,13 +76,25 @@ impl Hasher for Fx {
 type Map<A, B> = HashMap<A, B, BuildHasherDefault<Fx>>;
 type Set<A> = HashSet<A, BuildHasherDefault<Fx>>;
 
-fn prepare_spill(d: &std::path::Path) -> std::io::Result<()> {
+struct SpillLease { path: PathBuf, file: Option<File> }
+
+impl Drop for SpillLease {
+    fn drop(&mut self) {
+        drop(self.file.take());
+        let _ = fs::remove_file(&self.path);
+    }
+}
+
+fn prepare_spill(d: &std::path::Path) -> std::io::Result<SpillLease> {
     fs::create_dir_all(d)?;
     if fs::read_dir(d)?.next().is_some() {
         return Err(std::io::Error::new(std::io::ErrorKind::AlreadyExists,
                                       format!("spill directory {} must be empty", d.display())));
     }
-    Ok(())
+    // Keep ownership across levels: their files disappear as the search consumes them.
+    let path = d.join(".readonce.lock");
+    let file = File::options().write(true).create_new(true).open(&path)?;
+    Ok(SpillLease { path, file: Some(file) })
 }
 
 fn tokens(s: &str) -> Vec<String> {
@@ -93,18 +105,27 @@ fn parse<const W: usize>(tok: &[String]) -> F<W> {
     let mut f = F { op: vec![], kids: vec![], par: vec![], mask: vec![], leaf: vec![usize::MAX; 64 * W] };
     fn go<const W: usize>(t: &[String], i: &mut usize, f: &mut F<W>) -> usize {
         let g;
-        if t[*i] == "(" {
-            let op = if t[*i + 1] == "&" { Op::And } else { Op::Or };
+        let token = t.get(*i).expect("incomplete formula");
+        if token == "(" {
+            let op = match t.get(*i + 1).map(String::as_str) {
+                Some("&") => Op::And,
+                Some("|") => Op::Or,
+                _ => panic!("expected & or | after ("),
+            };
             *i += 2;
             let mut ks = vec![];
-            while t[*i] != ")" { ks.push(go(t, i, f)); }
+            while t.get(*i).expect("unclosed gate") != ")" { ks.push(go(t, i, f)); }
+            assert!(!ks.is_empty(), "gate must have at least one child");
             *i += 1;
             let m = ks.iter().fold(M::zero(), |a, &k| a.or(f.mask[k]));
             g = f.op.len();
             for &k in &ks { f.par[k] = g; }
             f.op.push(op); f.kids.push(ks); f.mask.push(m);
         } else {
-            let x: usize = t[*i].trim_start_matches('x').parse().unwrap();
+            let x: usize = token.strip_prefix('x').unwrap_or(token).parse()
+                .expect("expected a variable id");
+            assert!(x < 64 * W, "variable id must be below 512");
+            assert!(f.leaf[x] == usize::MAX, "formula must be read-once: repeated variable {x}");
             *i += 1;
             g = f.op.len();
             f.op.push(Op::Var(x)); f.kids.push(vec![]); f.mask.push(M::bit(x));
@@ -115,6 +136,7 @@ fn parse<const W: usize>(tok: &[String]) -> F<W> {
     }
     let mut i = 0;
     go(tok, &mut i, &mut f);
+    assert_eq!(i, tok.len(), "unexpected tokens after formula");
     f
 }
 
@@ -375,6 +397,8 @@ impl<const W: usize> Lv<W> {
         }
     }
     /// Level l with equal nodes merged, their path counts added.
+    // Stable Rust cannot use the expression 8 * W + 25 as an array const argument.
+    #[allow(clippy::chunks_exact_to_as_chunks)]
     fn take(&mut self, l: usize) -> Vec<Rec<W>> {
         let mut v = match &self.dir {
             None => std::mem::take(&mut self.mem[l]),
@@ -453,13 +477,35 @@ fn main() {
     std::io::stdin().read_to_string(&mut src).unwrap();
     let tok = tokens(&src);
     let args: Vec<String> = std::env::args().collect();
+    let mut i = 1;
+    while i < args.len() {
+        match args[i].as_str() {
+            "--delta-only" | "--classes" | "--iso" | "--leftmost" | "--guarded"
+                | "--joint" | "--guard-trace" => {},
+            "--spill" => {
+                i += 1;
+                assert!(args.get(i).is_some_and(|s| !s.starts_with("--")), "--spill requires a directory");
+            },
+            a => panic!("unknown option {a}"),
+        }
+        i += 1;
+    }
     let arg = |a: &str| args.iter().any(|x| x == a);
+    for flag in ["--delta-only", "--classes", "--iso", "--leftmost", "--guarded", "--joint", "--guard-trace", "--spill"] {
+        assert!(args.iter().filter(|x| x.as_str() == flag).count() <= 1, "duplicate option {flag}");
+    }
+    assert!(!(arg("--leftmost") && arg("--guarded")), "choose one split rule");
+    let probe = arg("--joint") || arg("--guard-trace");
+    assert!([arg("--delta-only"), arg("--classes"), arg("--iso"), probe].into_iter().filter(|b| *b).count() <= 1,
+            "choose one output mode");
+    assert!(!arg("--guard-trace") || arg("--guarded"), "--guard-trace requires --guarded");
+    assert!(!arg("--spill") || arg("--classes") || probe, "--spill requires --classes or a probe");
     let rule = if arg("--leftmost") { Rule::Leftmost } else if arg("--guarded") { Rule::Guarded } else { Rule::DegreeSum };
     let dir = args.iter().position(|x| x == "--spill").map(|i| PathBuf::from(&args[i + 1]));
-    if let Some(d) = &dir {
-        prepare_spill(d).unwrap_or_else(|e| panic!("cannot prepare spill directory {}: {e}", d.display()));
-    }
-    let n = tok.iter().filter_map(|t| t.trim_start_matches('x').parse::<usize>().ok()).max().unwrap() + 1;
+    let n = tok.iter().filter_map(|t| t.strip_prefix('x').unwrap_or(t).parse::<usize>().ok())
+        .max().expect("formula must contain a variable");
+    assert!(n < 512, "variable id must be below 512");
+    let n = n + 1;
     macro_rules! run {
         ($w:literal) => {{
             let f = parse::<$w>(&tok);
@@ -468,6 +514,8 @@ fn main() {
             t[f.op.len() - 1].checked_add(td[f.op.len() - 1])
                 .expect("total term count exceeds u128");
             let _ = pick(&f, root, rule);
+            let _lease = dir.as_ref().map(|d| prepare_spill(d)
+                .unwrap_or_else(|e| panic!("cannot prepare spill directory {}: {e}", d.display())));
             if arg("--joint") || arg("--guard-trace") {
                 probe::run(&f, rule, dir, arg("--joint"), arg("--guard-trace"));
             } else if arg("--classes") { classes(&f, rule, dir) } else if arg("--iso") { iso(&f, rule) }
@@ -475,4 +523,24 @@ fn main() {
         }};
     }
     if n <= 128 { run!(2) } else if n <= 256 { run!(4) } else { run!(8) }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn spill_lease_owns_the_directory_between_levels() {
+        let root: PathBuf = std::env::var_os("READONCE_TEST_ROOT").map(Into::into)
+            .unwrap_or_else(|| std::env::current_exe().unwrap().parent().unwrap().to_path_buf());
+        let stamp = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_nanos();
+        let dir = root.join(format!("readonce-lease-{}-{stamp}", std::process::id()));
+        let lease = prepare_spill(&dir).unwrap();
+        assert!(prepare_spill(&dir).is_err());
+        // Even with no pending .bin file, another writer must not own the queue.
+        assert_eq!(fs::read_dir(&dir).unwrap().count(), 1);
+        drop(lease);
+        assert_eq!(fs::read_dir(&dir).unwrap().count(), 0);
+        assert!(prepare_spill(&dir).is_ok());
+    }
 }
