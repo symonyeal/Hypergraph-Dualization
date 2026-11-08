@@ -36,8 +36,11 @@ def nonconformal_clique(MBF: Hypergraph, g: Optional[Graph] = None) -> Optional[
     discussing the Fano plane and the asymmetric instances (Section 5.2.2).
     """
     g = primal_graph(MBF) if g is None else g
+    S = MBF.support()
     for clique in g.maximal_cliques():
         c = bits(clique)
+        if c & ~S:  # an isolated variable is a singleton clique outside every term
+            continue
         if not any((c & e) == c for e in MBF.edges):
             return tuple(v + 1 for v in clique)
     return None

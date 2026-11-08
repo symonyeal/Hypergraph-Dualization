@@ -82,6 +82,15 @@ def test_isolated_vertices_and_compact():
     assert mapping == [0, 2]
 
 
+def test_isolated_variable_keeps_conformal_and_read_once():
+    from fka.properties import analyse, is_conformal, is_read_once
+
+    H = Hypergraph.from_sets(3, [[1, 2]])
+    assert is_conformal(H) and is_read_once(H)
+    p = analyse(H)
+    assert p.conformal and p.read_once
+
+
 def test_popcount_and_bitset_helpers():
     e = 0b101101
     assert popcount(e) == 4
