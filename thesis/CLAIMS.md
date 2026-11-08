@@ -40,7 +40,7 @@ claims. Where available, the library includes a counterexample to the printed st
 | Cor. 2.3.1, `s ≥ log n` | **Corrected**: the inequality is reversed, `2^s ≤ n`, i.e. `s ≤ log₂ n`; `G` need not be Sperner | `two_pow_shortest_le`; counterexample `k3_refutes_printed_cor_2_3_1` |
 | Lemma 2.3.2, a vertex of frequency `≥ 1/log n` | Proved (as `≥ 1/s` with `2^s ≤ n`) | `exists_frequent_vertex` |
 | §2.2.2, `(G, H)` dual iff both FK-A subproblems are | Proved, generalised: `G`, `H` need not lie in `U` | `dual_split` |
-| Algorithm 1 decides `Trans-Hyp` | Proved for every input, both leaf rules and every split rule | `fkAR_correct`, `fkA_correct`, `conds_of_dual` |
+| Algorithm 1 decides `Trans-Hyp` | Proved for every input and every split rule; leaves are decided by the definition of duality (`Dual`), and the leaf rules are proved equivalent separately (`dual_empty_left`, `dual_singleton_left`, `conds_of_dual`) | `fkAR_correct`, `fkA_correct`, `conds_of_dual` |
 
 ## Chapter 3
 
@@ -101,7 +101,7 @@ is fixed are withdrawn; they do not follow from those inclusions (research Audit
 | §5.2.1, the instance pairs are transversal pairs | Checked | `*_dual` |
 | 6-A and 8-Ver as printed | **Corrected**: as printed neither is a transversal pair; the corrected edge sets are in `data/instances` | `sixA_printed_not_dual`, `eightVer_printed_not_dual` |
 | Tree sizes of Figs. 5.1–5.6 | Checked | `*_nodes`, `faithful_nodes` |
-| Split vertex and group order at every node of the eight automorphism trees (205 nodes) | Checked, after three label corrections below | `*_tree` in `TreeFacts` |
+| Split vertex and group order at every node of the eight automorphism trees (140 nodes) | Checked, after three label corrections below | `*_tree` in `TreeFacts` |
 | 6-D node 9, 7-Ver nodes 3 and 7: group `C₃` | **Corrected**: `S₃` (order 6); the node is `({{a,b,c}}, {{a},{b},{c}})` | `sixD_tree`, `sevenVer_tree` |
 | 8-Ver node 4: group `D₄` | **Corrected**: `C₂` (order 2) | `eightVer_tree` |
 | f₂/g₂ nodes 10 and 19: "`C₄` graph" | **Clarified**: `C₄` plus an isolated vertex | — |
