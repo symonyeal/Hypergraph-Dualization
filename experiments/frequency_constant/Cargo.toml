@@ -1,0 +1,9 @@
+[package]
+name = "frequency_constant"
+version = "0.1.0"
+edition = "2021"
+license = "GPL-3.0-or-later"
+description = "Exhaustive test of the product-form frequency inequality on monotone functions of at most six variables"
+
+[profile.release]
+opt-level = 3

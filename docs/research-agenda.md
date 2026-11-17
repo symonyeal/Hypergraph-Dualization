@@ -44,6 +44,20 @@ Start with read-once inputs, or find a family on which every eligible rule excee
 that scale. The finite ratios in `results/iso-memo.md` are evidence, not an
 asymptotic upper bound.
 
+Elbassioni (arXiv:2610.34474, November 2026) proves the same `N^{Θ(log N)}` order on GK
+for unmemoised FK-A and the first unconditional FK-B bound, `N^{Ω(√(log N/log log N))}`;
+neither touches `δ` ([literature note](literature-2026-11.md) §1). For memoised FK-A the
+lower-bound question is a regular-resolution question (§4 there).
+
+## Q5. The constant in the frequency lemma
+
+FK96 and Gurvich–Khachiyan (1997) bracket the asymptotic constant `c`, the least limit of
+`eps · log₂N` as `eps → 0`, between 1 and 2; the word families reach `3/2`.
+[`frequency-constant.md`](frequency-constant.md) proves `|C||D| ≥ 4^{1/eps − 1}`, shows the
+words meet `|C||D| = 8^{1/eps − 1}` exactly, and reduces the sharp form (Conjecture 6,
+`c = 3/2`) to its asymptotic version. Next: the read-once case, through a two-parameter
+region preserved by both gates.
+
 ## Q4. Symmetry in the thesis
 
 Audit 4.33 distinguishes local automorphism groups, inherited input symmetries and

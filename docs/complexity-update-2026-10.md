@@ -35,7 +35,7 @@ artifacts, not an independently reproduced theorem in this project.
 
 | Project statement | Consequence if the SAT claims hold |
 | --- | --- |
-| Proposition 4.6: ETH implies no polynomial bound on `δ` over all dual pairs | The implication remains conditional, but its premise is false; it supplies no obstruction to a polynomial bound |
+| Proposition 4.6: ETH implies no polynomial bound on `δ` over all dual pairs | The implication remains conditional. *Corrected 17 November 2026:* its conclusion needs only that 3-SAT has no `2^{O(n^{2/3}(log n)^{1/3})}` algorithm, which these claims leave open ([literature note](literature-2026-11.md), Proposition L1) |
 | Kobayashi–Kurita–Wasa reduction underlying that proposition | The reduction remains a mathematical construction; its ETH-based hardness conclusion loses its premise |
 | Exponential FK-A trees on GK/TK, matching tree/DAG separation, `ro12` counterexample | No change: these are unconditional statements about specified algorithms or instances |
 | Conjectures 4.19 and 4.30: unbounded `δ/N` and `δ_iso/N` under the degree-sum rule | Remain open; neither SAT algorithm counts FK-A states |

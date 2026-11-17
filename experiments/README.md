@@ -19,6 +19,8 @@ importable library.
 | `readonce_dag/` | Rust: the same simulation keyed on live-variable sets, `n ≤ 512`, degree-sum, `--leftmost` or `--guarded` rule. `cargo build --release`, then `python experiments/readonce_sim.py --sexpr gk 4 \| readonce_dag/target/release/readonce_dag` prints `n N delta tau` (GK `f₄`: about five minutes). |
 | `iso_memo.py` | `delta` against the subproblems up to isomorphism (`d_shp`) and the nodes iso-memoised FK-A expands (`d_iso`) on GK and TK, under the three rules. `python experiments/iso_memo.py 4 3` takes about two minutes. Research Observation 4.20; the full counts are `iso_classes.py`'s. |
 | `symmetry_depth.py` | Exact ordered incidence-graph isomorphism classes by depth on Fano, Witt and complete(10,3), under three rules and both variants. `--write` regenerates `results/symmetry-depth.md`; research Theorem 4.22 and Observation 4.23. |
+| `frequency_constant/` | Rust: every monotone function of `N ≤ 6` variables, the defect `log₂|C| + log₂|D| + 3 − 3/eps` of its dual pair, the least value and the pairs at 0. `cargo build --release`, then `frequency_constant 6` (about six seconds). See `docs/frequency-constant.md`. |
+| `frequency_families.py` | The same defect on every read-once formula with ≤ `N` leaves (`closure 13`) and on random nested substitutions of prime templates (`compose 4000 SEED`). See `docs/frequency-constant.md`. |
 | `split_rules.py` | `delta` under the degree-sum, leftmost and guarded rules on read-once pairs, copies of a gadget, uniform matroids and the library; writes `results/split-rules.md`. `--deep` adds GK `f₄` under the degree-sum rule. See `docs/research-2026-10.md` §4. |
 
 `readonce_dag` accepts one nonempty read-once formula: gates are `&` or `|`,
