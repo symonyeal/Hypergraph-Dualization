@@ -78,6 +78,34 @@ python -m fkb compare --all                      # FK-A against FK-B on the inst
 SageMath is an optional independent backend for the group computations
 ([`docs/sagemath.md`](docs/sagemath.md)).
 
+## Since the thesis
+
+New results from October–November 2026, apart from corrections to the thesis, with their status as
+defined under Methods. Theorem numbers are those of [`research-2026-10.md`](docs/research-2026-10.md).
+
+- **Self-transversal designs.** Every Steiner system `S(t, t+1, 2t+3)` has `t` even and satisfies
+  `Tr(H) = H`; the Fano plane and the Witt design `S(4,5,11)` are the cases `t = 2, 4` (Theorem 2.11,
+  Lean).
+- **Least frequency.** Every non-trivial transversal pair on `n` points has `n·ε² ≥ 1` (Theorem 3.1,
+  Lean); with `s` disjoint `s`-sets this gives `ε(n) = Θ(n^{−1/2})`. `ε(7) = 3/7`, attained by the Fano
+  plane (Corollary 3.2, Lean).
+- **The frequency-lemma constant.** Every dual pair has `|C||D| ≥ 4^{1/ε − 1}`, and every read-once pair
+  `|C||D| ≥ e^{2(1/ε − 1)}`; the alternating words attain `8^{1/ε − 1}` (written proofs,
+  [`frequency-constant.md`](docs/frequency-constant.md)).
+- **FK-A's subproblems.** The memo DAG of unmodified FK-A is a free binary decision diagram (FBDD) of
+  size at most `2δ + 2` (Theorem 4.13, Lean), so a monotone family with polynomially many edges and
+  superpolynomial FBDD size would defeat every valid symmetric rule. A memo keyed by isomorphism
+  class is sound (Theorem 4.28, Lean).
+- **FK-A's recursion tree.** It unfolds into a decision tree (Theorem 4.25, Lean). So on the GK and
+  TK families every valid rule has `τ ≥ N^{Ω(log N)}`, while memoisation saves a factor exponential in
+  `n` (Corollary 4.26, Lean).
+- **The exponent of that tree.** On GK and TK the least `τ` over valid rules is `2^{(γ + o(1)) n}` with
+  `0.41433 ≤ γ ≤ 0.46926` (lower bound by written proof, upper bound computed). Depth-first trees are
+  optimal for every leaf weighting on GK `f₁–f₃` (computed). The remaining gap reduces to one
+  inequality per gate, Conjecture 17 ([`complex-evaluation.md`](docs/complex-evaluation.md)).
+- **Substitution.** `Tr(T[Γ]) = min(Tr(T)[Tr Γ])`, without the `min` on disjoint supports
+  (Theorem 5.1, Lean).
+
 ## Results
 
 Results are in [`docs/research-2026-10.md`](docs/research-2026-10.md) (proofs and Lean names),
