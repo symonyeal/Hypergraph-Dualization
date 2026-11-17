@@ -49,10 +49,14 @@ for unmemoised FK-A and the first unconditional FK-B bound, `N^{Ω(√(log N/log
 neither touches `δ` ([literature note](literature-2026-11.md) §1). For memoised FK-A the
 lower-bound question is a regular-resolution question (§4 there).
 
-His evaluation at `(1 + i√3)/2`, done exactly, gives the exponent on GK and TK to within
-a factor 1.26: the least `τ` over valid rules is `2^{(γ + o(1)) n}` with `0.37245 ≤ γ ≤ 0.46926`
-([`complex-evaluation.md`](complex-evaluation.md)). Next: the subcube-partition LP, exact on
-GK `f₂`, as a composable lower bound; Conjecture 6 there would give `γ = 0.46925`.
+His evaluation at `(1 + i√3)/2`, done exactly, and the subcube norm with measures on
+eight-variable blocks give the exponent on GK and TK to within a factor 1.133: the least `τ`
+over valid rules is `2^{(γ + o(1)) n}` with `0.41433 ≤ γ ≤ 0.46926`
+([`complex-evaluation.md`](complex-evaluation.md)). Measures bounded on every subcube stop
+at `0.41434`, and the subcube-partition LP is below the least tree on TK `S₂` (383 against
+409), so neither proves Conjecture 6 there, which would give `γ = 0.46925`. Next: a lower
+bound that constrains only monochromatic subcubes and composes through the gates, or the
+LP's rate on GK.
 
 ## Q5. The constant in the frequency lemma
 

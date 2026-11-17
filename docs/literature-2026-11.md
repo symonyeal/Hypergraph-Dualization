@@ -30,14 +30,15 @@ norm (JRSW). Per variable the bases are `(27/16)^{1/4} ≈ 1.1398` here and
 `3^{1/12} ≈ 1.0959` in Elbassioni; both give `N^{Θ(log N)}`. The statement itself is older:
 Gurvich–Khachiyan 1997 (§3 below), p. 246, say that alternating trees give an
 `(|F| + |G|)^{Ω(log(|F| + |G|))}` lower bound for Algorithm A, without proof in that note.
-So neither this repository nor Elbassioni has priority for the bound. Our proof is
+So neither this repository nor Elbassioni has priority for the bound. Our Fourier proof is
 machine-checked and has the larger constant; research §4 should cite both. His Lemma 3.5
-loses a factor 3 per level (`|u_{k+1}| ≥ |u_k|⁴/3`); evaluated exactly, his own bound has
-rate `0.37245` bits per variable, above both (see
-[`complex-evaluation.md`](complex-evaluation.md), written proof). A size-optimal
+loses a factor 3 per level (`|u_{k+1}| ≥ |u_k|⁴/3`); his own bound, evaluated exactly, has
+rate `0.37245` bits per variable, above both; our measures on blocks of eight variables
+raise the rate to `0.41433` (see [`complex-evaluation.md`](complex-evaluation.md) §§2, 4, written
+proofs). A size-optimal
 decision tree for GK `f_k`, `k ≥ 4`, is not known (for `k ≤ 3` it is depth-first,
 [`complex-evaluation.md`](complex-evaluation.md)): depth-first evaluation gives 62,833 leaves on `f₃`
-(`n = 32`), `1.41` per variable, against the lower base `1.14` (computed from the recursion
+(`n = 32`), `1.41` per variable, against the lower base `2^{0.41433} ≈ 1.33` (computed from the recursion
 `(L₁, L₀)` of an OR/AND of disjoint parts; not measured further).
 
 **Kobayashi, Kurita, Wasa, *An ETH-based quasipolynomial lower bound for Dualization*,

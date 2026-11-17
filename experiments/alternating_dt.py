@@ -11,10 +11,11 @@ least K      : DT of GK f_1..f_K and TK S_1..S_{K-1} by DP over isomorphism clas
                restricted read-once formulas (K <= 3: about five seconds).
 random S T   : T random read-once formulas (<= 14 leaves, seed S): DT against the best
                depth-first tree (Pareto sets of (L1, L0) over child orders).
-balanced     : the same on every balanced alternating formula (each gate's children
-               isomorphic) with arities 2, 3, at most 4 levels and 36 leaves (about a minute).
+balanced A B : the same on every balanced alternating formula (each gate's children
+               isomorphic) with arities 2, 3, at most 5 levels and 36 leaves, for the cost
+               A L1 + B L0 (default 1 1, the number of leaves; about a minute per pair).
 lp           : GK f_2 by truth tables: DT, and the subcube-partition LP bound (needs scipy).
-Usage: python experiments/alternating_dt.py rates 6 | least 3 | random 1 400 | lp
+Usage: python experiments/alternating_dt.py rates 6 | least 3 | random 1 400 | balanced 1 5 | lp
 """
 import random
 import sys
@@ -102,10 +103,11 @@ def leaf_paths(f, path=()):
 
 
 @lru_cache(maxsize=None)
-def DT(f):
+def DT(f, a=1, b=1):
+    """Least a L1 + b L0 over decision trees for f; a = b = 1 counts leaves."""
     if f is True or f is False:
-        return 1
-    return min(DT(restrict(f, p, False)) + DT(restrict(f, p, True)) for p in leaf_paths(f))
+        return a if f else b
+    return min(DT(restrict(f, p, False), a, b) + DT(restrict(f, p, True), a, b) for p in leaf_paths(f))
 
 
 def tree(top_or, depth):
@@ -169,9 +171,9 @@ def random_test(seed, T):
           f"largest ratio {max(worse, default=1):.3f}")
 
 
-def balanced():
+def balanced(a, b):
     same = total = 0
-    for levels in range(1, 5):
+    for levels in range(1, 6):
         for ar in product((2, 3), repeat=levels):
             if prod(ar) > 36:
                 continue
@@ -180,8 +182,8 @@ def balanced():
                 for i, m in enumerate(ar):
                     f = mk("&|"[(i + (first == "|")) % 2], [f] * m)
                 total += 1
-                same += DT(f) == min(a + b for a, b in depth_first(f))
-    print(f"balanced alternating formulas: {total}; depth-first optimal on {same}")
+                same += DT(f, a, b) == min(a * l1 + b * l0 for l1, l0 in depth_first(f))
+    print(f"balanced alternating formulas, leaf weights ({a}, {b}): {total}; depth-first optimal on {same}")
 
 
 def lp():
@@ -224,6 +226,6 @@ if __name__ == "__main__":
     elif mode == "random":
         random_test(int(sys.argv[2]), int(sys.argv[3]))
     elif mode == "balanced":
-        balanced()
+        balanced(*(map(int, sys.argv[2:4]) if len(sys.argv) > 3 else (1, 1)))
     else:
         lp()
