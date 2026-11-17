@@ -49,6 +49,11 @@ for unmemoised FK-A and the first unconditional FK-B bound, `N^{Ω(√(log N/log
 neither touches `δ` ([literature note](literature-2026-11.md) §1). For memoised FK-A the
 lower-bound question is a regular-resolution question (§4 there).
 
+His evaluation at `(1 + i√3)/2`, done exactly, gives the exponent on GK and TK to within
+a factor 1.26: the least `τ` over valid rules is `2^{(γ + o(1)) n}` with `0.37245 ≤ γ ≤ 0.46926`
+([`complex-evaluation.md`](complex-evaluation.md)). Next: the subcube-partition LP, exact on
+GK `f₂`, as a composable lower bound; Conjecture 6 there would give `γ = 0.46925`.
+
 ## Q5. The constant in the frequency lemma
 
 FK96 and Gurvich–Khachiyan (1997) bracket the asymptotic constant `c`, the least limit of

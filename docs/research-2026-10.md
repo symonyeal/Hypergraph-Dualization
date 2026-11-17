@@ -819,6 +819,14 @@ under every valid rule. The crossover needs `log₂ log₂ N` above about 48 eve
 set to zero, so (b) says nothing about the measured ratios (52.96× on `gk-f3`). FK-B's bound is
 cited, not formalised.
 
+*Update, 17 November 2026.* Elbassioni's complex evaluation, computed exactly, raises the
+rate of Theorem 4.24 from `log₂(27/16)/4 = 0.1887` to `0.37245` bits per variable: every
+decision tree for GK `f_k` or TK `S_k`, `k ≥ 3`, has at least `2^{0.37245 n}` leaves, so (b)
+holds with `c = 0.18622` (written proof). Under the leftmost rule
+`τ ≤ 2·L_df − 1 ≤ 2^{(0.46926 + o(1)) n}` (argued and measured), and the least decision trees
+of GK `f₁–f₃` are the depth-first ones (computed). See
+[`complex-evaluation.md`](complex-evaluation.md).
+
 **Proposition 4.27** (C3 is a 1997 open problem). For monotone `f` the minimal DNF of `f` is its
 set of minterms and that of `¬f` its set of maxterms, so the weight `‖f‖ = dnf(f) + dnf(¬f)` of
 Jukna, Razborov, Savický and Wegener is `N = |C| + |Tr C|`. Their Question 1 (ECCC TR97-023,
@@ -1259,7 +1267,7 @@ That `P_p` is strictly increasing for a nonconstant monotone property is Russo�
 | C2: Conjecture 4.5 | **refuted**: `ro12` has `δ = 43 > 2N` (Lean, evaluation); GK `f₄` has `δ/N = 1368` (Rust). The leftmost bound `δ ≤ 2n + 2` is Theorem 4.16 (Lean). Open: Conjecture 4.19, `δ/N` unbounded on GK under FK-A's rule (log-ratio 0.84, 1.12, 1.67). Route: Proposition 4.34 (Lean balance), Proposition 4.37 (loss budgets), Conjecture 4.40 (a constant share of standalone pairs occurs jointly; measured `0.43, 0.53` at `k = 2, 3`) |
 | C3 | `δ ≤ 2N` refuted by `ro12`; no polynomial bound under ETH (Proposition 4.6). For unmodified FK-A, an explicit family defeating every valid symmetric rule exists iff some monotone family has polynomial `N` and superpolynomial size of FBDDs named by their functions (Theorem 4.13, Proposition 4.14, Lean); replacing these by arbitrary FBDDs rests on the argued reduction of review row 29. None is known, and mixedness cannot give one (§4, *Literature*). This is the monotone case of JRSW's Question 1, open since 1997 (Proposition 4.27) |
 | Track S: symmetry in FK-A's work | Measured on GK `f₁–f₅`, TK `S₁–S₄`, `alt3 d₃–d₅` and the library (Observation 4.29); the iso-keyed memo is sound (Theorem 4.28, Lean). Under the leftmost rule there are no symmetric repeats; under the degree-sum rule `δ/δ_iso` grows (81.3 at GK `f₄`) and `δ_iso/N` too. Open: Conjecture 4.30; `δ_iso` at GK `f₅` and the label-exact `δ` of TK `S₄` under the degree-sum rule (not computed); a recurrence for the pruned shapes the rule reaches |
-| Track T: FK-A's recursion tree | On GK and TK `τ ≥ 2·(27/16)^{n/4}/(n + 1) = N^{Ω(log N)}` under every valid rule (Theorems 4.24–4.25, Lean), so FK-A is eventually slower than FK-B's bound and memoisation saves an exponential factor (Corollary 4.26). Open: FK-A's worst-case exponent between `N^{Ω(log N)}` and FK96's `N^{O(log² N)}`; a rule with `τ ≤ N^{O(log N)}` on every dual pair would remove JRSW's `log n` factor for monotone functions |
+| Track T: FK-A's recursion tree | On GK and TK `τ ≥ 2·(27/16)^{n/4}/(n + 1) = N^{Ω(log N)}` under every valid rule (Theorems 4.24–4.25, Lean), so FK-A is eventually slower than FK-B's bound and memoisation saves an exponential factor (Corollary 4.26). Sharpened by complex evaluation (written): `τ ≥ 2^{0.37245 n}/(n + 1)`, i.e. `N^{(0.1862 − o(1)) log₂ N}`; the leftmost rule has `τ ≤ 2^{(0.46926 + o(1)) n}`; the exact rate in between is open, with depth-first optimal on GK `f₁–f₃` ([`complex-evaluation.md`](complex-evaluation.md)). Open: FK-A's worst-case exponent between `N^{Ω(log N)}` and FK96's `N^{O(log² N)}`; a rule with `τ ≤ N^{O(log N)}` on every dual pair would remove JRSW's `log n` factor for monotone functions |
 | Track 3: a memo-friendly rule with FK96's guarantee | The guarded rule keeps the frequency `≥ 1/⌊log₂ N⌋` at every node (Proposition 4.18, Lean); `δ = 32, 263, 124,876` on GK `f₃–f₅`. Open: FK96's recursion bound for it in Lean; a rule with both the guarantee and `δ = O(n)` on read-once pairs |
 | D3 | `r = 2` settled, no (Proposition 5.4); open from `r = 3` (Open problem 5.3) |
 | E1: `|H| + |Tr H|` for the smallest explicit Ryser counterexample of `openai/math` family 162 | not started; needs the construction's transversals counted by structure |
