@@ -1,9 +1,10 @@
-"""Conjecture 4 of docs/frequency-constant.md on two families of dual pairs.
+"""Conjecture 6 of docs/frequency-constant.md on two families of dual pairs.
 
 A dual pair enters only through (A, B, s, t):
     A, B : numbers of terms and clauses (minterms and maxterms)
     s, t : 1/eps_C and 1/eps_D, reciprocal largest term and clause frequencies
-    defect = log2 A + log2 B + 3 - 3 min(s, t); Conjecture 4 says defect >= 0.
+    defect = log2 A + log2 B + 3 - 3 min(s, t); Conjecture 6 said defect >= 0. Neither
+    search below finds a negative defect; Proposition 7 there does, on 36 variables.
 
 Substitution T[G_0, ..., G_{m-1}] on disjoint supports (research Theorem 5.1) gives
     A = sum_{e in T} prod_{i in e} A_i,   B = sum_{e in Tr T} prod_{i in e} B_i,

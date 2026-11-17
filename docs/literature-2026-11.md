@@ -100,10 +100,12 @@ author of this repository).
   value `3/2` appears.
 
 *Consequence here:* [`frequency-constant.md`](frequency-constant.md) proves the product
-form `|C||D| ≥ 4^{1/eps − 1}` (stronger than (2) when `|C| ≠ |D|`), shows that the word
-families meet `|C||D| = 8^{1/eps − 1}` exactly, and conjectures that `8` is the right base,
-which would make `3/2` the exact asymptotic constant (as `eps → 0`; over all pairs it is
-1, from a single variable).
+form `|C||D| ≥ 4^{1/eps − 1}` (stronger than (2) when `|C| ≠ |D|`) and shows that the word
+families meet `|C||D| = 8^{1/eps − 1}` exactly. The base 8 fails on a 36-variable
+read-once pair (Proposition 7 there). For read-once pairs it proves
+`|C||D| ≥ e^{2(1/eps − 1)}`, so their asymptotic constant is at least `log₂ e ≈ 1.443`.
+Whether `3/2` is the asymptotic constant in general (as `eps → 0`; over all pairs the
+constant is 1, from a single variable) is open.
 
 **Gurvich, Khachiyan, *On generating the irredundant conjunctive and disjunctive normal
 forms of monotone Boolean functions*, Rutgers LCSR-TR-251, 1995.** Read in full.

@@ -1,12 +1,13 @@
-//! Exhaustive test of Conjecture 4 of `docs/frequency-constant.md` on every monotone
-//! Boolean function of at most `n <= 6` variables.
+//! Exhaustive test of Conjecture 6 of `docs/frequency-constant.md` on every monotone
+//! Boolean function of at most `n <= 6` variables. It holds there; Proposition 7 of the
+//! note refutes it on 36 variables.
 //!
 //! Legend (one dual pair):
 //!   f      : monotone function, truth table over 2^n points, bit x is f(x)
 //!   C, D   : minterms and maxterm clauses of f, as variable bitmasks; D = Tr(C)
 //!   A, B   : |C|, |D|
 //!   eps    : max over variables v of max(deg_C v / A, deg_D v / B)
-//!   defect : log2 A + log2 B + 3 - 3/eps; Conjecture 4 says defect >= 0
+//!   defect : log2 A + log2 B + 3 - 3/eps; Conjecture 6 said defect >= 0
 //!
 //! Usage: `frequency_constant N` prints the number of dual pairs checked, the least
 //! defect with a witness, and every pair of defect 0.

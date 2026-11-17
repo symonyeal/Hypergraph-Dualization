@@ -53,10 +53,12 @@ lower-bound question is a regular-resolution question (§4 there).
 
 FK96 and Gurvich–Khachiyan (1997) bracket the asymptotic constant `c`, the least limit of
 `eps · log₂N` as `eps → 0`, between 1 and 2; the word families reach `3/2`.
-[`frequency-constant.md`](frequency-constant.md) proves `|C||D| ≥ 4^{1/eps − 1}`, shows the
-words meet `|C||D| = 8^{1/eps − 1}` exactly, and reduces the sharp form (Conjecture 6,
-`c = 3/2`) to its asymptotic version. Next: the read-once case, through a two-parameter
-region preserved by both gates.
+[`frequency-constant.md`](frequency-constant.md) proves `|C||D| ≥ 4^{1/eps − 1}` and shows
+the words meet `|C||D| = 8^{1/eps − 1}` exactly. The base 8 is false: a read-once pair on 36
+variables has `eps = 1/6` and `|C||D| = 31,104 < 8⁵`. For read-once pairs,
+`|C||D| ≥ e^{2(1/eps − 1)}`, so `c ≥ log₂ e ≈ 1.443` there. Open: whether `c = 3/2` in
+general, which now needs `max(|C|, |D|)` rather than the product, and whether the
+read-once base is `e²` (it lies in `[e², 7.78]`).
 
 ## Q4. Symmetry in the thesis
 

@@ -21,6 +21,7 @@ importable library.
 | `symmetry_depth.py` | Exact ordered incidence-graph isomorphism classes by depth on Fano, Witt and complete(10,3), under three rules and both variants. `--write` regenerates `results/symmetry-depth.md`; research Theorem 4.22 and Observation 4.23. |
 | `frequency_constant/` | Rust: every monotone function of `N ≤ 6` variables, the defect `log₂|C| + log₂|D| + 3 − 3/eps` of its dual pair, the least value and the pairs at 0. `cargo build --release`, then `frequency_constant 6` (about six seconds). See `docs/frequency-constant.md`. |
 | `frequency_families.py` | The same defect on every read-once formula with ≤ `N` leaves (`closure 13`) and on random nested substitutions of prime templates (`compose 4000 SEED`). See `docs/frequency-constant.md`. |
+| `frequency_readonce.py` | The counterexample `T₆` to the base 8, checked on its explicit hypergraph with `fka.transversal` and FK-A (`check`, about two minutes); rates of symmetric templates (`templates 6 400`); the read-once theorem's split inequality on a grid (`split`) and on every read-once formula with ≤ `N` leaves (`closure 13`). See `docs/frequency-constant.md` §§4–5. |
 | `split_rules.py` | `delta` under the degree-sum, leftmost and guarded rules on read-once pairs, copies of a gadget, uniform matroids and the library; writes `results/split-rules.md`. `--deep` adds GK `f₄` under the degree-sum rule. See `docs/research-2026-10.md` §4. |
 
 `readonce_dag` accepts one nonempty read-once formula: gates are `&` or `|`,
