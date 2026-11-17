@@ -147,6 +147,13 @@ point set contains hypergraph transversal (Proposition 1). Relevant to
   for a superpolynomial *regular-resolution* lower bound for these split, cross-intersecting
   CNFs. Theorem 4.25 is the tree-like case. Whether *general* resolution refutes every
   `F_{C,D}` in polynomial size is open here.
+- **Decision-tree size against partitions.** Savický, *On determinism versus unambiguous
+  nondeterminism for decision trees* (ECCC TR02-009; pages 1–4 read as page images, 17 November
+  2026). It separates `dt(f)` from the partition number `p(f)` quasipolynomially for iterates of
+  `g = (x₁ ∨ x₂ ∨ x₃)x₄ ∨ x₁x₂x₃`, not for the AND–OR tree, and proves `dt(f₁ ⊕ f₂) ≥ dt(f₁)dt(f₂)`
+  on disjoint variables (Lemma 2.1) by the induction used for Lemma 15 of
+  [`complex-evaluation.md`](complex-evaluation.md). Its Lemma 3.5 multiplies `r`, the least number of 1-leaves
+  at full depth, under composition; `r(x ∧ y) = r(x ∨ y) = 1`, so on AND–OR trees it gives only `r ≥ 1`.
 - **Memoised DPLL.** Beame, Impagliazzo, Pitassi, Segerlind, *Formula caching in DPLL*
   (CCC 2003; ACM TOCT 2010; abstract read): formula-caching DPLL simulates regular
   resolution, and some variants are stronger. Memoised FK-A is formula caching without
@@ -158,7 +165,9 @@ point set contains hypergraph transversal (Proposition 1). Relevant to
 
 FK96 itself (a PDF at `cs.tau.ac.il` was found, not read); the middle of Elbassioni's
 paper; the proofs of the October SAT manuscripts; Gál; Bollig–Wegener; Dahiya beyond the
-abstract. Unsuccessful searches do not establish novelty.
+abstract; Tarsi, *Optimal search on some game trees* (J. ACM 30, 1983), whose depth-first
+optimality for i.i.d. leaves is cited from secondary sources only; Savický TR02-009 beyond page 4.
+Unsuccessful searches do not establish novelty.
 
 ## Sources
 

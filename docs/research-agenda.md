@@ -54,9 +54,17 @@ eight-variable blocks give the exponent on GK and TK to within a factor 1.133: t
 over valid rules is `2^{(γ + o(1)) n}` with `0.41433 ≤ γ ≤ 0.46926`
 ([`complex-evaluation.md`](complex-evaluation.md)). Measures bounded on every subcube stop
 at `0.41434`, and the subcube-partition LP is below the least tree on TK `S₂` (383 against
-409), so neither proves Conjecture 6 there, which would give `γ = 0.46925`. Next: a lower
-bound that constrains only monochromatic subcubes and composes through the gates, or the
-LP's rate on GK.
+409), so neither proves Conjecture 6 there, which would give `γ = 0.46925`.
+
+The question is now one inequality per gate (§5 there). The least 1-leaf count is exactly
+multiplicative at AND gates and the least 0-leaf count at OR gates (Lemma 15), and GK `f₃` is
+solved exactly for all weights (Proposition 12). So Conjecture 17,
+`m₀(g ∧ g′) ≥ θ · m₀(g)(1 + m₁(g))` for balanced OR-rooted `g`, with any absolute `θ > 0.1609`, would
+pass the subcube barrier, and `θ = 1` would give Conjecture 6. Every gate with two unrestricted
+balanced children tested is depth-first for all weights; restricted children are not (down to 0.6769), and
+`DF` fails as an induction potential on 4,028 of the 20,804 restriction classes of `f₃`. Next: a
+whole-subtree exchange argument (Tarsi-type) or a potential that differs from `DF` off the
+balanced formulas.
 
 ## Q5. The constant in the frequency lemma
 

@@ -6,7 +6,8 @@ decision-tree bound into a bound on FK-A's recursion tree under every valid rule
 note evaluates Elbassioni's bound exactly on GK and TK, bounds the result from above, and
 compares the two. §4 replaces his evaluation point by measures on blocks
 of eight variables, which raises the rate to `0.41433`, and shows that no measure bounded on
-every subcube can give more than `0.41434` (17 November 2026).
+every subcube can give more than `0.41434` (17 November 2026). §5 checks Conjecture 6 for all
+weights at once and reduces the rest of the gap to one inequality at each gate.
 
 Status labels: *written proof* (prose, not in Lean), *exact check* (integer arithmetic by
 `experiments/subcube_norm.py`), *computed* (`experiments/alternating_dt.py`,
@@ -148,10 +149,9 @@ and `f₄`; its rate there is 0.521 and 0.516 against 0.501 and 0.477. Under the
   prototype `hd-dtsize/brute.py`, not in the repository) found nothing above the uniform `w`.
 - Depth-first is optimal on all 52 *balanced* alternating formulas (at every gate the
   children are isomorphic) with arities 2 and 3, at most 5 levels and 36 leaves, among them
-  GK `f₃` and `T₆` of [`frequency-constant.md`](frequency-constant.md) with 364,687 leaves
-  (`alternating_dt.py balanced`). It stays optimal for the cost `a L₁ + b L₀` with
-  `(a, b) = (1, 5)` (`balanced 1 5`), and for `(1, 2)`, `(2, 1)`, `(5, 1)`, `(2, 3)`, `(1, 20)`
-  (same code, working-folder run `hd-dtsize/weighted.py`).
+  GK `f₃` and `T₆` of [`frequency-constant.md`](frequency-constant.md) with 364,687 leaves.
+  It stays optimal for the cost `a L₁ + b L₀` for all `a, b > 0` (Proposition 12,
+  `alternating_dt.py balanced`).
 - It is not optimal for every read-once formula: among 800 random formulas with at most 14
   leaves (two seeds), 47 have a smaller tree, by at most 8.9% in this sample
   (`alternating_dt.py random`). All 47 are unbalanced.
@@ -159,7 +159,7 @@ and `f₄`; its rate there is 0.521 and 0.516 against 0.501 and 0.477. Under the
 **Conjecture 6.** For a balanced read-once formula and all `a, b > 0`, a depth-first decision
 tree minimises `a L₁ + b L₀` over all decision trees; `a = b = 1` is the number of leaves. For
 GK this would make the least `τ` over valid rules `N^{(0.2347 + o(1)) log₂ N}`, met by the
-leftmost rule. The evidence is `k ≤ 3` and the balanced formulas above. The weights are the
+leftmost rule. The evidence is `k ≤ 3` and the balanced formulas above, for all weights (§5). The weights are the
 form an induction over the gates needs: below an AND gate whose first child is evaluated
 first, that child's tree is charged `L₀ + L(h) L₁`.
 
@@ -261,7 +261,143 @@ HiGHS:
 | GK `f₂` | 8 | 19 | 25 | 25 |
 | TK `S₂` | 16 | 199 | 383 | 409 |
 
-## 5. Scope
+## 5. All weights, and the one-gate question
+
+Write `V(F; a, b)` for the least `a L₁ + b L₀` over decision trees for `F` (`a, b > 0`), `DF(F; a, b)`
+for the least over depth-first trees, and `m₁(F)`, `m₀(F)` for the least numbers of 1-leaves and of
+0-leaves, each minimised on its own. `V` is the support function of the lower-left convex hull
+`H(F)` of the achievable pairs `(L₁, L₀)`, so `V = DF` for all weights exactly when the two hulls
+agree. Exactly,
+
+```text
+H(1) = {(1, 0)},   H(0) = {(0, 1)},   H(F) = lower hull of ⋃_x  H(F|x=0) ⊕ H(F|x=1)   (Minkowski sum),
+```
+
+and the depth-first hull composes `(p₁, p₀) ∘ (q₁, q₀) = (p₁q₁, p₀ + p₁q₀)` for a child evaluated first
+with the rest of an AND gate at its 1-leaves (OR by De Morgan). `m₁(F)` and `m₀(F)` are the ends of
+`H(F)`. `alternating_dt.py` computes both hulls in integers over the restriction classes.
+
+**Proposition 12 (computed, exact).** For GK `f₁–f₃`, TK `S₁–S₂` and the 52 balanced formulas of
+Observation 5, `H(F)` is a single point and equals the depth-first hull: one depth-first tree
+minimises `L₁` and `L₀` at once, and `V(F; a, b) = DF(F; a, b)` for all `a, b > 0`
+(`alternating_dt.py least 3`, `balanced`). On GK `f₃` the point is `(39,424, 23,409)`.
+
+**Lemma 13 (written proof).** Let `C` be a class of read-once formulas closed under restriction.
+Then `V = DF` on `C` for all weights if and only if `DF(F) ≤ DF(F|x=0) + DF(F|x=1)` for every
+`F ∈ C`, every variable `x` of `F` and all weights.
+
+*Proof.* If the inequality holds, induct on the number of variables: constants agree, and
+`V(F) = min_x (V(F|x=0) + V(F|x=1)) = min_x (DF(F|x=0) + DF(F|x=1)) ≥ DF(F) ≥ V(F)`. Conversely,
+`DF(F) = V(F) ≤ V(F|x=0) + V(F|x=1) = DF(F|x=0) + DF(F|x=1)`. ∎
+
+**Observation 14 (computed, `classes 3`).** `H ≠ DF` on 4,028 of the 20,804 non-constant
+restriction classes of GK `f₃`. The least is
+`(x ∧ x′ ∧ (x″ ∨ x‴ ∨ x⁗)) ∨ (y ∧ (y′ ∨ y″ ∨ (y‴ ∧ y⁗)))`, with `H = {(11, 9)}` and depth-first
+`{(12, 9)}`: 20 leaves against 21. So every restriction-closed class that contains `f₃` fails Lemma
+13's inequality, and Lemma 13's induction over such a class, with `DF` as its potential, cannot prove
+Conjecture 6.
+
+**Lemma 15 (written proof).** For `g, h` on disjoint variables, `m₁(g ∧ h) = m₁(g) m₁(h)` and
+`m₀(g ∨ h) = m₀(g) m₀(h)`.
+
+*Proof.* A tree for `g` with `m₁(g)` 1-leaves, with a tree for `h` with `m₁(h)` 1-leaves at each of
+them, gives `≤`. For `≥`, induct on the number of variables. A tree that is a single leaf computes a
+constant: a 1-leaf needs `g ≡ h ≡ 1`, where both sides are 1; a 0-leaf needs `g ≡ 0` or `h ≡ 0`, where
+the right side is 0. If the root reads a variable `x` of `g`, its subtrees compute `g|x=0 ∧ h` and
+`g|x=1 ∧ h`, so by induction the tree has at least `(m₁(g|x=0) + m₁(g|x=1)) m₁(h) ≥ m₁(g) m₁(h)`
+1-leaves, since reading `x` first and then using least trees is a tree for `g`. A variable of `h` is
+the same. The OR case is the AND case for the complements. ∎
+
+Savický (ECCC TR02-009, Lemma 2.1) proves `dt(f₁ ⊕ f₂) ≥ dt(f₁) dt(f₂)` by the same induction. A 0-leaf
+of an AND gate can end the computation while the other child is still unread, so `m₀` at an AND
+gate, and `m₁` at an OR gate, have no such product; those are where interleaving can pay.
+
+**Lemma 16 (written proof).** Let `F` be built by binary gates over disjoint blocks, and let `G` be
+the number of gates above the blocks. For a gate over `g, h` put
+
+```text
+SEQ_AND = min( V(g; V(h; a, b), b),  V(h; V(g; a, b), b) ),    SEQ_OR = min( V(g; a, V(h; a, b)), … ).
+```
+
+- (a) If `V = DF` on every block for all weights, and `V(gate) ≥ θ · SEQ(gate)` at every gate for all
+  weights, then `V(F) ≥ θ^G DF(F)`.
+- (b) If every block has `m₁ = L₁` and `m₀ = L₀` of one depth-first tree, and every gate satisfies the
+  one inequality Lemma 15 leaves open,
+
+  ```text
+  AND:  m₀(g ∧ h) ≥ θ · min( m₀(g) + m₁(g) m₀(h),  m₀(h) + m₁(h) m₀(g) ),     OR: the dual for m₁,
+  ```
+
+  then `m₁ ≥ ℓ₁` and `m₀ ≥ ℓ₀` on every subformula, where `(ℓ₁, ℓ₀)` follows the depth-first
+  recursion from the blocks' `(L₁, L₀)` with the factor `θ` on the open coordinate. With `θ = 1` this
+  is the depth-first pair, so `V = DF` for all weights. On GK with `f₃` blocks every decision tree for
+  `f_K`, `K ≥ 3`, has at least `2^{(z₃/96 − log₂(1/θ)/48) v}` leaves, where
+  `z₃ = log₂(39,424² · 23,409)` and `z₃/96 = 0.4692536`.
+
+*Proof.* (a) Induct over the gates: `V(F) ≥ θ^{G(F)} DF(F)` for every subformula `F` above the
+blocks. Two facts are used. `V(g; a, b)` is nondecreasing in each weight, and for `0 < λ ≤ 1`,
+`V(g; λc, b) ≥ V(g; λc, λb) = λ V(g; c, b)`, likewise in the second weight. At an AND gate,
+
+```text
+V(g; V(h; a, b), b) ≥ V(g; θ^{G(h)} DF(h; a, b), b) ≥ θ^{G(h)} V(g; DF(h; a, b), b) ≥ θ^{G(g)+G(h)} DF(g; DF(h; a, b), b),
+```
+
+and the same with `g` and `h` exchanged. `DF` of the gate is the smaller of the two orders, so
+`V(F) ≥ θ · SEQ ≥ θ^{G(g)+G(h)+1} DF(F)`. At an OR gate the inner value enters the second weight.
+
+(b) Define lower bounds `ℓ₁, ℓ₀` by the depth-first recursion with the factor `θ` on the open
+coordinate, starting from the exact block values. Lemma 15 is exact on the other coordinate, and
+both right sides are nondecreasing in `m₁` and `m₀`, so `m₁ ≥ ℓ₁` and `m₀ ≥ ℓ₀` by induction. Every
+tree has `L₁ ≥ m₁` and `L₀ ≥ m₀`, so with `θ = 1` it has `a L₁ + b L₀ ≥ a ℓ₁ + b ℓ₀ = DF(F; a, b)`.
+On GK, drop the `1 +` terms (the rate below is weaker than the recursion): with `p = log₂ ℓ₁`, `q = log₂ ℓ₀` at
+`f_k` and `t = log₂ θ ≤ 0`, the AND gate gives `S_k` the bounds `2p` and `q + p + t`, and the OR gate
+gives `f_{k+1}` the bounds `3p + q + 2t` and `2p + 2q + 2t`. So `z = 2p + q` satisfies
+`z_{k+1} ≥ 4z_k + 6t`, hence `z_K ≥ 4^{K−3}(z₃ + 2t)`, while `v = 32 · 4^{K−3}`. A tree has at least
+`max(ℓ₁, ℓ₀) ≥ 2^{z/3}` leaves. TK `S_K = f_K ∧ f_K′` has the bounds `2p` and `p + q + t`, so the same
+rate up to `o(1)` per variable. ∎
+
+| Hypothesis at each gate above `f₃` blocks | Rate bound | `θ` that passes `0.4143394` |
+| --- | --- | --- |
+| (a) `V(gate) ≥ θ · SEQ`, all weights | `0.469254 − log₂(1/θ)/32` | `0.2958` |
+| (b) the open coordinate only | `0.4692536 − log₂(1/θ)/48` | `0.1609` |
+
+Proposition 12 supplies the blocks for both (`alternating_dt.py theta`). Hypothesis (a) implies
+(b): at weights `(ε, 1)`, `ε → 0`, `V(g ∧ h)` tends to `m₀(g ∧ h)` and `V(g; V(h; ε, 1), 1)` to
+`min_{p ∈ H(g)} (p₁ m₀(h) + p₀) ≥ m₁(g) m₀(h) + m₀(g)`. So (b) asks for less, and it loses on one
+coordinate per gate. With `θ = 1` and one-variable blocks, the first conclusion of (b) gives
+Conjecture 6 on GK and TK.
+
+**Conjecture 17 (one gate).** For a balanced binary alternating formula `g` with an OR root and a
+disjoint copy `g′`, `m₀(g ∧ g′) ≥ θ · m₀(g)(1 + m₁(g))` with an absolute `θ > 0.1609`.
+
+By De Morgan this covers the OR gates of GK, whose children are TK trees. Any such `θ` puts the
+least `τ` over valid rules on GK above every subcube-bounded measure (Proposition 9); with `θ = 1`
+Lemma 16(b) gives Conjecture 6 on GK and TK.
+
+**Observation 18 (computed, `gates 18 12`).** For the 14 balanced alternating formulas `g, h` with
+an OR root, arities 2 and 3 and at most 18 leaves, isomorphic or not, the least trees for
+`g ∧ h` are depth-first at the gate for all weights: `H(g ∧ h)` is the hull of the two orders with
+least trees for the children, on all 105 pairs. Restricted children break this. For `g, h` with at
+most 12 leaves and `a, b` restrictions of them, compare `H(a ∧ b)` with the hull of the two orders that
+finish `a` or `b` first (`a`, `b` as units), and, more leniently, with depth-first at the flattened gate,
+where an AND-rooted restriction's own children may be interleaved with the other child:
+
+| Children | Pairs | Not depth-first, units (least ratio) | Not depth-first, flattened (least ratio) |
+| --- | --- | --- | --- |
+| one unrestricted, one restricted | 2,299 | 77 (`5/7`) | 42 (`7/8`) |
+| both restricted | 25,993 | 1,733 (`44/65 = 0.6769`) | 1,096 (`88/109 = 0.8073`) |
+
+The least ratio with one child unrestricted is `5/7`, at the unrestricted `g = (x∧x∧x) ∨ (x∧x∧x)` and
+`b = x ∧ x ∧ (x ∨ x)`, a restriction of the balanced `OR₂(AND₃(OR₂))`. So the statement that held
+in every test needs both children unrestricted and balanced. An induction over a decision tree passes through restricted pairs, so a proof of
+Conjecture 17 needs a potential other than the gate's depth-first value, or an exchange argument
+over whole subtrees in the manner of Tarsi's theorem for i.i.d. leaves (cited, not read).
+
+*Rank.* A tree of rank `r` has at least `2^r` leaves. GK `f₁–f₃` have least rank 1, 3 and 11, and the
+depth-first tree of `f_k` has rank `(v + 1)/3` for `k ≤ 9` (`alternating_dt.py rank 9`). So rank gives
+rate at most `1/3` on these, below Theorem 8.
+
+## 6. Scope
 
 - Elbassioni's FK-B bound (his §4) and the padded KKW instances are not touched here.
 - The bounds hold for unmemoised FK-A. With memoisation the leftmost rule has `δ ≤ 2n + 2`; the
