@@ -1,9 +1,7 @@
 """Primal graphs and the graph classes the thesis tracks.
 
-Chapter 5 annotates nodes with the class of the primal graph -- cograph,
-chordal, split, bipartite, chordal bipartite, perfect -- because those are
-subclasses of distance-hereditary graphs and so carry twin-vertex structure
-(§5.2, p.48).
+Chapter 5 follows the primal graph's structural properties through the recursion:
+cograph, chordal, split, bipartite, chordal bipartite and perfect (§5.2, p.48).
 
 Exact, in plain Python. Several recognisers enumerate induced subgraphs, which
 is exponential in the vertex count: fine for the thesis instances (at most 14
@@ -124,11 +122,11 @@ def primal_graph(MBF: Hypergraph) -> Graph:
 # ----------------------------------------------------------------------
 # induced-subgraph tests
 # ----------------------------------------------------------------------
-def _check_size(g: Graph, what: str) -> None:
-    if g.n > MAX_ENUMERATION_VERTICES:
+def _check_size(g: Graph, what: str, limit: int = MAX_ENUMERATION_VERTICES) -> None:
+    if g.n > limit:
         raise ValueError(
             f"{what} enumerates induced subgraphs and is capped at "
-            f"{MAX_ENUMERATION_VERTICES} vertices; this graph has {g.n}. "
+            f"{limit} vertices; this graph has {g.n}. "
             "Use the SageMath backend or raise MAX_ENUMERATION_VERTICES."
         )
 
@@ -153,7 +151,7 @@ def find_induced_p4(
     and `experiments/hard_classes.py` needs it on the deeper template words.
     """
     if max_vertices is not None and g.n > max_vertices:
-        _check_size(g, "cograph testing")
+        _check_size(g, "cograph testing", max_vertices)
     for quad in combinations(range(g.n), 4):
         deg = [sum(1 for w in quad if w != v and g.adj[v] >> w & 1) for v in quad]
         if sorted(deg) == [1, 1, 2, 2]:

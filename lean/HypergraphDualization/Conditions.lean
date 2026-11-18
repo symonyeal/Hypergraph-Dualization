@@ -197,12 +197,10 @@ theorem two_pow_shortest_le (hG : Within U G) (hH : H = tr U G) (s : ℕ)
 /-- **Lemma 2.3.2.** If `G` and `H` are both nonempty, some vertex lies in at least a
 `1/s` fraction of the edges of `G` or of `H`, where `2^s ≤ |G| + |H|`. In real terms its
 frequency is at least `1/s ≥ 1/log₂(|G|+|H|)`. -/
-theorem exists_frequent_vertex (hG : Within U G) (sG : IsSperner G) (hH : H = tr U G)
+theorem exists_frequent_vertex (hG : Within U G) (_sG : IsSperner G) (hH : H = tr U G)
     (hGne : G.Nonempty) (hHne : H.Nonempty) :
     ∃ s v, 1 ≤ s ∧ 2 ^ s ≤ G.card + H.card ∧
       (G.card ≤ s * degree G v ∨ H.card ≤ s * degree H v) := by
-  have hHw : Within U H := hH ▸ tr_within U G
-  have hG' : G = tr U H := (eq_tr_comm hG hHw sG (hH ▸ tr_isSperner U G)).1 hH
   -- A shortest edge of `G ∪ H`.
   obtain ⟨e, he, hmin⟩ := (G ∪ H).exists_min_image card (hGne.mono subset_union_left)
   have hs := two_pow_shortest_le hG hH e.card hmin

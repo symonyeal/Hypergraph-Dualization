@@ -17,7 +17,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Iterator, Optional
 
-from .hypergraph import Hypergraph, verts
+from .hypergraph import Hypergraph, bits, verts
 
 __all__ = ["Node", "Tree", "Verdict"]
 
@@ -59,6 +59,16 @@ class Verdict:
         if self.CAs:
             out["CAs"] = [[v + 1 for v in verts(s)] for s in self.CAs]
         return out
+
+    @classmethod
+    def from_json(cls, d: dict[str, Any]) -> "Verdict":
+        """Restore a verdict, including empty-set and multiple conflicting assignments."""
+        return cls(
+            dual=d["dual"], reason=d["reason"], detail=d.get("detail", ""),
+            CA=None if d.get("CA") is None else bits(x - 1 for x in d["CA"]),
+            witness_edges=tuple(bits(x - 1 for x in t) for t in d.get("witness_edges", [])),
+            CAs=tuple(bits(x - 1 for x in s) for s in d.get("CAs", [])),
+        )
 
 
 @dataclass(slots=True)
@@ -161,22 +171,7 @@ class Node:
                 sum(1 << (v - 1) for v in term) for term in d[key]
             )
 
-        verdict = None
-        if d.get("verdict"):
-            v = d["verdict"]
-            CA = v.get("CA")
-            verdict = Verdict(
-                dual=v["dual"],
-                reason=v["reason"],
-                detail=v.get("detail", ""),
-                CA=None if CA is None else sum(1 << (x - 1) for x in CA),
-                witness_edges=tuple(
-                    sum(1 << (x - 1) for x in t) for t in v.get("witness_edges", [])
-                ),
-                CAs=tuple(
-                    sum(1 << (x - 1) for x in s) for s in v.get("CAs", [])
-                ),
-            )
+        verdict = None if d.get("verdict") is None else Verdict.from_json(d["verdict"])
         return cls(
             node_id=d["node_id"],
             parent_id=d["parent_id"],
@@ -325,6 +320,7 @@ class Tree:
             variant=d.get("variant", ""),
             split_rule=d.get("split_rule", ""),
             dual=d.get("dual"),
+            verdict=None if d.get("verdict") is None else Verdict.from_json(d["verdict"]),
             root_id=d.get("root_id"),
         )
         for nd in d["nodes"]:

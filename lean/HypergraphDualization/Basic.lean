@@ -38,6 +38,12 @@ def Hits (H : Finset (Finset α)) (T : Finset α) : Prop := ∀ e ∈ H, (T ∩ 
 instance (H : Finset (Finset α)) (T : Finset α) : Decidable (Hits H T) := by
   unfold Hits; infer_instance
 
+/-- Adjacency in the primal graph `G(H)`: distinct vertices sharing an edge. -/
+def primalAdj (H : Finset (Finset α)) (u v : α) : Prop := u ≠ v ∧ ∃ e ∈ H, u ∈ e ∧ v ∈ e
+
+instance (H : Finset (Finset α)) (u v : α) : Decidable (primalAdj H u v) := by
+  unfold primalAdj; infer_instance
+
 /-- Some edge of `H` lies inside `S`. -/
 def upHit (H : Finset (Finset α)) (S : Finset α) : Prop := ∃ e ∈ H, e ⊆ S
 
@@ -172,9 +178,6 @@ theorem minimal_eq_self {H : Finset (Finset α)} (h : IsSperner H) : minimal H =
   ext e
   refine ⟨fun he => minimal_subset H he, fun he => mem_filter.2 ⟨he, fun f hf hfe => ?_⟩⟩
   exact h f hf e he hfe
-
-theorem isSperner_iff_minimal_eq {H : Finset (Finset α)} : IsSperner H ↔ minimal H = H :=
-  ⟨minimal_eq_self, fun h => h ▸ minimal_isSperner H⟩
 
 /-- **Proposition 1.1.5.** The transversal hypergraph is unchanged by Sperner reduction. -/
 theorem tr_minimal (U : Finset α) (H : Finset (Finset α)) : tr U (minimal H) = tr U H := by

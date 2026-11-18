@@ -160,7 +160,9 @@ blocks share fewer than `t` points, with `b·C(k,t) = C(v,t)`, is `S(t,k,v)`).
 The parameter sets `2 ≤ t < k < v ≤ 100` with `n₀ = 0` (`python experiments/steiner_selftr.py`)
 are the projective planes `S(2, q+1, q²+q+1)`, `q ≤ 9`; `S(4,7,23)`; and `S(t, t+1, 2t+3)` for
 even `t ≤ 44` with admissible parameters. Of the systems built there, `PG(2,3)`, `PG(2,4)` and
-`S(4,7,23)` are 2-colourable (Python scan; in Lean as `pg23_not_self_dual` and Observation 2.10a).
+`S(4,7,23)` are 2-colourable by the Python scan. Lean checks that the cyclic `PG(2,3)` design is
+not self-transversal in `pg23_not_self_dual`. Observation 2.10a gives colour witnesses for the
+other two designs.
 
 **Theorem 2.11** (A5c). Let `H` be a Steiner system `S(t, t+1, 2t+3)`. Then `t` is even and
 `Tr(H) = H`.
@@ -218,7 +220,7 @@ Lean: `erase_twoColourable`.
 Equality holds for `K₃` and the Fano plane; `w11` has 66 edges on 11 points.
 Lean: `card_le_of_tr_eq_self`.
 
-In the language of distributed systems ([`applications.md`](applications.md)), a non-dominated coterie on `n` nodes has
+In the language of distributed systems (review row 4), a non-dominated coterie on `n` nodes has
 at least `n` quorums.
 
 **Proposition 2.16** (counting test). Let `H` be Sperner inside `U`, intersecting, without the
@@ -274,8 +276,9 @@ So `ε(n) ≥ L(n) := min_{s ≥ 1} max(1/s, s/n)`. Together with the attaining 
 | `ε(n)` | 2/3 | 1/2 | 1/2 | 1/2 | 3/7 | `[3/8, 2/5]` | 1/3 |
 | attained by | `K₃` | `{{0,3},{1,2}}` | same | same | Fano | 8-Ver (`2/5`) | three disjoint triples |
 
-The bound is not tight in general: `PG(2,3)` has `ε = 112/247` against `L(13) = 4/13`
-(`python` check), and at `n = 8` the solver evidence below puts `ε(8)` at `2/5 > 3/8`.
+The computed `PG(2,3)` pair has `ε = 112/247`, above `L(13) = 4/13`. An example
+above the bound does not determine the minimum. For `n = 8`, the solver evidence
+below supports `ε(8) = 2/5 > 3/8` within its stated model.
 
 **Conjecture 3.3** (solver evidence). `ε(8) = 2/5`.
 
@@ -351,7 +354,7 @@ proves `ε ≥ 1/m` whenever `m > 0` and `n ≤ m(m+1)`; the former separate pro
 are now specialisations. The smallest-edge theorem remains useful because its integral `s`
 can strengthen the square-root bound.
 
-Source audit and older connections: [`frequency-equality-research.md`](frequency-equality-research.md).
+Source audit and older connections: [`literature-2026-11.md#7-frequency-equality-and-steiner-sources`](literature-2026-11.md#7-frequency-equality-and-steiner-sources).
 These are additions to the repository; priority in the literature is not asserted.
 
 **Proposition 3.7** (B7, one regular side). Let `r > 0`, `n = r²`, and let cross-intersecting
@@ -427,13 +430,14 @@ the leaves numbered left to right (Hertel's order).
 | TK `S₂` | 16 | 33 | 72 | 481 | 34 | 16 |
 | TK `S₃` | 64 | 129 | 16,512 | 19,609,201,217 | 4,139 | 64 |
 
-`python experiments/readonce_sim.py 3` simulates FK-A on the formula (a node is the function
-whose DNF is `C`; children are `g|x=0` and `(g|x=1)^d`) and agrees with `fka.algorithm` and
-`fka.memo` on GK, TK and 200 random formulas. The rows for GK `f₄` and TK `S₃` and the last
-column are from `experiments/readonce_dag` (Rust), which stores a node as its set of relevant
-variables (Remark 4.12) and agrees with `readonce_sim.py` on `τ` and `δ` for GK `f₁–f₃`,
-TK `S₁–S₂` and 400 random formulas with fan-in up to 4 on at most 16 variables. GK `f₄` takes
-about six minutes; the formula-keyed `readonce_sim.py 4` exceeded 14 GB.
+The historical run `python experiments/readonce_sim.py 3` simulated FK-A on the formula.
+A node represents the function whose DNF is `C`, with children `g|x=0` and `(g|x=1)^d`.
+It agreed with `fka.algorithm` and `fka.memo` on GK, TK and 200 random formulas. The rows
+for GK `f₄` and TK `S₃` and the last column come from `experiments/readonce_dag` (Rust),
+which stores the relevant variables and an orientation (Remark 4.12). Its `τ` and `δ`
+agreed with the Python simulation on GK `f₁–f₃`, TK `S₁–S₂` and 400 random formulas
+with fan-in at most 4 on at most 16 variables. The recorded Rust run of GK `f₄` took
+about six minutes. The historical Python command `readonce_sim.py 4` exceeded 14 GB.
 
 **Conjecture 4.5** (refuted). On read-once pairs FK-A's rule gives `δ ≤ 2N`.
 
@@ -519,8 +523,8 @@ gives `δ ≤ 1.07 n` and the degree-sum rule `δ/N` up to 25.4. Hertel's Theore
 
 The bound `δ ≤ 2n + 2` for the leftmost rule is now Theorem 4.16 (Lean). The degree-sum rule
 picks the most frequent variable wherever it lies. It thereby interleaves disjoint subformulas,
-and the subproblems become pairs of their partial states (Lemma 4.17): the product structure of
-`ro12`.
+and its subproblems combine partial states of those subformulas. Lemma 4.17 gives the
+reconstruction conditions behind the product structure of `ro12`.
 
 **Remark 4.12.** A restriction of a read-once formula with nonempty support is determined by its
 support: two reduced minors of `dnf f` with the same nonempty support are equal. A gate of the
@@ -533,7 +537,7 @@ So, to the thesis's question. The recursion tree is exponential because a dual n
 recurses into both children (Theorem 4.9). Most of the tree repeats subproblems, and
 memoisation removes exactly that part (Proposition 4.10). What remains, `δ`, is small for a
 coordinated split order and large for FK-A's most-frequent-vertex rule, because that rule
-interleaves independent parts of the instance (Observation 4.11). ETH forces memoised FK-A to
+interleaves independent parts of the instance (Observation 4.11). A 3-SAT hardness premise weaker than ETH forces memoised FK-A to
 be superpolynomial on some dual pairs (Proposition 4.6), a statement about `δ`. On the
 alternating trees FK-A's own rule already shows superlinear growth of `δ`, in this
 measurement.
@@ -575,8 +579,9 @@ rule `fbddRule` (test the label of whichever side of the node is a test node of 
 label if both are, the degree-sum vertex if neither is) with `δ ≤ 2|𝒮|` on `(G, Tr G)`, either
 variant. Lean: `fbddRule`, `rule_of_fbdd`.
 
-So on unmodified FK-A the least `δ` over valid symmetric rules and the least FBDD of `f` named by
-its functions agree within a factor 2 (Lean). The latter is the least FBDD of `f`: in an FBDD `B`
+On unmodified FK-A, the least `δ` over valid symmetric rules and the least size `s`
+of an FBDD named by its functions satisfy `(s − 2)/2 ≤ δ ≤ 2s` (Lean).
+The latter is the least FBDD size of `f` by the following argument. In an FBDD `B`
 for a monotone `f`, each restriction `h` reached is computed by some node, and one with an
 essential test is found by following 0-edges past inessential tests; labelling `h` by that test
 gives a family of size at most `|B|`. (This reduction is argued here, not in Lean; review
@@ -629,13 +634,16 @@ Fault-tree analysis uses this depth-first, left-most order for trees without rep
 `Fm.tr_dnf`, `Fm.tr_dnf_readOnce`).
 
 **Lemma 4.17** (interleaving). For any `A`, `B`, a minor of `A ∪ B` (of `A ∧ B`) is, as a
-function, `A' ∪ B'` (`A' ∧ B'`) for minors `A'` of `A` and `B'` of `B`. On disjoint supports the
-parts are recovered from the union, `(A₀ ∪ B₀) ∩ 2^V = A₀`, and from the join,
-`{e ∩ V : e ∈ A₀ ∧ B₀} = A₀`.
+function, `A' ∪ B'` (`A' ∧ B'`) for minors `A'` of `A` and `B'` of `B`.
+Let `A₀` and `B₀` lie on disjoint supports `V` and `W`. Filtering the union to
+edges contained in `V` recovers `A₀` if `B₀` has no empty edge.
+Intersecting each edge of the join with `V` recovers `A₀` if `B₀` is nonempty.
+The corresponding conditions with the sides exchanged recover `B₀`.
 Lean: `Fm.minor_union`, `Fm.minor_join`, `Fm.union_left_part`, `Fm.join_left_part`.
 
-So below a gate on disjoint inputs the distinct subproblems are the distinct pairs of input
-states the rule reaches, and `δ` is at least their number (argued from the lemma, not in Lean).
+Within one orientation, distinct pairs of reached input states that satisfy the recovery
+conditions give distinct combined subproblems. This gives a lower bound on `δ` for those
+recoverable pairs. The counting consequence is argued here.
 
 **Proposition 4.18** (a memo-friendly rule with FK96's guarantee). The guarded rule splits on the
 least vertex `x` with `|C| ≤ s·deg_C x` or `|D| ≤ s·deg_D x`, `s = ⌊log₂ N⌋`, and on the
@@ -669,7 +677,7 @@ frequent vertex is not always the leftmost. A static order is only as good as th
 (`ro12_rules`, evaluation). On the small library instances that are not read-once the degree-sum
 rule is usually lower (e.g. `6b`); on the larger ones (`sdfp-sd-2`, `w11`, `w11-sd-1`, the words)
 the order-based rules are. For a uniform matroid `U(k, n)` all three agree, `δ` quadratic in `n`
-(the dictionary in `docs/applications.md`, §4).
+(the computed table in `results/split-rules.md`).
 
 **Conjecture 4.19** (C2, the open part). Under FK-A's degree-sum rule, `δ/N` is unbounded on the
 GK family. *Evidence:* `δ/N = 0.67, 1.92, 1368` and `log δ / log N = 0.84, 1.12, 1.67` for
@@ -686,20 +694,17 @@ C3 as stated, `δ ≤ 2N` on all dual pairs, is refuted unconditionally by `ro12
 (Observation 4.5a), a read-once and hence dual pair. The polynomial form is refuted only
 conditionally:
 
-**Proposition 4.6** (conditional; cited). If the exponential-time hypothesis holds, then no polynomial
-`p` satisfies `δ ≤ p(N)` on all dual pairs.
+**Proposition 4.6** (conditional; cited). If 3-SAT has no deterministic algorithm running in time
+`2^{O(n^{2/3}(log n)^{1/3})}`, then no polynomial `p` satisfies `δ ≤ p(N)` on all dual pairs.
 
-*Status, 28 October 2026.* New SAT manuscripts from OpenAI and Anthropic claim
-subexponential algorithms refuting ETH, with accompanying Lean formalizations.
-These external proofs have not been independently checked here. If correct, they
-remove this proposition's hardness premise; they do not establish a polynomial
-bound on `δ`. See [the source assessment](complexity-update-2026-10.md).
+The premise is weaker than ETH, so the October 2026 manuscripts claiming subexponential 3-SAT
+algorithms leave it open ([literature note](literature-2026-11.md), Proposition L1).
 
 *Proof.* Each subproblem of memoised FK-A costs time polynomial in `N`. If `δ ≤ p(N)` held on dual
 pairs, then running memoised FK-A and answering "not dual" as soon as it meets more than `p(N)`
-subproblems would decide duality in polynomial time. Kobayashi, Kurita and Wasa
-(arXiv:2610.11473, October 2026; preprint, not refereed) prove that under ETH duality has no
-`N^{o(√(log N / log log N))}` algorithm. ∎
+subproblems would decide duality in polynomial time. The reduction of Kobayashi, Kurita and Wasa
+(arXiv:2610.11473, October 2026; preprint, not refereed) maps a 3-SAT formula on `n` variables to a
+pair with `N = 2^{O(n^{2/3}(log n)^{1/3})}`, so 3-SAT would run in that time. ∎
 
 Their reduction is from 3-SAT and yields pairs with `L ⊆ Tr(H)`; it does not give an explicit
 dual family with `δ/N → ∞`. The GK family under FK-A's own rule is now an explicit candidate:
@@ -812,36 +817,18 @@ under the leftmost rule and `τ = 103,377` under the degree-sum rule. The bound 
 states both for the same pair: `coFm` writes `coalt` as an ordered read-once formula whose DNF is
 `gkH` (`dnf_coFm_gkH`), so Theorem 4.16 applies to it (`gk_memo_gap`).
 (b) *FK-A against FK-B.* On GK `f_k`, `N = 3·2^{2^k − 2}` and `n = 2^{2k−1} ≥ (log₂ N)²/2`, so
-under every valid rule `τ ≥ N^{c log₂ N}/(n + 1)` with `c = log₂(27/16)/8 ≈ 0.094`. FK96 bound
-FK-B's running time by `N^{4χ(N)+O(1)}`, `χ(N)^{χ(N)} = N`, which is `N^{o(log N)}`. FK-A's
-running time on GK therefore exceeds FK-B's worst-case bound by a factor that tends to infinity,
-under every valid rule. The crossover needs `log₂ log₂ N` above about 48 even with FK-B's `O(1)`
-set to zero, so (b) says nothing about the measured ratios (52.96× on `gk-f3`). FK-B's bound is
-cited, not formalised.
+under every valid rule `τ ≥ N^{c log₂ N}/(n + 1)` with `c = log₂(27/16)/8 ≈ 0.094`.
+Here `n` counts the covered vertices. FK96's cited running-time upper bound for
+FK-B is `N^{4χ(N)+O(1)}`, with `χ(N)^{χ(N)} = N`, hence `N^{o(log N)}`.
+The ratio of the FK-A node-count lower bound to this upper bound tends to infinity.
+Comparing these bounds with FK-B's `O(1)` term set to zero gives a crossover around
+`log₂ log₂ N = 48`. The measured FK-A/FK-B node-count ratio on `gk-f3` is 52.96×.
+The FK-B upper bound is cited.
 
-*Update, 17 November 2026.* Elbassioni's complex evaluation, computed exactly, raises the
-rate of Theorem 4.24 from `log₂(27/16)/4 = 0.1887` to `0.37245` bits per variable: every
-decision tree for GK `f_k` or TK `S_k`, `k ≥ 3`, has at least `2^{0.37245 n}` leaves, so (b)
-holds with `c = 0.18622` (written proof). Under the leftmost rule
-`τ ≤ 2·L_df − 1 ≤ 2^{(0.46926 + o(1)) n}` (argued and measured), and the least decision trees
-of GK `f₁–f₃` are the depth-first ones (computed). See
-[`complex-evaluation.md`](complex-evaluation.md).
-
-*Update, 17 November 2026, later.* The subcube norm, with integer measures on blocks of eight
-variables, raises the rate to `0.41433`: every decision tree for GK `f_k` or TK `S_k`,
-`k ≥ 2`, has more than `2^{0.41433 n}` leaves, so (b) holds with `c = 0.20716` (written proof,
-exact check). No measure bounded on every subcube, Fourier `ℓ₁` included, exceeds `0.41434`
-on GK ([`complex-evaluation.md`](complex-evaluation.md) §4).
-
-*Update, 17 November 2026, last.* For all weights at once, depth-first trees are optimal on GK
-`f₁–f₃`, TK `S₁–S₂` and 52 balanced formulas, and one tree minimises both leaf colours (computed,
-exact). The least 1-leaf count is multiplicative at AND gates (written proof), so what remains of
-the exponent `0.469254` is one inequality per gate, on the 0-leaves of an AND of two balanced
-formulas (Conjecture 17 there). If it holds with a constant factor `θ`, the rate is at least
-`0.4692536 − log₂(1/θ)/48`, past the subcube barrier for `θ > 0.1609`, and `θ = 1` gives depth-first
-optimality on GK and TK (written proof of the implication).
-Depth-first is not optimal on 4,028 of the 20,804 restriction classes of `f₃`, so an induction
-over restrictions with the depth-first value fails ([`complex-evaluation.md`](complex-evaluation.md) §5).
+The current written lower bound is `τ ≥ 2^{0.41433 n}/(n + 1)`,
+giving `c = 0.20716` in (b); the leftmost upper bound has rate
+`0.469254`. The proofs, exact checks, depth-first evidence and one-gate
+Conjecture 17 are in [`complex-evaluation.md`](complex-evaluation.md).
 
 **Proposition 4.27** (C3 is a 1997 open problem). For monotone `f` the minimal DNF of `f` is its
 set of minterms and that of `¬f` its set of maxterms, so the weight `‖f‖ = dnf(f) + dnf(¬f)` of
@@ -849,7 +836,7 @@ Jukna, Razborov, Savický and Wegener is `N = |C| + |Tr C|`. Their Question 1 (E
 §4) asks whether some Boolean function requires read-once branching programs (FBDDs) of size
 superpolynomial in `‖f‖`. By Theorem 4.13 and Proposition 4.14, C3 for unmodified FK-A (an
 explicit family of dual pairs with `δ` superpolynomial in `N` under every valid symmetric rule) is
-equivalent, up to a factor 2 and the argued reduction of review row 29, to a positive answer to
+equivalent, by the two size bounds and the argued reduction of review row 29, to a positive answer to
 Question 1 for monotone functions. A negative answer to Question 1 would refute C3
 non-uniformly: every dual pair would have a rule with polynomial `δ`, without a way to find it.
 
@@ -1054,8 +1041,10 @@ The counts behind this follow a flow. With `t = |C|/|D|`, an AND of two disjoint
 `t ↦ t²/2`, and GK sits on its fixed point `t = 2`. The TK step (AND of ORs) sends `t ↦ 2t²`,
 whose fixed point is `t = 1/2`; TK starts at `t = 2` and leaves it (`t = 2, 8, 128, 32768`). The
 growth of `N` per step is `N_{k+1}/N_k² = (2t² + 4)/(t + 1)²` for the GK step and
-`(4t² + 2)/(t + 1)²` for the TK step. Each is least, `4/3`, at its fixed point and tends to `4`
-away from it. So balance is what makes GK's `N` grow as slowly as possible.
+`(4t² + 2)/(t + 1)²` for the TK step. Each is least, `4/3`, at its fixed point.
+As `t` tends to zero or infinity the GK multiplier tends to 4 or 2, respectively,
+and the TK multiplier tends to 2 or 4. The GK sequence stays at its minimum and
+the TK sequence tends to 4.
 
 **Observation 4.35** (the TK contrast is in `N`, not in the step for `δ`; computed from the
 values of Observations 4.4 and 4.29, no new run). The ratios `δ_{k+1}/δ_k²` are `8, 5.77, 494` on
@@ -1108,34 +1097,9 @@ At `k₀ = 4` (`N = 49,152`, `n = 128`):
 So for `δ` the step may lose a factor of order `n_k`, not just a constant, but for `δ_iso` it may
 lose only a constant.
 
-**Conjecture 4.38** (synchronous embedding; replaces the embedding refuted by Observation 4.31).
-On GK `f_{k+1}`, `k ≥ 4`: if `A` and `C'` are supports the degree-sum rule reaches on standalone
-`f_k`, and `|A| = |C'|`, then `(A, C')` occurs as `(S∩a, S∩c)` for some reached `S`.
-
-Every missing pair found so far is asynchronous: `|A| = 2` against `|C'| = 7` at GK `f₃`, 3 against 2
-at TK `S₂`, 4 against 5 at TK `S₃` (Observation 4.31). The conjecture needs only pairs at equal
-progress. If `m_ℓ` standalone supports have size `ℓ`, Cauchy–Schwarz over the at most `n_k`
-sizes gives `σ_{k+1} ≥ Σ_ℓ m_ℓ² ≥ σ_k²/n_k`. By Proposition 4.37 (`β = 1`, `A = 1`, `X = σ`),
-that settles Conjecture 4.19, with almost no margin (`u₄ = 1.002`). The four-block form (all of
-`a, b, c, d` at one size) gives `σ_{k+1} ≥ Σ_ℓ m_ℓ⁴ ≥ σ_k⁴/n_k³`. That would make `δ`
-superpolynomial in `N` on GK. Measured, `log δ_{k+1} / log δ_k = 2.84, 3.05` on GK `f₂–f₄`,
-between the two forms.
-
-*Heuristic, not a proof.* At the root all four blocks tie. When the rule splits in a block, that
-block's own degrees tend to fall more than the other blocks' scores, so the next split tends to go
-elsewhere. The rule then acts
-like a max-weight scheduler serving four queues, which keeps them in near lockstep. Lockstep
-explains why asynchronous pairs are missing, and why the Cartesian embedding had to fail. It
-suggests synchronous pairs as the product that survives.
-
-*Search bound and tests.* Not tested. (1) Recount the GK `f₃` and TK `S₂–S₃` joint probes on
-equal-size pairs only: seconds with `--joint` plus a size filter. This tests the same statement
-at `k = 2`, which informs but does not decide the conjecture. (2) The GK `f₄` joint probe,
-for `k = 3 → 4`. (3) If equal size is too strict, use progress measured by the global score in
-place of support size; the counting argument needs only at most `n_k` classes.
-
-*Leads from other fields.* Superseded by "Where else this problem appears" below, which also
-corrects the reading of Gajjar and Radhakrishnan given here at first.
+**Conjecture 4.38** (withdrawn). The proposed equal-size synchronous
+embedding is unsupported for `k ≥ 4`; Observation 4.39 refutes its
+small-level analogues. The current candidate is Conjecture 4.40.
 
 **Observation 4.39** (computed, 2026-10-23; Rust). The equal-size recount of Observation 4.31's
 probes and the GK `f₄` joint probe (`block_probe.py gk 4 joint`, 219 s). `T` is the set of
@@ -1230,8 +1194,9 @@ with the same up-sets are equal. On disjoint supports the part of `⋃ g_i` insi
 **Proposition 5.2** (D2). Let a template be `r`-uniform on `r²` points with `k` edges and `k*`
 minimal transversals, both `r`-uniform, and satisfy `(P)`: `k·k* ≥ 8^{r−1}`. Substituting a copy of
 an `s`-template with `(l, l*)` satisfying `(P)` into each point gives an `rs`-template with
-`(k·l^r, k*·l*^r)`, which satisfies `(P)`. Under `(P)`, `c_∞ = max(log₂ k, log₂ k*)/(r − 1) ≥ 3/2`
-(arithmetic, not in Lean).
+`(k·l^r, k*·l*^r)`, which satisfies `(P)`. For `r > 1` and a base template with
+`ε = 1/r`, iteration gives `c_∞ = max(log₂ k, log₂ k*)/(r − 1) ≥ 3/2` by
+arithmetic. The edge-count condition `(P)` alone does not impose `ε = 1/r`.
 Lean: `card_subst_uniform` (the counts, with `tr_subst_of_disjoint` on the dual side),
 `prop_P_comp` (the inequality: `8^{rs−1} = 8^{r−1}·(8^{s−1})^r`).
 
@@ -1243,9 +1208,13 @@ must be irregular.
 
 **Proposition 5.4** (D3 at `r = 2`). A nonempty 2-uniform family `G` on 4 points whose minimal
 transversals are 2-uniform has `(|G|, |Tr G|) ∈ {(2,4), (4,2), (3,3)}`, so `k·k* ≥ 8`: the
-answer to D3 at `r = 2` is no. Up to relabelling the three are the matching, the 4-cycle and the
-path `P₄`. `P₄` is the prime one, with `k·k* = 9`.
-Lean: `template_rank_two` (evaluation over the 64 families of pairs, `template_rank_two_check`).
+answer to D3 at `r = 2` is no. Among families using all four points, the isomorphism classes
+are the matching, the 4-cycle and the path `P₄`. The four-point ground set also allows a
+triangle with one isolated point, with counts `(3,3)`. Among the four-point-supported families,
+`P₄` is the prime one, with `k·k* = 9`.
+Lean checks the cardinal statements in `template_rank_two_check` and `template_rank_two`. The
+isomorphism classification follows by enumerating the families of pairs and quotienting by
+the 24 permutations of the ground set.
 
 At `r = 4`, `AG(2,4)`'s
 parallel-class splits meet the necessary incidence conditions and fail duality. A search
@@ -1281,12 +1250,30 @@ That `P_p` is strictly increasing for a nonconstant monotone property is Russo�
 | B8: the constant in the frequency lemma | `|C||D| ≥ 4^{1/ε − 1}` (written proof); the words attain `|C||D| = 8^{1/ε − 1}`. Conjecture 6 (`|C||D| ≥ 8^{1/ε − 1}`) is **refuted**: the read-once `T₆` on 36 points has `ε = 1/6`, `|C||D| = 31,104 < 8⁵` (computed and written). Read-once pairs satisfy `|C||D| ≥ e^{2(1/ε − 1)}` (written proof). Open: `ε·log₂N → 3/2` in general (a question about `max(|C|, |D|)`); the read-once base in `[e², 7.78]`. [`frequency-constant.md`](frequency-constant.md) |
 | B3: growth of `ε(n)` | `ε(n) ≥ 1/√n` (Theorem 3.1) and `ε(s²) ≤ 1/s` by `s` disjoint `s`-sets, so `ε(n) = Θ(n^{−1/2})`. These pairs have `N = s + s^s`, so `ε·log₂ N ≈ log₂ s → ∞`: minimising `ε` on `n` points does not approach the FK96 threshold `ε·log₂ N ≥ 1`. The upper bound for general `s` is not in Lean (`eps_four`, `eps_nine` cover `s = 2, 3`) |
 | C2: Conjecture 4.5 | **refuted**: `ro12` has `δ = 43 > 2N` (Lean, evaluation); GK `f₄` has `δ/N = 1368` (Rust). The leftmost bound `δ ≤ 2n + 2` is Theorem 4.16 (Lean). Open: Conjecture 4.19, `δ/N` unbounded on GK under FK-A's rule (log-ratio 0.84, 1.12, 1.67). Route: Proposition 4.34 (Lean balance), Proposition 4.37 (loss budgets), Conjecture 4.40 (a constant share of standalone pairs occurs jointly; measured `0.43, 0.53` at `k = 2, 3`) |
-| C3 | `δ ≤ 2N` refuted by `ro12`; no polynomial bound under ETH (Proposition 4.6). For unmodified FK-A, an explicit family defeating every valid symmetric rule exists iff some monotone family has polynomial `N` and superpolynomial size of FBDDs named by their functions (Theorem 4.13, Proposition 4.14, Lean); replacing these by arbitrary FBDDs rests on the argued reduction of review row 29. None is known, and mixedness cannot give one (§4, *Literature*). This is the monotone case of JRSW's Question 1, open since 1997 (Proposition 4.27) |
+| C3 | `δ ≤ 2N` refuted by `ro12`; no polynomial bound unless 3-SAT runs in `2^{O(n^{2/3}(log n)^{1/3})}` (Proposition 4.6). For unmodified FK-A, an explicit family defeating every valid symmetric rule exists iff some monotone family has polynomial `N` and superpolynomial size of FBDDs named by their functions (Theorem 4.13, Proposition 4.14, Lean); replacing these by arbitrary FBDDs rests on the argued reduction of review row 29. None is known, and mixedness cannot give one (§4, *Literature*). This is the monotone case of JRSW's Question 1, open since 1997 (Proposition 4.27) |
+| Track T: FK-A's recursion tree | On GK and TK, every valid rule has `τ ≥ 2·(27/16)^{n/4}/(n + 1) = N^{Ω(log N)}` (Theorems 4.24–4.25, Lean). This lower bound grows faster than the cited FK-B upper bound. Leftmost memoization reduces node counts by an exponential factor (Corollary 4.26). The written improvement gives `τ ≥ 2^{0.41433 n}/(n + 1)`, or `N^{(0.2071 − o(1)) log₂ N}`, and the leftmost upper bound is `τ ≤ 2^{(0.469254 + o(1))n}`. The exact rate remains open. Depth-first is optimal on GK `f₁–f₃` for all leaf weights. A constant above `0.1609` in the one-gate inequality on 0-leaves would exceed the subcube-method bound ([Lemmas 15–16 and Conjecture 17](complex-evaluation.md)). The worst-case rate lies between `N^{Ω(log N)}` and FK96's `N^{O(log² N)}`. A rule with `τ ≤ N^{O(log N)}` on every dual pair would remove JRSW's `log n` factor for monotone functions. |
 | Track S: symmetry in FK-A's work | Measured on GK `f₁–f₅`, TK `S₁–S₄`, `alt3 d₃–d₅` and the library (Observation 4.29); the iso-keyed memo is sound (Theorem 4.28, Lean). Under the leftmost rule there are no symmetric repeats; under the degree-sum rule `δ/δ_iso` grows (81.3 at GK `f₄`) and `δ_iso/N` too. Open: Conjecture 4.30; `δ_iso` at GK `f₅` and the label-exact `δ` of TK `S₄` under the degree-sum rule (not computed); a recurrence for the pruned shapes the rule reaches |
-| Track T: FK-A's recursion tree | On GK and TK `τ ≥ 2·(27/16)^{n/4}/(n + 1) = N^{Ω(log N)}` under every valid rule (Theorems 4.24–4.25, Lean), so FK-A is eventually slower than FK-B's bound and memoisation saves an exponential factor (Corollary 4.26). Sharpened by complex evaluation and the subcube norm (written): `τ ≥ 2^{0.41433 n}/(n + 1)`, i.e. `N^{(0.2071 − o(1)) log₂ N}`; the leftmost rule has `τ ≤ 2^{(0.46926 + o(1)) n}`; the exact rate in between is open, with depth-first optimal on GK `f₁–f₃` for all leaf weights; it reduces to a one-gate inequality on 0-leaves (Lemmas 15–16, Conjecture 17 there), where any constant above `0.1609` would pass the subcube barrier ([`complex-evaluation.md`](complex-evaluation.md) §5). Open: FK-A's worst-case exponent between `N^{Ω(log N)}` and FK96's `N^{O(log² N)}`; a rule with `τ ≤ N^{O(log N)}` on every dual pair would remove JRSW's `log n` factor for monotone functions |
 | Track 3: a memo-friendly rule with FK96's guarantee | The guarded rule keeps the frequency `≥ 1/⌊log₂ N⌋` at every node (Proposition 4.18, Lean); `δ = 32, 263, 124,876` on GK `f₃–f₅`. Open: FK96's recursion bound for it in Lean; a rule with both the guarantee and `δ = O(n)` on read-once pairs |
 | D3 | `r = 2` settled, no (Proposition 5.4); open from `r = 3` (Open problem 5.3) |
 | E1: `|H| + |Tr H|` for the smallest explicit Ryser counterexample of `openai/math` family 162 | not started; needs the construction's transversals counted by structure |
+
+
+### Next tests
+
+- Degree-sum growth: constrain the weight histories surrounding embedded blocks
+  can realise, or refute Conjecture 4.40. Standalone singleton stops must
+  be suppressed in Lemma 4.36. Labelled-support tables do not bound shape
+  collisions; the proposed law makes `f₅` enumeration impractical (`≥ 1.1×10¹⁵` states).
+- Eligible split rules: test alternative eligible choices or component decomposition.
+  The guarded rule has zero fallbacks and 92,776 departures from leftmost on GK `f₅`;
+  formalising its FK96 tree bound is a separate task.
+- Tree exponent: seek a whole-subtree exchange argument or a potential distinct
+  from depth-first on restrictions (complex evaluation §5). For the global
+  `N^{O(log N)}` target, start with read-once inputs or refute it for every eligible rule.
+- Frequency constant: control `max(|C|,|D|)` for the asymptotic `3/2` question;
+  determine the read-once product base in `[e²,7.78]`.
+- Symmetry: keep local groups, inherited input symmetries and isomorphisms
+  between reached nodes distinct (Audit 4.33).
 
 ## 8. Review log
 
@@ -1310,7 +1297,7 @@ been confirmed by the author.
 | 11 | The A6 conjecture (FK-A/FK-B falls as primitivity depth rises) is refuted | `docs/hard-classes.md` (5.2), Python | Python |
 | 12 | `Aut(S(4,5,11))` is `M₁₁` | Jordan's theorem on sharply 4-transitive groups | Cited |
 | 13 | Theorem 2.11 (every `S(t,t+1,2t+3)` is self-transversal) is not in the literature | Searches of 2026-10-21 only | Novelty not claimed |
-| 14 | The `H` and `Tr(H)` columns of `docs/applications.md` | Each reduction as stated by Hagen (2008, Ch. 3); the columns are this repository's reading of it | Unchecked entry by entry |
+| 14 | The `H` and `Tr(H)` columns of `docs/architecture.md#interfaces` | Each reduction as stated by Hagen (2008, Ch. 3); the columns are this repository's reading of it | Unchecked entry by entry |
 | 15 | Equality in `nε² ≥ 1` forces square order, uniformity, regularity and singleton cross intersections | Theorems 3.4–3.5, `FrequencyGap.lean` | Lean; no new axioms or `native_decide` |
 | 16 | Equality transversal pairs, and the regular convergent templates in `hard-classes.md`, are read-once for every `r` | Singleton cross intersections (Lean); Gurvich's theorem (Das–Straßburger 2016, Thm 4.10) | Cited bridge; equivalence with `ReadOnce` is not formalised |
 | 17 | `S(t,t+1,2t+3)` is the classical `S(m−1,m,2m+1)` family, `m=t+1`, associated with perfect 1-codes in odd graphs | Godsil 1995, §9; source audit | Cited; supplies older context for Theorem 2.11 |
@@ -1322,7 +1309,7 @@ been confirmed by the author.
 | 23 | `δ(GK f₄) = 67,247,387`, `τ(GK f₄) ≈ 7.8·10¹⁹`, `τ(TK S₃) = 19,609,201,217`, leftmost `δ = n` on GK/TK | `experiments/readonce_dag` | Rust; validated against `readonce_sim.py` (row 8) |
 | 24 | `ro12` refutes Conjecture 4.5 and the claim `δ ≤ 2N` of `tree-vs-dag.md` §4 | `ro12_readOnce`, `ro12_delta`; `fka.memo` gives 43 | Lean (evaluation) |
 | 25 | Hertel's Theorem 4.4.1 is the leftmost-order case of Observation 4.11: `δ ≤ 2n + 2` under the leftmost rule on read-once formulas with leaves in order | Theorem 4.16, `Fm.leftmost_delta`, `Fm.leftmost_fbdd` | Lean for `δ ≤ 2n + 2` and the FBDD; the identification with Hertel's `2k + 3` count is cited |
-| 26 | The prime 2-uniform template on 4 points is `P₄`; `P₄` is not read-once | Proposition 5.4 (Lean); a cograph is `P₄`-free (cited) | Lean for the counts; non-read-once cited |
+| 26 | The prime 2-uniform template with support of size 4 is `P₄`; `P₄` is not read-once | Proposition 5.4; a cograph is `P₄`-free (cited) | Lean for the counts; enumeration for the classes; non-read-once cited |
 | 27 | FK-A's memo DAG under a valid symmetric rule is an FBDD named by its functions, of size `≤ 2δ + 2` (unmodified); with term/clause leaves (modified) | Theorem 4.13; `memo_good`, `memo_bp`, `memo_fbdd`, `run_correct`, `path_nodup` | Lean |
 | 28 | An FBDD named by its functions, of size `s`, gives a rule with `δ ≤ 2s` | Proposition 4.14, `rule_of_fbdd` | Lean |
 | 29 | Every FBDD for a monotone `f` gives one named by its functions of no larger size; the modified-variant bound `δ ≥ (FBDD − 2)/(2(n+1))` | §4, argument after Proposition 4.14 and in Corollary 4.15 | Unchecked (written argument) |
@@ -1330,7 +1317,7 @@ been confirmed by the author.
 | 31 | JRSW 1999: the decision-tree separation is the iterated NAND (alternating trees); the read-once separations are the pointer function (not monotone) and the blocking-set function (monotone, exponential DNF) | Jukna, *Boolean Function Complexity* (2012 draft, web.vu.lt/mif/s.jukna), §14.9, §16.2, Exercise 16.1, read 2026-10-22; the ECCC report TR97-023 itself was not legible as text | Cited |
 | 32 | No monotone family with polynomial `N` and superpolynomial FBDD size is known; `m`-mixedness gives at most `N` | Search of 2026-10-22 (JRSW, Jukna's book, Beame et al. on decision-DNNF); the mixedness bound from condition (iv), §4 | Unchecked; the search is not exhaustive |
 | 33 | `dnf(f\|x=0) = dnf f − x`, `dnf(f\|x=1) = dnf f / x` and `Tr(dnf f) = min dnf(f^d)` for every monotone formula; `= dnf(f^d)` for read-once | `Fm.dnf_restrict_false`, `Fm.dnf_restrict_true`, `Fm.tr_dnf`, `Fm.tr_dnf_readOnce` | Lean |
-| 34 | Minors of `A ∪ B`, `A ∧ B` are `A' ∪ B'`, `A' ∧ B'`; on disjoint supports the parts are recoverable | Lemma 4.17, `Fm.minor_union`, `Fm.minor_join`, `Fm.union_left_part`, `Fm.join_left_part` | Lean |
+| 34 | Minors of `A ∪ B`, `A ∧ B` are `A' ∪ B'`, `A' ∧ B'`. On disjoint supports the union parts are recoverable without empty edges, and the join parts when both families are nonempty | Lemma 4.17, `Fm.minor_union`, `Fm.minor_join`, `Fm.union_left_part`, `Fm.join_left_part` | Lean |
 | 35 | The guarded rule is valid, symmetric, and splits on a vertex of frequency `≥ 1/⌊log₂ N⌋` on every nonempty dual pair | Proposition 4.18, `guardRule_frequent` | Lean; FK96's recursion bound for it is not formalised |
 | 36 | `δ` under the three rules on GK `f₃–f₅`, TK `S₃–S₄`, fan-in-3 alternating trees, the library, `ro12` | `results/split-rules.md`; Rust `readonce_dag` (512-bit masks; reproduces `δ(GK f₄) = 67,247,387`), `fka.memo` | Rust and Python; `gk2_rules`, `ro12_rules` by evaluation |
 | 37 | The Python rules `leftmost`, `guarded` match the Lean `leftRule`, `guardRule` | `fka.algorithm.choose_split_var` (the one implementation, also used by `readonce_sim.py`); `ro12` and GK `f₂` give the Lean values; `tests/test_memo.py` | Python, checked on those instances; by inspection `s = ⌊log₂ N⌋`, live vertices only, least index on ties |
@@ -1340,12 +1327,12 @@ been confirmed by the author.
 | 41 | For a squarefree monomial ideal `I_G`, `(I : x)` and `(I, x)` are `I` of `min(G/x)` and of `G − x` (with `x`); the Alexander dual is `I_{Tr G}`; Roune's slice algorithm is a pivot-split dualization | `Fm.dnf_restrict_*` for the combinatorial identities; Roune 2009, Bigatti 1997 | Cited, not read |
 | 42 | Fault trees: minimal cut sets are `G`, minimal path sets `Tr G`; depth-first left-most BDD ordering for trees without repeated events | Rauzy 1993 (cited, not read); Theorem 4.16 | Cited; the size bound is Lean |
 | 43 | FK-A's degree `deg_G x` is the numerator of Holler's public good index of player `x` | Holler 1982 (cited, not read) | Cited; definitional, no transfer |
-| 44 | Discarded identifications: Karchmer–Wigderson games, exact learning with membership queries, borders, minimal keys, diagnosis, metabolic cut sets, network reliability, attack trees, Lehman's theorem for D3, influence lemmas against FK96's frequent vertex | `docs/applications.md` §4 gives the reason for each | Unchecked readings |
+| 44 | Discarded identifications: Karchmer–Wigderson games, exact learning with membership queries, borders, minimal keys, diagnosis, metabolic cut sets, network reliability, attack trees, Lehman's theorem for D3, influence lemmas against FK96's frequent vertex | `docs/architecture.md#interfaces` §4 gives the reason for each | Unchecked readings |
 | 45 | Conjecture 4.19: `δ/N` unbounded on GK under the degree-sum rule | §4, measured to `k = 4` | Rust |
 | 46 | Theorem 4.9's matching example: `d = m − 1` resilience | `matching_eight_not_resilient` (contract both points of a pair) | Corrected 2026-10-22: `matching(2m)` is only 2-resilient for `m ≥ 3`; the old sentence claimed `d = m − 1` |
 | 47 | The memo-DAG equivalence holds for valid symmetric rules and unmodified FK-A only; the converse rule of an FBDD can be chosen valid and symmetric | Theorem 4.13, Proposition 4.14; `memo_fbdd`, `fbddRule`, `rule_of_fbdd` | Lean (2026-10-22; the earlier converse rule was neither valid nor symmetric, and README, applications and the module header said "every rule") |
 | 48 | The alternating trees have an FBDD of at most `n + 2` nodes | `Fm.leftmost_fbdd`, `isFBDD_of_closed` | Lean (2026-10-22; was cited to Theorem 4.16 without a Lean statement) |
-| 49 | Lemma 4.17 implies `δ ≥` the number of distinct pairs of input states reached | §4, after Lemma 4.17 | Argued, not in Lean |
+| 49 | Lemma 4.17 bounds `δ` below by the number of distinct reached input-state pairs in one orientation satisfying its recovery hypotheses | §4, after Lemma 4.17 | Written argument |
 | 50 | Observation 4.11's random statistics (`δ ≤ 1.07 n` leftmost, `δ/N` up to 25.4) and Observation 4.5a's search (none on ≤ 11 variables in 800,000 samples) | `experiments/readonce_sim.py`, `experiments/readonce_dag`, seeded | Python and Rust; not re-run in the audit |
 | 51 | Conjecture 3.3's 0/1 program encodes "every frequency below `p/q`" correctly | `experiments/eps_search.py`; agrees with Corollary 3.2 for `n ≤ 7` | Python (CP-SAT); the encoding is unchecked |
 | 52 | Proposition 2.16 is the test of Mezzini et al. (arXiv:2505.09642, Lemma 4); Conjecture 2.12's evidence (Bierbrauer 1981 blocking sets; uniqueness of `S(4,7,23)`, Witt) | Sources as cited in §2 | Cited |
@@ -1392,9 +1379,9 @@ been confirmed by the author.
 | 93 | Archive retirement must preserve the decomposition log and the two verbatim thesis instances | Generator and `load_archived` callers; targeted tests initially failed on all three missing inputs and pass after retention | Corrected, 2026-10-23 |
 | 94 | Revised §3.5's group-size and equality comparisons exceed the corrected lemmas | Audit 4.33(f); `stab_mem_aut_del`, `stab_mem_aut_con`, `aut_le_aut_minimal` prove inclusions, not those comparisons | Corrected in the revision generator; original 2024 sources unchanged |
 | 95 | Application catalogue and unrelated manuscript survey supplied no executed application result | Their own scope statements; the supplier-panel study lives in its linked repository. Lean bridge declarations prove only their stated identities | Scope corrected; speculative catalogue retired and bridge-check wording narrowed |
-| 96 | October SAT claims directly challenge Proposition 4.6's ETH premise; unconditional FK-A results and GK growth questions survive | 2026-10-28: OpenAI manuscript Theorem 1.1 and introductory scope, Anthropic manuscript Main Theorem and limitations, Anthropic `MainResults.lean` definitions and README, OpenAI release announcement; linked in `complexity-update-2026-10.md` | Primary statements read; full proofs and external Lean builds not audited or reproduced |
-| 97 | A fast SAT algorithm does not follow the KKW reduction backwards; the direct non-duality CNF can have unbounded width on either side | 2026-10-28: KKW abstract and reduction direction; encoding argument in `complexity-update-2026-10.md`; Mary's bounded-dimension abstract also read | Written implication assessment, not formalized; no runtime improvement established |
-| 98 | Ryser and threshold connections already appear in this repository; no new GK recurrence, FBDD separation or D3 template identified | 2026-10-28: current `openai/math` catalogue entries compared with `openai-math-connections.md`, research agenda and result register; targeted literature searches | Bounded search, not an exhaustive literature or proof audit |
+| 96 | October SAT claims challenge ETH but not Proposition 4.6's weaker premise (corrected 2026-11-17, literature Proposition L1); unconditional FK-A results and GK growth questions survive | 2026-10-28: OpenAI manuscript Theorem 1.1 and introductory scope, Anthropic manuscript Main Theorem and limitations, Anthropic `MainResults.lean` definitions and README, OpenAI release announcement; linked in `literature-2026-11.md#2-the-october-2026-sat-claims-and-proposition-46` | Primary statements read; full proofs and external Lean builds not audited or reproduced |
+| 97 | A fast SAT algorithm does not follow the KKW reduction backwards; the direct non-duality CNF can have unbounded width on either side | 2026-10-28: KKW abstract and reduction direction; encoding argument in `literature-2026-11.md#2-the-october-2026-sat-claims-and-proposition-46`; Mary's bounded-dimension abstract also read | Written implication assessment, not formalized; no runtime improvement established |
+| 98 | Ryser and threshold connections already appear in this repository; no new GK recurrence, FBDD separation or D3 template identified | 2026-10-28: current `openai/math` catalogue entries compared with `literature-2026-11.md#8-connections-to-openaimath`, research agenda and result register; targeted literature searches | Bounded search, not an exhaustive literature or proof audit |
 | 99 | The Rust live-set representation requires a read-once formula; duplicate leaves, unknown operators and trailing roots were accepted at `4cafd7a` | 2026-11-07: `(& 0 0)` printed `1 3 1 1`; `(^ 0 1)` and `(& 0 1) (\| 2 3)` both printed `2 3 1 1`. Parser and CLI now reject malformed input before spill creation | Corrected; Rust 1 unit and 7 integration tests pass, including malformed formulas, flags, sparse labels and existing overflow cases |
 | 100 | Incidence admission must check supplied binary values before conversion | 2026-11-07: exact `4cafd7a` source accepted `[[0.5]]` as `(0,)` and `[[1.9]]` as `(1,)`; `Hypergraph.from_incidence` now rejects nonbinary values | Corrected; core and probe-boundary tests: 31 passed, including exact binary floats and booleans |
 | 101 | Per-level exclusive file creation does not give a spill run ownership between levels; probe logs and output also admitted replacement | 2026-11-07: directory lease test; exact `4cafd7a` probe source truncated an existing log and overwrote an output created by a simulated competing writer. Spill lease and exclusive evidence opens now preserve these boundaries | Corrected for cooperating spill writers and probe filename collisions; crash-atomic publication across evidence files is not established |

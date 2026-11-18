@@ -300,9 +300,9 @@ def _witt_11_specs() -> list[dict]:
 
     Found by ``experiments/hard_case_search.py``: over every transitive group
     of degree <= 15 in SageMath's database, and every orbit of subsets under
-    it, ``W11`` is the vertex-transitive self-transversal hypergraph whose
-    recursion trees are largest per unit of input -- ahead of the Fano plane on
-    both algorithms. See ``docs/hard-cases.md``.
+    it, ``W11`` has the largest FK-A/input ratio among the primitive examples
+    found, ahead of the Fano plane. The search covers single orbits through
+    degree 15 and pairs through degree 12. See ``docs/hard-classes.md``.
     """
     from fka.instances import self_dualise, witt_11
 
@@ -335,7 +335,7 @@ def _witt_11_specs() -> list[dict]:
                 "S of its 23 points satisfy thesis equation 2.1 -- so the family "
                 "stops at 11. This is the library's hardest instance per unit of "
                 "input for FK-B and the only one that is hard for both "
-                "algorithms at once; see docs/hard-cases.md."
+                "algorithms at once; see docs/hard-classes.md."
             ),
         },
         {

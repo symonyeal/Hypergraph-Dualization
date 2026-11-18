@@ -17,8 +17,7 @@ not. `Axioms` checks both.
 | `*_eps` | the frequencies quoted in §5.2.2 |
 | `*_aut` | the root groups of Figs. 5.1-5.4, 5, 6 (orders) |
 | `k3_refutes_printed_cor_2_3_1` | Cor. 2.3.1 as printed is false |
-| `pg23_not_self_dual` | §5.2.2: no projective plane of order 3 is self-transversal |
-| `two_fano_tr_card` | Def. 5.2.1's transversal count fails at `k = 2` |
+| `pg23_not_self_dual` | §5.2.2: the named cyclic PG(2,3) is not self-transversal |
 -/
 import HypergraphDualization.Data
 import HypergraphDualization.Symmetry
@@ -91,7 +90,7 @@ theorem six_eps : eps sixAC sixAD = 1 / 2 ∧ eps sixBC sixBD = 1 / 2 ∧
     eps sixCC sixCD = 1 / 2 ∧ eps sixDC sixDD = 1 / 2 := by native_decide
 theorem sevenVer_eps : eps sevenVerC sevenVerD = 5 / 11 := by native_decide
 theorem eightVer_eps : eps eightVerC eightVerD = 2 / 5 := by native_decide
-/-- 8-Ver: every vertex has frequency exactly `2/5` on both sides (§5.2.2). -/
+/-- 8-Ver: the maximum of the two frequencies is exactly `2/5` at every vertex (§5.2.2). -/
 theorem eightVer_uniform : ∀ v, freq eightVerC eightVerD v = 2 / 5 := by native_decide
 
 /-! ### Automorphism groups -/
@@ -129,14 +128,5 @@ theorem tr_ne_of_blocking {α : Type*} [DecidableEq α] {U : Finset α} {H : Fin
 `0..5` meet every line and contain none. -/
 theorem pg23_not_self_dual : tr univ pg23 ≠ pg23 :=
   tr_ne_of_blocking (B := {0, 1, 2, 3, 4, 5}) (subset_univ _) (by native_decide) (by native_decide)
-
-/-- Two disjoint Fano planes: `14` edges and `49 = 7²` minimal transversals, where Def. 5.2.1's
-formula `(k-2)²/4 + k/2 + 1` gives `2` at `k = 2`. -/
-def twoFano : HG 14 :=
-  (fanoC.image fun e => e.map (Fin.castLEEmb (by norm_num))) ∪
-  (fanoC.image fun e => e.map ⟨fun v => ⟨v.1 + 7, by omega⟩, fun a b h => by
-    simp only [Fin.mk.injEq] at h; exact Fin.ext (by omega)⟩)
-
-theorem two_fano_tr_card : twoFano.card = 14 ∧ (tr univ twoFano).card = 49 := by native_decide
 
 end HD.Data

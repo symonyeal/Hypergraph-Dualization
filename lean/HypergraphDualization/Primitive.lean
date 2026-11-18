@@ -250,9 +250,6 @@ theorem w11_not_readOnce : ¬ ReadOnce Witt.w11 := by
   revert hc
   decide
 
-instance (H : Finset (Finset α)) (u v : α) : Decidable (primalAdj H u v) := by
-  unfold primalAdj; infer_instance
-
 /-- **Corollary.** The Fano plane is not read-once: its primal graph is complete, so a read-once
 Fano plane would be `{V}`. -/
 theorem fano_not_readOnce : ¬ ReadOnce Data.fanoC := by

@@ -45,6 +45,7 @@ __all__ = [
     "cycle_notation",
     "closure",
     "PermutationGroup",
+    "EnumerationLimit",
     "identify",
 ]
 
@@ -54,6 +55,10 @@ Perm = tuple[int, ...]
 #: the thesis is far below this; the cap turns a runaway case into a clear
 #: error instead of an apparent hang.
 MAX_GROUP_ORDER = 200_000
+
+
+class EnumerationLimit(ValueError):
+    """The requested exact enumeration exceeded its element budget."""
 
 #: Groups above this order are not matched against candidates: enumerating
 #: their elements and conjugacy classes stops being cheap, and nothing in the
@@ -152,7 +157,7 @@ def closure(
                 if y not in seen:
                     seen.add(y)
                     if len(seen) > cap:
-                        raise ValueError(
+                        raise EnumerationLimit(
                             f"group exceeded {cap} elements; refusing to enumerate further"
                         )
                     nxt.append(y)

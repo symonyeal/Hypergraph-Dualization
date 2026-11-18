@@ -11,7 +11,7 @@ Legend
   delta    distinct subproblems (label-exact memo)
   d_aut    Aut(f)-orbits among them (delta_Aut)
   d_shp    isomorphism classes among them (delta_iso)
-  d_iso    nodes expanded when the memo is keyed by isomorphism class (iso_memo.py's iso())
+  d_iso    nodes expanded when the memo is keyed by isomorphism class (readonce_dag --iso)
   tau = (tau / delta) * (delta / d_shp) * d_shp, and d_iso <= d_shp <= d_aut <= delta <= tau
 """
 import json
@@ -22,14 +22,11 @@ from pathlib import Path
 import networkx as nx
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "experiments"))
-import readonce_sim as R  # noqa: E402
-import split_rules as S  # noqa: E402
-from fka.algorithm import _trivial_case, check_conditions, choose_split_var  # noqa: E402
-from fka.hypergraph import phi_x_0, phi_x_1  # noqa: E402
-from fka.irredundant import irredundant  # noqa: E402
+from readonce_formulas import alternating, gk, tk  # noqa: E402
+from fka.algorithm import fk_a  # noqa: E402
 from fka.instances import list_ids, load  # noqa: E402
-from fka.memo import fk_a_memo  # noqa: E402
 
 EXE = ROOT / "experiments" / "readonce_dag" / "target" / "release" / "readonce_dag"
 EXE = EXE.with_suffix(".exe") if EXE.with_suffix(".exe").exists() else EXE
@@ -44,7 +41,7 @@ SKIP = {("GK f5", "degree sum"): "not run: `f4` already has 67,247,387 subproble
 def pair_graph(n, C, D, G0=()):
     """Ground vertices, then the edges of C, of D and of G0 as nodes in their own colours.
     Without G0, isomorphic iff the ordered pairs are relabellings of each other (the oracle of
-    tests/test_iso_memo.py); with G0 = the input's edges, iff some element of Aut(G0) maps one pair
+    tests/test_symmetry_depth.py); with G0 = the input's edges, iff some element of Aut(G0) maps one pair
     to the other, since an isomorphism must map G0's edges onto themselves."""
     G = nx.Graph()
     G.add_nodes_from((("v", v), {"c": "v"}) for v in range(n))
@@ -60,41 +57,12 @@ def classes(n, pairs, G0=()):
     same = nx.algorithms.isomorphism.categorical_node_match("c", None)
     reps = {}
     for C, D in pairs:
-        inv = (sorted(bin(e).count("1") for e in C), sorted(bin(e).count("1") for e in D))
+        inv = (tuple(sorted(e.bit_count() for e in C)), tuple(sorted(e.bit_count() for e in D)))
         g = pair_graph(n, C, D, G0)
-        hs = reps.setdefault(repr(inv), [])
+        hs = reps.setdefault(inv, [])
         if not any(nx.is_isomorphic(g, h, node_match=same) for h in hs):
             hs.append(g)
     return sum(len(hs) for hs in reps.values())
-
-
-def memo_dag(C0, D0, rule):
-    """fka.memo.fk_a_memo's recursion, keeping each reduced pair's children: {key: children}."""
-    kids = {}
-
-    def go(Ci, Di):
-        C, D = irredundant(Ci).reduced, irredundant(Di).reduced
-        k = (C.edges, D.edges)
-        if k in kids:
-            return k, kids[k][0]
-        kids[k] = (None, [])
-        v = check_conditions(C, D) or _trivial_case(C, D, "modified")
-        if v is not None:
-            kids[k] = (v.dual, [])
-            return k, v.dual
-        x = choose_split_var(C, D, rule)
-        assert x is not None
-        a, v = go(phi_x_1(C, x), phi_x_0(D, x).vee(phi_x_1(D, x)))
-        ch = [a]
-        if v:                                 # the right child is entered iff the left is dual
-            b, v = go(phi_x_1(D, x), phi_x_0(C, x).vee(phi_x_1(C, x)))
-            ch.append(b)
-        kids[k] = (v, ch)
-        return k, v
-
-    root, dual = go(C0, D0)
-    assert dual
-    return root, {k: c for k, (_, c) in kids.items()}
 
 
 def library(rule):
@@ -103,37 +71,23 @@ def library(rule):
     for i in list_ids():
         inst = load(i)
         n, C0, D0 = inst.cnf.n, inst.cnf, inst.dnf
-        root, ch = memo_dag(C0, D0, rule)
-        assert len(ch) == fk_a_memo(C0, D0, split_rule=rule).nodes
-        order, seen = [], set()
-
-        def topo(k):
-            if k not in seen:
-                seen.add(k)
-                for c in ch[k]:
-                    topo(c)
-                order.append(k)
-        topo(root)
-        paths = dict.fromkeys(ch, 0)
-        paths[root] = 1
-        for k in reversed(order):
-            for c in ch[k]:
-                paths[c] += paths[k]
-        pairs = list(ch)
-        out.append((i, n, len(C0) + len(D0), sum(paths.values()), len(ch),
+        tree = fk_a(C0, D0, variant="modified", split_rule=rule)
+        assert tree.dual
+        pairs = {(node.cnf.edges, node.dnf.edges) for node in tree}
+        out.append((i, n, len(C0) + len(D0), len(tree), len(pairs),
                     classes(n, pairs, C0.edges), classes(n, pairs)))
     return out
 
 
 def cases():
-    out = [(f"GK f{k}", R.gk(k)) for k in range(1, 6)]
-    out += [(f"TK S{k}", R.tk(k)) for k in range(1, 5)]
-    out += [(f"alt3 d{d}", S.alt(d, 3, "|")) for d in (3, 4, 5)]
+    out = [(f"GK f{k}", gk(k)) for k in range(1, 6)]
+    out += [(f"TK S{k}", tk(k)) for k in range(1, 5)]
+    out += [(f"alt3 d{d}", alternating(d, 3, "|")) for d in (3, 4, 5)]
     return out
 
 
 def run(f, *args):
-    p = subprocess.run([str(EXE), *args], input=R.sexpr(f), capture_output=True, text=True, check=True)
+    p = subprocess.run([str(EXE), *args], input=f, capture_output=True, text=True, check=True)
     return p.stdout.split("\n")[0].split()
 
 
@@ -161,7 +115,8 @@ def ratio(a, b):
 
 def main(deep, spill):
     data = json.loads(JS.read_text()) if JS.exists() else {}
-    for name, f in cases():
+    formulas = cases()
+    for name, f in formulas:
         for rule in RULES:
             key = f"{name} | {rule}"
             if (name, rule) in SKIP or ((name, rule) in DEEP and not deep):
@@ -186,7 +141,7 @@ def main(deep, spill):
              "tree of fan-in 3 and depth `k` with an OR root.", "",
              "| pair | rule | `n` | `N` | `τ` | `δ` | `δ_Aut` | `δ_iso` | `d_iso` | `τ/δ` | `δ/δ_iso` | `δ_iso/N` |",
              "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |"]
-    for name, _ in cases():
+    for name, _ in formulas:
         for rule in RULES:
             key = f"{name} | {rule}"
             if (name, rule) in SKIP:
@@ -203,7 +158,7 @@ def main(deep, spill):
               "isomorphism classes (so far; `δ_iso ≥ d_iso = 266,227`). GK `f4` under the degree-sum rule took 19 minutes and 0.2 GB with",
               "`--spill`. `~` marks an f64 sum past `2^128 − 1`.", "",
               "## The instance library", "",
-              "From the hypergraph engine (`fka.memo`'s recursion, keeping each subproblem's children).",
+              "From the hypergraph engine (the `fka.algorithm` tree, deduplicated by the ordered reduced pair).",
               "`δ_iso` and `δ_Aut` are counted with networkx isomorphism on coloured incidence graphs:",
               "vertices, the edges of each side, and for `δ_Aut` also the input's edges, which an",
               "isomorphism must map onto themselves.", "",
@@ -214,17 +169,9 @@ def main(deep, spill):
             lines.append(f"| {i} | {rule} | {n} | {N:,} | {tau:,} | {delta:,} | {aut:,} | {iso:,} "
                          f"| {tau / delta:.3g} | {delta / iso:.3g} |")
     lines += ["", "## Validation", "",
-              "`python -m pytest tests/test_iso_memo.py tests/test_readonce_dag.py`. The Rust `δ`, `δ_iso`",
-              "and `d_iso` agree with `experiments/iso_memo.py` on GK `f1–f3` and TK `S1–S3` under all three",
-              "rules, and `d_iso(GK f4) = 734,303` with that script's earlier run. `δ_Aut` agrees with an",
-              "independent orbit canon (the sorted concatenation of the children's least images, valid for",
-              "complete binary trees) on the same cases, and with orbits found by applying all `2^15`",
-              "automorphisms on TK `S2`. `τ` is the sum of root-path counts over the DAG and agrees with the",
-              "recursive count; the library's `τ` agrees with `fka.algorithm`'s trees. The graph count of",
-              "the library section gives 34, 29, 29 on TK `S2` under the degree-sum rule, as the Rust tool",
-              "does. `iso_memo.py`'s shape key is checked against colour-preserving graph isomorphism on",
-              "465 pairs from 30 formulas (seed 0, at most five active vertices); these finite checks do not",
-              "prove the shape characterisation for every read-once formula.", ""]
+              "`python -m pytest tests/test_readonce_dag.py`. The small read-once rows are checked",
+              "against the bounded counts established by the former formula and orbit checks. GK and",
+              "TK tree and DAG sizes are also checked with the hypergraph engine.", ""]
     MD.write_text("\n".join(lines), encoding="utf-8")
 
 

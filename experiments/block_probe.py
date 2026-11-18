@@ -3,7 +3,7 @@
 Legend: a CLI arguments; f formula; p Rust subprocess; q output record;
 exe compiled Rust executable; src Rust source hashes; dt elapsed seconds;
 r evidence record; lv level records; out persistent JSON artifact.
-Computation is in Rust; readonce_sim supplies the input formula only.
+Computation is in Rust. readonce_formulas supplies the input formula.
 """
 import argparse
 import hashlib
@@ -13,7 +13,7 @@ import time
 from contextlib import nullcontext
 from pathlib import Path
 
-import readonce_sim as rs
+import readonce_formulas as formulas
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -28,6 +28,8 @@ def main():
     p.add_argument("--spill", type=Path)
     p.add_argument("--log", type=Path, help="stream the per-level progress here (kept on timeout)")
     a = p.parse_args()
+    if not a.seconds > 0:
+        p.error("--seconds must be positive")
     if a.out.exists():
         p.error("--out already exists; choose a new evidence filename")
     if not 1 <= a.k <= (5 if a.family == "gk" else 4):
@@ -37,24 +39,22 @@ def main():
     exe = ROOT / "experiments/readonce_dag/target/release/readonce_dag"
     if exe.with_suffix(".exe").exists():
         exe = exe.with_suffix(".exe")
-    f = getattr(rs, a.family)(a.k)
+    f = getattr(formulas, a.family)(a.k)
     flags = ["--joint"] if a.mode == "joint" else ["--guard-trace", "--guarded"]
     if a.spill:
-        a.spill.mkdir(parents=True, exist_ok=True)
-        if any(a.spill.iterdir()):
-            p.error("--spill must be empty; preserve previous run files")
         flags.extend(["--spill", str(a.spill)])
     src = {s.name: hashlib.sha256(s.read_bytes()).hexdigest()
            for s in (ROOT / "experiments/readonce_dag/src").glob("*.rs")}
+    executable_sha256 = hashlib.sha256(exe.read_bytes()).hexdigest() if exe.is_file() else None
     dt = time.perf_counter()
     with open(a.log, "x", encoding="utf-8") if a.log else nullcontext(subprocess.PIPE) as e:
-        q = subprocess.run([str(exe), *flags], input=rs.sexpr(f), stdout=subprocess.PIPE,
+        q = subprocess.run([str(exe), *flags], input=f, stdout=subprocess.PIPE,
                            stderr=e, text=True, timeout=a.seconds, check=True)
     dt = time.perf_counter() - dt
     rows = [json.loads(s) for s in q.stdout.splitlines()]
     assert rows and rows[-1]["kind"] == "summary"
     r = dict(family=a.family, k=a.k, mode=a.mode, seconds=dt, source_sha256=src,
-             formula=rs.sexpr(f), records=rows)
+             executable_sha256=executable_sha256, formula=f, records=rows)
     lv = [q for q in rows if q["kind"] == "level"]
     if lv:
         r["totals"] = {s: sum(q[s] for q in lv) for s in
@@ -62,7 +62,7 @@ def main():
     a.out.parent.mkdir(parents=True, exist_ok=True)
     with a.out.open("x", encoding="utf-8", newline="\n") as out:
         out.write(json.dumps(r, indent=2) + "\n")
-    print(json.dumps({s: v for s, v in r.items() if s not in ("records", "formula", "source_sha256")}))
+    print(json.dumps({s: v for s, v in r.items() if s not in ("records", "formula", "source_sha256", "executable_sha256")}))
     for q in rows:
         if q["kind"] not in ("level", "first_departure"):
             print(json.dumps(q))

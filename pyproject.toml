@@ -14,7 +14,7 @@ keywords = ["hypergraph", "transversal", "dualization", "fredman-khachiyan", "au
 
 # Deliberately minimal. networkx is used for chordality, bipartiteness and
 # maximal cliques; everything else is stdlib. SageMath is optional and is never
-# imported at module load -- see src/fka/backends/__init__.py and docs/sagemath.md.
+# imported at module load -- see src/fka/backends/__init__.py and docs/architecture.md#sagemath.
 dependencies = ["networkx>=3.0"]
 
 [project.optional-dependencies]

@@ -14,28 +14,17 @@ The degenerate conventions fall out of the fold rather than being special-cased:
 
 from __future__ import annotations
 
-from typing import Iterable, Optional
+from typing import Optional
 
 from .hypergraph import Hypergraph, popcount, verts
-from .irredundant import irredundant
+from .irredundant import irredundant, minimal_elements
 
 __all__ = [
     "transversal",
-    "minimal_elements",
     "is_transversal",
     "is_dual_oracle",
     "find_CA",
 ]
-
-
-def minimal_elements(sets: Iterable[int]) -> tuple[int, ...]:
-    """Keep only the inclusion-minimal bitsets, ascending."""
-    items = sorted(set(sets), key=lambda s: (popcount(s), s))
-    kept: list[int] = []
-    for s in items:
-        if not any((k & s) == k for k in kept):
-            kept.append(s)
-    return tuple(sorted(kept))
 
 
 def transversal(MBF: Hypergraph) -> Hypergraph:
@@ -72,6 +61,8 @@ def is_dual_oracle(cnf: Hypergraph, dnf: Hypergraph) -> bool:
     Both sides are reduced first, as the algorithms do at their root, so the
     comparison is between antichains.
     """
+    if cnf.n != dnf.n:
+        raise ValueError("both hypergraphs must have the same ground set")
     return transversal(irredundant(dnf).reduced).edges == irredundant(cnf).reduced.edges
 
 

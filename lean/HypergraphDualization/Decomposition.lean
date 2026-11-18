@@ -130,6 +130,21 @@ theorem dual_erase_of_notMem {U : Finset α} {G H : Finset (Finset α)} {x : α}
       ext y; simp only [mem_erase, mem_sdiff]; tauto] at this
     exact this
 
+/-- The FK-A decomposition at any vertex, for arbitrary hypergraphs. -/
+theorem dual_split_univ {n : ℕ} (C D : Finset (Finset (Fin n))) (x : Fin n) :
+    Dual univ C D ↔ Dual univ (del C x) (con D x) ∧ Dual univ (del D x) (con C x) := by
+  have hsplit := dual_split (G := C) (H := D) (mem_univ x)
+  have hL := dual_erase_of_notMem (U := (univ : Finset (Fin n)))
+    (G := del C x) (H := con D x) (x := x)
+    (fun e he => (mem_filter.1 he).2) (fun e he => by
+      obtain ⟨f, -, rfl⟩ := mem_image.1 he; exact notMem_erase x f)
+  have hR := dual_erase_of_notMem (U := (univ : Finset (Fin n)))
+    (G := del D x) (H := con C x) (x := x)
+    (fun e he => (mem_filter.1 he).2) (fun e he => by
+      obtain ⟨f, -, rfl⟩ := mem_image.1 he; exact notMem_erase x f)
+  rw [hL, hR] at hsplit
+  exact hsplit
+
 /-- `Tr({e}) = {{v} : v ∈ e}`: the single-edge rule of §5.1.1. -/
 theorem tr_singleton {U e : Finset α} (he : e ⊆ U) : tr U {e} = e.image ({·}) := by
   ext T

@@ -2,7 +2,7 @@
 
 Every statement the 2024 thesis makes on its own authority, with its status after the 2026
 audit and the Lean declaration that settles it. Cited results (Fredman–Khachiyan, Berge,
-Corneil–Lerchs–Burlingham, Cameron, Ang–Gurvich–Tarjan) are attributed in the text and are not
+Corneil–Lerchs–Burlingham, Cameron) are attributed in the text and are not
 listed. Lean names are in [`lean/HypergraphDualization/`](../lean/HypergraphDualization); vertices
 there are 0-indexed (thesis `v_i` is `i - 1`).
 
@@ -15,10 +15,15 @@ claims. Where available, the library includes a counterexample to the printed st
 | --- | --- |
 | Proved | Holds as printed; proved in Lean for every input |
 | Proved, generalised | Holds with a weaker hypothesis than printed |
-| Corrected | False or ill-posed as printed; the corrected form is proved, and a counterexample to the printed form is in Lean |
-| Checked | A finite fact about named instances, verified in Lean by evaluation (`native_decide`, which trusts the Lean compiler as well as the kernel) |
-| Open | Not established; the revised edition no longer claims it |
+| Corrected | False or ill-posed as printed; the row identifies the corrected statement and its evidence |
+| Checked | A finite fact about named instances; native evaluation trusts the Lean compiler, while a kernel evaluation is labelled explicitly |
+| Open | Not established; the corrected thesis no longer claims it |
 | Computed | Produced by the Python engine (`src/fka`), not formalized in Lean; reported as computation, not as a proved statement |
+| Computed (Rust) | Produced by a Rust program under `experiments/`; reported as computation |
+| Written proof | Proved in the cited document, not formalised in Lean |
+| Argued | A proof sketch whose gap the cited document names |
+| Cited, Conditional | Rests on a named external source or hypothesis, stated in the row |
+| Refuted, Withdrawn | False, with a counterexample, or no longer claimed, with the reason |
 
 ## Chapter 1
 
@@ -45,7 +50,7 @@ claims. Where available, the library includes a counterexample to the printed st
 
 ## Chapter 3
 
-The revised §3.5 retains the stabilizer and reduction inclusions below. Its former
+The corrected §3.5 retains the stabilizer and reduction inclusions below. Its former
 claims of larger child groups, child subgroups and equality when the split vertex
 is fixed are withdrawn; they do not follow from those inclusions (research Audit 4.33).
 
@@ -53,7 +58,7 @@ is fixed are withdrawn; they do not follow from those inclusions (research Audit
 | --- | --- | --- |
 | Claim 3.1.6, invariant vertex sets are precisely the orbits | **Corrected**: they are the unions of orbits; orbits are the minimal ones | `invariant_eq_union_orbits`, `orbit_minimal`; counterexample `claim_3_1_6_counterexample` |
 | §3.2, 168 Sperner hypergraphs on 4 vertices in 30 classes | Checked | `sperner_four_card`, `classes_four` |
-| §3.2, 13 pairs of distinct hypergraphs | Checked, with the reading made explicit: 13 pairs `G ≇ Tr G` plus 4 self-transversal classes | `self_dual_classes_four` |
+| §3.2, 13 pairs of distinct hypergraphs | Checked, with the reading made explicit: 13 pairs of classes with `G ≇ Tr G` plus 4 classes with `G ≅ Tr G` | `self_dual_classes_four` |
 | §3.2, largest tree on 3 and 4 vertices: 3 and 7 nodes, depth 3 | Checked; "depth 3" is three levels (height 2) | `max_tree_three`, `max_tree_four` |
 | §3.2, `Aut(D_{m,1}) ≅ S_m × S_{n-m}` | Proved for every `n`, `m` | `young_aut_singletons` |
 | §3.2, the table of automorphism groups and orbit sizes | Checked | `table_aut`, `table_orbits` |
@@ -106,20 +111,18 @@ is fixed are withdrawn; they do not follow from those inclusions (research Audit
 | 6-D node 9, 7-Ver nodes 3 and 7: group `C₃` | **Corrected**: `S₃` (order 6); the node is `({{a,b,c}}, {{a},{b},{c}})` | `sixD_tree`, `sevenVer_tree` |
 | 8-Ver node 4: group `D₄` | **Corrected**: `C₂` (order 2) | `eightVer_tree` |
 | f₂/g₂ nodes 10 and 19: "`C₄` graph" | **Clarified**: `C₄` plus an isolated vertex | — |
-| Hypergraph and graph property labels of the eight automorphism trees (conformal, α-acyclic, read-once, chordal, split, bipartite, cograph, perfect), and §5.2.2's "6-B, 6-C, 6-D are read-once and α-acyclic" | Computed: in the revised edition every group label has the computed order and every property label holds for `C` or `D` on the vertices present (`python thesis/tools/check_tree_labels.py revised`, exit 0 on 2026-10-21); the 2024 labels fail at the six nodes corrected above | — |
+| Hypergraph and graph property labels of the eight automorphism trees | Computed: a historical check on 2026-10-21 validated each label on C or D on its support. The checker was retired with the edition pipeline. The November recheck of 6-B, 6-C and 6-D found read-once on both sides and alpha-acyclicity only on D; Chapter 5 now states that scope | — |
 | §5.2.2, frequencies `ε` | Checked | `*_eps`, `eightVer_uniform` |
 | Observation 5.2.2, a false twin of the split vertex leaves the contraction | Proved (general lemma) and checked on `f₂, g₂` | `falseTwin_filtered`, `f2g2_false_twin_filtered` |
 | Observation 5.2.3, `ε(3) = 2/3` | Checked (exhaustion by evaluation); `K₃` is the unique minimiser | `eps_three` |
 | Observation 5.2.3, `ε(7) = 3/7` | Lower bound Proved (2026-10): every non-trivial pair on `n` points has `s·ε ≥ 1` and `s ≤ nε` for its smallest edge size `s`, which forces `ε ≥ 3/7` on seven points. Attainment Checked: Fano. Also `ε(4) = ε(5) = ε(6) = 1/2`, `ε(9) = 1/3` (bounds Proved, attainment Checked) | `eps_bound` (Proved); `eps_seven`, `eps_four`, `eps_five`, `eps_six`, `eps_nine` (Checked) |
 | §5.2.2, Fano and `K₃` are self-transversal; `PG(2,3)` is not | Checked | `fano_self_tr`, `k3_self_tr`, `pg23_not_self_dual` |
-| Def. 5.2.1, `7k` edges and the transversal count `(k−2)²/4 + k/2 + 1` | **Corrected**: `k` disjoint Fano planes have `7k` edges and `7^k` minimal transversals, for every `k` | `kFano_card`, `tr_kFano_card`, `two_fano_tr_card` |
+| Def. 5.2.1, `7k` edges and the transversal count `(k−2)²/4 + k/2 + 1` | **Corrected**: `k` disjoint Fano planes have `7k` edges and `7^k` minimal transversals, for every `k` | `kFano_card`, `tr_kFano_card` |
 
 ## Trust base
 
 General theorems depend only on `propext`, `Classical.choice` and `Quot.sound`. Statements marked
-*Checked* are evaluations proved with `native_decide`, which adds the Lean compiler to the trust
-base. `lean/HypergraphDualization/Axioms.lean` makes `lake build` fail if either class is
-mislabelled; a kernel-only (`decide +kernel`) run was tried on 2026-10-21 and is practical only for the
+*Checked* entries identify finite evaluations. Native evaluation (`native_decide`) adds the Lean compiler to the trust base; explicitly labelled kernel evaluations do not. `lean/HypergraphDualization/Axioms.lean` checks the registered standard and native classes; a kernel-only (`decide +kernel`) run was tried on 2026-10-21 and is practical only for the
 smallest instances. `lake build` reproduces everything; see [`lean/README.md`](../lean/README.md).
 
 ## Research beyond the thesis (2026-10)
@@ -154,8 +157,8 @@ New statements of the October 2026 research program, each written up in
 | A self-transversal Sperner hypergraph covering `n` points has `|H| ≥ n` (equality for `K₃`, Fano) | Proved | `card_le_of_tr_eq_self`, `erase_twoColourable` |
 | Counting test: for intersecting Sperner `H` without `∅`, `Tr(H) = H` iff `2^{n−1}` subsets contain an edge | Proved | `tr_eq_self_iff_card` |
 | If `Tr(H) ⊆ H` and `Aut(H)` is edge-transitive, it is transitive on covered points | Proved | `transitive_of_edge_transitive` |
-| Hertel's alternating-tree bound (cited in Chapter 4) is a lower bound on DPLL trees, not an upper bound on subproblems | Corrected citation (revised edition, Chapter 4) | — |
-| Observation 4.4: FK-A's degree-sum rule exceeds Hertel's memoised `2k + 3` on GK `f₃` (`δ = 369 > 65`) | Computed (`experiments/readonce_sim.py`) | — |
+| Hertel's alternating-tree bound (cited in Chapter 4) is a lower bound on DPLL trees, not an upper bound on subproblems | Corrected citation (corrected thesis, Chapter 4) | — |
+| Observation 4.4: FK-A's degree-sum rule exceeds Hertel's memoised `2k + 3` on GK `f₃` (`δ = 369 > 65`) | Computed historically with the retired Python formula engine; the surviving Rust engine and generic hypergraph tests reproduce the bounded count | — |
 | Conjecture 4.5: `δ ≤ 2N` on read-once pairs under FK-A's rule | **Refuted**: the read-once `ro12` on 12 points has `δ = 43 > 2N = 42` (evaluation); GK `f₄` has `δ/N = 1368` (Rust) | `ro12_readOnce`, `ro12_delta` |
 | Theorem 4.7: under any split rule every FK-A subproblem of `(G, Tr G)` is `(H, Tr H)` or `(Tr H, H)`, `H` a minor of `G`; `δ ≤ 2·#minors` | Proved | `fkADag_minor`, `card_fkADag_le_minors` |
 | Proposition 4.8: `τ(C, D) = τ(D, C)` on dual pairs | Proved | `fkA_comm`, `splitVar_comm` |
@@ -168,15 +171,15 @@ New statements of the October 2026 research program, each written up in
 | Theorem 4.13: under a valid symmetric rule the memo DAG of unmodified FK-A is an FBDD named by its functions for `f`, of size `≤ 2δ + 2`; under modified FK-A a branching program with term and clause leaves; an FBDD computes its functions and reads each variable once per path | Proved | `memo_fbdd`, `memo_bp`, `memo_good`, `run_correct`, `path_nodup` |
 | Proposition 4.14: an FBDD of size `s` named by its functions gives a valid symmetric rule with `δ ≤ 2s`, either variant | Proved | `fbddRule`, `rule_of_fbdd` |
 | Corollary 4.15: on unmodified FK-A, `δ ≥ (s − 2)/2` under every valid symmetric rule, `s` the least FBDD named by its functions; an explicit family defeating every such rule needs a monotone family with polynomial `N` and superpolynomial FBDD size | Proved for the bound; the step from FBDDs named by their functions to arbitrary FBDDs argued; the modified-variant bound argued; no such family known (literature, research §4) | `memo_fbdd`, `rule_of_fbdd` |
-| Lemma 4.17: minors of `A ∪ B`, `A ∧ B` are unions, joins of minors; parts recoverable on disjoint supports | Proved; the consequence for `δ` argued | `Fm.minor_union`, `Fm.minor_join`, `Fm.union_left_part`, `Fm.join_left_part` |
+| Lemma 4.17: minors of `A ∪ B`, `A ∧ B` are unions, joins of minors; parts recoverable on disjoint supports in the nonconstant, nonannihilating cases | Proved; the consequence for `δ` argued | `Fm.minor_union`, `Fm.minor_join`, `Fm.union_left_part`, `Fm.join_left_part` |
 | A read-once formula on all of `V` has a read-once DNF (Sperner, conformal, cograph primal graph); the converse is Gurvich's theorem | Proved for this direction; converse cited | `Fm.readOnce_dnf` |
-| Proposition 4.18: the guarded rule is valid, symmetric, and splits on the least vertex of frequency `≥ 1/⌊log₂ N⌋`, which exists by FK96 Lemma 2.3.2 | Proved | `guardRule_frequent`, `valid_guardRule`, `guardRule_symm` |
+| Proposition 4.18: the guarded rule is valid, symmetric, and has frequency `≥ 1/⌊log₂ N⌋` at an eligible split | Proved; choosing the least eligible vertex follows from its ascending search definition | `guardRule_frequent`, `valid_guardRule`, `guardRule_symm` |
 | `δ` of GK `f₂` is 8 under all three rules; `ro12` has `δ = 91` under the leftmost and guarded rules | Checked | `gk2_rules`, `ro12_rules` |
 | Conjecture 4.19: `δ/N` is unbounded on GK under the degree-sum rule | Open; `δ/N = 0.67, 1.92, 1368` for `k = 2, 3, 4` (Rust) | — |
-| Proposition 4.6: under ETH no polynomial bounds `δ` on all dual pairs (C3 false) | Cited, conditional on ETH: a short argument from Kobayashi–Kurita–Wasa 2026; not in Lean | — |
+| Proposition 4.6: unless 3-SAT runs in `2^{O(n^{2/3}(log n)^{1/3})}`, no polynomial bounds `δ` on all dual pairs (C3 false) | Conditional: a short argument from the Kobayashi–Kurita–Wasa 2026 reduction; the premise is weaker than ETH; not in Lean | — |
 | Theorem D1: `Tr(T[Γ]) = min(Tr(T)[Tr Γ])`; on disjoint supports no reduction, Sperner, `|T[Γ]| = Σ_t Π_i |Γ i|` | Proved | `tr_subst`, `tr_subst_of_disjoint`, `subst_isSperner`, `card_subst` |
 | Proposition D2: `(P)` `k·k* ≥ 8^{r−1}` is closed under composition | Proved | `card_subst_uniform`, `prop_P_comp` |
-| Proposition 5.4: D3 at `r = 2` has no counterexample; `(k, k*) ∈ {(2,4),(4,2),(3,3)}` | Checked (evaluation over 64 families) | `template_rank_two` |
+| Proposition 5.4: D3 at `r = 2` has no counterexample; `(k, k*) ∈ {(2,4),(4,2),(3,3)}` | Checked for the product bound over 64 families; the full-support three-class classification is a separate finite computation, with triangle plus an isolated point as a fourth ambient class | `template_rank_two` |
 | Proposition E2: automorphisms preserve influences; Fano's seven influences agree at every `p` | Proved | `influence_aut`, `influence_eq_of_transitive`, `fano_influence_eq` |
 | Observation 4.20: GK f3 under modified degree-sum FK-A has 369 labelled states, 160 reached isomorphism classes and 155 cache visits | Computed; 15 bounded table rows checked against the hypergraph engine, shape equality checked against incidence-graph isomorphism | — |
 | Proposition 4.21: common relabelling preserves equality with the transversal family and duality, including redundant families; any two FK-A split rules give the same verdict on relabelled inputs | Proved; the cache is Theorem 4.28 | `pimg_injective`, `tr_eq_pimg_iff`, `minimal_pimg`, `dual_pimg`, `fkAR_pimg` |
@@ -188,10 +191,10 @@ New statements of the October 2026 research program, each written up in
 | Corollary 4.26: (a) under the leftmost rule `τ/δ` is exponential in `n` on GK and TK; (b) under every valid rule FK-A is eventually slower than FK-B's `N^{4χ(N)+O(1)}` | (a) Proved; (b) uses FK96's bound, cited | `gk_memo_gap`, `dnf_coFm_gkH`, `fkA_gk_tree` |
 | Proposition 4.27: C3 is equivalent to the monotone case of JRSW's Question 1 (1997) | Cited reading; the equivalence rests on Theorem 4.13, Proposition 4.14 and review row 29 | `memo_fbdd`, `rule_of_fbdd` |
 | Theorem 4.28: FK-A with a memo keyed by any map sending each pair to a relabelling of it returns `Dual` under every rule and fuel, and its memo stays sound | Proved | `fkAI`, `fkAI_correct`, `fkAI_eq_fkAR` |
-| Observation 4.29: `δ`, `δ_Aut`, `δ_iso`, `d_iso` on GK, TK, `alt3` and the library under three rules; GK `f₄` degree sum `δ_iso = 827,175`, `δ/δ_iso = 81.3`, `δ_iso/N = 16.8`; leftmost `δ = δ_iso = n` | Computed (Rust and Python); checked against `iso_memo.py`, an orbit canon and a group enumeration | `experiments/iso_classes.py`, `results/iso-memo.md`, `tests/test_readonce_dag.py` |
+| Observation 4.29: `δ`, `δ_Aut`, `δ_iso`, `d_iso` on GK, TK, `alt3` and the library under three rules; GK `f₄` degree sum `δ_iso = 827,175`, `δ/δ_iso = 81.3`, `δ_iso/N = 16.8`; leftmost `δ = δ_iso = n` | Computed (Rust); historical checks against the retired Python engines, an orbit canon and group enumeration. Current bounded tests use retained counts and independent hypergraph/incidence-graph checks | `experiments/iso_classes.py`, `results/iso-memo.md`, `tests/test_readonce_dag.py` |
 | Conjecture 4.30: `δ_iso/N` is unbounded on GK under the degree-sum rule | Open; `0.67, 0.83, 16.8` for `k = 2, 3, 4` (Rust) | — |
-| Observation 4.31: the joint top-block projections of GK `f₃` contain only 21 of the 49 pairs of standalone `f₂` supports, so the unrestricted embedding route to Q1 fails | Computed (Rust), checked against the formula engine | `experiments/block_probe.py`, `results/block-probes.md`, `tests/test_readonce_probe.py` |
-| Observation 4.32: on GK `f₅` the guarded rule never falls back to the degree sum and leaves the leftmost vertex at 92,776 of 124,874 splits | Computed (Rust); first departure re-derived in Python | `results/block-probes/gk5-guard.json`, `tests/test_readonce_probe.py` |
+| Observation 4.31: the joint top-block projections of GK `f₃` contain only 21 of the 49 pairs of standalone `f₂` supports, so the unrestricted embedding route to Q1 fails | Computed (Rust), historically checked against the retired formula engine; retained projections are regression fixtures | `experiments/block_probe.py`, `results/block-probes.md`, `tests/test_readonce_probe.py` |
+| Observation 4.32: on GK `f₅` the guarded rule never falls back to the degree sum and leaves the leftmost vertex at 92,776 of 124,874 splits | Computed (Rust); first departure historically re-derived in Python and retained as a regression fixture | `results/block-probes/gk5-guard.json`, `tests/test_readonce_probe.py` |
 | Audit 4.33: no Chapter 3 statement about `Aut` at a node predicts `δ/δ_Aut` or `δ/δ_iso` | Reading of existing Lean statements; review rows 73–78 | — |
 | Proposition 4.34: on GK `deg_C v = deg_D v` for every vertex; on TK `deg_C v · |D| = deg_D v · |C|` | Proved | `gk_degree_balance`, `tk_degree_ratio` |
 | Observation 4.35: `δ_{k+1} ≥ δ_k²/4` holds at every measured step of GK and TK; TK's falling `δ/N` comes from `N_{k+1}/N_k² → 4` | Computed from existing values | — |
@@ -202,3 +205,40 @@ New statements of the October 2026 research program, each written up in
 | Conjecture 4.40: on GK `J_{k+1} ≥ σ_k²/4`; for `k ≥ 4` and any `A < 513` in place of 4 it implies Conjecture 4.19 | Open; holds for `k ≤ 3` | — |
 | Observation 4.41: TK `S₄` degree sum, stopped at memory: `δ ≥ 330,149,945`, `δ/N ≥ 0.307`, `log δ/log N ≥ 0.943` | Computed (Rust, partial); lower bound only | — |
 | Observation 4.48: equal endpoint degree profiles do not ensure joint reach, even for whole-pair shapes | Computed; neither growth conjecture settled; auxiliary material archived | `results/block-probes.md`; evidence snapshot `b294502` |
+
+## November 2026
+
+F is [`frequency-constant.md`](../docs/frequency-constant.md) and E is
+[`complex-evaluation.md`](../docs/complex-evaluation.md). None of these is formalised in Lean.
+
+| Statement | Status | Source |
+| --- | --- | --- |
+| F Theorem 2: every dual pair has `\|C\|·\|D\| ≥ 4^{1/ε − 1}` | Written proof | F §1 |
+| F Proposition 3: the alternating words attain `\|C\|·\|D\| = 8^{1/ε − 1}` | Written proof | F §2 |
+| F Conjecture 6: every dual pair has `\|C\|·\|D\| ≥ 8^{1/ε − 1}` | **Refuted** by F Proposition 7: the read-once `T₆` on 36 points has `ε = 1/6`, `\|C\|·\|D\| = 31,104 < 8⁵` | `experiments/frequency_readonce.py check` |
+| F Theorem 8: every read-once dual pair has `\|C\|·\|D\| ≥ e^{2(1/ε − 1)}` | Written proof | F §5 |
+| E Corollary 10: on GK `f_k` and TK `S_k` every valid rule has `τ ≥ 2^{0.41433 n}/(n + 1)` | Written proof; exact integer check | `experiments/subcube_norm.py check` |
+| E Proposition 4: the leftmost rule has `τ ≤ 2^{(0.469254 + o(1)) n}` on GK and TK | Argued, and computed | `experiments/alternating_dt.py rates 6` |
+| E Proposition 12: depth-first trees minimise every leaf weighting `aL₁ + bL₀` on GK `f₁–f₃`, TK `S₁–S₂` and 52 balanced formulas | Computed, exact | `experiments/alternating_dt.py least 3`, `balanced` |
+| E Conjecture DF: depth-first trees minimise every leaf weighting on balanced read-once formulas | Open | E §3 |
+| E Conjecture 17: `m₀(g ∧ g′) ≥ θ·m₀(g)(1 + m₁(g))` with an absolute `θ > 0.1609` | Open; it would lift the GK/TK lower rate past the subcube barrier `0.41434` | E §5 |
+
+## Source review and consolidation (2026-11)
+
+The repository retains one corrected thesis and fixed drawing assets. The recovery,
+edition overlay, exact-span revision and figure-generation pipeline was retired.
+Historical reproduction commands belong to the archived source at revision `9e840c1`.
+
+| Location | Correction and evidence |
+| --- | --- |
+| §1.1–1.2 | Minimal terms and dual normal forms are distinguished; the set-cover reduction uses incidence duality, rather than the minimal-transversal operator |
+| §2.1, equation 2.1 | Non-duality has two certificate polarities: disjoint cross edges or a hitting set containing no listed blocker. The latter alone requires cross-intersection; `eq_tr_iff_partition` |
+| §2.2 | Support and edge-size proofs use minimal-transversal witnesses; the weight inequality is the union bound over partitions, `support_eq`, `card_le_card_tr`, `kraft_sum` |
+| §2.3 | FK-B uses χ satisfying χ^χ=N, hence χ∼log N/log log N; the earlier log log and logarithmic-time statements were false |
+| §3.1 | The direct product acts separately on the disjoint vertex sets; translates of one nonempty block form a partition |
+| §3.2 | Isomorphism preserves edge families onto each other. Dedekind counts are labelled counts, distinct from isomorphism classes; the exact earlier six-vertex illustration has two automorphisms |
+| §3.3–3.4 | Invalid historical proofs and unsupported minor-map formalism were removed. The surviving primal-child conclusion follows by vertex and edge deletion, `primal_children_le` |
+| §4.2 | GK f_k has 2^(2k−1) vertices and height 2k−1; the four-copy recurrence and `alt_counts`, `alt_shape` agree |
+| §4.4 | Read-once characterization is for Sperner hypergraphs on support; automorphisms permute twin classes, and sharing an orbit does not imply twinhood |
+| §5.1 | Implementation prose now describes canonical bitsets, the shared Sperner reduction and exported HTML reports |
+| Frequency campaigns | The old W11 composition campaign used 1-based data as 0-based bitsets. Its 16,000-trial evidence is withdrawn; `frequency_families.py` uses the canonical design and has a regression test |

@@ -249,3 +249,19 @@ def test_cli_run_exits_nonzero_on_baseline_mismatch(tmp_path, monkeypatch):
     assert cli_b.main(["run", "f2g2", "--out", str(tmp_path), "--no-annotate"]) == 1
     monkeypatch.setattr(cli, "load", lambda _id: inst)
     assert cli.main(["run", "f2g2", "--out", str(tmp_path), "--no-annotate"]) == 0
+
+
+@pytest.mark.parametrize(
+    "module,command",
+    [("fka", "verify"), ("fkb", "verify"), ("fkb", "compare")],
+)
+def test_cli_verdict_checks_report_success_and_failure(module, command, monkeypatch):
+    from importlib import import_module
+
+    cli = import_module(f"{module}.cli")
+    inst = load("k3")
+    monkeypatch.setattr(cli, "load_all", lambda: [inst])
+    args = [command] if command == "verify" else [command, "--all"]
+    assert cli.main(args) == 0
+    monkeypatch.setattr(cli, "is_dual_oracle", lambda *_: False)
+    assert cli.main(args) == 1

@@ -5,8 +5,8 @@ from __future__ import annotations
 import pytest
 
 from fka.hypergraph import Hypergraph, phi_x_0, phi_x_1, popcount, verts
-from fka.irredundant import irredundant, remove_superset
-from fka.transversal import find_CA, is_dual_oracle, minimal_elements, transversal
+from fka.irredundant import irredundant, minimal_elements
+from fka.transversal import find_CA, is_dual_oracle, transversal
 
 
 # ----------------------------------------------------------------------
@@ -36,6 +36,24 @@ def test_edges_are_deduplicated_and_sorted():
 def test_rejects_vertex_out_of_range():
     with pytest.raises(ValueError, match="out of range"):
         Hypergraph.from_sets(3, [[1, 9]], one_indexed=True)
+
+
+def test_rejects_negative_bitsets_before_unpacking(monkeypatch):
+    import fka.hypergraph as h
+
+    # Fail on the old validation order without letting its negative-bit loop hang.
+    def unpack(t):
+        assert t >= 0, "invalid mask reached unpacking"
+        return ()
+
+    monkeypatch.setattr(h, "verts", unpack)
+    with pytest.raises(ValueError, match="outside"):
+        Hypergraph.from_bitsets(2, [-1])
+
+
+def test_rejects_negative_vertex_unpacking():
+    with pytest.raises(ValueError, match="non-negative"):
+        verts(-1)
 
 
 def test_rejects_ragged_incidence():
@@ -122,8 +140,7 @@ def test_reduction_reports_what_it_removed():
     MBF = Hypergraph.from_sets(4, [[0], [0, 1], [0, 1, 2], [3]])
     result = irredundant(MBF)
     assert result.reduced.to_sets() == [[0], [3]]
-    assert len(result.removed_superset) == 2
-    assert result.changed
+    assert len(result.removed) == 2
 
 
 def test_chain_reduces_to_the_minimum():
@@ -155,7 +172,8 @@ def test_superset_removal_matches_the_definition(rng):
                 }
             )
         )
-        kept, dropped = remove_superset(edges)
+        result = irredundant(Hypergraph(n, edges))
+        kept, dropped = result.reduced.edges, result.removed
         assert set(kept) == set(pairwise(edges))
         assert set(kept) | set(dropped) == set(edges)
 

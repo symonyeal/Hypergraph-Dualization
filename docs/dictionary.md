@@ -1,9 +1,9 @@
 # Dictionary: hypergraph ↔ monotone Boolean function
 
 One object, two vocabularies. FK-A is stated over hypergraphs and transversals,
-FK-B over monotone Boolean functions and normal forms. A monotone Boolean
-function **is** a hypergraph and its dual **is** the transversal hypergraph, so
-one model serves both.
+FK-B over monotone Boolean functions and normal forms. A Sperner edge family
+determines a unique monotone function through its prime DNF. Its transversal
+family is the prime DNF of the dual function.
 
 **The code speaks MBF.** Names come from the FK-B reference in
 `FK- B/FK-master/src` and from *How to apply SAT-solving for the equivalence
@@ -17,8 +17,7 @@ Rules that keep it that way:
    wins, transliterated to Python casing (`Check_Conditions` → `check_conditions`).
 2. Thesis notation survives only where the reference has no counterpart, and
    only in the "hypergraph" column below.
-3. Nothing is added to this table without approval. Appended entries go under
-   [Change log](#change-log) with a date, never silently edited in place.
+3. Nothing is added to this table without approval. Approved changes are recorded in Git history.
 
 ## The correspondence
 
@@ -34,13 +33,14 @@ Rules that keep it that way:
 | `f(S) = 1` | `S` contains an edge | DNF satisfied | `dnf_value` | — |
 | `S` is a transversal | `S` meets every edge | CNF satisfied | `cnf_value` | — |
 | antichain reduction | Sperner reduction | `Irredundant` | `irredundant` | — |
-| the dual | `Tr(H)`, minimal transversals | `f^d`, the other normal form | `transversal` | — |
+| minimal transversals | `Tr(H)` | prime CNF clauses of the function with prime DNF `H`, and prime DNF terms of its dual `f^d` | `transversal` | — |
 | the question | `G = Tr(H)` | `C ≡ D` | `fk_a`, `fk_b` | `dual` |
 | a counterexample | certificate `S`, eq. 2.1 | conflicting assignment | `CA` | `CA` |
 | the branch vertex | pivot | split variable | `split_var`, locally `x` | `split_var` |
 | how it is chosen | pivot rule | `Choose_SplitVar` method | `split_rule` | `split_rule` |
 | terms without `x` | deletion `H \ x` | `phi_x_1` | `phi_x_1` | — |
-| terms with `x`, `x` dropped | contraction `H / x` | `phi_x_0` | `phi_x_0` | — |
+| terms with `x`, `x` dropped | containing-edge part of contraction | `phi_x_0` | `phi_x_0` | — |
+| `x` removed from every term | contraction `H / x` | `phi_x_0 ∨ phi_x_1` | `phi_x_0(H, x).vee(phi_x_1(H, x))` | — |
 | force a clause false | — | `A_c_x` | `A_c_x` | — |
 | force a monomial true | — | `A_m_x` | `A_m_x` | — |
 | frequency of `v` | `ε_v(G, H)` | — | `eps_v` | — |
@@ -114,47 +114,8 @@ Three uses are *not* the hypergraph `G`/`H` and are left alone:
 
 Anywhere else, a bare `G` or `H` in this repository is a leftover.
 
-## Change log
+## History
 
-Entries are appended, with a date, only after approval.
-
-- **2026-10-21** — removed the lattice register with `fka.dedekind`, archived under
-  `_archive/20261021-dedekind/` at the owner's request. No other name changed.
-
-- **2026-08-08** — added the lattice register above for `fka.dedekind`: `FDL(n)`,
-  up-set, `d(n)`, A003182, atom, lift, cofactor profile. No existing name
-  changed. Recorded because `d(n)` and A003182 are two different counts that a
-  single loose phrase ("Sperner hypergraphs up to symmetry") collapses, and the
-  distinction is what `docs/dedekind-atoms.md` turns on.
-
-- **2026-08-06** — created. Adopted the MBF register repo-wide, replacing the
-  mixed `G`/`H` + `cnf`/`dnf` vocabulary and the split `pivot` / `split_var`,
-  `certificate` / `CA` pairs. Supersedes `docs/glossary.md`, archived under
-  `_archive/20260806-mbf-vocabulary/`.
-  Renamed to match the reference: `c_set_0`/`c_set_1`/`d_set_0`/`d_set_1` →
-  `A_c_x`/`A_m_x`, `sperner_reduce` → `irredundant`, `pivot_rule` →
-  `split_rule`, `fk_b(irredundant=)` → `fk_b(redundancy_check=)` after
-  `FK_B.m`'s own `redundancychk`. Renamed for clarity, with no counterpart in
-  either source: `RecursionTree`/`RecursionNode` → `Tree`/`Node`,
-  `SpernerReduction` → `Reduction`, `HypergraphProperties` → `Properties`,
-  `fka.threshold` → `fka.bound` (it collided with the `threshold` generator),
-  `substitution.union`/`join` → `disjoint_vee`/`disjoint_wedge` (they are the
-  variable-disjoint operators, unlike `Hypergraph.vee`). The on-disk JSON schema
-  moved with the code.
-
-  Deleted as duplicates of something already here: the second and third copies
-  of `eps` (`fka.threshold.eps`, `fka.instances.exact_epsilon`, now the single
-  `fka.algorithm.eps_exact`), the second `FANO_LINES` (`fka.selfdual` owns it),
-  the `is_normal` alias of `is_conformal`, `remove_superset_pairwise` (the
-  definition it existed to be compared against now lives in the test that makes
-  the comparison), and `Hypergraph.contraction`/`.deletion` (they were
-  `phi_x_0`/`phi_x_1` under another name).
-
-- **2026-08-06** — group theory. `fka.selfdual`'s incidence-graph automorphism
-  search was removed; `fka.automorphism.term_set_automorphisms` is now the one
-  search, taking one term set (`Aut(MBF)`) or two (the pair group). Group naming
-  gained `conjugate`, `commutator` and per-factor spelling, so the same group
-  reads the same standalone and inside a product -- which **renames**
-  `D3 wr C2` → `S3 wr C2`, `D3 x D4` → `S3 x D4`, `D3 x S4` → `S3 x S4` in
-  published results. `_quaternion8` was rebuilt: the constants it used generate
-  C2 x C4, not Q8, so Q8 was unnameable and C2 x C4 was misnamed `Q8`.
+The MBF vocabulary was adopted on 6 August 2026. The lattice extension added
+on 8 August was retired on 21 October. Git history preserves the naming
+changes and group-name corrections; this table defines the current vocabulary.

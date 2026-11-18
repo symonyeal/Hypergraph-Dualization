@@ -2,9 +2,7 @@
 
 Sources that bear on the open items of [`research-2026-10.md`](research-2026-10.md) §7,
 checked on 17 November 2026 against revision `71f35a4`. Each entry says what was read
-(full text, part, or abstract only) and what it changes here. The earlier surveys are
-[`openai-math-connections.md`](openai-math-connections.md) and
-[`complexity-update-2026-10.md`](complexity-update-2026-10.md); this note does not repeat them.
+(full text, part, or abstract only) and what it changes here. Earlier source assessments and their reading limits are consolidated below.
 
 ## 1. Lower bounds for the Fredman–Khachiyan algorithms
 
@@ -31,7 +29,7 @@ norm (JRSW). Per variable the bases are `(27/16)^{1/4} ≈ 1.1398` here and
 Gurvich–Khachiyan 1997 (§3 below), p. 246, say that alternating trees give an
 `(|F| + |G|)^{Ω(log(|F| + |G|))}` lower bound for Algorithm A, without proof in that note.
 So neither this repository nor Elbassioni has priority for the bound. Our Fourier proof is
-machine-checked and has the larger constant; research §4 should cite both. His Lemma 3.5
+machine-checked and has the larger constant; both sources are cited here. His Lemma 3.5
 loses a factor 3 per level (`|u_{k+1}| ≥ |u_k|⁴/3`); his own bound, evaluated exactly, has
 rate `0.37245` bits per variable, above both; our measures on blocks of eight variables
 raise the rate to `0.41433` (see [`complex-evaluation.md`](complex-evaluation.md) §§2, 4, written
@@ -64,11 +62,7 @@ OpenAI posted *The Exponential Time Hypothesis is False* (26 October, with a Lea
 Anthropic posted a counting algorithm with a Lean statement the same week. News reports
 of 27 October say Impagliazzo, Paturi and Williams are leading an examination; neither
 claim was independently confirmed in the sources read. The bounds are
-`2^{O(n log log n/√log n)}` (see `complexity-update-2026-10.md`).
-
-`complexity-update-2026-10.md` said that, if these claims hold, Proposition 4.6 "supplies
-no obstruction to a polynomial bound". That overstates it. The reduction above needs much
-less than ETH.
+`2^{O(n log log n/√log n)}`. The reduction above needs less than ETH.
 
 **Proposition L1 (written proof, from KKW Theorem 1).**
 (a) If 3-SAT has no deterministic algorithm running in time `2^{O(n^{2/3}(log n)^{1/3})}`,
@@ -124,7 +118,7 @@ connected subgraphs*, Algorithmica 50 (2008) 159–172.** Read pp. 159–162 and
 Generating minimal dicuts is NP-hard (Theorem 1); minimal strongly connected subgraphs
 are generated in incremental polynomial time (Theorem 2); enumerating the "bodies" of a
 point set contains hypergraph transversal (Proposition 1). Relevant to
-[`applications.md`](applications.md), not to the open items.
+the application interfaces in [`architecture.md`](architecture.md#interfaces), not to the open items.
 
 ## 4. Decision trees, FBDDs and proof complexity
 
@@ -134,19 +128,19 @@ point set contains hypergraph transversal (Proposition 1). Relevant to
 - **Decision-tree size against DNF/CNF size.** The bound `exp(O(log n · log² N))` and the
   open `log n` factor are as recorded (Dahiya, *On (simple) decision tree rank*,
   arXiv:2209.12877, abstract and snippet only).
-- **FBDDs are regular resolution here (argued, not in Lean).** For a dual pair, let
-  `F_{C,D} = ⋀_{c∈C} ⋁_{v∈c} ¬x_v ∧ ⋀_{d∈D} ⋁_{v∈d} x_v`, unsatisfiable exactly when
-  `D = Tr C` (review row 40). An FBDD for the monotone `f` is a read-once branching program
-  for the search problem of `F_{C,D}`: a 1-sink's path contains a term, so it falsifies a
-  negative clause; a 0-sink's path misses a clause of `D`. Conversely, every read-once
-  program for that search problem computes `f`, since each sink names a falsified clause
-  and so fixes `f`. By the standard correspondence between regular resolution and
-  read-once branching programs for search problems (cited, not read), the least FBDD of
-  `f` and the least regular refutation of `F_{C,D}` agree up to constant factors. With
-  Theorems 4.13–4.14, C3 for unmodified FK-A, and the monotone case of JRSW Question 1, ask
-  for a superpolynomial *regular-resolution* lower bound for these split, cross-intersecting
-  CNFs. Theorem 4.25 is the tree-like case. Whether *general* resolution refutes every
-  `F_{C,D}` in polynomial size is open here.
+- **FBDDs and regular resolution.** Let `C,D` be a dual pair, with `C` the prime DNF of
+  a monotone `f`. The CNF
+  `F_{C,D} = ⋀_{c∈C} ⋁_{v∈c} ¬x_v ∧ ⋀_{d∈D} ⋁_{v∈d} x_v` is unsatisfiable. A read-once
+  program that outputs a falsified clause computes `f` by reading the polarity of the clause:
+  a negative clause gives 1 and a positive clause gives 0.
+  The reverse translation requires a fixed witness at each sink. Different paths into the
+  same Boolean sink can force different clauses. For example, an FBDD for `x ∨ y` can merge
+  the paths certifying `x = 1` and `x = 0, y = 1` at its 1-sink. No one negative clause is
+  falsified along both paths. A witness-labelled read-once program therefore needs its own
+  construction and size bound. The cited regular-resolution correspondence concerns these
+  witness-labelled programs. Theorems 4.13–4.14 relate unmodified FK-A to function-labelled
+  FBDDs, and Theorem 4.25 gives a decision-tree bound. A size-preserving reduction to regular
+  refutations, and polynomial-size general refutations of all such `F_{C,D}`, remain open here.
 - **Decision-tree size against partitions.** Savický, *On determinism versus unambiguous
   nondeterminism for decision trees* (ECCC TR02-009; pages 1–4 read as page images, 17 November
   2026). It separates `dt(f)` from the partition number `p(f)` quasipolynomially for iterates of
@@ -183,3 +177,163 @@ Unsuccessful searches do not establish novelty.
 - [Razgon, read-once branching programs and bounded-treewidth CNFs](https://arxiv.org/pdf/1411.0264)
 - [Washington Times on the ETH verification, 27 October 2026](https://www.washingtontimes.com/news/2026/oct/27/openai-says-model-refuted-exponential-time-hypothesis/)
 - [Eiter, Makino, Gottlob, survey (DAM 2008)](https://dl.acm.org/doi/10.1016/j.dam.2007.04.017)
+
+## 6. SAT source scope and the transfer encoding
+
+[OpenAI's manuscript](https://github.com/openai/math/blob/main/preprints/The-Exponential-Time-Hypothesis-is-False-October-25-2026/paper.pdf),
+dated 17 October and revised 25 October, states a deterministic algorithm for
+exactly counting satisfying assignments of fixed-width CNF formulas in polynomial
+space. Theorem 1.1 bounds its time by
+`(n+m)^{O_k(1)} 2^{O_k(n log log n / sqrt(log n))}`; at fixed clause density the
+exponent improves to `O_{k,D}(n / sqrt(log n))`. Here `n` counts variables, `m`
+counts clauses and `k` bounds clause width.
+
+[Anthropic's manuscript](https://github.com/anthropics/formal-math/blob/main/eth/paper.pdf),
+dated 26 October, states a deterministic counting algorithm with time
+`2^{O(min{k² n log log n / sqrt(log n), k m / sqrt(log m)})}`. Both results would
+refute ETH, and their fixed-width guarantees also contradict SETH.
+
+Both publishers provide Lean formalizations. The main theorem statements and
+introductory scope of both manuscripts were read; the complete proofs were not
+audited. Anthropic's [statement file](https://github.com/anthropics/formal-math/blob/main/eth/MainResults.lean)
+explicitly defines the machine, input encoding, count and time bound; its
+[README](https://github.com/anthropics/formal-math/blob/main/eth/README.md) documents
+axiom and comparator checks. These external builds were not run here.
+[OpenAI's announcement](https://openai.com/index/building-scientific-understanding-with-academic-communities/)
+describes an independent examination led by Impagliazzo, Paturi and Williams.
+The status used below is therefore a published claim with accompanying formal
+artifacts, not an independently reproduced theorem in this project.
+
+The following is a standard encoding argument, not a new theorem from either
+manuscript. First check `L ⊆ Tr(H)` explicitly. Then a missing transversal exists
+exactly when the formula
+
+`F(x) = (AND_{E in H} OR_{v in E} x_v) AND (AND_{T in L} OR_{v in T} NOT x_v)`
+
+is satisfiable. A satisfying assignment is a hitting set containing no listed
+transversal. Minimizing it preserves that property and gives a missing minimal
+transversal; conversely a missing minimal transversal contains no other minimal
+transversal. This proves the stated equivalence under the inclusion check.
+
+Its width is the largest edge on either side, not just the rank of `H`. Thus a
+bounded-rank input alone does not provide fixed-width CNF. A conversion to 3-CNF
+can introduce a number of variables proportional to the total incidence size.
+A subexponential bound in that expanded size need not improve on FK-B's existing
+quasipolynomial input-size bound. No such improvement has been established here.
+
+The new algebraic and tensor-contraction methods could motivate algorithms beyond
+variable splitting. A useful transfer must specify a representation, include its
+construction and arithmetic costs, and beat the existing bound in the same input
+parameter. A faster evaluation algorithm alone does not compress the FK-A DAG.
+
+
+## 7. Frequency equality and Steiner sources
+
+For a monotone function with Sperner minterm family `G`, the maxterms are `Tr(G)`.
+Gurvich's characterization says that this function is read-once precisely when
+every minterm meets every maxterm in one variable. The original reference is
+[Gurvich, *Repetition-free Boolean functions*, 1977, pp. 183–184](https://www.mathnet.ru/eng/rm3055).
+A readable research-paper statement is [Das–Straßburger 2016, Theorem 4.10,
+p. 9](https://lmcs.episciences.org/2621/pdf).
+
+Combined with the Lean equality theorem, this implies that every equality
+transversal pair is read-once. Its contrapositive gives the quantitative gap for
+non-read-once pairs. The equivalence with this repository's `ReadOnce` definition
+is cited, not proved in Lean.
+
+This excludes non-read-once regular convergent templates in `hard-classes.md`
+for every rank, extending the interpretation of the finite `r = 2,3` searches.
+It leaves D3, which only assumes uniformity, open. The kernel-checked example
+`path_four_not_extremal` has both sides 2-uniform on four points, but `eps = 2/3`
+and cross excess 1: uniformity does not imply frequency equality. Proposition 3.7
+further proves that either side being regular forces singleton cross
+intersections; Gurvich then restricts any remaining D3 candidate to have both
+sides irregular.
+
+### Steiner scope and coding theory
+
+Use `2 <= t < k < v` in Conjecture 2.12. This makes its nontrivial Steiner
+scope explicit. Bretto's local *Hypergraph Theory*, printed p. 3 (PDF p. 14),
+defines Steiner systems with `2 <= t <= k < v`; the project intentionally
+also handles degenerate parameters in Lean, so prose must state its restriction.
+
+The parameter family `S(t,t+1,2t+3)` is classical in coding theory. With
+`m = t+1`, it is `S(m-1,m,2m+1)`. Godsil records its equivalence with perfect
+1-codes in the odd graph `O(m+1)`, whose vertices are the `m`-subsets of a
+`(2m+1)`-set and whose adjacency is disjointness. The Fano and eleven-point Witt
+examples are stated there. [Godsil, *Problems in Algebraic Combinatorics*, 1995,
+§9, p. 13](https://www.combinatorics.org/ojs/index.php/eljc/article/download/v2i1f1/pdf/).
+This supplies a concrete older connection for Theorem 2.11; it does not establish
+priority for its self-transversality formulation or classify all such designs.
+
+For the projective-plane exclusion, cite an existence statement for nontrivial
+blocking sets, rather than inferring existence from a lower bound on their size.
+Bierbrauer explicitly states that every projective plane of order `q > 2`
+contains a blocking set with no line and size `2q`. Such a set is a 2-colouring
+witness for the line hypergraph. [Bierbrauer, *Blocking sets of maximal type in
+finite projective planes*, 1981, introduction,
+p. 85](https://www.numdam.org/item/RSMUP_1981__65__85_0.pdf).
+
+Neither this exclusion nor the finite admissibility scan proves the full Steiner
+classification. The stated conjecture remains open here. In particular, a scan
+through `v <= 100` is evidence about parameters in that range, not a theorem
+about every design at arbitrary order.
+
+The phrase *self-blocking design* requires care in further searches. Jungnickel
+uses it for designs whose **minimum-cardinality** blocking sets form a mutually
+blocking design pair, a different condition from equality with the family of
+**all inclusion-minimal** transversals. [Jungnickel, *Some self-blocking block
+designs*, 1989,
+abstract](https://www.sciencedirect.com/science/article/pii/0012365X89903567).
+
+### Sources read locally in October 2026
+
+Eiter–Makino–Gottlob,
+*Computational aspects of monotone dualization: A brief survey*, Discrete Applied
+Mathematics 156 (2008), 2035–2049. Its §1, printed p. 2036 (PDF p. 2), explicitly
+connects `Tr(H) = H` with intersecting edge-critical hypergraphs. This confirms
+the existing criticality identification; it is cited background, not a new result.
+
+Bretto, *Hypergraph Theory*, printed p. 53 (PDF p. 63), states
+Theorem 3.6, the edge/vertex bound for a critical hypergraph. Its incidence-matrix
+proof is the source already reflected in `Critical.lean`. The repository's
+covered-support hypothesis is material: adding isolated ambient vertices cannot
+increase the required number of edges.
+
+These local files were read directly with `pypdf` using the installed Python 3.14.
+The web references above were checked against publisher, journal, author, or
+archival primary-source pages. Unsuccessful keyword searches provide no evidence
+of novelty.
+
+## 8. Connections to openai/math
+
+[`openai/math`](https://github.com/openai/math) collects 719 manuscripts in 372 result families,
+with a Lean library for some of them. This note records which of those results touch the thesis,
+surveyed on 2026-10-20 from the repository's `CONTENTS.md`, `overview.tex` and
+`lean/formalization.yaml`. Every statement made here about the thesis side is proved in
+[`lean/HypergraphDualization/Connections.lean`](../lean/HypergraphDualization/Connections.lean);
+statements about the `openai/math` results are theirs and are cited, not re-proved.
+
+### Direct connections
+
+| Family | Result | Bridge to the thesis | Lean |
+| --- | --- | --- | --- |
+| 162 | Counterexamples to Ryser's covering conjecture: intersecting `(q+1)`-partite `(q+1)`-uniform hypergraphs with covering number `q+1`, formalized as `OAI.RyserCoveringCounterexample.exists_prime_eventually_counterexampleRank` | A cover is a transversal, and the covering number `τ(H)` is the size of a smallest edge of `Tr(H)`. An intersecting `r`-uniform `H` always has `τ ≤ r`; Ryser's bound is `r − 1`, so the counterexamples are the extremal case `τ = r`. In that case every edge of `H` and of `Tr(H)` has at least `r` vertices, and Corollary 2.3.1 (corrected) gives `|H| + |Tr(H)| ≥ 2^r` | `isCover_iff_hits`, `coverNumber_eq_tr_min`, `coverNumber_le_of_intersecting`, `ryser_extremal_size` |
+| 186, 176, 175 | Friedgut–Kalai threshold widths; the second Kahn–Kalai conjecture (formalized as `OAI.LeanBlast.SecondKahnKalai.secondKahnKalaiBounds`); Talagrand's expectation-threshold conjectures | A Sperner hypergraph is a monotone property: a set has it when it contains an edge. For a transversal pair `(G, H)`, `P_p(G) + P_{1−p}(H) = 1`, with `P_p` the product measure `bernoulliProbability` of the formalization. Duality is complementation composed with `p ↦ 1 − p`, so a self-transversal hypergraph (`K₃`, `hw₃`, the Fano plane) has `P_{1/2} = 1/2`: its critical probability is exactly `1/2` | `bernoulli_dual`, `bernoulli_self_dual`, `fano_k3_balanced` |
+| 186 | The Friedgut–Kalai hypothesis is relabeling invariance: a transitive symmetry group | A transitive `Aut(H)` makes every vertex equally frequent, the frequency FK-A splits on (§5.2.2); this is the setting in which the Fano plane is hard for FK-A | `degree_eq_of_transitive` |
+
+The definitions `IsCover`, `Intersecting`, `coverCardinalities`, `coverNumber`,
+`bernoulliWeight` and `bernoulliProbability` are restated verbatim from
+`lean/ComparatorChallenges/RyserCovering.lean` and `SecondKahnKalai.lean`, so the bridge
+theorems are statements about the same objects. The `openai/math` library itself is not imported:
+it pins Lean `v4.34.1` and this project pins `v4.35.0`.
+
+### Reproduction
+
+`lake build HypergraphDualization.Connections` from `lean/` checks the bridge declarations
+named in the table. It does not check the cited manuscripts or their identifications.
+The candidates were drawn from the theoretical computer science, combinatorics and group theory
+sections of `overview.tex`, read entry by entry, and from a keyword search of the whole catalogue
+(transversal, hypergraph, covering, monotone, Boolean, DNF, threshold, self-dual, automorphism,
+permutation group, projective plane, Sperner, antichain, Dedekind). Families outside those
+sections that match no keyword were not read.

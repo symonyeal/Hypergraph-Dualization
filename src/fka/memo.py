@@ -30,7 +30,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-from .algorithm import _trivial_case, check_conditions, choose_split_var
+from .algorithm import SPLIT_RULES, VARIANTS, _trivial_case, check_conditions, choose_split_var
 from .hypergraph import Hypergraph, phi_x_0, phi_x_1
 from .irredundant import irredundant
 from .tree import Tree
@@ -78,6 +78,10 @@ def fk_a_memo(
     ``variant`` and ``split_rule``; ``tests/test_memo.py`` asserts that against
     the tree and against the Berge oracle over the whole library.
     """
+    if variant not in VARIANTS:
+        raise ValueError(f"unknown variant {variant!r}; expected one of {VARIANTS}")
+    if split_rule not in SPLIT_RULES:
+        raise ValueError(f"unknown split rule {split_rule!r}; expected one of {SPLIT_RULES}")
     if cnf.n != dnf.n:
         raise ValueError(
             f"C is on {cnf.n} variables but D is on {dnf.n}; "

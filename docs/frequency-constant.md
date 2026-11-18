@@ -129,9 +129,8 @@ words of length `j`, rank `2^j`, gives pairs `F_j` with
 **Conjecture 6 (refuted by Proposition 7).** Every dual pair satisfies
 `|C| · |D| ≥ 8^{1/eps − 1}`.
 
-It held on every dual pair on at most 6 points, on every read-once formula with at most 13
-leaves, and on 16,000 random nested substitutions; see the evidence table below. None of
-these reached the counterexample.
+The exhaustive checks below found no counterexample on at most 6 points or among
+read-once formulas with at most 13 input leaves.
 
 **Proposition 7 (counterexample; written proof and computed).** Let
 
@@ -180,12 +179,16 @@ with `fka.transversal`, confirms duality with FK-A, and recounts every number ab
 | --- | --- | --- | --- |
 | `frequency_constant N` (Rust) | every monotone function of `N ≤ 6` variables: 7,828,352 dual pairs at `N = 6` | 0 | `x` and the labelled copies of `X`, `Y`: 10, 35, 96 at `N = 4, 5, 6` |
 | `frequency_families.py closure 13` | every read-once formula with ≤ 13 leaves: 29,228 tuples `(A, B, s, t)`, `1/eps ≤ 3` | 0 | |
-| `frequency_families.py compose 4000 S`, `S = 1..4` | 16,000 nested substitutions of P4, K3, Fano, `w11`, threshold 2-of-4, AND, OR; depth 5–8; largest `1/eps` 112.4, 116.1, 123.5, 114.3 by seed | ≥ 0; least `Δ·eps` over `1/eps > 3` is 0.0566, 0.692, 0.183, 0.775 by seed | |
 
 The count of equality cases at `N = 6` is `6 + 15·6`: one single variable per point, and on
 each 4-set the three labellings of `X` and three of `Y`. A read-once pair needs at least
 `r²` leaves (`Σ_v a_v b_v = 1` below), so the closure stops at `r = 3`, and `T₆` needs 36.
-The random substitutions produced no negative defect.
+The earlier random composition results (`frequency_families.py compose 4000 S`, seeds 1–4)
+are withdrawn. The script read one-indexed Witt blocks as zero-indexed, so 30 of its
+66 template edges used a vertex outside the declared ground set. The resulting
+36 edges on the purported dual side should have been the same 66 Witt blocks.
+The corrected command derives both sides from the repository's hypergraph
+constructors. The exhaustive counts in the table use separate code paths.
 
 *How it was found.* The largest `Ψ` satisfying (a)–(c) of §5, computed on a grid of step
 1/8, has `Ψ(6, 6) = 89.55 < 90 = 3r(r − 1)`; its optimal splits are `T₆`.
@@ -304,9 +307,9 @@ second display; at `(r, r)`, `r(lg A + lg B) ≥ Φ(r, r) = c r (r − 1)`. Fina
   7); the evidence is the template search above (least 1.5007). For read-once pairs,
   `c_∞ ≥ log₂ e` by Theorem 8.
 - **The read-once base.** It lies in `[e², 2^{2.9595}]`. Theorem 8's induction allows any
-  split ratio `μ`, while a gate has `μ = A₁/A`. The largest `Ψ` satisfying (a)–(c), on a
-  grid of step 1/8, has `Ψ(8, 8) ≤ 167.02 = 2.9825 · 8 · 7`, so this method cannot prove a
-  constant above 2.9825 at `r = 8`.
+split ratio `μ`, while a gate has `μ = A₁/A`. Optimizing the potential `Ψ` under the
+  sampled constraints (a)–(c) on a grid of step 1/8 gives
+  `Ψ(8, 8) ≤ 167.02 = 2.9825 · 8 · 7`. This bounds this potential method at `r = 8`.
 - **General pairs.** Theorem 8's induction uses the gate decomposition. For general
   pairs, the analogue would split on a variable; only Theorem 2's base 4 is proved.
 - **Lean.** Lemma 1, Theorem 2 and Lemma 4 use counting, the union bound and Theorem 5.1,

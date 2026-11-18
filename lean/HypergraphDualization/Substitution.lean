@@ -220,8 +220,7 @@ theorem template_rank_two_check : ∀ G ∈ ((univ : Finset (Fin 4)).powersetCar
 
 /-- **Open problem D3 at `r = 2`.** A nonempty 2-uniform template on 4 points whose minimal
 transversals are 2-uniform satisfies `(P)`: `k·k* ≥ 8`. The counts `(k, k*)` are `(2, 4)`,
-`(4, 2)` or `(3, 3)`: the matching, the 4-cycle and the path `P₄` up to relabelling. `P₄`, the
-only one that is not read-once, exceeds the bound. -/
+`(4, 2)` or `(3, 3)`. -/
 theorem template_rank_two {G : Finset (Finset (Fin 4))} (hG : ∀ g ∈ G, g.card = 2)
     (hne : G.Nonempty) (hT : ∀ t ∈ tr univ G, t.card = 2) : 8 ≤ G.card * (tr univ G).card := by
   have h := template_rank_two_check G

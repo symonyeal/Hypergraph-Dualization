@@ -49,18 +49,37 @@ fn dual_pair(f: u64, n: u32) -> (Vec<u32>, Vec<u32>) {
 }
 
 fn eps(c: &[u32], d: &[u32], n: u32) -> f64 {
-    let freq = |sets: &[u32], i: u32| sets.iter().filter(|&&s| s >> i & 1 == 1).count() as f64 / sets.len() as f64;
-    (0..n).map(|i| freq(c, i).max(freq(d, i))).fold(0.0, f64::max)
+    let freq = |sets: &[u32], i: u32| {
+        sets.iter().filter(|&&s| s >> i & 1 == 1).count() as f64 / sets.len() as f64
+    };
+    (0..n)
+        .map(|i| freq(c, i).max(freq(d, i)))
+        .fold(0.0, f64::max)
 }
 
 fn show(sets: &[u32], n: u32) -> String {
-    let set = |s: u32| (0..n).filter(|i| s >> i & 1 == 1).map(|i| i.to_string()).collect::<String>();
+    let set = |s: u32| {
+        (0..n)
+            .filter(|i| s >> i & 1 == 1)
+            .map(|i| i.to_string())
+            .collect::<String>()
+    };
     sets.iter().map(|&s| set(s)).collect::<Vec<_>>().join(" ")
 }
 
+fn variables(mut args: impl Iterator<Item = String>) -> Result<u32, &'static str> {
+    let n = args.next().map_or(Some(5), |arg| arg.parse::<u32>().ok());
+    match n {
+        Some(n @ 1..=6) if args.next().is_none() => Ok(n),
+        _ => Err("usage: frequency_constant [N], with 1 <= N <= 6"),
+    }
+}
+
 fn main() {
-    let n: u32 = std::env::args().nth(1).and_then(|s| s.parse().ok()).unwrap_or(5);
-    assert!(n <= 6, "n <= 6: truth tables are 64-bit");
+    let n = variables(std::env::args().skip(1)).unwrap_or_else(|message| {
+        eprintln!("{message}");
+        std::process::exit(2);
+    });
     let (mut pairs, mut ties) = (0u64, 0u64);
     let mut least = (f64::INFINITY, 0u64);
     for f in monotone(n) {
@@ -80,6 +99,38 @@ fn main() {
         }
     }
     let (c, d) = dual_pair(least.1, n);
-    println!("n={n} dual pairs={pairs} defect-0 pairs={ties} least defect={:.6}", least.0);
+    println!(
+        "n={n} dual pairs={pairs} defect-0 pairs={ties} least defect={:.6}",
+        least.0
+    );
     println!("least-defect pair: C {} | D {}", show(&c, n), show(&d, n));
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn three_variable_enumeration() {
+        let fs = monotone(3);
+        assert_eq!(fs.len(), 20);
+        assert_eq!(
+            fs.iter()
+                .copied()
+                .collect::<std::collections::HashSet<_>>()
+                .len(),
+            20
+        );
+        assert_eq!(dual_pair(0b1110_1000, 3), (vec![3, 5, 6], vec![6, 5, 3]));
+    }
+
+    #[test]
+    fn validates_argument_and_arity() {
+        let parse = |args: &[&str]| variables(args.iter().map(|s| s.to_string()));
+        assert_eq!(parse(&[]), Ok(5));
+        assert_eq!(parse(&["6"]), Ok(6));
+        for args in [&["0"][..], &["7"][..], &["x"][..], &["3", "4"][..]] {
+            assert!(parse(args).is_err(), "{args:?}");
+        }
+    }
 }

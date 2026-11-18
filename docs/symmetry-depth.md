@@ -112,10 +112,10 @@ depth `j` from `K(n,r)` are exactly
 [r−j+1, r] ∪ [n−r−j+2, n−r+1].
 ```
 
-This follows by induction from the rank transition above: retain each old rank
-for a left child, and reflect it about `n−j+1` for a right child from depth
-`j−1`. All variables have the same role, so the rank sets are independent of
-the live-vertex rule.
+At depth `j−1` the remaining ground set has size `m = n−j+1`. A left child keeps
+rank `s` and a right child has rank `m−s+1 = n−j+2−s`. Applying both transitions
+to the preceding intervals gives the displayed union. All variables have the same
+role, so the rank sets are independent of the live-vertex rule.
 
 For the general bound choose `n=4k+2`, `r=k+1`, `k≥1`. The two intervals are
 disjoint and each has `j` ranks, for every `1≤j≤k`. No node before depth `k`
@@ -135,5 +135,6 @@ declarations. The formal upper bounds do not depend on them.
 
 The result concerns a prefix of depth at most the transitivity degree. It gives
 no bound on deeper states, on the number of labelled states, or on the time
-needed to canonicalise a pair. It does not settle the GK asymptotics, the
-isomorphism-cache correctness task, or the general dualization problem.
+needed to canonicalise a pair. Verdict-cache soundness is proved separately
+in [Theorem 4.28](research-2026-10.md). The GK asymptotics and the general
+dualization problem remain open.

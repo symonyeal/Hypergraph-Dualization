@@ -276,17 +276,8 @@ theorem leaves_fkDT {r : Rule n} (hv : Valid r) (modified : Bool) : ∀ fuel (C 
       have hne : (support C' ∪ support D').Nonempty := by
         by_contra hemp
         rw [not_nonempty_iff_eq_empty, union_eq_empty] at hemp
-        have hsub : ∀ H : HG n, support H = ∅ → H.card ≤ 1 := fun H hH => by
-          refine card_le_one.2 fun a ha b hb => ?_
-          have ha' : a = ∅ := eq_empty_of_forall_notMem fun v hv => by
-            have : v ∈ support H := mem_biUnion.2 ⟨a, ha, hv⟩
-            rw [hH] at this; exact notMem_empty v this
-          have hb' : b = ∅ := eq_empty_of_forall_notMem fun v hv => by
-            have : v ∈ support H := mem_biUnion.2 ⟨b, hb, hv⟩
-            rw [hH] at this; exact notMem_empty v this
-          rw [ha', hb']
-        have h1 := hsub C' hemp.1
-        have h2 := hsub D' hemp.2
+        have h1 := card_le_one_of_support_empty hemp.1
+        have h2 := card_le_one_of_support_empty hemp.2
         apply hleaf
         simp only [Bool.or_eq_true, decide_eq_true_eq]
         exact Or.inl (by nlinarith)
@@ -295,16 +286,7 @@ theorem leaves_fkDT {r : Rule n} (hv : Valid r) (modified : Bool) : ∀ fuel (C 
       rw [hxr]
       simp only
       -- the two children are dual
-      have hsplit := dual_split (G := C') (H := D') (mem_univ x)
-      have hL := dual_erase_of_notMem (U := (univ : Finset (Fin n)))
-        (G := del C' x) (H := con D' x) (x := x)
-        (fun e he => (mem_filter.1 he).2) (fun e he => by
-          obtain ⟨f, -, rfl⟩ := mem_image.1 he; exact notMem_erase x f)
-      have hR := dual_erase_of_notMem (U := (univ : Finset (Fin n)))
-        (G := del D' x) (H := con C' x) (x := x)
-        (fun e he => (mem_filter.1 he).2) (fun e he => by
-          obtain ⟨f, -, rfl⟩ := mem_image.1 he; exact notMem_erase x f)
-      rw [hL, hR] at hsplit
+      have hsplit := dual_split_univ C' D' x
       obtain ⟨dL, dR⟩ := hsplit.1 hd'
       have hsupp : support C' ∪ support D' ⊆ support C ∪ support D :=
         union_subset_union (support_minimal_sub C) (support_minimal_sub D)

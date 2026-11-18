@@ -1,6 +1,10 @@
 # Hard classes: placement and symmetry depth
 
-Regenerate with `python experiments/hard_classes.py`.
+Historical 26-row survey, containing 21 distinct labelled pairs. The corrected
+`python experiments/hard_classes.py` regenerates 21 unique cases and treats
+unproved capped searches as undetermined. The full survey has not been rerun.
+Positive primitivity certificates remain valid; historical zeros in `undet`
+and negative primitive depths do not certify absence.
 
 `c = eps * log2 N` (FK96 window is `[1, 2]`); `exp = log(FK-A nodes)/log N`;
 `prim depth` is the deepest recursion level still carrying a primitive,

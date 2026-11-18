@@ -34,5 +34,6 @@ loads these two files from this directory and re-derives the defect on every
 run. If a future edit "fixes" them in place, or the corrected instances drift
 away from the thesis' reported ε, that test fails and says why.
 
-Nothing else reads this directory. The instance library, the baselines, and both
-algorithms' test suites are unaffected.
+These files are live reproducibility inputs: the reproduction tests,
+`experiments/build_instances.py` and `lean/tools/gen_instances.py` read them.
+They stay outside the ordinary instance list and must remain available.

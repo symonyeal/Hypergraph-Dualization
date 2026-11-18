@@ -123,17 +123,8 @@ theorem fkADagR_sub {r : Rule n} {P : Set (HG n × HG n)}
 
 /-- The two FK-A children of a dual pair are dual. -/
 theorem dual_children {C D : HG n} (h : Dual univ C D) (x : Fin n) :
-    Dual univ (del C x) (con D x) ∧ Dual univ (del D x) (con C x) := by
-  have hsplit := (dual_split (mem_univ x)).1 h
-  have hL := dual_erase_of_notMem (U := (univ : Finset (Fin n)))
-    (G := del C x) (H := con D x) (x := x)
-    (fun e he => (mem_filter.1 he).2) (fun e he => by
-      obtain ⟨f, -, rfl⟩ := mem_image.1 he; exact notMem_erase x f)
-  have hR := dual_erase_of_notMem (U := (univ : Finset (Fin n)))
-    (G := del D x) (H := con C x) (x := x)
-    (fun e he => (mem_filter.1 he).2) (fun e he => by
-      obtain ⟨f, -, rfl⟩ := mem_image.1 he; exact notMem_erase x f)
-  exact ⟨hL.1 hsplit.1, hR.1 hsplit.2⟩
+    Dual univ (del C x) (con D x) ∧ Dual univ (del D x) (con C x) :=
+  (dual_split_univ C D x).1 h
 
 /-- One step of FK-A, any rule and variant, at a dual Sperner node with both sides of size at
 least 2: a dual node is never pruned, so both children are entered. -/

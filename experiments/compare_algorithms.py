@@ -60,13 +60,6 @@ ANNOTATE_BELOW = 1000
 
 RESULTS = Path(__file__).resolve().parents[1] / "results"
 
-#: The variant each algorithm's committed artifacts were written at, so an
-#: already-annotated tree can be reused instead of re-derived. Annotating
-#: ``sdfp-sd-2``'s FK-A tree alone costs several minutes, and ``fka run --all``
-#: has already paid it.
-ARTIFACT = {"FK-A": "fk-a.modified", "FK-B": "fk-b.faithful"}
-
-
 def profile(tree: Tree, annotated: bool) -> dict:
     """Reduce a tree to the numbers being compared.
 
@@ -103,19 +96,20 @@ def profile(tree: Tree, annotated: bool) -> dict:
         "trivial_group_nodes": names.get("1", 0) + names.get("C1", 0),
     }
     if orders:
-        out["order_mean"] = round(statistics.fmean(orders), 3)
+        mean = statistics.fmean(orders)
+        out["order_mean"] = round(mean, 3)
         out["order_min"] = min(orders)
         out["order_max"] = max(orders)
         # How much of the root's symmetry the average subproblem still carries.
         if root_order:
-            out["symmetry_retained"] = round(statistics.fmean(orders) / root_order, 4)
+            out["symmetry_retained"] = round(mean / root_order, 4)
     branches = tree.summary().get("branches")
     if branches:
         out["branches"] = branches
     return out
 
 
-def run(name: str, cnf, dnf, instance_id: str) -> dict:
+def run(instance_id: str, cnf, dnf) -> dict:
     truth = is_dual_oracle(cnf, dnf)
     row: dict = {"instance": instance_id, "n": cnf.n, "nC": len(cnf), "nD": len(dnf),
                  "oracle_dual": truth, "algorithms": {}}
@@ -133,21 +127,13 @@ def run(name: str, cnf, dnf, instance_id: str) -> dict:
                 f"{tree.dual} vs {truth}"
             )
 
-        # The committed artifact is the record of what this project chose to
-        # compute, so adopt it whole when it is for this exact tree -- including
-        # a deliberate decision *not* to annotate. `word-xy` and `word-yx` are
-        # generated with --no-annotate because their group search costs about
-        # 40 s per distinct node and returns nothing; see results/README.md.
-        annotated = False
-        artifact = RESULTS / f"{instance_id}.{ARTIFACT[label]}.json"
-        if artifact.exists():
-            stored = Tree.load(artifact)
-            if len(stored) == len(tree):
-                tree = stored
-                annotated = any(n.analysis for n in stored)
-        elif len(tree) < ANNOTATE_BELOW:
+        # Keep the measured SDFP(2) group distribution. The two mixed words
+        # exhaust the group search budget on most nodes.
+        annotated = instance_id == "sdfp-sd-2" or (
+            len(tree) < ANNOTATE_BELOW and instance_id not in {"word-xy", "word-yx"}
+        )
+        if annotated:
             annotate(tree, OPTIONS)
-            annotated = True
 
         row["algorithms"][label] = profile(tree, annotated) | {
             "seconds": round(elapsed, 4)
@@ -155,7 +141,7 @@ def run(name: str, cnf, dnf, instance_id: str) -> dict:
     a, b = row["algorithms"]["FK-A"], row["algorithms"]["FK-B"]
     row["node_ratio"] = round(a["nodes"] / b["nodes"], 3)
     print(
-        f"{name:16} n={cnf.n:3} nC={len(cnf):4} nD={len(dnf):4} "
+        f"{instance_id:16} n={cnf.n:3} nC={len(cnf):4} nD={len(dnf):4} "
         f"fk-a={a['nodes']:6} fk-b={b['nodes']:5} ratio={row['node_ratio']:6.2f}x "
         f"root={a['root_group'] or '-'}"
         + ("" if a["annotated"] and b["annotated"] else "  (shape only)")
@@ -166,14 +152,14 @@ def run(name: str, cnf, dnf, instance_id: str) -> dict:
 def main() -> int:
     rows = []
     for inst in load_all():
-        rows.append(run(inst.id, inst.cnf, inst.dnf, inst.id))
+        rows.append(run(inst.id, inst.cnf, inst.dnf))
 
     # SDFP(3) is not in the instance library -- 365 edges makes every baseline
     # refresh and test run expensive -- but it is where the gap is widest, so it
     # is included in the comparison. Both its trees are past ANNOTATE_BELOW, so
     # it contributes node counts only.
     E = self_dual_fano(3)
-    rows.append(run("sdfp-sd-3", E, E, "sdfp-sd-3"))
+    rows.append(run("sdfp-sd-3", E, E))
 
     out = RESULTS
     out.mkdir(parents=True, exist_ok=True)
@@ -209,7 +195,7 @@ def render(rows: list[dict]) -> str:
             f"{a['nodes']} | {b['nodes']} | {r['node_ratio']}x | "
             f"{a.get('symmetry_retained', '—')} | {b.get('symmetry_retained', '—')} |"
         )
-    lines += ["", "‡ too large to annotate; node counts only. See `ANNOTATE_BELOW`."]
+    lines += ["", "‡ Shape only. The group search for these inputs exceeds the annotation budget."]
 
     lines += ["", "## Automorphism groups seen inside each tree", "",
               "Group of the `C` side, counted over every node whose group was",

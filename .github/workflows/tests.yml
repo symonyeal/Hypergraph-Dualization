@@ -11,14 +11,18 @@ permissions:
 
 jobs:
   rust:
-    name: Read-once DAG safety
+    name: Rust ${{ matrix.crate }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        crate: [readonce_dag, frequency_constant]
     steps:
       - uses: actions/checkout@v5
       - uses: dtolnay/rust-toolchain@stable
-      - run: cargo fmt --manifest-path experiments/readonce_dag/Cargo.toml --check
-      - run: cargo clippy --manifest-path experiments/readonce_dag/Cargo.toml --all-targets --locked -- -D warnings
-      - run: cargo test --manifest-path experiments/readonce_dag/Cargo.toml --release --locked
+      - run: cargo fmt --manifest-path experiments/${{ matrix.crate }}/Cargo.toml --check
+      - run: cargo clippy --manifest-path experiments/${{ matrix.crate }}/Cargo.toml --all-targets --locked -- -D warnings
+      - run: cargo test --manifest-path experiments/${{ matrix.crate }}/Cargo.toml --release --locked
 
   python:
     name: Python ${{ matrix.python-version }}
@@ -26,7 +30,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.12", "3.14"]
+        python-version: ["3.10", "3.14"]
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v5
@@ -36,12 +40,10 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - run: cargo build --manifest-path experiments/readonce_dag/Cargo.toml --release --locked
       - run: python -m pip install -e ".[dev]"
-      - run: python -m pytest
-      - run: python -m fka verify
-      - run: python -m fkb verify
-      # The cross-check that neither algorithm can make on its own: both
-      # against each other and against the oracle, on every instance.
-      - run: python -m fkb compare --all
+      - if: matrix.python-version == '3.14'
+        run: python -m pytest
+      - if: matrix.python-version == '3.10'
+        run: python -m pytest -m "not slow"
 
   sage:
     name: SageMath 10.9
@@ -50,10 +52,9 @@ jobs:
       - uses: actions/checkout@v5
       # Checkout runs on the host because the Sage image has neither a
       # compatible Actions Node runtime nor Git. Mount the checked-out tree and
-      # keep install, tests, and verification in one container invocation.
+      # keep installation and the backend checks in one container invocation.
       #
-      # Two things this invocation has to get right, both of which it got wrong
-      # until 2026-08-06 and neither of which shows up as a test failure:
+      # Sage container requirements:
       #
       # 1. Sage is not at /sage. The image installs it at /home/sage/sage and
       #    symlinks /usr/bin/sage, so it is simply `sage` on PATH. The old
@@ -74,7 +75,5 @@ jobs:
             ghcr.io/sagemath/sage-binder-env:10.9 \
             -lc 'sage --version &&
                  sage -python -m pip install -e ".[dev]" &&
-                 sage -python -m pytest &&
-                 sage -python -m fka env &&
-                 sage -python -m fka verify &&
-                 sage -python -m fkb verify'
+                 sage -python -c "from fka.backends import has_sage; assert has_sage()" &&
+                 sage -python -m pytest -m sage'

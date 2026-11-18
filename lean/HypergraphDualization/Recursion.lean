@@ -65,9 +65,6 @@ theorem lemma_3_3_3_false :
 
 /-! ### Observation 3.4.5, made precise -/
 
-/-- Adjacency in the primal graph `G(H)`: distinct vertices sharing an edge. -/
-def primalAdj (H : Finset (Finset α)) (u v : α) : Prop := u ≠ v ∧ ∃ e ∈ H, u ∈ e ∧ v ∈ e
-
 theorem primalAdj_del {G : Finset (Finset α)} {x u v : α} (h : primalAdj (del G x) u v) :
     primalAdj G u v ∧ u ≠ x ∧ v ≠ x := by
   obtain ⟨huv, e, he, hu, hv⟩ := h
@@ -128,8 +125,8 @@ open HD.Data in
 Sperner reduction. -/
 theorem f2g2_false_twin_filtered :
     splitVar f2g2C f2g2D = some 0 ∧
-    S32.PAdj f2g2C 0 2 ∧ S32.PAdj f2g2C 1 2 ∧ S32.PAdj f2g2C 0 3 ∧ S32.PAdj f2g2C 1 3 ∧
-    (∀ w, S32.PAdj f2g2C 0 w ↔ S32.PAdj f2g2C 1 w) ∧ ¬ S32.PAdj f2g2C 0 1 ∧
+    primalAdj f2g2C 0 2 ∧ primalAdj f2g2C 1 2 ∧ primalAdj f2g2C 0 3 ∧ primalAdj f2g2C 1 3 ∧
+    (∀ w, primalAdj f2g2C 0 w ↔ primalAdj f2g2C 1 w) ∧ ¬ primalAdj f2g2C 0 1 ∧
     (∃ e ∈ con f2g2C 0, 1 ∈ e) ∧ (∀ e ∈ minimal (con f2g2C 0), 1 ∉ e) := by
   native_decide
 

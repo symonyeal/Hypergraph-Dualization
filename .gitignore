@@ -21,11 +21,17 @@ lean/.lake/
 experiments/readonce_dag/target/
 experiments/frequency_constant/target/
 
-# LaTeX build output; the compiled main.pdf of each edition is committed.
-thesis/*/*.aux
-thesis/*/*.bbl
-thesis/*/*.blg
-thesis/*/*.lof
-thesis/*/*.log
-thesis/*/*.out
-thesis/*/*.toc
+# LaTeX build output; thesis/main.pdf is committed.
+thesis/*.aux
+thesis/*.bbl
+thesis/*.blg
+thesis/*.lof
+thesis/*.log
+thesis/*.out
+thesis/*.toc
+thesis/*.synctex.gz
+
+# Per-run exports regenerate from the algorithms and instance library.
+results/*.fk-*.json
+results/*.fk-*.html
+results/*.fk-*.dot

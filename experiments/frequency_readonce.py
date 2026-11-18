@@ -100,5 +100,7 @@ if __name__ == "__main__":
         templates(int(sys.argv[2]), int(sys.argv[3]))
     elif mode == "split":
         split()
-    else:
+    elif mode == "closure":
         closure(int(sys.argv[2]))
+    else:
+        raise SystemExit(f"unknown mode {mode!r}")

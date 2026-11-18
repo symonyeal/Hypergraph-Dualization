@@ -98,7 +98,7 @@ elab "#assert_evaluation " ids:ident* : command => do
   HD.S32.sum_degree_mul_eq_excess HD.S32.uniform_regular_cross_singleton
   HD.S32.young_aut_singletons HD.TwoColourable HD.alt_counts HD.alt_shape
   HD.aut_child_moves_split_to_isolated HD.aut_eq_top_of_readOnce HD.aut_le_aut_minimal
-  HD.aut_tr_eq_aut_minimal HD.aut_tr_of_sperner HD.bernoulliWeight_pmap HD.card_alt_succ
+  HD.aut_le_aut_tr HD.aut_tr_eq_aut_minimal HD.aut_tr_of_sperner HD.bernoulliWeight_pmap HD.card_alt_succ
   HD.card_between HD.card_coalt_succ HD.card_disjoint_eq HD.card_fkADagR_le_closed
   HD.card_fkADag_le HD.card_fkADag_le_minors HD.card_join_of_disjoint HD.card_le_card_tr
   HD.card_le_of_critical HD.card_le_of_tr_eq_self HD.card_subst HD.card_subst_uniform
@@ -136,10 +136,27 @@ elab "#assert_evaluation " ids:ident* : command => do
 /-! ### Evaluations (*Checked*, *Observation (evaluation)*) -/
 
 #assert_evaluation
+  HD.Data.k3_dual HD.Data.fano_dual HD.Data.f2g2_dual
+  HD.Data.sixA_dual HD.Data.sixB_dual HD.Data.sixC_dual
+  HD.Data.sixD_dual HD.Data.sevenVer_dual HD.Data.eightVer_dual
+  HD.Data.k3_nodes HD.Data.fano_nodes HD.Data.f2g2_nodes
+  HD.Data.sixA_nodes HD.Data.sixB_nodes HD.Data.sixC_nodes
+  HD.Data.sixD_nodes HD.Data.sevenVer_nodes HD.Data.eightVer_nodes
+  HD.Data.k3_eps HD.Data.fano_eps HD.Data.f2g2_eps
+  HD.Data.six_eps HD.Data.sevenVer_eps HD.Data.f2g2_tree
+  HD.Data.fano_tree HD.Data.sixA_tree HD.Data.sixB_tree
+  HD.Data.sixC_tree HD.S32.st3_tr HD.S32.hw3_tr
+  HD.S32.p4_freq HD.S32.st3_freq HD.S32.hw3_freq
+  HD.S32.k3dot_freq HD.S32.k4minus_freq HD.S32.c4_freq
+  HD.S32.k4_freq HD.S32.st2_splits HD.S32.pn3_splits
+  HD.S32.pn3bar_splits HD.S32.p4_splits HD.S32.k3_splits
+  HD.S32.st3_splits HD.S32.hw3_splits HD.S32.k3dot_splits
+  HD.S32.k4minus_splits HD.S32.k2dd_splits HD.S32.c4_splits
+  HD.S32.k4_splits
   HD.Data.eightVer_eps HD.Data.eightVer_printed_not_dual HD.Data.eightVer_tree
   HD.Data.eightVer_uniform HD.Data.faithful_nodes HD.Data.fano_self_tr
   HD.Data.k3_refutes_printed_cor_2_3_1 HD.Data.k3_self_tr HD.Data.pg23_not_self_dual
-  HD.Data.sevenVer_tree HD.Data.sixA_printed_not_dual HD.Data.sixD_tree HD.Data.two_fano_tr_card
+  HD.Data.sevenVer_tree HD.Data.sixA_printed_not_dual HD.Data.sixD_tree
   HD.Fix.claim_3_1_6_counterexample HD.Fix.cor_3_3_4_not_iso HD.Fix.lemma_3_3_1_needs_sperner
   HD.OpenAI.fano_k3_balanced HD.S32.c4_tr HD.S32.classes_four HD.S32.d31_tr HD.S32.eps_five
   HD.S32.eps_four HD.S32.eps_nine HD.S32.eps_seven HD.S32.eps_six HD.S32.eps_three

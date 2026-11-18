@@ -223,10 +223,6 @@ theorem invariant_iff_orbits (S : Set α) :
 /-- The orbit `{g v : g ∈ Γ}`. -/
 def orbitOf (v : α) : Set α := {w | ∃ g ∈ Γ, g v = w}
 
-theorem orbit_invariant (v : α) : ∀ g ∈ Γ, ∀ w ∈ orbitOf Γ v, g w ∈ orbitOf Γ v := by
-  rintro g hg w ⟨h, hh, rfl⟩
-  exact ⟨g * h, Γ.mul_mem hg hh, rfl⟩
-
 /-- **Claim 3.1.6, corrected.** An invariant set is the union of the orbits of its points. -/
 theorem invariant_eq_union_orbits {S : Set α} (hS : ∀ g ∈ Γ, ∀ v ∈ S, g v ∈ S) :
     S = ⋃ v ∈ S, orbitOf Γ v := by

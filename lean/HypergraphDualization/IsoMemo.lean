@@ -7,9 +7,9 @@ Copyright (c) 2026 Saimon Y. Islam. Released under the GPL-3.0-or-later.
 through the recursion. The key function only has to send each pair to an isomorphic pair
 (`Canon κ`): it need not be a canonical labelling, and it need not be compatible with the rule.
 A hit returns the verdict stored under an equal key, which belongs to an isomorphic pair, so it
-is the right verdict because duality is invariant under relabelling (`dual_pimg`). The memo's
-length is the number of nodes the algorithm expands: `d_iso` of `experiments/iso_memo.py` and
-`readonce_dag --iso` when `κ` is the shape key.
+is the right verdict because duality is invariant under relabelling (`dual_pimg`). Each positive-fuel cache miss adds one entry; existing input entries remain, while
+fuel-zero calls add none. The soundness theorem below proves verdicts, rather than a
+class-count invariant. The Rust `readonce_dag --iso` experiment implements a separate shape key.
 
 | Lean | Research |
 | --- | --- |
@@ -118,16 +118,7 @@ theorem fkAI_correct (r : Rule n) {κ : HG n × HG n → HG n × HG n} (hκ : Ca
           · rename_i x _
             set C' := minimal C
             set D' := minimal D
-            have hsplit := dual_split (G := C') (H := D') (mem_univ x)
-            have hL := dual_erase_of_notMem (U := (univ : Finset (Fin n)))
-              (G := del C' x) (H := con D' x) (x := x)
-              (fun e he => (mem_filter.1 he).2) (fun e he => by
-                obtain ⟨f, -, rfl⟩ := mem_image.1 he; exact notMem_erase x f)
-            have hR := dual_erase_of_notMem (U := (univ : Finset (Fin n)))
-              (G := del D' x) (H := con C' x) (x := x)
-              (fun e he => (mem_filter.1 he).2) (fun e he => by
-                obtain ⟨f, -, rfl⟩ := mem_image.1 he; exact notMem_erase x f)
-            rw [hL, hR] at hsplit
+            have hsplit := dual_split_univ C' D' x
             obtain ⟨hl1, hl2⟩ := ih (del C' x) (con D' x) m hm
             split_ifs with hl
             · obtain ⟨hr1, -⟩ := ih (del D' x) (con C' x) _ hl2

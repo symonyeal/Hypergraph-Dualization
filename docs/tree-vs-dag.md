@@ -41,8 +41,8 @@ alternating trees of Chapter 4 -- the families chosen precisely because they sit
 at the frequency floor -- cost FK-A 369 subproblems and 103,377 nodes to
 re-derive them.
 
-**The blow-up is in the unfolding, not in the split rule.** Nothing about which
-vertex FK-A pivots on produces it; the recursion simply has no memory.
+For a fixed split rule, the tree repeats exactly the subproblems identified by its
+DAG. Changing the split rule can change both counts, as the examples in §4 show.
 
 `fka.analysis.annotate` already memoises this exact key when annotating a
 finished tree, for the stated reason that "FK-A regenerates identical
@@ -52,8 +52,8 @@ subproblems". The recursion that builds the tree does not.
 
 Both are exact, for every size tested, and are asserted in `tests/test_memo.py`:
 
-    matching(v):    tau = 2^(v/2+1) - 3       delta = v
-    threshold(v):   tau = v - 1               delta = v - 1
+    matching(v):    tau = 2^(v/2+1) - 3       delta = v       (even v >= 4)
+    threshold(v):   tau = v - 1               delta = v - 1   (even v >= 2)
 
 `threshold` is the only family in the library with `tau = delta` -- no repeated
 subproblem at all. It is also the only instance class where FK-B *loses*
@@ -81,12 +81,12 @@ avoidable as anywhere else. "Output-bound" is not a fourth regime.
 | `word-xxx` | 64 | 16,512 | 4,139 | 0.251 |
 | `word-yyy` | 64 | 16,512 | 4,139 | 0.251 |
 
-`word-xxx` and `word-yyy` are the constant words -- by
-[hard-classes.md](hard-classes.md) §3.2 the GK- and TK-families, the two
-worst-balanced members at `c_inf = 2`. At `N = 16,512` they need 4,139 distinct
-subproblems. Their trees are far past enumeration; `word-xy`, 344 times smaller,
-already unfolds to 577 nodes. The two agree exactly, as `T_w^d = T_wbar`
-requires.
+`word-xxx` and `word-yyy` are the TK tree at height six and its dual, the two
+constant words with `c_inf = 2` [hard-classes.md §3.2](hard-classes.md).
+At `N = 16,512` both have 4,139 distinct subproblems under the symmetric degree-sum
+rule. Swapping the sides interchanges the children after the root and preserves the
+number of descendants. Their trees are far past enumeration. At 344 times smaller
+`N`, `word-xy` already unfolds to 577 nodes.
 
 ## 4. `delta <= 2N` on the first corpus, and where it fails
 
@@ -116,10 +116,11 @@ small. See `docs/research-2026-10.md`, Observations 4.4-4.11.
 The leftmost rule (leaves numbered left to right, Hertel's order) keeps `delta = n` on the same
 instances. So the alternating trees are hard for memoised FK-A under its most-frequent-vertex
 rule and easy under a coordinated order: the remaining hardness is the split rule's, not the
-instance's. Under ETH some dual family must defeat every rule
-(`docs/research-2026-10.md`, Proposition 4.6), but no explicit one is known.
+instance's. Under the premise of Proposition 4.6 (`docs/research-2026-10.md`),
+the fixed memoised FK-A rule has no polynomial bound on `delta` over all dual
+pairs; the reduction supplies no explicit dual family witnessing this.
 
-The search in [hard-cases.md](hard-cases.md) was run against `tau`; run against `delta`,
+The search in [hard-classes.md](hard-classes.md) was run against `tau`; run against `delta`,
 `S(4,5,11)` places at 140 subproblems on `N = 132`.
 
 ## 5. FK-B and memoisation are orthogonal
@@ -153,16 +154,16 @@ the identity
 
     tau/delta = 1/(1 - rho),
 
-so `rho` measures the redundancy a memo removes *in full*, and is a ceiling on
-any such speedup. FK-B captures 14-55% of it. That is why `word-xy` at
-`rho = 95.2%` gains only 2.99x where `gk-f3` at 99.6% gains 52.96x: the
-ceilings are 20.6x and 280.1x, and FK-B takes a similar fraction of each. The
-documented exception was never an exception.
+so `rho` gives the reduction in visited nodes from exact memoization under the same
+rule. The observed FK-A/FK-B tree ratios are 14–55% of the FK-A tree/DAG ratios in
+the comparison. For `word-xy` and `gk-f3`, the respective tree/DAG ratios are
+20.6x and 280.1x, against tree/tree ratios of 2.99x and 52.96x. These figures
+compare node counts.
 
 ## Caveats
 
 * `delta` is split-rule- and labelling-specific, as `tau` is
-  ([hard-cases.md](hard-cases.md) §6). The agreement in `tests/test_memo.py`
+  ([hard-classes.md](hard-classes.md) §6). The agreement in `tests/test_memo.py`
   holds across both variants and both split rules; the *values* above are
   `modified` / `degree_sum`.
 * `gk-f4` is beyond this program; `experiments/readonce_dag` measures it on

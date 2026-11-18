@@ -25,9 +25,8 @@ gates L R : AND(g, h) for OR-rooted balanced g, h with <= L leaves each: H = top
             child flattened into the gate), with the least ratios (18 12: about a minute).
 theta     : rate bounds of Lemma 16 (one-gate loss theta) and the theta that passes 0.4143394.
 rank K    : least rank (k <= 3) and the depth-first tree's rank of GK f_k, k <= K.
-lp        : GK f_2 by truth tables: DT, and the subcube-partition LP bound (needs scipy).
 Usage: python experiments/alternating_dt.py rates 6 | least 3 | classes 3 | random 1 400 | balanced
-       | gates 18 12 | theta | rank 9 | lp
+       | gates 18 12 | theta | rank 9
 """
 import random
 import sys
@@ -69,12 +68,6 @@ def alternating(top_or, depth):
     return u, L1, L0
 
 
-def lg(x):
-    """log2 of a positive integer of any size."""
-    b = max(x.bit_length() - 60, 0)
-    return b + log2(x >> b)
-
-
 def rates(K):
     for name, top_or, depths in (("GK f_k", True, [2 * k - 1 for k in range(1, K + 1)]),
                                  ("TK S_k", False, [2 * k for k in range(1, K + 1)])):
@@ -83,7 +76,7 @@ def rates(K):
             v, s, s1 = 2 ** depth, u.lg(), (ONE - u).lg()
             both = max(s, s1) + log2(1 + 2 ** -abs(s - s1))
             print(f"{name} v={v:5d}  log2|u|/v={s / v:.9f}  log2(|u|+|1-u|)/v={both / v:.9f}  "
-                  f"log2 L_df/v={lg(L1 + L0) / v:.6f}")
+                  f"log2 L_df/v={log2(L1 + L0) / v:.6f}")
 
 
 def mk(op, kids):
@@ -323,10 +316,10 @@ def gates(L, R):
 def theta():
     """Lemma 16: GK f_K with f_3 blocks, loss theta per gate."""
     _, L1, L0 = alternating(True, 5)
-    z3 = 2 * lg(L1) + lg(L0)
+    z3 = 2 * log2(L1) + log2(L0)
     bar = 0.4143394
-    print(f"f_3: (L1, L0) = ({L1}, {L0}); depth-first rate log2(L1 + L0)/32 = {lg(L1 + L0) / 32:.6f}")
-    print(f"(a) V form:  gamma >= 0.469254 - log2(1/theta)/32; passes {bar} for theta > {2 ** (-32 * (0.469254 - bar)):.4f}")
+    print(f"f_3: (L1, L0) = ({L1}, {L0}); depth-first rate log2(L1 + L0)/32 = {log2(L1 + L0) / 32:.6f}")
+    print(f"(a) V form:  gamma >= {z3 / 96:.7f} - log2(1/theta)/32; passes {bar} for theta > {2 ** (-32 * (z3 / 96 - bar)):.4f}")
     print(f"(b) scalar:  gamma >= z3/96 - log2(1/theta)/48, z3/96 = {z3 / 96:.7f}; "
           f"passes {bar} for theta > {2 ** (-48 * (z3 / 96 - bar)):.4f}")
 
@@ -363,36 +356,6 @@ def ranks(K):
               f"(v + 1)/3 = {(v + 1) // 3}")
 
 
-def lp():
-    import numpy as np
-    from scipy.optimize import linprog
-
-    n = 8
-    f = [((x & 1 or x >> 1 & 1) and (x >> 2 & 1 or x >> 3 & 1)) or
-         ((x >> 4 & 1 or x >> 5 & 1) and (x >> 6 & 1 or x >> 7 & 1)) for x in range(1 << n)]
-    cubes = []
-    for fix in product((-1, 0, 1), repeat=n):
-        c = [x for x in range(1 << n) if all(b < 0 or (x >> i & 1) == b for i, b in enumerate(fix))]
-        cubes.append((fix, c))
-
-    @lru_cache(maxsize=None)
-    def tt_dt(fix):
-        c = next(c for g, c in cubes if g == fix)
-        if len({f[x] for x in c}) == 1:
-            return 1
-        return min(tt_dt(fix[:i] + (0,) + fix[i + 1:]) + tt_dt(fix[:i] + (1,) + fix[i + 1:])
-                   for i, b in enumerate(fix) if b < 0)
-
-    rows = []
-    for _, c in cubes:
-        if len({f[x] for x in c}) == 1:
-            r = np.zeros(1 << n)
-            r[c] = 1
-            rows.append(r)
-    res = linprog(-np.ones(1 << n), A_ub=np.array(rows), b_ub=np.ones(len(rows)), bounds=(None, None))
-    print(f"GK f_2: DT by truth tables = {tt_dt(tuple([-1] * n))}; partition LP bound = {-res.fun:.4f}")
-
-
 if __name__ == "__main__":
     sys.setrecursionlimit(10000)
     mode, args = (sys.argv[1] if len(sys.argv) > 1 else "rates"), [int(a) for a in sys.argv[2:]]
@@ -413,4 +376,4 @@ if __name__ == "__main__":
     elif mode == "rank":
         ranks(*(args or [9]))
     else:
-        lp()
+        raise SystemExit(f"unknown mode {mode!r}")

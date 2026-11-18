@@ -21,6 +21,13 @@ sys.setrecursionlimit(100000)
 LIBRARY = list_ids()
 
 
+@pytest.mark.parametrize("option", ["variant", "split_rule"])
+def test_memo_rejects_invalid_options_on_trivial_pairs(option):
+    H = Hypergraph(1, (1,))
+    with pytest.raises(ValueError, match="unknown"):
+        fk_a_memo(H, H, **{option: "invalid"})
+
+
 @pytest.mark.parametrize("instance_id", LIBRARY)
 def test_memo_agrees_with_tree_and_oracle(instance_id):
     """Same verdict as FK-A and as Berge, and ``delta`` is the tree's DAG.

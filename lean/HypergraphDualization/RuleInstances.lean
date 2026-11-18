@@ -27,10 +27,8 @@ open Fm
 def gk2 : Fm 8 :=
   or (and (or (var 0) (var 1)) (or (var 2) (var 3))) (and (or (var 4) (var 5)) (or (var 6) (var 7)))
 
-theorem gk2_ordered : gk2.Ordered := by
-  simp [gk2, Ordered, vars]
-
-/-- **Observation (evaluation).** `δ` of modified FK-A on GK `f₂`: 8 under every rule. -/
+/-- **Observation (evaluation).** `δ` of modified FK-A on GK `f₂` is 8 under the degree-sum,
+leftmost and guarded rules. -/
 theorem gk2_rules :
     (fkADagR splitVar 9 true (dnf gk2) (dnf (dual gk2))).card = 8 ∧
       (fkADagR leftRule 9 true (dnf gk2) (dnf (dual gk2))).card = 8 ∧

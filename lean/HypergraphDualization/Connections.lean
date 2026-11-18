@@ -94,8 +94,6 @@ theorem coverNumber_le_of_intersecting {H : Finset (Finset V)} {r : ℕ} (hI : I
 theorem ryser_extremal_size {H : Finset (Finset V)} {r : ℕ} (hu : ∀ e ∈ H, e.card = r)
     (hr : 0 < r) (hτ : coverNumber H = r) : 2 ^ r ≤ H.card + (tr univ H).card := by
   have h0 : ∅ ∉ H := fun h => by have := hu ∅ h; simp at this; omega
-  have sH : IsSperner H := fun e he f hf hef =>
-    eq_of_subset_of_card_le hef (by rw [hu e he, hu f hf])
   refine two_pow_shortest_le (fun _ _ => subset_univ _) rfl r fun e he => ?_
   rcases mem_union.1 he with he | he
   · exact (hu e he).ge

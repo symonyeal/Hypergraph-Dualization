@@ -37,6 +37,13 @@ def test_permutation_algebra():
     assert cycle_notation((0, 1, 2, 3)) == "()"
 
 
+def test_cograph_cap_uses_the_requested_limit():
+    g = Graph.from_edges(4, [(0, 1), (1, 2), (2, 3)])
+    with pytest.raises(ValueError, match="3 vertices"):
+        find_induced_p4(g, max_vertices=3)
+    assert find_induced_p4(g, max_vertices=None) == (0, 1, 2, 3)
+
+
 @pytest.mark.parametrize(
     "generators,degree,name,order",
     [
@@ -391,6 +398,17 @@ def test_aut_g_equals_aut_h_at_every_node_of_both_algorithms(algorithm):
 # ----------------------------------------------------------------------
 # SageMath cross-checks (skipped when Sage is unavailable)
 # ----------------------------------------------------------------------
+@pytest.mark.sage
+def test_sage_names_groups_without_explicit_generators():
+    from fka.backends.sage_backend import name_group
+    from fka.groups import PermutationGroup
+
+    group = PermutationGroup(degree=2, elements=[(0, 1), (1, 0)])
+    result = name_group(group)
+    assert result.order == 2
+    assert result.name == "C2"
+
+
 @pytest.mark.sage
 @pytest.mark.parametrize("instance_id", ["fano", "f2g2", "6b", "6d"])
 def test_sage_agrees_on_automorphism_order(instance_id):

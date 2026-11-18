@@ -20,7 +20,7 @@
 //! Classes (Track S, research Observation 4.29).
 //!   shp(S, t)  AHU form of h's formula pruned to S (dead leaves dropped, unary gates collapsed,
 //!              equal operators merged), AND and OR swapped when t = 1. Equal shp iff the pairs are
-//!              isomorphic, so d_shp = δ_iso (the AHU claim is iso_memo.py's, checked there).
+//!              isomorphic, so d_shp = δ_iso for read-once input.
 //!   orb(S, t)  AHU form of the whole input tree with the leaves in S marked, and t. For an
 //!              alternating input (GK, TK, `alt`) the tree's automorphisms are Aut(f), so equal orb
 //!              iff one Aut(f) element maps one pair to the other: d_aut = δ_Aut.
@@ -30,8 +30,7 @@
 //! parent), holding one level at a time; `--spill DIR` keeps the pending levels in files there.
 //! All parents of a node are on higher levels, so its number of root paths is complete when its
 //! level is reached, and τ is their sum over the DAG (printed `~x` from an f64 past 2^128 − 1).
-//! `--iso` is iso_memo.py's iso(): depth first, the x = 1 child first, and a node whose shp was
-//! seen is not expanded.
+//! `--iso` traverses depth first, the x = 1 child first, skipping nodes whose shp was seen.
 use std::collections::{HashMap, HashSet};
 use std::fs::{self, File};
 use std::hash::{BuildHasherDefault, Hash, Hasher};
@@ -79,12 +78,10 @@ impl<const W: usize> M<W> {
         self.0.iter().map(|w| w.count_ones()).sum()
     }
     fn low(self) -> usize {
-        for i in 0..W {
-            if self.0[i] != 0 {
-                return 64 * i + self.0[i].trailing_zeros() as usize;
-            }
-        }
-        usize::MAX
+        self.0
+            .iter()
+            .position(|&w| w != 0)
+            .map_or(usize::MAX, |i| 64 * i + self.0[i].trailing_zeros() as usize)
     }
 }
 

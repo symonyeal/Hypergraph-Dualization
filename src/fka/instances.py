@@ -233,27 +233,34 @@ def self_dualise(base_edges: Sequence[Sequence[int]], n_base: int, k: int = 1) -
     The construction :func:`self_dual_fano` names, with the base family a
     parameter: on ``n_base*k + 2`` vertices, writing ``a`` and ``b`` for the two
     extra ones, the edges are ``{a,b}``; every base edge of every copy plus
-    ``b``; and every choice of one base edge per copy plus ``a``. The result is
+    ``b``; and every choice of one base transversal per copy plus ``a``. The result is
     self-transversal whatever the base is, which is what makes it the standard
     way to turn a family into a dualisation benchmark: the answer is always
     "dual", so no branch can be closed early by a counterexample.
 
-    ``|E| = |base|^k + k|base| + 1``, so ``k`` is limited by the base: two
+    For a nonconstant Sperner base, ``|E| = |Tr(base)|^k + k|base| + 1``.
+    The self-transversal Fano and Witt bases have ``Tr(base) = base``: two
     copies of the Fano plane's 7 lines give 64 edges, two of the 66 blocks of
     :func:`witt_11` give 4489.
     """
     if k < 1:
         raise ValueError(f"k must be at least 1, got {k}")
+    from .irredundant import irredundant
+    from .transversal import transversal
+
+    base = irredundant(Hypergraph.from_sets(n_base, base_edges, one_indexed=True)).reduced
+    primal = base.to_sets(one_indexed=True)
+    dual = transversal(base).to_sets(one_indexed=True)
     n = n_base * k + 2
     a, b = n - 1, n  # 1-indexed
     edges = [[a, b]]
     for copy in range(k):
-        for e in base_edges:
+        for e in primal:
             edges.append(sorted(v + n_base * copy for v in e) + [b])
-    for combo in itertools.product(base_edges, repeat=k):
+    for combo in itertools.product(dual, repeat=k):
         picked = sorted(v + n_base * c for c, e in enumerate(combo) for v in e)
         edges.append(picked + [a])
-    return Hypergraph.from_sets(n, edges, one_indexed=True)
+    return irredundant(Hypergraph.from_sets(n, edges, one_indexed=True)).reduced
 
 
 #: ``g(x) = -1 + x^2 - x^3 + x^4 + x^5``, one of the two degree-5 factors of
@@ -273,7 +280,7 @@ def witt_11() -> Hypergraph:
     Like the Fano plane -- which is the same construction on the perfect
     ``[7, 4, 3]`` Hamming code -- it is *self-transversal*: ``Tr(W11) = W11``.
     Unlike the Fano plane it is hard for FK-B as well as FK-A; see
-    ``docs/hard-cases.md``. The third perfect code, the binary Golay
+    ``docs/hard-classes.md``. The third perfect code, the binary Golay
     ``[23, 12, 7]``, gives ``S(4, 7, 23)``, which is intersecting but **not**
     self-transversal, so the family stops here.
     """

@@ -9,7 +9,9 @@ from __future__ import annotations
 
 import itertools
 import math
+import sys
 from fractions import Fraction
+from pathlib import Path
 
 import pytest
 
@@ -24,8 +26,31 @@ from fka.algorithm import eps_exact
 from fka.bound import iterate, shortest_edge_ratio, threshold_ratio
 from fka.transversal import transversal
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "experiments"))
+import hard_classes as survey  # noqa: E402
+
 X, Y = TEMPLATE_X, TEMPLATE_Y  # (v1^v2)v(v3^v4) and (v1vv2)^(v3vv4)
 word = template_word
+
+
+def test_survey_does_not_infer_imprimitivity_from_a_capped_search(monkeypatch):
+    C = Hypergraph.from_sets(3, [(0, 1), (0, 2), (1, 2)])
+    assert survey.classify(C, C) == (True, False)
+    monkeypatch.setattr(survey, "CAP", 1)
+    assert survey.classify(C, C) == (None, False)
+
+
+def test_survey_skips_group_enumeration_for_read_once_pair(monkeypatch):
+    C = Hypergraph.from_sets(3, [(0,), (1, 2)])
+    monkeypatch.setattr(survey, "pair_automorphisms",
+                        lambda *args, **kwargs: pytest.fail("unexpected group search"))
+    assert survey.classify(C, transversal(C)) == (False, True)
+
+
+def test_survey_cases_use_each_labelled_pair_once():
+    cases = list(survey.cases())
+    assert len({case[0] for case in cases}) == len(cases)
+    assert len({(C, D) for _, C, D, _ in cases}) == len(cases)
 
 
 # ----------------------------------------------------------------------
@@ -65,8 +90,9 @@ def test_gk_family(k):
     assert eps_exact(f, g) == Fraction(1, 2 ** (k - 1))
 
 
-@pytest.mark.parametrize("i", [1, 2, 3])
+@pytest.mark.parametrize("i", [1, 2, pytest.param(3, marks=pytest.mark.slow)])
 def test_tk_family(i):
+    # S3 has 16,384 edges; the independent Berge computation belongs in the full suite.
     S = tk(i)
     r = transversal(S)
     assert len(S) == 2 ** (2 * (2 ** i - 1))

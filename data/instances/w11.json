@@ -933,7 +933,7 @@
       11
     ]
   ],
-  "notes": "Self-transversal: Tr(W11) = W11, verified against the Berge oracle. 66 blocks of size 5 on 11 points, every 4-subset in exactly one block, every vertex of degree 30, epsilon = 5/11. Aut = M11 of order 7920, vertex-transitive, and like the Fano plane it is neither conformal nor read-once. The Fano plane is the same construction on the perfect [7,4,3] Hamming code; the third perfect code, the binary Golay [23,12,7], gives S(4,7,23), which is intersecting but NOT self-transversal -- 16744 subsets S of its 23 points satisfy thesis equation 2.1 -- so the family stops at 11. This is the library's hardest instance per unit of input for FK-B and the only one that is hard for both algorithms at once; see docs/hard-cases.md.",
+  "notes": "Self-transversal: Tr(W11) = W11, verified against the Berge oracle. 66 blocks of size 5 on 11 points, every 4-subset in exactly one block, every vertex of degree 30, epsilon = 5/11. Aut = M11 of order 7920, vertex-transitive, and like the Fano plane it is neither conformal nor read-once. The Fano plane is the same construction on the perfect [7,4,3] Hamming code; the third perfect code, the binary Golay [23,12,7], gives S(4,7,23), which is intersecting but NOT self-transversal -- 16744 subsets S of its 23 points satisfy thesis equation 2.1 -- so the family stops at 11. This is the library's hardest instance per unit of input for FK-B and the only one that is hard for both algorithms at once; see docs/hard-classes.md.",
   "expected": {
     "dual": true,
     "epsilon": "5/11",

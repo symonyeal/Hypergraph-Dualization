@@ -4,8 +4,7 @@ Copyright (c) 2026 Saimon Y. Islam. Released under the GPL-3.0-or-later.
 # Disjoint copies of the Fano plane (Definition 5.2.1, corrected)
 
 `kFano k` is `k` vertex-disjoint copies of the Fano plane on `0 .. 7k-1`. It has `7k` edges and
-`7^k` minimal transversals; the printed count `(k-2)²/4 + k/2 + 1` is wrong for every `k ≥ 1`
-(`two_fano_tr_card` checks `k = 2`).
+`7^k` minimal transversals. At `k = 2` this gives 49, while the printed formula gives 2.
 
 | Lean | Thesis |
 | --- | --- |

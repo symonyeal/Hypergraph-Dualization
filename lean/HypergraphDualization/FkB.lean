@@ -70,21 +70,6 @@ theorem dual_iff_fun {C D : HG n} : Dual univ C D ↔ ∀ S, cnfv C S ↔ upHit 
     rw [cnfv_iff, Finset.sdiff_sdiff_eq_self hA] at this
     tauto
 
-/-- The FK-A decomposition at any vertex, for arbitrary hypergraphs. -/
-theorem dual_split_univ (C D : HG n) (x : Fin n) :
-    Dual univ C D ↔ Dual univ (del C x) (con D x) ∧ Dual univ (del D x) (con C x) := by
-  have hsplit := dual_split (G := C) (H := D) (mem_univ x)
-  have hL := dual_erase_of_notMem (U := (univ : Finset (Fin n)))
-    (G := del C x) (H := con D x) (x := x)
-    (fun e he => (mem_filter.1 he).2) (fun e he => by
-      obtain ⟨f, -, rfl⟩ := mem_image.1 he; exact notMem_erase x f)
-  have hR := dual_erase_of_notMem (U := (univ : Finset (Fin n)))
-    (G := del D x) (H := con C x) (x := x)
-    (fun e he => (mem_filter.1 he).2) (fun e he => by
-      obtain ⟨f, -, rfl⟩ := mem_image.1 he; exact notMem_erase x f)
-  rw [hL, hR] at hsplit
-  exact hsplit
-
 theorem meets_of_conds {C D : HG n} (h : conds C D = true) : ∀ c ∈ C, ∀ d ∈ D, (c ∩ d).Nonempty := by
   simp only [conds, Bool.and_eq_true, decide_eq_true_eq] at h
   exact h.1.2
@@ -264,13 +249,6 @@ theorem fkBR_correct (r : Rule n) (mf : Fin n → HG n → HG n → Bool) (fuel 
       · split
         · simp [hred]
         · rename_i x _
-          have hsp := dual_split_univ C' D' x
-          -- the `x = 0` pair, written both ways
-          have h0 : Dual univ (con C' x) (del D' x) ↔ Dual univ (del D' x) (con C' x) := dual_comm
-          have h1 : Dual univ (del C' x) (con D' x) ↔ Dual univ (con D' x) (del C' x) := dual_comm
-          have hD : Dual univ C D ↔ Dual univ (del C' x) (con D' x) ∧
-              Dual univ (con C' x) (del D' x) := by
-            rw [← hred, hsp, h0, and_comm]
           by_cases hmD : mf x D' C' = true
           · simp only [hmD, ↓reduceIte]
             rw [Bool.eq_iff_iff]
@@ -291,7 +269,6 @@ theorem fkBR_correct (r : Rule n) (mf : Fin n → HG n → HG n → Bool) (fuel 
               simp only [ih, Bool.and_eq_true, decide_eq_true_eq]
               have hM' : ∀ d ∈ D', ∀ c ∈ C', (d ∩ c).Nonempty := fun d hd c hc => by
                 rw [inter_comm]; exact hM c hc d hd
-              have hd' : Dual univ C D ↔ Dual univ D' C' := hred.symm.trans dual_comm
               constructor
               · rintro ⟨hL, hch⟩
                 refine hred.1 (dual_comm.1 ((dual_muD x hM' (dual_comm.1 hL)).2 fun m hm => ?_))

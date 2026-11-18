@@ -6,7 +6,7 @@ decision-tree bound into a bound on FK-A's recursion tree under every valid rule
 note evaluates Elbassioni's bound exactly on GK and TK, bounds the result from above, and
 compares the two. §4 replaces his evaluation point by measures on blocks
 of eight variables, which raises the rate to `0.41433`, and shows that no measure bounded on
-every subcube can give more than `0.41434` (17 November 2026). §5 checks Conjecture 6 for all
+every subcube can give more than `0.41434` (17 November 2026). §5 checks Conjecture DF for all
 weights at once and reduces the rest of the gap to one inequality at each gate.
 
 Status labels: *written proof* (prose, not in Lean), *exact check* (integer arithmetic by
@@ -19,7 +19,7 @@ Status labels: *written proof* (prose, not in Lean), *exact check* (integer arit
 | JRSW Fourier `ℓ₁` | `log₂(27/16)/4 = 0.1887` | research Theorem 4.24, Lean |
 | exact `log₂|P(w)|` | `0.37245` | Theorem 2 here, written proof |
 | subcube norm | `0.41433` to `0.41434` | Theorem 8, Proposition 9, written proof and exact check |
-| depth-first tree (upper bound) | `→ 0.46925` | Proposition 4, computed |
+| depth-first tree (upper bound) | `→ 0.469254` | Proposition 4, computed |
 | least decision tree, `f₁–f₃`, `S₁–S₂` | equals depth-first | Observation 5, computed |
 
 ## Setting
@@ -126,40 +126,41 @@ log₂ L_df / v = 0.4981, 0.4765, 0.4711, 0.4697 on GK f₃–f₆   (limit 0.46
 | TK `S₂` | 16 | 433 | 817 | 481 |
 | TK `S₃` | 64 | 2,638,064,353 | 4,954,303,201 | 19,609,201,217 |
 
-So the least `τ` over valid rules on GK lies between `2^{0.37245 n}/(n + 1)` and
-`2^{(0.46926 + o(1)) n}`, i.e. between `N^{(0.1862 − o(1)) log₂ N}` and
-`N^{(0.2347 + o(1)) log₂ N}` (Corollary 10 raises the lower end to `0.2071`); the leftmost
-rule meets the upper end, and `τ/L_df ≈ 1.065` on
+So the least `τ` over valid rules on GK lies between `2^{0.41433 n}/(n + 1)` (Corollary 10) and
+`2^{(0.469254 + o(1)) n}`, i.e. between `N^{(0.2071 − o(1)) log₂ N}` and
+`N^{(0.2347 + o(1)) log₂ N}`; the leftmost rule meets the upper end, and `τ/L_df ≈ 1.065` on
 GK `f₃`, `f₄` and TK `S₃`. FK-A's own rule, largest degree sum, runs 1.545 and 32.1 times
 longer than the leftmost rule on GK `f₃`
 and `f₄`; its rate there is 0.521 and 0.516 against 0.501 and 0.477. Under the leftmost rule
 `δ ≤ 2n + 2` (Theorem 4.16; `δ = n` measured), so memoisation saves at least
-`2^{0.37245 n}/((n + 1)(2n + 2))`.
+`2^{0.41433 n}/((n + 1)(2n + 2))`.
 
 **Observation 5 (computed).**
 
 - The least decision trees of GK `f₁–f₃` have 3, 25 and 62,833 leaves, and those of TK
   `S₁–S₂` 7 and 409: exactly the depth-first values. The program is a DP over isomorphism
-  classes of restricted read-once formulas (20,806 classes at `f₃`), checked by truth tables
-  on `f₂` (`alternating_dt.py least 3`, `lp`).
+  classes of restricted read-once formulas (20,806 classes at `f₃`). A historical truth-table
+  run checked the value 25 on `f₂`; the maintained hull and symmetry-reduced LP also give 25
+  (`alternating_dt.py least 3`, `subcube_norm.py lp`).
 - On `f₂` the subcube-partition LP (maximise `Σ_x c(x)` subject to `Σ_{x∈Q} c(x) ≤ 1` for every
   monochromatic subcube `Q`, over 3,714 subcubes) has value 25, the exact size; Lemma 1 gives
-  14.94. On TK `S₂` it has value 383, below the exact 409 (Observation 11). Coordinate ascent
+  14.94. On TK `S₂` it has value 383, below the exact 409 (`subcube_norm.py lp`, Observation 11). Coordinate ascent
   over a different `z` for each variable (200 starts on the lens boundary; working-folder
   prototype `hd-dtsize/brute.py`, not in the repository) found nothing above the uniform `w`.
 - Depth-first is optimal on all 52 *balanced* alternating formulas (at every gate the
-  children are isomorphic) with arities 2 and 3, at most 5 levels and 36 leaves, among them
-  GK `f₃` and `T₆` of [`frequency-constant.md`](frequency-constant.md) with 364,687 leaves.
+  children are isomorphic) with arities 2 and 3, at most 5 levels and 36 input leaves. The sample
+  includes GK `f₃` and `T₆` of [`frequency-constant.md`](frequency-constant.md), whose depth-first
+  decision tree has 364,687 leaves.
   It stays optimal for the cost `a L₁ + b L₀` for all `a, b > 0` (Proposition 12,
   `alternating_dt.py balanced`).
 - It is not optimal for every read-once formula: among 800 random formulas with at most 14
   leaves (two seeds), 47 have a smaller tree, by at most 8.9% in this sample
   (`alternating_dt.py random`). All 47 are unbalanced.
 
-**Conjecture 6.** For a balanced read-once formula and all `a, b > 0`, a depth-first decision
+**Conjecture DF.** For a balanced read-once formula and all `a, b > 0`, a depth-first decision
 tree minimises `a L₁ + b L₀` over all decision trees; `a = b = 1` is the number of leaves. For
-GK this would make the least `τ` over valid rules `N^{(0.2347 + o(1)) log₂ N}`, met by the
-leftmost rule. The evidence is `k ≤ 3` and the balanced formulas above, for all weights (§5). The weights are the
+GK this would give `log₂ τ / (log₂ N)² → γ_df/2 ≈ 0.234627` for the least `τ`,
+where `γ_df = lim log₂ L_df/n`; the leftmost rule attains that limit. The evidence is `k ≤ 3` and the balanced formulas above, for all weights (§5). The weights are the
 form an induction over the gates needs: below an AND gate whose first child is evaluated
 first, that child's tree is charged `L₀ + L(h) L₁`.
 
@@ -230,14 +231,16 @@ product equals `−2`. Without `σ`, `ν ⊗ ν` on every `S₁` gives `u₂ = �
 OR:   N₁ ≤ min(N₁(g) + N₀(g) N₁(h), 1 + N₀(g) N₀(h)),   N₀ ≤ N₀(g) N₀(h);   AND: dual.
 ```
 
-From `(N₁, N₀)(f₁) ≤ (2, 1)` these give `(4, 3)` at `S₁`, `(10, 9)` at `f₂`, `(100, 99)` at `S₂` and
-`(9802, 9801)` at `f₃`, and `log₂ N₁(f_k)/v → 0.4143393882` (`subcube_norm.py check`). With
-Theorem 8, `N₁ + N₀` is exactly `19` on `f₂` and `199` on `S₂`, and on GK it is
-`2^{(λ_N + o(1)) v}` with `0.4143301 ≤ λ_N ≤ 0.4143394`.
+From `(N₁, N₀)(f₁) ≤ (2, 1)` the recurrence gives upper bounds `(4, 3)` at `S₁`,
+`(10, 9)` at `f₂`, `(100, 99)` at `S₂` and `(9802, 9801)` at `f₃`. The logarithm of
+the explicit upper bound, divided by `v`, tends to `0.4143393882` (`subcube_norm.py check`).
+Together with Theorem 8 this gives `N₁ + N₀ = 19` on `f₂` and `199` on `S₂`.
+For `a_k = log₂(N₁(f_k) + N₀(f_k))/v` on GK, the bounds give
+`0.4143301 ≤ liminf a_k ≤ limsup a_k ≤ 0.4143394`.
 
 So a lower bound of the form `|μ(F = 1)| + |μ(F = 0)|` with `μ` bounded on every subcube, which
 includes Lemma 1 at any points with `|z| ≤ 1` and `|1 − z| ≤ 1`, Fourier `ℓ₁` and every product
-of block measures, gives at most `2^{(0.41434 + o(1)) v}` leaves on GK, against `2^{(0.46926 + o(1)) v}` for depth-first.
+of block measures, gives at most `2^{(0.41434 + o(1)) v}` leaves on GK, against `2^{(0.469254 + o(1)) v}` for depth-first.
 Closing the rest needs a bound that constrains only the monochromatic subcubes.
 
 **Corollary 10 (FK-A on GK and TK, every rule).** Under every valid split rule, either
@@ -250,7 +253,7 @@ variant, FK-A's recursion tree on GK `f_k` or TK `S_k`, `k ≥ 2`, has
 *Proof.* Research Theorem 4.25 and Theorem 8, as in Corollary 3. ∎
 
 The least `τ` over valid rules on GK therefore lies between `N^{(0.2071 − o(1)) log₂ N}` and
-`N^{(0.2347 + o(1)) log₂ N}`: the exponent is known within a factor `0.46926/0.41433 = 1.133`.
+`N^{(0.2347 + o(1)) log₂ N}`: the exponent is known within a factor `0.469254/0.41433 = 1.133`.
 
 **Observation 11 (computed, `subcube_norm.py lp`).** The LPs reduced by the trees'
 automorphisms (21 point and 231 subcube types on `f₂`; 231 and 26,796 on `S₂`), solved by
@@ -295,7 +298,7 @@ restriction classes of GK `f₃`. The least is
 `(x ∧ x′ ∧ (x″ ∨ x‴ ∨ x⁗)) ∨ (y ∧ (y′ ∨ y″ ∨ (y‴ ∧ y⁗)))`, with `H = {(11, 9)}` and depth-first
 `{(12, 9)}`: 20 leaves against 21. So every restriction-closed class that contains `f₃` fails Lemma
 13's inequality, and Lemma 13's induction over such a class, with `DF` as its potential, cannot prove
-Conjecture 6.
+Conjecture DF.
 
 **Lemma 15 (written proof).** For `g, h` on disjoint variables, `m₁(g ∧ h) = m₁(g) m₁(h)` and
 `m₀(g ∨ h) = m₀(g) m₀(h)`.
@@ -313,7 +316,7 @@ of an AND gate can end the computation while the other child is still unread, so
 gate, and `m₁` at an OR gate, have no such product; those are where interleaving can pay.
 
 **Lemma 16 (written proof).** Let `F` be built by binary gates over disjoint blocks, and let `G` be
-the number of gates above the blocks. For a gate over `g, h` put
+the number of gates above the blocks and let `0 < θ ≤ 1`. For a gate over `g, h` put
 
 ```text
 SEQ_AND = min( V(g; V(h; a, b), b),  V(h; V(g; a, b), b) ),    SEQ_OR = min( V(g; a, V(h; a, b)), … ).
@@ -358,21 +361,24 @@ rate up to `o(1)` per variable. ∎
 
 | Hypothesis at each gate above `f₃` blocks | Rate bound | `θ` that passes `0.4143394` |
 | --- | --- | --- |
-| (a) `V(gate) ≥ θ · SEQ`, all weights | `0.469254 − log₂(1/θ)/32` | `0.2958` |
+| (a) `V(gate) ≥ θ · SEQ`, all weights | `z₃/96 − log₂(1/θ)/32` | `0.2958` |
 | (b) the open coordinate only | `0.4692536 − log₂(1/θ)/48` | `0.1609` |
 
-Proposition 12 supplies the blocks for both (`alternating_dt.py theta`). Hypothesis (a) implies
+Here `z₃/96 = log₂(39,424² · 23,409)/96 ≈ 0.4692536` is a lower seed bound
+for the depth-first rate; `0.469254` is its rounded upper endpoint and cannot
+be substituted into a lower bound. Proposition 12 supplies the blocks for both
+(`alternating_dt.py theta`). Hypothesis (a) implies
 (b): at weights `(ε, 1)`, `ε → 0`, `V(g ∧ h)` tends to `m₀(g ∧ h)` and `V(g; V(h; ε, 1), 1)` to
 `min_{p ∈ H(g)} (p₁ m₀(h) + p₀) ≥ m₁(g) m₀(h) + m₀(g)`. So (b) asks for less, and it loses on one
 coordinate per gate. With `θ = 1` and one-variable blocks, the first conclusion of (b) gives
-Conjecture 6 on GK and TK.
+Conjecture DF on GK and TK.
 
 **Conjecture 17 (one gate).** For a balanced binary alternating formula `g` with an OR root and a
 disjoint copy `g′`, `m₀(g ∧ g′) ≥ θ · m₀(g)(1 + m₁(g))` with an absolute `θ > 0.1609`.
 
 By De Morgan this covers the OR gates of GK, whose children are TK trees. Any such `θ` puts the
 least `τ` over valid rules on GK above every subcube-bounded measure (Proposition 9); with `θ = 1`
-Lemma 16(b) gives Conjecture 6 on GK and TK.
+Lemma 16(b) gives Conjecture DF on GK and TK.
 
 **Observation 18 (computed, `gates 18 12`).** For the 14 balanced alternating formulas `g, h` with
 an OR root, arities 2 and 3 and at most 18 leaves, isomorphic or not, the least trees for

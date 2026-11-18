@@ -191,11 +191,6 @@ theorem two_abs_le (p q : ℤ) : 2 * |p| ≤ |p + q| + |p - q| := by
   have e : p + q + (p - q) = 2 * p := by ring
   rw [e, abs_mul, abs_two] at h; exact h
 
-theorem two_abs_le' (p q : ℤ) : 2 * |q| ≤ |p + q| + |p - q| := by
-  have h := abs_sub (p + q) (p - q)
-  have e : p + q - (p - q) = 2 * q := by ring
-  rw [e, abs_mul, abs_two] at h; exact h
-
 theorem l1_node_le (U : Finset α) (x : α) (lo hi : DTree α) :
     l1 U (DTree.node x lo hi).eval ≤ l1 U lo.eval + l1 U hi.eval := by
   by_cases hx : x ∈ U
@@ -215,7 +210,11 @@ theorem l1_node_le (U : Finset α) (x : α) (lo hi : DTree α) :
     rw [n1, n2, hP, hQ, l1', l2, h1, h2]
     have a := abs_pair_le (halfP U x lo.eval S) (halfQ U x hi.eval S)
     have b := two_abs_le (halfP U x lo.eval S) (halfQ U x lo.eval S)
-    have c := two_abs_le' (halfP U x hi.eval S) (halfQ U x hi.eval S)
+    have c : 2 * |halfQ U x hi.eval S| ≤
+        |halfP U x hi.eval S + halfQ U x hi.eval S| +
+          |halfP U x hi.eval S - halfQ U x hi.eval S| := by
+      simpa only [add_comm (halfQ U x hi.eval S), abs_sub_comm (halfQ U x hi.eval S)] using
+        two_abs_le (halfQ U x hi.eval S) (halfP U x hi.eval S)
     linarith
   · have h : ∀ X ⊆ U, (DTree.node x lo hi).eval X = lo.eval X := fun X hX => by
       have : x ∉ X := fun h => hx (hX h)

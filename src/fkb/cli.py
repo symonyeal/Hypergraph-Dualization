@@ -73,6 +73,8 @@ def _run_one(inst: Instance, args: argparse.Namespace, outdir: Path) -> bool:
         )
 
     stem = f"{inst.id}.fk-b.{args.variant}"
+    if args.split_rule != "most_frequent":
+        stem += f".{args.split_rule}"
     outputs = [
         tree.save(outdir / f"{stem}.json"),
         write_report(tree, outdir / f"{stem}.html", title=inst.name, instance=inst),

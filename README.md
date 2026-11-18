@@ -17,8 +17,8 @@ Stephen).
 - Fredman and Khachiyan (1996) gave two quasi-polynomial algorithms, **FK-A** (`n^{O(log² n)}`) and
   **FK-B** (`n^{o(log n)}`), where `n` is the total number of hyperedges.
 - FK-A recurses on a split vertex of high frequency. The alternating trees (the GK- and TK-families,
-  which Hertel unified) and the Fano plane are highly symmetric families that make its recursion tree
-  superpolynomial.
+  which Hertel unified) give superpolynomial recursion trees. The Fano plane is a small symmetric
+  instance used to study the same decomposition.
 - The thesis studies how the symmetry of a hypergraph, through its automorphism group `Aut(H)` and its
   underlying graph, interacts with that recursion.
 
@@ -33,20 +33,15 @@ Stephen).
   thesis's hypergraph terms.
 - **Formalisation** (`lean/`, Lean 4 against Mathlib): the thesis statements, their corrections and the
   new results. The thesis source was recovered from the deposited PDF in October 2026.
-- **Claim register**: [`thesis/CLAIMS.md`](thesis/CLAIMS.md) lists every statement, its status and the
-  Lean declaration that settles it. Statuses:
-  - *proved* in Lean 4 against Mathlib, for every input;
-  - *refuted* by a counterexample that Lean checks;
-  - *checked*, a finite fact about named instances evaluated in Lean (`native_decide`);
-  - *computed*, a number from the Python or Rust code, reported as computation;
-  - *cited* or *conditional*, resting on a named source or hypothesis, and saying so;
-  - *open*, stated as a conjecture with its evidence and the exact bound of the search behind it.
+- **Claim register**: [`thesis/CLAIMS.md`](thesis/CLAIMS.md) records the audited thesis
+  statements and later results with their status and Lean declaration or written source.
+  Its key distinguishes proofs, finite checks, computations, cited or conditional
+  results, and open or withdrawn claims.
 - **Axiom check**: general theorems use only the axioms `propext`, `Classical.choice` and `Quot.sound`,
   and checked facts are evaluations; `lean/HypergraphDualization/Axioms.lean` makes the build fail
   otherwise.
-- **Thesis editions**: the 2024 text is kept verbatim in [`thesis/2024/`](thesis/2024). The revised
-  edition ([`thesis/revised/main.pdf`](thesis/revised/main.pdf)) applies the corrections, tags proved
-  statements with their Lean declarations and lists the corrections in its preface.
+- **Thesis**: one corrected source in [`thesis/`](thesis), with its
+  [compiled PDF](thesis/main.pdf) and Lean declaration references.
 - **Experiments** (`experiments/`): searches and generators, each seeded ([index](experiments/README.md)).
 - **Validation** (`tests/`): the engine is checked against the printed recursion trees and the MATLAB
   FK-B reference. FK-B is an independent implementation from the published algorithm; the MATLAB
@@ -55,28 +50,26 @@ Stephen).
 ## Layout
 
 - [`lean/`](lean): the Lean library ([module index](lean/README.md)).
-- [`thesis/`](thesis): the 2024 text as deposited and recovered, the revised edition,
+- [`thesis/`](thesis): the corrected source, compiled PDF and
   [`CLAIMS.md`](thesis/CLAIMS.md).
 - `data/instances/`: the thesis hypergraphs and the later instances (`w11` is `S(4,5,11)`), as JSON with
   provenance.
-- `docs/`: computational notes from the Python engine (FK-A against FK-B, hard instances, hard classes,
-  tree against distinct subproblems), the code vocabulary ([`dictionary.md`](docs/dictionary.md)) and
-  [`applications.md`](docs/applications.md), the executed supplier-panel study and algorithmic
-  dictionary.
+- `docs/`: the research record ([`research-2026-10.md`](docs/research-2026-10.md)), notes on the later
+  results, computational notes from the Python engine, and the code vocabulary
+  ([`dictionary.md`](docs/dictionary.md)).
 - `_archive/`: original source log and withdrawn thesis instances required to reproduce the corrections.
 
 ## Execution
 
 ```text
-cd lean && lake exe cache get && lake build      # every proof; a few minutes with the cache
-cd thesis/revised && pdflatex main && bibtex main && pdflatex main && pdflatex main
 python -m pip install -e ".[dev]" && python -m pytest -m "not slow"
 python -m fka run fano                           # FK-A on the Fano plane, with its recursion tree
 python -m fkb compare --all                      # FK-A against FK-B on the instance library
 ```
 
-SageMath is an optional independent backend for the group computations
-([`docs/sagemath.md`](docs/sagemath.md)).
+Build instructions are in [`lean/README.md`](lean/README.md) and
+[`thesis/README.md`](thesis/README.md). SageMath is an optional backend for group computations
+([`docs/architecture.md#sagemath`](docs/architecture.md#sagemath)).
 
 ## Since the thesis
 
@@ -87,8 +80,8 @@ defined under Methods. Theorem numbers are those of [`research-2026-10.md`](docs
   `Tr(H) = H`; the Fano plane and the Witt design `S(4,5,11)` are the cases `t = 2, 4` (Theorem 2.11,
   Lean).
 - **Least frequency.** Every non-trivial transversal pair on `n` points has `n·ε² ≥ 1` (Theorem 3.1,
-  Lean); with `s` disjoint `s`-sets this gives `ε(n) = Θ(n^{−1/2})`. `ε(7) = 3/7`, attained by the Fano
-  plane (Corollary 3.2, Lean).
+  Lean); `s` disjoint `s`-sets attain `ε = 1/s` at `n = s²`, so `ε(n) = Θ(n^{−1/2})` (written).
+  `ε(7) = 3/7`, attained by the Fano plane (Corollary 3.2, Lean).
 - **The frequency-lemma constant.** Every dual pair has `|C||D| ≥ 4^{1/ε − 1}`, and every read-once pair
   `|C||D| ≥ e^{2(1/ε − 1)}`; the alternating words attain `8^{1/ε − 1}` (written proofs,
   [`frequency-constant.md`](docs/frequency-constant.md)).
@@ -97,10 +90,11 @@ defined under Methods. Theorem numbers are those of [`research-2026-10.md`](docs
   superpolynomial FBDD size would defeat every valid symmetric rule. A memo keyed by isomorphism
   class is sound (Theorem 4.28, Lean).
 - **FK-A's recursion tree.** It unfolds into a decision tree (Theorem 4.25, Lean). So on the GK and
-  TK families every valid rule has `τ ≥ N^{Ω(log N)}`, while memoisation saves a factor exponential in
-  `n` (Corollary 4.26, Lean).
-- **The exponent of that tree.** On GK and TK the least `τ` over valid rules is `2^{(γ + o(1)) n}` with
-  `0.41433 ≤ γ ≤ 0.46926` (lower bound by written proof, upper bound computed). Depth-first trees are
+  TK families on `n` vertices every valid rule has `τ ≥ 2·(27/16)^{n/4}/(n + 1)` (Lean), which is
+  `N^{Ω(log N)}` (written), while memoisation saves a factor exponential in `n` (Corollary 4.26, Lean).
+- **The exponent of that tree.** On GK and TK the least `τ` over valid rules is bounded below by
+  `2^{0.41433 n}/(n + 1)` and above by `2^{(0.469254 + o(1)) n}` (written lower bound;
+  upper bound argued and computed). Depth-first trees are
   optimal for every leaf weighting on GK `f₁–f₃` (computed). The remaining gap reduces to one
   inequality per gate, Conjecture 17 ([`complex-evaluation.md`](docs/complex-evaluation.md)).
 - **Substitution.** `Tr(T[Γ]) = min(Tr(T)[Tr Γ])`, without the `min` on disjoint supports
@@ -110,11 +104,11 @@ defined under Methods. Theorem numbers are those of [`research-2026-10.md`](docs
 
 Results are in [`docs/research-2026-10.md`](docs/research-2026-10.md) (proofs and Lean names),
 [`thesis/CLAIMS.md`](thesis/CLAIMS.md) (status of every statement and the thesis corrections),
-[`results/`](results) (recursion trees of both algorithms on every instance, as JSON, DOT and HTML, and
-the computed tables) and [`docs/research-agenda.md`](docs/research-agenda.md) (open problems).
+[`results/`](results) (computed tables; per-run JSON, HTML and DOT generated on demand) and
+[`docs/research-2026-10.md#7-open-items`](docs/research-2026-10.md#7-open-items) (open problems).
 
 ## Authorship and licence
 
 Saimon Y. Islam; the original implementation was written with Lacey Liang. GPL-3.0-or-later. The
-revised edition uses SFU's `sfuthesis` class (LPPL 1.3). Cite the thesis
+corrected thesis uses SFU's `sfuthesis` class (LPPL 1.3). Cite the thesis
 ([`CITATION.cff`](CITATION.cff)).

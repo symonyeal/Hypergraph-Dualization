@@ -6,8 +6,7 @@ is now settled, what is measured, and what is open. Every number is regenerable:
 
 ```text
 python experiments/hard_classes.py     -> results/hard-classes.{json,md}
-python experiments/prime_templates.py  -> results/prime-templates.md
-python experiments/selfdual_orbits.py  -> results/selfdual-orbits.md
+python experiments/selfdual_orbits.py  -> optional local orbit-search report
 pytest tests/test_hard_classes.py
 ```
 
@@ -18,8 +17,9 @@ frequency in either hypergraph,
 
     c(C, D) = eps(C, D) * log2 N.
 
-FK96 Lemma 2.3.2 gives `c >= 1`; Observation 2.3.3 says that is tight only to a
-factor of 2. So `c` places any pair against both ends at once, and *small* `c`
+FK96 Lemma 2.3.2 gives `c >= 1`; the GK97 bracket is `[1,2]`. The word
+families below improve the asymptotic upper endpoint to `3/2` (see
+[`frequency-constant.md`](frequency-constant.md)); GK and TK themselves tend to 2. So `c` places any pair against both ends at once, and *small* `c`
 means FK-A's split guarantee is at its weakest. Section 4.3's computation for
 the GK- and TK-families is exactly the statement `c -> 2`, and both also have
 `s / log2 N -> 1/2`, the other half of Observation 2.3.3.
@@ -28,12 +28,14 @@ A correction while passing: thesis Corollary 2.3.1 states `s >= log n`, but its
 own derivation `n * 2^-s >= 1` gives `s <= log2 n`, which is the [FK96]
 direction and the one used here.
 
-## 1. Structure: the tight class is P4-free
+## 1. Regular equality templates are P4-free
 
 Iterating a template, `Gamma_{j+1} = T[Gamma_j, ..., Gamma_j]`, the exact
 recursions of `fka.bound.iterate` are `eps -> eps_T * eps` and
-`log2 m -> log2 m_T + r_T log2 m`. So `c` converges **iff** `eps_T * r_T = 1`,
-and since `eps_T >= r_T / t`, that forces
+`log2 m -> log2 m_T + r_T log2 m` on an equal-rank template. For rank `r_T > 1`
+on `t = r_T²` points, the frequency bound gives `eps_T ≥ 1/r_T`.
+The iterated constant `c` has a finite positive limit exactly at
+`eps_T r_T = 1`, and the equality case gives
 
 > **(1.1)** `T` is `r`-uniform and *regular* on `t = r^2` vertices, and so is
 > `Tr(T)`; then `c_inf = max(log2 |E(T)|, log2 |E(Tr T)|) / (r - 1)`.
@@ -43,8 +45,8 @@ Counting `sum_{v in e} deg*(v)` two ways gives a second, free consequence:
 > **(1.2)** every block of `T` meets every block of `Tr(T)` in exactly one
 > point, so `Tr(T)` is the set of *perfect selectors*.
 
-That is what makes the search Berge-free, and `experiments/prime_templates.py`
-runs it exhaustively:
+This gives the perfect-selector search used in the finite classification
+([results](../results/prime-templates.md)):
 
 > **(1.3)** every regular convergent template satisfying (1.1) is read-once, for
 > every `r`: the singleton intersections (1.2) imply this by Gurvich's theorem.
@@ -59,9 +61,8 @@ with kernel proofs in `FrequencyGap.lean`. The read-once implication is cited:
 It is not a Lean theorem about the repository's `ReadOnce` definition. The broader
 uniform-template question D3, which omits regularity, remains open.
 
-Since read-once means a cograph primal graph (Gurvich; Section 4.4), the answer
-to "what does the underlying graph structure of the hard families look like" is
-**P4-free** -- derived rather than assumed.
+The resulting read-once templates have cograph primal graphs and therefore no
+induced `P₄` (Gurvich and thesis §4.4).
 
 ## 2. Their automorphism groups: imprimitive iterated wreath products
 
@@ -89,7 +90,7 @@ line. It lives in `fka.selfdual`.
 guess: the symmetry behind the known superpolynomial lower bounds is the
 *imprimitive, solvable, iterated-wreath* kind, not the primitive/simple kind.
 
-## 3. The word families: GK and TK are two extreme points
+## 3. The word families and the constant words
 
 Take the atoms `X = (v1^v2) v (v3^v4)` and `Y = X^d`. For a word `w` in
 `{X,Y}^k` put `T_w = w_1[w_2[...w_k]]`. Composition of templates is a template,
@@ -102,12 +103,13 @@ and `(S[T])^d = S^d[T^d]` with `X^d = Y` gives `T_w^d = T_wbar`. Writing
 > odd, so the bound is approached but never met. The minimum at length `k` is
 > `3/2 + 1/(2(2^k - 1))`: 2, 5/3, 11/7, 23/15, ...
 
-> **(3.2)** the constant words `XX..X` and `YY..Y` are exactly the GK- and
-> TK-families, and are the *worst-balanced* words -- both land on `c_inf = 2`.
+> **(3.2)** The constant words are the even-height alternating trees of the TK
+> family and their duals. They have `4^k` input leaves and attain the largest
+> word-family value `c_inf = 2`. The GK family uses the odd heights, with
+> `2^(2k−1)` input leaves.
 
-So the thesis' two tight families are the two degenerate members of a class
-indexed by a binary word, and balancing the word gives strictly harder
-instances. `word-xy` and `word-yx` are in the instance library.
+Mixed words can give smaller `c_inf`. The instance library includes `word-xy`
+and `word-yx`.
 
 ## 4. Self-duality: the other regime, and why it is not the cause
 
@@ -124,10 +126,11 @@ transversal. For nonempty self-transversal families on `n > 1` points,
 > [`research-2026-10.md`, Theorem 2.2](research-2026-10.md#2-self-transversal-hypergraphs).
 
 Among projective planes only `PG(2,2)` survives: `PG(2,3)` has a 6-point
-projective triangle whose complement also blocks, so it is 2-colourable. Among
-Witt designs only `S(2,3,7)` and `S(4,5,11)` are intersecting -- `S(5,6,12)` has
-a block's complement for a block, `S(5,8,24)` has disjoint octads. `S(4,5,11)`,
-with `|Aut| = 7920 = |M_11|`, is therefore the only sequel to the Fano plane,
+projective triangle whose complement also blocks, so it is 2-colourable. The self-transversal examples among these Witt designs are `S(2,3,7)` and
+`S(4,5,11)`: `S(5,6,12)` has a block's complement for a block, `S(5,8,24)`
+has disjoint octads, and the intersecting `S(4,7,23)` is not self-transversal
+(the certificate below checks this). `S(4,5,11)`,
+with `|Aut| = 7920 = |M_11|`, is the larger self-transversal example here,
 and it is in the library as `w11`.
 
 Both standard ways of manufacturing an *infinite* self-dual family destroy the
@@ -135,46 +138,39 @@ frequency bound: self-dualisation (SDFP) adds two vertices of degree about
 `m/2`, so `eps >= 1/2`; and `Maj_(2k-1)` has `eps -> 1/2` with `Aut = S_n`. So
 this regime supplies remarkable single objects, not lower-bound families.
 
-## 5. What the split does to the symmetry, exhaustively
+## 5. What the split does to the symmetry in the measured sample
 
 `results/hard-classes.{json,md}` classifies **every node of both trees** for
-every instance -- deduplicated on the compacted `(cnf, dnf)` -- as read-once,
-transitive and primitive, and records the deepest level still carrying a
-primitive non-symmetric group. Read-once nodes are not enumerated (their group
-is the cotree's by 4.4.15); for the rest the enumeration is capped, and a capped
-subgroup with no nontrivial block still *proves* primitivity, so the cap can
-only under-report.
+each measured instance, with the compacted `(cnf, dnf)` used for deduplication.
+It checks read-once structure and records the deepest certified primitive
+non-symmetric group. The read-once cases use the structural result in §2 without
+enumerating their groups. Elsewhere, a capped subgroup certifies primitivity
+only if it is transitive and primitive. The remaining capped cases leave the
+full-group classification unresolved.
 
-Two things come out of the exhaustive pass, 26 rows over 21 distinct pairs.
+The retained historical survey has 26 rows over 21 distinct pairs. The current script
+regenerates 21 unique pairs and records capped negative group searches as undetermined;
+this full survey has not been rerun after that correction. Positive primitivity certificates
+remain valid, but zero counts and negative depths do not certify absence.
 
-> **(5.1)** A read-once root produces **no** primitive node anywhere in either
-> tree -- 13 of 13 such rows, `prim depth = -1` (computed). It is consistent with
-> **(2.1)** applied at every node: a restriction of a read-once function is
-> read-once, so a primitive node would need the full symmetric group. That
-> substitution never manufactures a primitive group is this reading, not a proof.
-> The converse fails, and widely: `6a`, `7ver`, `8ver`, `fano`, `sdfp-sd-1`,
-> `sdfp-sd-2` and `threshold-10` all have non-read-once roots and still no
-> primitive node, being non-conformal with imprimitive groups. Only four rows
-> carry a primitive node at all -- `k3`, `trivial-aut-1`, `w11`, `w11-sd-1`.
+> **(5.1)** Read-once restrictions remain read-once. This survey excludes their
+> groups from the count of primitive non-read-once nodes, so `prim depth = -1`
+> in those rows is a consequence of the classification rule. A read-once
+> hypergraph can have a primitive full symmetric group. The historical capped
+> enumeration also leaves some non-read-once nodes unresolved; its negative
+> counts cannot establish that the converse holds or fails.
 
 > **(5.2)** Primitivity *depth* does **not** predict FK-B's advantage.
 > `w11-sd-1` keeps primitive nodes to depth 10 and FK-B wins only 1.33x, while
-> `gk-f3` carries no primitive node anywhere and FK-B wins 52.96x. There is no
+> `gk-f3` is read-once throughout and FK-B wins 52.96x. There is no
 > monotone relation between the two columns -- if anything the sign is the
 > opposite of the one a three-instance reading suggested.
 >
-> **Corrected 2026-08-10.** This paragraph previously refuted the same claim
-> with "`sdfp-sd-2` keeps primitive nodes to depth 9 and FK-B still wins
-> 6.18x", and described Fano as dying "at depth 0". Neither is in the data:
-> `sdfp-sd-2` and `fano` both have zero primitive nodes and `prim depth = -1`,
-> in this pass and in the one the paragraph was written from. The conclusion is
-> unchanged and now rests on instances that carry the property.
 
-The repeat rate remains the better predictor at scale (99.6% -> 52.96x on
-`gk-f3`), but it is not sufficient either: `word-xy` repeats 95.2% of its nodes
-and FK-B gains only 2.99x. What separates them is tree size, not symmetry --
-FK-B's saving compounds with the number of nodes there are to reuse. See
-`docs/fk-a-vs-fk-b.md`.
+The FK-A repeat rates are 99.6% on `gk-f3` and 95.2% on `word-xy`, with
+FK-A/FK-B tree ratios of 52.96x and 2.99x. The repeat rate gives the size of the
+FK-A tree relative to its own DAG. The FK-B ratio also depends on its branches
+and terminal cases. See [fk-a-vs-fk-b.md](fk-a-vs-fk-b.md).
 
 The repeat column is worth reading in the other direction too. `1/(1 - repeat)`
 is exactly `tau/delta`, FK-A's tree over its distinct-subproblem count: 280x on
@@ -193,7 +189,112 @@ Nodes whose incidence graph is too large to enumerate are counted in the
 ## Caveats
 
 * The searches above do not settle D3's irregular case; its status is research
-  Open problem 5.3, and open problems are listed once, in
+  Open problem 5.3, and the consolidated open-item list is in
   [research §7](research-2026-10.md#7-open-items).
 * The placement rows are one size point per family. The `exp` column is
   indicative, not a fitted growth rate.
+
+## 6. Witt designs and the bounded self-transversal search
+
+`w11` is the 66-block design `S(4,5,11)`, with `Aut = M11`;
+`w11-sd-1` is its self-dualisation. A Sperner family equals its transversal
+exactly when it is intersecting, has no empty edge and is not 2-colourable
+(research Proposition 2.1).
+For an intersecting family with minimum edge size `s`, maximum degree `D`
+and `m` edges, `m ≤ 1 + s(D−1)`, so `eps > 1/s` for `s > 1`.
+Uniform vertex-transitive candidates consequently have `n ≤ s²−1`.
+
+Reproduce with `sage -python experiments/hard_case_search.py 3 15`,
+`python experiments/build_instances.py`, and `pytest tests/test_hard_cases.py`.
+
+The bounded search found 21 vertex-transitive self-transversal hypergraphs
+up to isomorphism on at most 15 points. It enumerates single subset orbits
+and pairs of orbits, with pairs tested only through degree 12. Candidate orbit
+ranks range from 2 through `⌊(n+3)/2⌋` for both uniform and mixed inputs. Unions
+of three or more orbits and mixed inputs with ranks outside the interval are
+outside the search. Rows are sorted by FK-A nodes per unit of input.
+
+| n | \|E\| | sizes | ε | c | FK-A | FK-B | A/2m | B/2m | primitive | Aut |
+| ---: | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | :---: | --- |
+| 15 | 300 | 6 | 0.400 | 3.69 | 3687 | 2695 | 6.14 | 4.49 | no | (A5×A5×A5) : (C2×S4) |
+| 15 | 270 | 6 | 0.400 | 3.63 | 3199 | 1659 | 5.92 | 3.07 | no | (C3⁵) : (C2×((C2⁴):S5)) |
+| **11** | **66** | **5** | **5/11** | **3.20** | **483** | **321** | **3.66** | **2.43** | **yes** | **M11** |
+| 7 | 7 | 3 | 3/7 | **1.63** | 35 | 11 | 2.50 | 0.79 | yes | PSL(3,2) — *the Fano plane* |
+| 9 | 27 | 4 | 4/9 | 2.56 | 119 | 57 | 2.20 | 1.06 | no | S3 wr S3 |
+| 11 | 121 | 5,6 | 0.496 | 3.93 | 479 | 317 | 1.98 | 1.31 | yes | PSL(2,11) |
+| 10 | 51 | 4,5 | 0.471 | 3.14 | 179 | 109 | 1.75 | 1.07 | yes | A6 |
+| 11 | 110 | 5 | 5/11 | 3.54 | 271 | 163 | 1.23 | 0.74 | yes | C11 : C10 |
+| 6 | 10 | 3 | 1/2 | 2.16 | 19 | 11 | 0.95 | 0.55 | yes | A5 |
+| 3, 5, 7, 9, 11, 13, 15 | C(n, (n+1)/2) | | ≈ 1/2 | 1.7–7.3 | | | ≤ 0.56 | ≤ 0.58 | yes | S_n — *majority* |
+
+The imprimitive examples with larger FK-A/input ratios than Fano are
+`MAJ3[MAJ3]`, `MAJ5[MAJ3]` and `MAJ3[MAJ5]` (checked by isomorphism).
+Composition multiplies their frequencies, giving `eps = 0.4` on the
+15-point examples. Among the primitive examples found, W11 has the
+largest FK-A/input ratio, followed by Fano.
+
+### Perfect codes
+
+The blocks of both are the supports of the minimum-weight words of a perfect
+code:
+
+| code | design | n | \|E\| | \|e\| | ε | Aut |
+| --- | --- | ---: | ---: | ---: | ---: | --- |
+| Hamming [7,4,3] | S(2,3,7) — Fano | 7 | 7 | 3 | 3/7 | PSL(3,2), 168 |
+| ternary Golay [11,6,5] | **S(4,5,11) — W11** | 11 | 66 | 5 | 5/11 | **M11, 7920** |
+| binary Golay [23,12,7] | S(4,7,23) | 23 | 253 | 7 | 7/23 | M23, 10200960 |
+
+`fka.instances.witt_11` builds W11 that way, from the cyclic generator
+polynomial `g(x) = −1 + x² − x³ + x⁴ + x⁵` over GF(3), so nothing is a
+transcribed block list.
+
+**The family stops at 11.** S(4,7,23) is intersecting — its blocks meet in 1 or
+3 points — but it is *not* self-transversal: 16744 of the 1352078 11-subsets of
+its 23 points contain no block and have a complement containing no block, and
+each is a thesis equation 2.1 certificate against it. One of them,
+`{1,2,3,4,5,6,7,8,10,14,21}`, is asserted in `tests/test_hard_cases.py`. The
+same test also shows why the search cannot be run at that size naively: the
+certificate settles the question in `O(|E|)`, while building `Tr` of 253 blocks
+on 23 points is not a bounded computation.
+
+Note also that this is where the analogy to *projective planes* ends, and the
+thesis' framing of the Fano plane as "the smallest projective plane" slightly
+undersells it. PG(2,q) for `q ≥ 3` is **not** self-transversal — it has
+non-trivial blocking sets, i.e. blocking sets containing no line, and such a set
+and its complement are a certificate. The Fano plane is the only projective
+plane in the class. What generalises it is not the plane, it is the perfect code.
+
+
+### Library node counts
+
+On the library instance `w11` (66 blocks, ternary-Golay labelling), against the
+Fano plane:
+
+| | Fano | W11 | |
+| --- | ---: | ---: | --- |
+| FK-A `faithful` | 59 nodes, 4.21/2m | 1015, **7.69/2m** | depth 6 → 10 |
+| FK-A `modified` | 35 nodes, 2.50/2m | 475, **3.60/2m** | depth 5 → 9 |
+| FK-B `faithful` | 11 nodes, 0.79/2m | 323, **2.45/2m** | depth 3 → 9 |
+| FK-A repeat rate (`modified`) | 60.0% | 70.5% | |
+| FK-B repeat rate | **0.0%** | **33.4%** | |
+| FK-A / FK-B | 3.18× | 1.47× | |
+
+`w11-sd-1` is the same instance put through SDFP's self-dualisation (133 edges
+on 13 vertices), for direct comparison with `sdfp-sd-1` (15 edges on 9). It
+holds FK-A's rate (3.59/2m against 4.10) and roughly doubles FK-B's (2.70/2m
+against 1.23). `k = 2` is not in the library: it would have `66² + 133 = 4489`
+edges.
+
+
+### Search limits
+
+- Vertex-transitive only. A self-transversal hypergraph with a non-transitive
+  group is not reachable this way; the uniform transitive bound does not apply, so it needs a
+  different enumeration.
+- Degrees ≤ 15, and pairs of orbits only up to degree 12. Unions of three or
+  more orbits are not enumerated at any degree.
+- Node counts depend on the vertex labelling, because the labelling moves the
+  pivot choice. The search reports 483/321 for its own labelling of `S(4,5,11)`
+  and the library instance reports 475/323 for the ternary-Golay labelling; they
+  are the same design. `docs/fk-a-vs-fk-b.md` records the same caveat for the
+  SDFP instances against the MATLAB reference.

@@ -10,79 +10,53 @@ Two measurements over one instance set:
    ``log(FK-A nodes)/log N``, the empirical degree of the tree in the instance
    size -- what a superpolynomial lower bound is a claim about.
 
-2. Symmetry, exhaustively.  Every node of both trees, deduplicated on the
-   compacted ``(cnf, dnf)``, classified as read-once / transitive / primitive.
-   Read-once nodes are not enumerated: their group is the cotree's, so any
-   transitive subgroup preserves its block system (thesis 4.4.15).  For the rest
-   the enumeration is capped -- a partial subgroup with no nontrivial block
-   still proves primitivity, since blocks of a group are blocks of every
-   subgroup, so the cap can only under-report.
+2. Symmetry at every node. Count read-once nodes and primitive nodes outside
+   that class. A capped enumeration can certify primitivity if the generated
+   subgroup is already primitive. Other capped cases are undetermined.
 """
 
 from __future__ import annotations
 
 import json
 import math
+import sys
 import time
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+
 from fka.algorithm import eps_exact, fk_a
 from fka.hypergraph import Hypergraph, verts
-from fka.instances import (gk, list_ids, load, matching, template_word,
-                           threshold, tk, witt_11)
-from fka.graphs import is_cograph, primal_graph
-from fka.properties import is_conformal, is_read_once
-from fka.selfdual import fano, is_primitive, is_transitive, pair_automorphisms
+from fka.instances import gk, list_ids, load, matching, threshold, tk
+from fka.memo import dag_size
+from fka.properties import is_read_once
+from fka.selfdual import is_primitive, is_transitive, pair_automorphisms
 from fka.bound import shortest_edge_ratio, threshold_ratio
 from fka.transversal import transversal
 from fkb.algorithm import fk_b
 
 RESULTS = Path(__file__).resolve().parents[1] / "results"
-#: Automorphisms enumerated per node before the order is left unreported.
+#: Automorphisms enumerated per node before unproved primitivity is undetermined.
 CAP = 120
 #: Above this many hyperedges the incidence graph is too big to enumerate in
 #: reasonable time, so the node is recorded as undetermined rather than guessed.
 MAX_EDGES = 100
 
-word = template_word
-
-
-def swap(w):
-    return w.translate(str.maketrans("XY", "YX"))
-
-
-def read_once(MBF: Hypergraph) -> bool:
-    """``is_read_once``, falling back past its cap.
-
-    The deeper template words are larger than
-    ``fka.graphs.MAX_ENUMERATION_VERTICES``, and read-once is conformal plus
-    P4-free. Only the P4 scan is cheap enough to run uncapped, so it is asked for
-    explicitly rather than reimplemented here.
-    """
-    if not len(MBF):
-        return True
-    try:
-        return is_read_once(MBF)
-    except ValueError:
-        g = primal_graph(MBF)
-        return is_conformal(MBF, g) and is_cograph(g, max_vertices=None)
-
 
 def classify(cnf: Hypergraph, dnf: Hypergraph):
-    """(order or None if capped, transitive, primitive, read-once) on the support."""
+    """(primitive outside read-once or None if undetermined, read-once) on the support."""
     keep = verts(cnf.support() | dnf.support())
     if len(keep) < 2:
-        return 1, False, False, True, False
+        return False, True
     C, _ = cnf.restricted_to(keep)
     D, _ = dnf.restricted_to(keep)
-    if read_once(C):
-        return None, True, False, True, False   # 4.4.15: imprimitive or symmetric
+    if is_read_once(C):
+        return False, True
     if len(C) + len(D) > MAX_EDGES:
-        return None, False, False, False, True  # undetermined
+        return None, False
     perms, capped = pair_automorphisms(C, D, cap=CAP)
-    tr = is_transitive(perms, len(keep))
-    return ((None if capped else len(perms)), tr,
-            tr and is_primitive(perms, len(keep)), False, False)
+    primitive = is_transitive(perms, len(keep)) and is_primitive(perms, len(keep))
+    return (None if capped and not primitive else primitive), False
 
 
 def walk(tree, cache):
@@ -91,44 +65,30 @@ def walk(tree, cache):
         key = (node.cnf.edges, node.dnf.edges)
         if key not in cache:
             cache[key] = classify(node.cnf, node.dnf)
-        _, tr, prim, ro, unknown = cache[key]
+        prim, ro = cache[key]
         rec = by_depth.setdefault(
             node.depth,
             {"nodes": 0, "primitive": 0, "read_once": 0, "undetermined": 0})
         rec["nodes"] += 1
-        rec["primitive"] += int(prim)
+        rec["primitive"] += int(prim is True)
         rec["read_once"] += int(ro)
-        rec["undetermined"] += int(unknown)
+        rec["undetermined"] += int(prim is None)
     return by_depth
-
-
-def repeat_rate(tree):
-    seen, rep = set(), 0
-    for node in tree.nodes.values():
-        k = (node.cnf.edges, node.dnf.edges)
-        if k in seen:
-            rep += 1
-        else:
-            seen.add(k)
-    return rep / max(len(tree), 1)
 
 
 def cases():
     for i in list_ids():
         inst = load(i)
         yield i, inst.cnf, inst.dnf, "library"
-    W = witt_11()
-    F = fano()
-    yield "fano-plane", F, F, "self-dual"
-    yield "w11", W, W, "self-dual"
-    for k in (2, 3):
-        yield f"gk-f{k}", gk(k), transversal(gk(k)), "read-once"
+    C = gk(3)
+    yield "gk-f3", C, transversal(C), "read-once"
     for k in (1, 2):
-        yield f"tk-s{k}", tk(k), transversal(tk(k)), "read-once"
-    for w in ("XY", "YX"):
-        yield f"word-{w.lower()}", word(w), word(swap(w)), "read-once"
-    yield "matching-12", matching(12), transversal(matching(12)), "output"
-    yield "threshold-10", threshold(10), transversal(threshold(10)), "shape"
+        C = tk(k)
+        yield f"tk-s{k}", C, transversal(C), "read-once"
+    C = matching(12)
+    yield "matching-12", C, transversal(C), "output"
+    C = threshold(10)
+    yield "threshold-10", C, transversal(C), "shape"
 
 
 def main():
@@ -136,11 +96,12 @@ def main():
     for name, cnf, dnf, cls in cases():
         t0 = time.time()
         ta, tb = fk_a(cnf, dnf, variant="modified"), fk_b(cnf, dnf, variant="faithful")
+        assert ta.dual and tb.dual, name
         cache = {}
         da, db = walk(ta, cache), walk(tb, cache)
         prim = [d for d, r in list(da.items()) + list(db.items()) if r["primitive"]]
         N = len(cnf) + len(dnf)
-        top = ta.nodes[min(ta.nodes)]
+        top = ta.root
         root = cache[(top.cnf.edges, top.dnf.edges)]
         rows.append({
             "instance": name, "class": cls, "n_vertices": max(cnf.n, dnf.n), "N": N,
@@ -150,9 +111,9 @@ def main():
             "fkb_nodes": len(tb), "fkb_depth": tb.depth,
             "ratio": round(len(ta) / len(tb), 3),
             "exponent": round(math.log(len(ta)) / math.log(N), 3),
-            "fka_repeat_rate": round(repeat_rate(ta), 4),
+            "fka_repeat_rate": round((len(ta) - dag_size(ta)) / len(ta), 4),
             "distinct_pairs": len(cache),
-            "root_primitive": root[2], "root_read_once": root[3],
+            "root_primitive": root[0], "root_read_once": root[1],
             "last_primitive_depth": max(prim) if prim else -1,
             "primitive_nodes_fka": sum(r["primitive"] for r in da.values()),
             "primitive_nodes_fkb": sum(r["primitive"] for r in db.values()),
@@ -178,8 +139,8 @@ def main():
         "Regenerate with `python experiments/hard_classes.py`.",
         "",
         "`c = eps * log2 N` (FK96 window is `[1, 2]`); `exp = log(FK-A nodes)/log N`;",
-        "`prim depth` is the deepest recursion level still carrying a primitive,",
-        "non-symmetric automorphism group.",
+        "`prim depth` is the deepest level with a confirmed primitive node outside",
+        "the read-once class. `undet` counts nodes where the cap prevents a verdict.",
         "",
         "| instance | class | \\|V\\| | N | eps | c | s/log2N | FK-A | FK-B | A/B | exp | repeat | prim depth | RO root | undet |",
         "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | :-: | ---: |",

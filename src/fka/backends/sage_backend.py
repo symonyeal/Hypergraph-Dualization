@@ -79,7 +79,7 @@ def name_group(group: PermutationGroup) -> GroupIdentification:
     if group.order == 1:
         return GroupIdentification("C1", 1, True, "sage-trivial")
     try:
-        gens = [cycle_notation(g, one_indexed=True) for g in (group.generators or [])]
+        gens = [cycle_notation(g, one_indexed=True) for g in group.minimal_generators()]
         gens = [g for g in gens if g != "()"]
         if not gens:
             return GroupIdentification("C1", 1, True, "sage-trivial")

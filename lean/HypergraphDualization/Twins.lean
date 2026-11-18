@@ -12,7 +12,7 @@ For a simple graph `G` on a finite type, `nbhd G u` is the open neighbourhood `N
 | `swap_isAut_of_twins` | swapping twins is a graph automorphism |
 | `twins_mem_aut_cliques` | Lemma 4.4.13 **generalised**: twins permute in `H` and in `Tr(H)`, for every graph |
 | `twins_map` | Lemma 4.4.14: automorphisms map true twins to true twins, false to false |
-| `not_trueTwin_and_falseTwin` | §4.4.2: a vertex cannot have both a true twin and a false twin, so "twin" is an equivalence relation |
+| `not_trueTwin_and_falseTwin` | §4.4.2: a vertex cannot have both a true twin and a false twin, twinhood extended by equality is an equivalence relation |
 -/
 import HypergraphDualization.Symmetry
 
@@ -149,7 +149,7 @@ theorem twins_map {σ : Equiv.Perm α} (hσ : IsGraphAut G σ) {u v : α} :
       · exact Or.inr hw
   rw [this, this, h.2]
 
-/-- **§4.4.2.** No vertex has both a true twin and a false twin; hence the twin relation is
+/-- **§4.4.2.** No vertex has both a true twin and a false twin; hence twinhood extended by equality is
 an equivalence relation whose classes are all true-twin classes or all false-twin classes. -/
 theorem not_trueTwin_and_falseTwin {u v w : α} (h1 : TrueTwin G u v) (h2 : FalseTwin G v w) :
     False := by

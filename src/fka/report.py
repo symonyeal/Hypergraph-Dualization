@@ -124,7 +124,8 @@ def _node_payload(tree: Tree, positions: dict[int, tuple[float, float]]) -> list
             "nD": len(node.dnf),
             "split_var": node.split_var_label(),
             "branch": node.branch,
-            "eps": None if node.epsilon is None else round(node.epsilon, 4),
+            "eps": (None if node.split_var_frequency is None
+                    else round(node.split_var_frequency, 4)),
             "dual": None if verdict is None else verdict.dual,
             "reason": "" if verdict is None else verdict.reason,
             "detail": "" if verdict is None else verdict.detail,
@@ -398,7 +399,7 @@ function select(id) {
   let h = "<h2>Node " + n.id + "</h2>";
   h += '<div class="path">depth ' + n.depth + " \\u00b7 path " + esc(n.path) + "</div>";
   h += field("Subproblem sizes", "nC = " + n.nC + ", nD = " + n.nD);
-  if (n.split_var) h += field("Split variable", esc(n.split_var) + (n.eps != null ? "  (\\u03b5 = " + n.eps + ")" : ""));
+  if (n.split_var) h += field("Split variable", esc(n.split_var) + (n.eps != null ? "  (frequency = " + n.eps + ")" : ""));
   if (n.branch) h += field("Split branch", esc(BRANCH_TEXT[n.branch] || n.branch));
   h += field("Outcome", (n.dual === true ? "TRUE \\u2014 " : n.dual === false ? "NOT DUAL \\u2014 " : "") + esc(n.detail || n.reason));
   if (n.CA) h += field("Conflicting assignment S", esc(n.CA), true);

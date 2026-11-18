@@ -16,8 +16,8 @@ or a tight dual pair, which is the condition that leaves FK no excuse: the
 answer is "dual", so every branch has to be closed, and ``|Tr(MBF)| = |MBF|`` means
 no part of the tree can be attributed to an exponential output.
 
-A hypergraph is self-transversal exactly when it is a **maximal intersecting
-family**: for every ``S``, exactly one of ``S``, ``V\\S`` contains an edge.
+A Sperner hypergraph is self-transversal exactly when its upward closure is a
+maximal intersecting family: for every ``S``, exactly one of ``S``, ``V\\S`` contains an edge.
 Three facts turn that class into a finite search.
 
 **L1.** Fix an edge ``e`` of minimum size ``s``. Every other edge meets ``e``, so
@@ -39,20 +39,20 @@ L1 collapses to ``n <= s^2 - 1``. So for each ground set only a few edge sizes
 are possible at all, and every candidate is a union of orbits of a transitive
 group acting on subsets.
 
-The search enumerates exactly that: every transitive group of each degree,
-every orbit of ``s``-subsets allowed by L3, and every intersecting *pair* of
-orbits (the non-uniform candidates). Candidates are filtered by two cheap
+The search visits every transitive group of each degree and every orbit of
+``s``-subsets allowed by L3. It checks intersecting pairs of orbits through
+degree 12. Unions of three or more orbits are outside its scope. Candidates pass two cheap
 necessary conditions before the exact test, which decides ``Tr(MBF) = MBF`` over
 all ``2^n`` subsets at once rather than by building ``Tr(MBF)``.
 
 What it finds
 -------------
-See ``docs/hard-cases.md``. Up to 15 points the class splits in two: the
+See ``docs/hard-classes.md``. Up to 15 points the class splits in two: the
 instances whose automorphism group is *imprimitive* are compositions
 (``MAJ3[MAJ3]``, ``MAJ5[MAJ3]``, ``MAJ3[MAJ5]``), hard for the same reason the
 alternating trees are -- FK does not notice that they decompose. Among the
-*primitive* ones, the Fano plane ``S(2,3,7)`` and the Witt design
-``S(4,5,11) = W11`` are the two non-trivial families, and W11 is the harder.
+*primitive* examples found, W11 has the largest FK-A/input ratio and the
+Fano plane is second. Other primitive non-majority examples also occur.
 """
 
 from __future__ import annotations
@@ -73,7 +73,7 @@ except ImportError:  # pragma: no cover - the program is Sage-only by design
     raise SystemExit(
         "hard_case_search.py needs SageMath: it enumerates SageMath's "
         "transitive-group database. Run it under `sage -python`, or see "
-        "docs/sagemath.md."
+        "docs/architecture.md#sagemath."
     )
 
 import numpy as np  # noqa: E402
@@ -212,8 +212,7 @@ def describe(MBF: Hypergraph) -> dict:
         # Every family this large in the searched range is a majority function,
         # whose blocks are reconstructible from n alone. Recording 6435 blocks
         # of size 8 costs 235 KB and says nothing the parameters do not, so the
-        # construction is recorded instead. Cf. the fk-b.multiple withdrawal in
-        # _archive/20260804-redundant-fkb-multiple-artifacts/.
+        # construction is recorded instead.
         half = (MBF.n + 1) // 2
         is_majority = row["edge_sizes"] == [half] and m == math.comb(MBF.n, half)
         row["edges"] = None

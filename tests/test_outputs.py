@@ -46,6 +46,7 @@ def test_node_ids_follow_preorder(small_tree):
 def test_tree_json_round_trip(small_tree, tmp_path):
     path = small_tree.save(tmp_path / "t.json")
     restored = Tree.load(path)
+    assert restored.to_json() == small_tree.to_json()
     assert len(restored) == len(small_tree)
     assert restored.dual == small_tree.dual
     for a, b in zip(small_tree, restored):
@@ -132,6 +133,27 @@ def test_report_embeds_every_node(small_tree):
     payload = json.loads(re.search(r"const NODES = (\[.*?\]);", page, re.S).group(1))
     assert len(payload) == len(small_tree)
     assert {p["id"] for p in payload} == set(small_tree.nodes)
+
+
+def test_report_shows_the_selected_vertex_frequency():
+    from fka.hypergraph import Hypergraph
+
+    C = Hypergraph.from_sets(3, [[0, 1], [2]])
+    D = Hypergraph.from_sets(3, [[0, 2], [1, 2]])
+    tree = fk_a(C, D, split_rule="leftmost", variant="faithful")
+    assert tree.root.epsilon == 1
+    page = render_html(tree)
+    payload = json.loads(re.search(r"const NODES = (\[.*?\]);", page, re.S).group(1))
+    assert payload[0]["eps"] == 0.5
+
+
+def test_annotation_preserves_correctness_errors(monkeypatch, small_tree):
+    def invalid_group(*args, **kwargs):
+        raise ValueError("Sage generator order disagreement")
+
+    monkeypatch.setattr("fka.analysis.automorphism_group", invalid_group)
+    with pytest.raises(ValueError, match="order disagreement"):
+        annotate(small_tree)
 
 
 def test_report_supports_both_themes(small_tree):

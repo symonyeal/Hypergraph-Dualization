@@ -36,8 +36,7 @@ outputs should be read:
 
 - Seven of its twelve `*_CNF_DNF.mat` benchmark files store a `cnf` and `dnf`
   with different column counts, so those two matrices are not over the same
-  variable set and are not a transversal pair. The reader that reproduces this finding is archived as
-  `_archive/20261021-superseded-notes/import_fkb_benchmarks.py`.
+  variable set and are not a transversal pair. The import reader was retired; it is not part of the maintained checkout.
 - The last two vectors in `Unit_tests_Check_Conditions.m` carry a bare `% 1`
   comment that is not a conflicting assignment in either direction. The file has
   no assertions, so these read as stale notes.

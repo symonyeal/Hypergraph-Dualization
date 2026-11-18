@@ -4,7 +4,7 @@ A term is the integer whose bit ``i`` is set iff variable ``i`` is in it.
 Variables are 0-indexed; the thesis numbers from 1, so human-facing paths
 convert with ``+1``.
 
-Bitsets make subset, superset and disjointness single machine words --
+Bitsets make subset, superset and disjointness integer operations --
 ``a & b == a`` is ``a subseteq b`` -- and terms hashable, so deduplication is a
 ``set`` pass. Incidence matrices remain the interchange format for SageMath and
 MATLAB.
@@ -45,6 +45,8 @@ def bits(variables: Iterable[int]) -> int:
 
 def verts(t: int) -> tuple[int, ...]:
     """Unpack a bitset into ascending 0-indexed variable ids."""
+    if t < 0:
+        raise ValueError("bitsets must be non-negative")
     out = []
     while t:
         low = t & -t
@@ -97,7 +99,7 @@ class Hypergraph:
         smaller integer than ``{1,5,6}`` but comes later in the notation the
         thesis and every export use.
         """
-        return cls(n, tuple(sorted(set(edges), key=verts)))
+        return cls(n, tuple(edges))
 
     @classmethod
     def from_sets(
@@ -217,8 +219,8 @@ class Hypergraph:
     def isolated_vertices(self) -> tuple[int, ...]:
         """Variables in no term.
 
-        Not allowed at the root, but ``phi_x_0`` creates them mid-recursion
-        (thesis p.53), so nodes report them rather than silently renumbering.
+        Ground-set coordinates remain aligned throughout the recursion, including
+        when ``phi_x_0`` creates isolated variables (thesis p.53).
         """
         sup = self.support()
         return tuple(v for v in range(self.n) if not (sup >> v) & 1)

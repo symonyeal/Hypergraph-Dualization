@@ -10,7 +10,8 @@ the published degree-sum instance `fkAR splitVar`. Each node:
 1. Sperner-reduces both sides (`minimal`);
 2. checks conditions (i)-(iv) (`conds`); a failure is a leaf with verdict `false`;
 3. stops at `|C|·|D| ≤ 1`, and under `modified` also at `|C| = 1` or `|D| = 1` (§5.1.1);
-4. otherwise splits on the vertex maximising `deg_C + deg_D`, lowest index on ties, and
+4. otherwise selects a vertex using `r` (the published default maximises `deg_C + deg_D`,
+   lowest index on ties), and
    recurses on `L = (C₁, D₀ ∨ D₁)` and then, only if `L` is dual, on `R = (D₁, C₀ ∨ C₁)`.
 
 This is the configuration that produced the 2024 figures (`modified`, degree-sum rule) and
@@ -116,16 +117,7 @@ theorem fkAR_correct (r : Rule n) (fuel : ℕ) (modified : Bool) (C D : HG n) :
       · rename_i x _
         set C' := minimal C
         set D' := minimal D
-        have hsplit := dual_split (G := C') (H := D') (mem_univ x)
-        have hL := dual_erase_of_notMem (U := (univ : Finset (Fin n)))
-          (G := del C' x) (H := con D' x) (x := x)
-          (fun e he => (mem_filter.1 he).2) (fun e he => by
-            obtain ⟨f, -, rfl⟩ := mem_image.1 he; exact notMem_erase x f)
-        have hR := dual_erase_of_notMem (U := (univ : Finset (Fin n)))
-          (G := del D' x) (H := con C' x) (x := x)
-          (fun e he => (mem_filter.1 he).2) (fun e he => by
-            obtain ⟨f, -, rfl⟩ := mem_image.1 he; exact notMem_erase x f)
-        rw [hL, hR] at hsplit
+        have hsplit := dual_split_univ C' D' x
         have hD : Dual univ C D ↔ Dual univ (del C' x) (con D' x) ∧
             Dual univ (del D' x) (con C' x) := hred.symm.trans hsplit
         split_ifs with hl

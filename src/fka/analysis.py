@@ -23,6 +23,7 @@ from typing import Any, Optional
 
 from .automorphism import AutomorphismResult, automorphism_group
 from .hypergraph import Hypergraph
+from .groups import EnumerationLimit
 from .properties import Properties, analyse
 from .tree import Node, Tree
 
@@ -108,7 +109,7 @@ def _group_for(
         return automorphism_group(
             MBF, include_isolated=opts.include_isolated, backend=opts.backend
         )
-    except ValueError:
+    except EnumerationLimit:
         # Group above the enumeration cap -- recorded as unknown rather than
         # aborting the whole pass.
         return None

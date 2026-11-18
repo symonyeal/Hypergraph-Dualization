@@ -37,9 +37,9 @@ Any claim of the form "FK-B is faster" needs the instance class attached.
 `w11` is the qualification added on 2026-08-05, and it is the sharpest one: it
 is symmetric *and* self-dual, the shape that should be FK-B's best case, yet the
 margin collapses to 1.47x. Symmetry alone does not hand FK-B the win — see §3
-and [hard-cases.md](hard-cases.md).
+and [hard-classes.md](hard-classes.md).
 
-## 2. FK-A's blow-up is re-derived subproblems, and the rate predicts the gap
+## 2. Repeated FK-A subproblems
 
 Sorting the instances by the fraction of FK-A nodes whose `(cnf, dnf)` pair already
 appeared elsewhere in its own tree:
@@ -62,13 +62,12 @@ case — "The resulting contraction subhypergraph at Node 8 is identical to that
 at Node 17. This repetition of subproblems contributes to the enlargement of the
 recursion tree" (p.53) — and at `k = 3` it is essentially the whole tree.
 
-Where FK-A repeats nothing at all (the threshold family, 0%), FK-B has nothing
-to save and its extra machinery is pure cost. **The repeat rate is the
-predictor**, with one instructive exception below.
-
-(An exhaustive re-run over 22 instances adds a second: `word-xy` repeats
-95.2% of its nodes and FK-B gains only 2.99x. Tree size, not symmetry, is what
-separates it from `gk-f3`'s 52.96x. See `docs/hard-classes.md` section 5.)
+The threshold family has no repeated FK-A states, and FK-B builds a larger tree
+in these runs. The repeat fraction measures the gap between the FK-A tree and its
+own DAG. It does not determine the FK-B tree size. For example, the classifier's
+26 rows over 21 pairs include `word-xy`, which repeats 95.2% of its FK-A nodes and
+has a 2.99x FK-A/FK-B tree ratio, against 52.96x on `gk-f3`.
+See [hard-classes.md §5](hard-classes.md).
 
 ## 3. Why the repeats happen: symmetry
 
@@ -103,7 +102,7 @@ shreds the group (8.8% and 13.5% of its nodes reach the trivial group, against
 3.5% for FK-A on both). Those two instances are the ones whose root group is
 4-transitive, and there FK-B's per-term branch — the step that wins everywhere
 else by removing a whole orbit representative at once — is what destroys the
-symmetry fastest. See [hard-cases.md](hard-cases.md).
+symmetry fastest. See [hard-classes.md](hard-classes.md).
 
 The same effect read the other way — mean `|Aut(C)|` over the tree, as a
 fraction of the root's:
@@ -151,9 +150,9 @@ The threshold family inverts the shape: `nC = 6` against `nD = 25` at
 after a couple of splits, and `D_{1,k}` then decides in `O(k)` — so it finishes
 in 9 nodes with **no repeated subproblems at all**.
 
-FK-B has no `D_{1,k}` equivalent. Its μ-test fires `mu_D` six times, and each
-`mu_D` branch spawns one subproblem per clause. On an instance that was already
-about to be solved, that fan-out is overhead: 27 nodes for the same answer.
+FK-B's easy case also handles single-edge sides. Before reaching it on this
+input, FK-B takes six `mu_D` splits, each with a subproblem per clause. Its tree
+has 27 nodes for the same answer.
 
 The reading is that the two algorithms' cheap paths are aimed at different
 things. FK-A's is a *shape* shortcut, for when one side collapses to a single
@@ -185,14 +184,12 @@ instance. See [tree-vs-dag.md](tree-vs-dag.md) §2.
 Thesis p.51 states that "the input hypergraphs G and H (if they are transversals
 of each other) have the same automorphism group". Across **4,034 annotated
 nodes** — 2,639 FK-A and 1,395 FK-B, over all fourteen live instances — there
-are **zero** nodes where the two sides' groups differ, in either algorithm.
-(This section previously totalled 3,455 over twelve instances, carrying the same
-mis-stated FK-B figure corrected in §3; the count of disagreements was zero
-then and is zero now, over more nodes and two further instances.)
-
-This is stronger than the thesis states it, in two ways: it holds at every node
-of the recursion, not only at the root, and it holds for FK-B's decomposition,
-which the thesis never examined.
+were zero disagreements among the recorded group descriptors. This sample includes
+descendant nodes of both algorithms. The earlier total of 3,455 across twelve
+instances also had zero recorded disagreements and carried the FK-B count corrected
+in §3. Agreement of reported names and orders does not establish equality of actions.
+For any actual Sperner transversal pair, equality of the automorphism subgroups
+follows from equivariance and transversal involution (`aut_tr_of_sperner`).
 
 The previously recorded counterexample was `6a` *as published*, where
 `Aut(C) = C₂` and `Aut(D) = C₂ × C₂`. That instance is **not a transversal
@@ -203,20 +200,18 @@ is locked by `tests/test_symmetry.py`.
 
 ---
 
-## Summary: four regimes
+## Observed tree-size comparisons
 
 | regime | example | FK-A repeats | who wins | why |
 | --- | --- | --- | --- | --- |
 | **Symmetry-bound** | `sdfp-sd-*`, `fano`, `f2g2` | 60–98% | **FK-B**, growing with size | FK-A re-derives orbit-equivalent subproblems; FK-B's per-term branch takes a whole orbit representative at once |
-| **Primitively symmetric** | `w11`, `w11-sd-1` | 70% | **neither**, ~1.5x | The root group is 4-transitive, so no vertex, pair, triple or quadruple is distinguishable. FK-B's cheap path stops firing: it needs 323 nodes at depth 9 where the Fano plane costs it 11 at depth 3. Added 2026-08-05; see [hard-cases.md](hard-cases.md) |
+| **Primitively symmetric** | `w11`, `w11-sd-1` | 70% | **neither**, ~1.5x | The root group is 4-transitive, so no vertex, pair, triple or quadruple is distinguishable. FK-B's cheap path stops firing: it needs 323 nodes at depth 9 where the Fano plane costs it 11 at depth 3. Added 2026-08-05; see [hard-classes.md](hard-classes.md) |
 | **Large output** | `matching(v)` | high, and avoidable | neither, flat ~1.9x | `|Tr|` is exponential but neither algorithm needs it; both simply fail to reuse — `delta = v`, see §6 |
 | **Shape-easy** | `threshold(v)`, `8ver` | 0–48% | **FK-A** | `D_{1,k}` settles it before FK-B's per-term fan-out earns anything |
 
-The practical consequence for this project: **`ε(C, D)` and `|Aut|` at the root
-predict which algorithm to reach for.** A high root automorphism order with a
-self-dual structure is FK-A's worst case and FK-B's best; a small, lopsided pair
-is the reverse. Neither dominates, and the instance library now contains
-witnesses for both directions.
+The measured library contains examples in both directions. Root frequency and
+automorphism order describe these inputs, and the comparison has no tested
+decision rule based on those two statistics.
 
 One qualification on all of the above, added 2026-08-10. Every ratio in this
 document compares two *trees*. Against FK-A's distinct-subproblem count the
@@ -225,6 +220,6 @@ falls to 0.14 on `word-xy` and 0.19 on `gk-f3`, so on this library FK-B's
 advantage is subsumed by a transposition table and what it keeps is the constant
 factor from §4's shallower base case (not an asymptotic claim; see
 [tree-vs-dag.md](tree-vs-dag.md) §5). The repeat rate of §2 is not an empirical predictor
-either — `tau/delta = 1/(1 − rho)` is an identity, making `rho` the *ceiling* on
-any such speedup rather than a correlate of FK-B's share of it.
+either. The identity `tau/delta = 1/(1 − rho)` gives the node-count reduction
+for exact FK-A memoization under the same rule.
 [tree-vs-dag.md](tree-vs-dag.md) is the full account.

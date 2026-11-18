@@ -49,7 +49,7 @@ def cmd_env(args: argparse.Namespace) -> int:
         print(
             "\nSageMath is not importable here, so group naming uses the built-in "
             "catalogue and graph-class tests use the capped pure-Python versions. "
-            "See docs/sagemath.md."
+            "See docs/architecture.md#sagemath."
         )
     return 0
 
@@ -120,6 +120,8 @@ def _run_one(inst: Instance, args: argparse.Namespace, outdir: Path) -> bool:
         )
 
     stem = f"{inst.id}.fk-a.{args.variant}"
+    if args.split_rule != "degree_sum":
+        stem += f".{args.split_rule}"
     json_path = tree.save(outdir / f"{stem}.json")
     html_path = write_report(tree, outdir / f"{stem}.html", title=inst.name, instance=inst)
     outputs = [json_path, html_path]

@@ -1,7 +1,7 @@
 # Joint block projections and guarded departures
 
 Evidence for research Observations 4.31 and 4.32 (the growth and guarded-rule questions in
-[`research-agenda.md`](../docs/research-agenda.md)).
+[`research-2026-10.md#7-open-items`](../docs/research-2026-10.md#7-open-items)).
 Every count is computed by `experiments/readonce_dag` (Rust, `src/probe.rs`) through
 `python experiments/block_probe.py FAMILY K MODE --out OUT.json`; the JSON files in
 `block-probes/` hold each run's records and the SHA-256 of the Rust sources. Modified FK-A,

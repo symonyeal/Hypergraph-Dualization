@@ -1,6 +1,6 @@
 """Is eps(n) < p/q?  (research track B, Observation 5.2.3)
 
-Usage (from the repository root): python experiments/eps_search.py [n p q] [--cnf FILE]
+Usage (from the repository root): python experiments/eps_search.py [n p q]
 
 eps(G, H) = max_v max(deg_G v / |G|, deg_H v / |H|) for a transversal pair H = Tr(G) with
 both sides nonempty and no empty edge; eps(n) is its minimum over pairs on n points.
@@ -27,12 +27,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from fka.hypergraph import Hypergraph  # noqa: E402
+from fka.algorithm import eps_exact  # noqa: E402
 from fka.transversal import transversal  # noqa: E402
-
-
-def eps(G, H, n):
-    """G, H as lists of bitmasks."""
-    return max(Fraction(sum(e >> v & 1 for e in F), len(F)) for F in (G, H) for v in range(n))
 
 
 def model(n, p, q):
@@ -60,11 +56,11 @@ def model(n, p, q):
     deg = [sum(m[x] for x in range(N) if x >> v & 1) for v in range(n)]
     for v in range(n - 1):
         M.add(deg[v] >= deg[v + 1])
-    return M, f, m
+    return M, m
 
 
 def solve(n, p, q):
-    M, _, m = model(n, p, q)
+    M, m = model(n, p, q)
     S = cp_model.CpSolver()
     S.parameters.num_workers, S.parameters.random_seed = 8, 0
     st = S.solve(M)
@@ -72,15 +68,22 @@ def solve(n, p, q):
         return "infeasible", None, S.wall_time
     if st not in (cp_model.FEASIBLE, cp_model.OPTIMAL):
         return S.status_name(st), None, S.wall_time
-    G = [x for x in range(1 << n) if S.value(m[x])]
-    H = list(transversal(Hypergraph.from_bitsets(n, G)))
-    return "feasible", (G, H, eps(G, H, n)), S.wall_time
+    G = Hypergraph.from_bitsets(n, (x for x in range(1 << n) if S.value(m[x])))
+    H = transversal(G)
+    e = eps_exact(G, H)
+    if e >= Fraction(p, q):
+        raise AssertionError("CP-SAT witness violates the frequency bound")
+    return "feasible", (G.edges, H.edges, e), S.wall_time
 
 
 if __name__ == "__main__":
-    cases = [tuple(map(int, sys.argv[1:4]))] if len(sys.argv) >= 4 else \
+    if len(sys.argv) not in (1, 4):
+        raise SystemExit("usage: eps_search.py [n p q]")
+    cases = [tuple(map(int, sys.argv[1:]))] if len(sys.argv) == 4 else \
         [(3, 2, 3), (4, 1, 2), (5, 1, 2), (6, 1, 2), (7, 1, 2), (7, 3, 7), (8, 2, 5)]
     for n, p, q in cases:
+        if min(n, p, q) <= 0:
+            raise SystemExit("n, p and q must be positive integers")
         status, w, t = solve(n, p, q)
         print(f"n = {n}, eps < {p}/{q}: {status}  ({t:.1f} s)")
         if w:

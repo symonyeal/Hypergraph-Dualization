@@ -15,7 +15,7 @@ The checks evaluate the definitions of `Basic`, `Symmetry` and `Algorithm` with
 | Lean | Thesis (§3.2) |
 | --- | --- |
 | `sperner_four_card`, `classes_four` | 168 Sperner hypergraphs on 4 vertices, 30 classes under `S₄` |
-| `self_dual_classes_four` | 4 classes are self-transversal, so the other 26 form 13 pairs |
+| `self_dual_classes_four` | 4 classes are fixed up to isomorphism by transversal duality, so the other 26 form 13 pairs |
 | `max_tree_three`, `max_tree_four` | the largest FK-A tree on 3 (resp. 4) vertices has 3 (resp. 7) nodes |
 | `*_tr`, `*_aut`, `*_freq`, `*_splits` | the per-hypergraph statements |
 | `*_printed_*` | printed pairs that are not transversal pairs |
@@ -88,7 +88,7 @@ theorem classes_four :
     reps4.Pairwise (fun r s => ¬ Iso r s) ∧
     ∀ H ∈ sperner 4, ∃ r ∈ reps4, Iso r H := by native_decide
 
-/-- **§3.2.** Exactly 4 of the 30 classes are self-transversal, so the remaining 26 classes
+/-- **§3.2.** Exactly 4 of the 30 classes are isomorphic to their transversal classes, so the remaining 26 classes
 form 13 pairs `{G, Tr(G)}` with `G ≇ Tr(G)`. -/
 theorem self_dual_classes_four :
     (reps4.filter fun r => Iso r (tr univ r)).length = 4 ∧
@@ -208,13 +208,8 @@ theorem k4_printed_not_tr : tr univ k4 ≠ {{0, 1, 2, 3}} := by native_decide
 
 /-! ### The Example of §3.4 -/
 
-/-- Two vertices lie in a common edge (the primal graph `G(H)`). -/
-def PAdj (H : HG n) (u v : Fin n) : Prop := u ≠ v ∧ ∃ e ∈ H, u ∈ e ∧ v ∈ e
-
-instance (H : HG n) (u v : Fin n) : Decidable (PAdj H u v) := by unfold PAdj; infer_instance
-
 /-- `σ` is an automorphism of the primal graph. -/
-def PrimalAut (H : HG n) (σ : Equiv.Perm (Fin n)) : Prop := ∀ a b, PAdj H (σ a) (σ b) ↔ PAdj H a b
+def PrimalAut (H : HG n) (σ : Equiv.Perm (Fin n)) : Prop := ∀ a b, primalAdj H (σ a) (σ b) ↔ primalAdj H a b
 
 instance (H : HG n) (σ : Equiv.Perm (Fin n)) : Decidable (PrimalAut H σ) := by
   unfold PrimalAut; infer_instance

@@ -24,6 +24,7 @@ from typing import Any, Optional, Sequence
 
 from .groups import (
     MAX_GROUP_ORDER,
+    EnumerationLimit,
     Perm,
     PermutationGroup,
     cycle_notation,
@@ -104,10 +105,10 @@ def term_set_automorphisms(
     is abandoned as soon as some term's assigned image cannot be extended to a
     term of the same size in the same family.
 
-    ``partial=True`` stops at ``cap`` and returns what it has, which is a
-    subgroup; ``partial=False`` raises instead. A subgroup still *proves*
-    primitivity -- every block of a group is a block of each of its subgroups --
-    so the cap can only under-report, never invent symmetry.
+    ``partial=True`` stops at ``cap`` and returns the automorphisms found;
+    this list need not be closed under composition. The subgroup they generate
+    still lies in the full automorphism group. Proving that subgroup primitive
+    therefore proves the full group primitive. ``partial=False`` raises instead.
     """
     if not families:
         raise ValueError("need at least one term set")
@@ -127,7 +128,7 @@ def term_set_automorphisms(
             if partial:
                 found = [tuple(p) for _, p in zip(range(cap), permutations(range(n)))]
                 return found, True
-            raise ValueError(
+            raise EnumerationLimit(
                 f"no terms, so Aut is the full symmetric group S{n} of order "
                 f"{factorial(n)}, above the cap of {cap}"
             )
@@ -187,7 +188,7 @@ def term_set_automorphisms(
         nonlocal used, capped
         if len(found) >= cap:
             if not partial:
-                raise ValueError(
+                raise EnumerationLimit(
                     f"automorphism group exceeded {cap} elements; "
                     "compact the input or raise the cap"
                 )

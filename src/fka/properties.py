@@ -106,10 +106,13 @@ def is_read_once(MBF: Hypergraph, g: Optional[Graph] = None) -> bool:
 
     Gurvich's criterion, as used by Golumbic-Mintz-Rotics [GMR06] and cited in
     thesis Section 4.4: a positive DNF is read-once iff it is normal (here:
-    conformal) and its primal graph is P4-free (a cograph).
+    conformal) and its primal graph is P4-free (a cograph), for a Sperner
+    edge family on its active support. Isolated ground-set vertices are ignored.
 
     An edgeless hypergraph is read-once vacuously.
     """
+    if not MBF.is_sperner():
+        return False
     if not MBF.edges:
         return True
     g = primal_graph(MBF) if g is None else g
@@ -185,7 +188,7 @@ def analyse(MBF: Hypergraph, *, graph_classes: bool = True) -> Properties:
         conformal=conformal,
         nonconformal_clique=bad_clique,
         alpha_acyclic=is_alpha_acyclic(MBF),
-        read_once=(conformal and is_cograph(g, max_vertices=None)) if MBF.edges else True,
+        read_once=is_read_once(MBF, g),
         graph_classes=classify_graph(g) if graph_classes else None,
         isolated_vertices=MBF.isolated_vertices(),
     )

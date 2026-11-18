@@ -37,7 +37,7 @@ one-way and is about where files sit, not about one algorithm needing the other.
 
 `fka/automorphism.py` is the module Chapter 3 is about: every recursion node is
 annotated with the group of both its subhypergraphs, and that annotation is what
-`docs/fk-a-vs-fk-b.md` and `docs/hard-cases.md` measure.
+`docs/fk-a-vs-fk-b.md` and `docs/hard-classes.md` measure.
 
 `fka/memo.py` is deliberately not a flag on `fka/algorithm.py`. The tree is the
 published object and its node counts are fixed by
@@ -67,7 +67,7 @@ notation and is the only place that correspondence is recorded.
 4. Run `python -m pytest`, then
    `python -m fka verify` and
    `python -m fkb verify`.
-5. Generate the deliverables with `-m fka run <id>` and `-m fkb run <id>`.
+5. Generate the deliverables with `python -m fka run <id>` and `python -m fkb run <id>`.
 6. Put a durable mathematical claim in a focused test and cite the thesis page
    or archived source log in its docstring.
 
@@ -91,10 +91,11 @@ Two folders, and each holds all of its kind:
 
 - **`data/`** — every research input. `instances/` is the `(cnf, dnf)` library,
   `reference/` the MATLAB FK-B authors' recorded test vectors, `baselines/` the
-  node counts and split sequences printed in the thesis. No test embeds its own
-  data; `fka.instances.load_data` reads it. Superseded inputs move to
-  `_archive/` and return through `load_archived`.
-- **`results/`** — every run of both algorithms and every variant of each.
+  node counts and split sequences printed in the thesis. Tests load these fixtures
+  with `fka.instances.load_data` and also use literal and seeded cases. Superseded
+  inputs move to `_archive/` and return through `load_archived`.
+- **`results/`** holds research tables, certificates and other retained evidence.
+  Generate per-run tree exports on demand with `python -m fka run` or `python -m fkb run`.
 
 ## Result formats
 
@@ -104,8 +105,7 @@ explorer, and optional Graphviz DOT — named
 replaces its own deterministic artifacts rather than creating numbered copies.
 
 [`../results/README.md`](../results/README.md) is the single record of what each
-format holds, which variants are committed and why, and the command that
-regenerates each one. It is not restated here.
+format holds and how to generate it.
 
 ## Annotation cost
 
@@ -133,4 +133,59 @@ run, when a specific group is the question — not as a default.
 
 The Sage tests are expected to skip in ordinary CPython. A release or quoted
 cross-backend result should also be run in the Sage environment described in
-`docs/sagemath.md`.
+the SageMath section below.
+
+## Interfaces
+
+| Task | Implementation |
+| --- | --- |
+| Generate `Tr(H)` | `fka.transversal` |
+| Decide whether `G = Tr(H)`, with a witness when false | `fka.algorithm.fk_a`, FK-B |
+| Test self-transversality | `SelfTransversal.lean`, `Critical.lean` |
+| Measure distinct subproblems and compare split rules | `fka.memo`, `experiments/split_rules.py` |
+
+The applied supplier-panel study and its data are maintained in
+[Resilient-Supplier-Panels](https://github.com/symonyeal/Resilient-Supplier-Panels).
+Algorithmic correspondences and their proof status are recorded in research §8.
+
+## SageMath
+
+The package runs under CPython. Sage is an optional independent backend:
+`--backend sage` requires an interpreter that can import `sage.all`, and no
+module imports Sage at package load. `python -m fka env` reports availability.
+
+### Checks
+
+The Sage job in `.github/workflows/tests.yml` runs the full Python suite and
+the two algorithm verifiers in the Sage 10.9 image pinned there. Check that
+job for the revision being used; a historical local run establishes no current
+Sage result. The Dockerfile uses the same image for browser notebooks.
+
+With Sage's interpreter:
+
+```text
+sage -python -m pip install -e ".[dev]"
+sage -python -m pytest -m sage
+sage -python -m fka env
+sage -python -m fka run fano --backend sage
+sage -python experiments/hard_case_search.py 3 15
+```
+
+For a distribution that exposes Sage as a Python package rather than a `sage`
+launcher, use that interpreter directly. The expected test signal is that
+Sage-marked tests execute rather than skip. Sage is not required for the Lean build.
+
+### Adapter contract
+
+The adapter uses `IncidenceStructure` for automorphism groups and GAP-backed
+group descriptions, and Sage graph predicates for independent structure checks.
+It translates Sage's zero-based points to the thesis's one-based vertex labels;
+a pure-Python regression test covers this translation without Sage installed.
+
+The backend tests compare group orders and orbits and validate generators.
+Group names need not match the Python catalogue: GAP's `StructureDescription`
+can give different descriptions of isomorphic groups. Name assertions use the
+Python backend; Sage comparisons test the mathematical group instead.
+
+`fka.instances.witt_11` derives `S(4,5,11)` from the ternary Golay code without
+Sage or GAP's optional `design` package.

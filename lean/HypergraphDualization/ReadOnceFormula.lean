@@ -210,18 +210,6 @@ theorem hits_dnf (f : Fm n) (S : Finset (Fin n)) : Hits (dnf f) S ↔ eval (dual
   | and f g hf hg => simp [dnf, dual, eval, hits_join, hf, hg]
   | or f g hf hg => simp [dnf, dual, eval, hits_union, hf, hg]
 
-theorem eval_restrict (x : Fin n) (b : Bool) (f : Fm n) (S : Finset (Fin n)) :
-    eval (restrict x b f) S = eval f (if b then insert x S else S.erase x) := by
-  induction f with
-  | tt => rfl
-  | ff => rfl
-  | var i =>
-    by_cases h : i = x
-    · subst h; cases b <;> simp [restrict, eval]
-    · cases b <;> simp [restrict, eval, h]
-  | and f g hf hg => simp [restrict, eval, hf, hg]
-  | or f g hf hg => simp [restrict, eval, hf, hg]
-
 /-- **`dnf(f|x=0) = dnf f − x`**, for every formula. -/
 theorem dnf_restrict_false (x : Fin n) (f : Fm n) : dnf (restrict x false f) = del (dnf f) x := by
   induction f with
@@ -863,14 +851,6 @@ theorem rminor_determined : ∀ {f : Fm n}, ReadOnce f → ∀ {K K' : HG n}, RM
         (fun h0 => iff_of_true (z nA h0) (z nA' (hA ▸ h0))),
       eq_of_support_eq (rminor_determined hg rB rB') hB
         (fun h0 => iff_of_true (z nB h0) (z nB' (hB ▸ h0)))]
-
-/-- Distinct reduced minors of a read-once `f` with nonempty support have distinct supports:
-their number is at most the number of supports they use. -/
-theorem card_rminor_le {f : Fm n} (hf : ReadOnce f) (𝒦 : Finset (HG n))
-    (h𝒦 : ∀ K ∈ 𝒦, RMinor f K ∧ (support K).Nonempty) :
-    𝒦.card ≤ (𝒦.image support).card :=
-  le_of_eq (card_image_of_injOn fun K hK K' hK' hs =>
-    rminor_determined hf (h𝒦 K hK).1 (h𝒦 K' hK').1 hs (h𝒦 K hK).2).symm
 
 end Fm
 

@@ -1,7 +1,8 @@
 # Results
 
-Committed algorithm runs and computational research records. The per-instance files below
-are generated; the Markdown research notes interpret the computations and state their limits.
+Machine-readable algorithm runs and computational research records. Per-instance
+JSON is retained; HTML and DOT views are generated on demand and ignored by Git.
+The Markdown research notes interpret computations and state their limits.
 
 ## Per-instance runs
 
@@ -14,12 +15,12 @@ are generated; the Markdown research notes interpret the computations and state 
 | `fk-b` | `faithful` | yes | `FK_B.m` |
 | `fk-b` | `multiple` | no | `MFK_B.m`; same tree, see below |
 
-Three formats each: `.json` is the complete machine-readable recursion tree —
+The generated formats are: `.json` is the complete machine-readable recursion tree —
 every node's subproblem, verdict, conflicting assignment and analysis; `.html` is a
 self-contained interactive explorer with structure, automorphism and property
 views, needing no network or font; `.dot` is optional Graphviz interchange.
 
-Regenerate the committed set with:
+Regenerate the runs and their views with:
 
 ```text
 python -m fka run --all --all-variants --dot
@@ -33,7 +34,8 @@ says so. Both sides sit under `skip_group_above = 40` — 32 and 16 terms — so
 annotation pass attempts the automorphism group, but the group is past
 `MAX_GROUP_ORDER` and every distinct node spends the full enumeration budget to
 discover that and return nothing. Measured: about 40 s per distinct node against
-under a second for every other instance, and the trees have 865 and 577 nodes.
+under a second for every other instance. Each word has 865 faithful FK-A nodes
+and 577 modified FK-A nodes.
 The cap is on term count and the cost is driven by variable count and group
 order, which is the gap; until that is closed these two are generated with
 `--no-annotate`:
@@ -72,14 +74,16 @@ The variant keeps its baseline in every instance file and its own row in
   `python experiments/compare_algorithms.py`; every row is checked against the
   brute-force oracle before it is reported, and the reading of these numbers is in
   [`../docs/fk-a-vs-fk-b.md`](../docs/fk-a-vs-fk-b.md).
-- `hard-case-search.json` — every vertex-transitive self-transversal hypergraph
-  on at most 15 points, with its group, primitivity, frequency and both
+- `hard-case-search.json` — the single-orbit and two-orbit search through
+  15 points (pairs through 12), with group, primitivity, frequency and both
   algorithms' node counts. Regenerate with
   `sage -python experiments/hard_case_search.py 3 15`; the reading is in
-  [`../docs/hard-cases.md`](../docs/hard-cases.md).
+  [`../docs/hard-classes.md`](../docs/hard-classes.md).
 - `hard-classes.json` and `hard-classes.md` — every instance against FK96's
   `c = eps * log2 N` window, and every node of both trees classified as
-  read-once / transitive / primitive. Regenerate with
+  read-once and certified primitive outside that class. The frozen 26-row
+  survey includes five repeated pairs and understates undetermined capped searches.
+  Regeneration uses 21 unique pairs and corrected unknown counts. Regenerate with
   `python experiments/hard_classes.py`; the reading is in
   [`../docs/hard-classes.md`](../docs/hard-classes.md).
 - `dag-size.json` and `dag-size.md` — FK-A's tree `tau` against its distinct
@@ -88,3 +92,14 @@ The variant keeps its baseline in every instance file and its own row in
   where the tree is not an observable. Regenerate with
   `python experiments/dag_size.py --deep`; the reading is in
   [`../docs/tree-vs-dag.md`](../docs/tree-vs-dag.md).
+
+## Further computed records
+
+- `iso-memo.md`: exact repeats, input-automorphism orbits and isomorphism classes
+  (`experiments/iso_classes.py`).
+- `prime-templates.md`: historical bounded regular-template classification,
+  one representative per isomorphism type; the retired program is archived.
+- `split-rules.md`: degree-sum, leftmost and guarded rules (`experiments/split_rules.py`).
+- `symmetry-depth.md`: groups by depth (`experiments/symmetry_depth.py --write`).
+- `block-probes.md` and `block-probes/`: bounded joint-reach probes and the
+  retained guarded-rule fixture (`experiments/block_probe.py`).

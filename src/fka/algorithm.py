@@ -126,6 +126,8 @@ def split_vertex(nC: int, nD: int, dC: dict, dD: dict, rule: str = "degree_sum")
     ``guarded``:    least live ``x`` with ``|C| <= s deg_C x`` or ``|D| <= s deg_D x``,
                     ``s = floor(log2 N)``, else ``degree_sum``.
     """
+    if rule not in ("degree_sum", "leftmost", "guarded"):
+        raise ValueError(f"unknown degree-based split rule {rule!r}")
     live = sorted(x for x in dC.keys() | dD.keys() if dC.get(x, 0) + dD.get(x, 0))
     if not live:
         return None

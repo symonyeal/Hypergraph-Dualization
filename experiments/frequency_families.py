@@ -3,8 +3,8 @@
 A dual pair enters only through (A, B, s, t):
     A, B : numbers of terms and clauses (minterms and maxterms)
     s, t : 1/eps_C and 1/eps_D, reciprocal largest term and clause frequencies
-    defect = log2 A + log2 B + 3 - 3 min(s, t); Conjecture 6 said defect >= 0. Neither
-    search below finds a negative defect; Proposition 7 there does, on 36 variables.
+    defect = log2 A + log2 B + 3 - 3 min(s, t); Conjecture 6 said defect >= 0.
+    Proposition 7 refutes it on 36 variables.
 
 Substitution T[G_0, ..., G_{m-1}] on disjoint supports (research Theorem 5.1) gives
     A = sum_{e in T} prod_{i in e} A_i,   B = sum_{e in Tr T} prod_{i in e} B_i,
@@ -19,13 +19,19 @@ compose K S: K random nested substitutions of prime templates (P4, K3, Fano, the
 Usage: python experiments/frequency_families.py closure 13
        python experiments/frequency_families.py compose 20000 1
 """
-import json
 import random
 import sys
 from fractions import Fraction
 from itertools import combinations
 from math import log2
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+
+from fka.hypergraph import Hypergraph  # noqa: E402
+from fka.instances import witt_11  # noqa: E402
+from fka.selfdual import fano  # noqa: E402
+from fka.transversal import transversal  # noqa: E402
 
 
 def gate(g, h, op):
@@ -57,24 +63,20 @@ def Q(a, b, s, t):
     return (s / t) * a + b - (3 * s - 3 + log2(t / s))
 
 
-def transversals(T, m):
-    """Tr(T) on points 0..m-1, by brute force over the 2^m subsets."""
-    hits = [x for x in range(1 << m) if all(x & e for e in T)]
-    return [x for x in hits if not any(y != x and y & x == y for y in hits)]
-
-
-def mask(edges):
-    return [sum(1 << i for i in e) for e in edges]
-
-
 def templates():
     """name -> (m, T, Tr T) as bitmasks; each Tr T computed, never typed."""
-    fano = [(0, 1, 2), (0, 3, 4), (0, 5, 6), (1, 3, 5), (1, 4, 6), (2, 3, 6), (2, 4, 5)]
-    w11 = json.loads(Path(__file__).resolve().parent.parent.joinpath("data/instances/w11.json").read_text())["dnf"]
-    raw = {"or2": (2, [(0,), (1,)]), "and2": (2, [(0, 1)]), "or3": (3, [(0,), (1,), (2,)]),
-           "and3": (3, [(0, 1, 2)]), "P4": (4, [(0, 1), (1, 2), (2, 3)]), "K3": (3, [(0, 1), (0, 2), (1, 2)]),
-           "fano": (7, fano), "w11": (11, w11), "th2of4": (4, list(combinations(range(4), 2)))}
-    return {k: (m, mask(T), transversals(mask(T), m)) for k, (m, T) in raw.items()}
+    raw = {
+        "or2": Hypergraph.from_sets(2, [(0,), (1,)]),
+        "and2": Hypergraph.from_sets(2, [(0, 1)]),
+        "or3": Hypergraph.from_sets(3, [(0,), (1,), (2,)]),
+        "and3": Hypergraph.from_sets(3, [(0, 1, 2)]),
+        "P4": Hypergraph.from_sets(4, [(0, 1), (1, 2), (2, 3)]),
+        "K3": Hypergraph.from_sets(3, combinations(range(3), 2)),
+        "fano": fano(),
+        "w11": witt_11(),
+        "th2of4": Hypergraph.from_sets(4, combinations(range(4), 2)),
+    }
+    return {name: (T.n, T.edges, transversal(T).edges) for name, T in raw.items()}
 
 
 def substitute(tmpl, kids):
@@ -115,7 +117,7 @@ if __name__ == "__main__":
         print(f"read-once tuples with <= {N} leaves: {len(rows)}; largest 1/eps: {rmax:.4f}")
         print(f"least defect {defect[0]:.6f} at {defect[1]} leaves: {defect[2]}")
         print(f"least Q slack {q[0]:.6f} at {q[1]} leaves: {q[2]}")
-    else:
+    elif mode == "compose":
         K, seed = int(sys.argv[2]), int(sys.argv[3])
         T, rng = templates(), random.Random(seed)
         least, rmax, below = (9e9, None), 0.0, 0
@@ -129,3 +131,5 @@ if __name__ == "__main__":
                 least = (d / r, (round(a, 2), round(b, 2), round(r, 2)))
         print(f"{K} nested substitutions, seed {seed}: largest 1/eps {rmax:.1f}; pairs with defect < 0: {below}")
         print(f"least defect*eps over 1/eps > 3: {least[0]:.4f} at (log2 A, log2 B, 1/eps) = {least[1]}")
+    else:
+        raise SystemExit(f"unknown mode {mode!r}")

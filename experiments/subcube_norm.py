@@ -29,12 +29,6 @@ def masses(mu, n):
     return g
 
 
-def lg(x):
-    """log2 of a positive integer of any size."""
-    b = max(x.bit_length() - 60, 0)
-    return b + log2(x >> b)
-
-
 def check():
     OR = lambda x: int(x & 3 > 0)
     S1 = lambda x: OR(x) & OR(x >> 2)
@@ -52,12 +46,14 @@ def check():
         u = u * u * (2 - u * u)
         a1, a0 = N1 * N1, min(1 + N1 * N1, N0 + N1 * N0)        # AND(f_{k-1}, f_{k-1})
         N1, N0 = min(1 + a0 * a0, a1 + a0 * a1), a0 * a0         # OR of two such
-        print(f"f_{k}: v={v:5d}  log2|u|/v = {lg(abs(u)) / v:.10f}  log2(|u| + |1-u|)/v = "
-              f"{lg(abs(u) + abs(1 - u)) / v:.10f}  log2 N1/v <= {lg(N1) / v:.10f}")
+        print(f"f_{k}: v={v:5d}  log2|u|/v = {log2(abs(u)) / v:.10f}  log2(|u| + |1-u|)/v = "
+              f"{log2(abs(u) + abs(1 - u)) / v:.10f}  log2 N1/v <= {log2(N1) / v:.10f}")
 
 
 def build(gates):
     """Point types (value, orbit size) and incidence n[Q, P] of the balanced binary tree."""
+    if any(op not in "&|" for op in gates):
+        raise ValueError("gates must use only '&' and '|'")
     val, size = np.array([0, 1]), np.array([1, 1])
     n = np.array([[1, 0], [0, 1], [1, 1]])            # subcube types: 0, 1, free
     for op in gates:
@@ -82,17 +78,26 @@ def lp(gates):
     has1, has0 = (n * val > 0).any(1), (n * (1 - val) > 0).any(1)
     mono = ~(has1 & has0)
     free = (None, None)
-    part = -linprog(-size, A_ub=n[mono], b_ub=np.ones(mono.sum()), bounds=free).fun
+    def maximum(weights, constraints, bounds):
+        result = linprog(-weights, A_ub=constraints, b_ub=bounds, bounds=free)
+        if not result.success:
+            raise RuntimeError(f"subcube LP failed: {result.message}")
+        return -result.fun
+
+    part = maximum(size, n[mono], np.ones(mono.sum()))
     A, b = np.vstack([n, -n]), np.ones(2 * len(n))
-    N1 = -linprog(-size * val, A_ub=A, b_ub=b, bounds=free).fun
-    N0 = -linprog(-size * (1 - val), A_ub=A, b_ub=b, bounds=free).fun
+    N1 = maximum(size * val, A, b)
+    N0 = maximum(size * (1 - val), A, b)
     print(f"{gates}: {int(size.sum()).bit_length() - 1} variables, {len(val)} point types, "
           f"{len(n)} subcube types ({mono.sum()} monochromatic)\n"
           f"  partition LP = {part:.4f}  N1 = {N1:.4f}  N0 = {N0:.4f}")
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 2 and sys.argv[1] == "lp":
-        lp(sys.argv[2])
-    else:
+    args = sys.argv[1:]
+    if not args or args == ["check"]:
         check()
+    elif len(args) == 2 and args[0] == "lp" and all(op in "&|" for op in args[1]):
+        lp(args[1])
+    else:
+        raise SystemExit("usage: subcube_norm.py check | lp GATES (using '&' and '|')")

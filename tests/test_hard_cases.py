@@ -5,7 +5,7 @@ codes -- Hamming [7,4,3] and ternary Golay [11,6,5] -- and both are
 self-transversal. The third perfect code, the binary Golay [23,12,7], gives
 S(4,7,23), which is intersecting but is *not* self-transversal; that boundary
 is asserted here with an explicit certificate, because it is the reason
-``docs/hard-cases.md`` claims a family of two rather than a family of three.
+``docs/hard-classes.md`` claims a family of two rather than a family of three.
 """
 
 from __future__ import annotations
@@ -171,3 +171,10 @@ def test_self_dualised_w11_is_self_transversal():
     assert is_dual_oracle(S, S)
     assert sorted(set(popcount(e) for e in S.edges)) == [2, 6]
     assert [len(verts(e)) for e in S.edges].count(2) == 1
+
+
+@pytest.mark.parametrize("base", [[], [[]], [[1], [2]], [[1, 2]], [[1], [1, 2]]])
+def test_self_dualise_handles_bases_that_are_not_self_transversal(base):
+    S = self_dualise(base, 2)
+    assert S.is_sperner()
+    assert is_dual_oracle(S, S)

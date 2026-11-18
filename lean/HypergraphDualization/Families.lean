@@ -14,7 +14,7 @@ in `alt`, and the other way round in `coalt`.
 
 | Lean | Thesis |
 | --- | --- |
-| `tr_alt` | `Tr(Γᵢ) = Γ̄ᵢ`: `Tr(f_k) = g_k`, `Tr(S_k) = r_k` |
+| `tr_coalt`, `tr_alt` | `Tr(Γᵢ) = Γ̄ᵢ` and its inverse |
 | `tr_union_disjoint`, `tr_join_disjoint` | §4.1, vertex-disjoint case |
 | `card_alt_succ`, `card_coalt_succ` | §4.2.3, the edge-count recurrences **corrected** |
 | `alt_counts` | §4.3, closed forms |
@@ -183,7 +183,7 @@ theorem alt_props (i : ℕ) :
       · rw [tr_union_disjoint hd hlo hhi wA wA', tA, tA']
       · rw [tr_join_disjoint hd hlo hhi wC wC' nC nC', tC, tC']
 
-/-- **`Tr(Γᵢ) = Γ̄ᵢ`.** In particular `Tr(f_k) = g_k` and `Tr(S_k) = r_k`. -/
+/-- **`Tr(Γ̄ᵢ) = Γᵢ`.** The inverse identity is `tr_coalt` below. -/
 theorem tr_alt (i : ℕ) : tr (range (2 ^ i)) (coalt i) = alt i := (alt_props i).2.2.2.2.2
 
 theorem tr_coalt (i : ℕ) : tr (range (2 ^ i)) (alt i) = coalt i := (alt_props i).2.2.2.2.1
