@@ -38,19 +38,10 @@ def test_node_count_matches_thesis_figure(instance_id):
         f"{instance_id}: thesis {reference} numbers nodes 1..{nodes}, got {len(tree)}"
     )
     assert tree.dual is True
-
-
-@pytest.mark.parametrize(
-    "instance_id",
-    sorted(k for k, v in PUBLISHED_TREES.items() if v["splits"] is not None),
-)
-def test_split_vertices_match_thesis_figure(instance_id):
     splits = PUBLISHED_TREES[instance_id]["splits"]
-    reference = PUBLISHED_TREES[instance_id]["reference"]
-    inst = load(instance_id)
-    tree = fk_a(inst.cnf, inst.dnf, variant="modified", split_rule="degree_sum")
-    got = " ".join(node.split_var_label() or "-" for node in tree)
-    assert got == splits, f"{instance_id} ({reference})"
+    if splits is not None:
+        got = " ".join(node.split_var_label() or "-" for node in tree)
+        assert got == splits, f"{instance_id} ({reference})"
 
 
 def test_trivial_aut_matches_the_archived_run_log():

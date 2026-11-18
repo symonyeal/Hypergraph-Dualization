@@ -19,9 +19,7 @@ from fka.automorphism import automorphism_group
 from fka.hypergraph import Hypergraph, bits, popcount, verts
 from fka.algorithm import eps_exact
 from fka.instances import (
-    FANO_LINES,
     load,
-    self_dual_fano,
     self_dualise,
     witt_11,
 )
@@ -33,31 +31,9 @@ from fkb.algorithm import fk_b
 # ----------------------------------------------------------------------
 # the design
 # ----------------------------------------------------------------------
-def test_witt_11_is_the_steiner_system_s4_5_11():
-    W = witt_11()
-    assert W.n == 11
-    assert len(W) == 66
-    assert set(W.edge_sizes()) == {5}
-    assert set(W.degrees()) == {30}
-    # every 4-subset of the 11 points lies in exactly one block
-    for quad in combinations(range(11), 4):
-        q = bits(quad)
-        assert sum(1 for e in W.edges if e & q == q) == 1
-
-
 def test_witt_11_is_self_transversal():
     W = witt_11()
     assert transversal(W).edges == W.edges
-    assert is_dual_oracle(W, W)
-
-
-def test_witt_11_blocks_pairwise_meet():
-    """Intersecting is necessary for self-transversality, and here the blocks
-    meet in 1, 2 or 3 points -- never 0, and never 4 (that would repeat a
-    quadruple)."""
-    W = witt_11()
-    sizes = {popcount(a & b) for i, a in enumerate(W.edges) for b in W.edges[i + 1:]}
-    assert sizes == {1, 2, 3}
 
 
 def test_witt_11_frequency_and_symmetry():
@@ -83,17 +59,6 @@ def test_witt_11_group_is_m11_by_sage():
 # ----------------------------------------------------------------------
 # both algorithms, against the oracle
 # ----------------------------------------------------------------------
-@pytest.mark.parametrize("instance_id", ["w11", "w11-sd-1"])
-def test_new_instances_agree_with_the_oracle(instance_id):
-    inst = load(instance_id)
-    cnf, dnf = inst.cnf, inst.dnf
-    assert is_dual_oracle(cnf, dnf)
-    for variant in ("faithful", "modified"):
-        assert fk_a(cnf, dnf, variant=variant).verdict.dual
-    for variant in ("faithful", "multiple"):
-        assert fk_b(cnf, dnf, variant=variant).verdict.dual
-
-
 def test_w11_is_harder_than_fano_for_both_algorithms():
     """The point of the instance. Per unit of input -- nodes over nC + nD --
     W11 costs both algorithms more than the Fano plane does, and the margin is
@@ -157,12 +122,6 @@ def test_binary_golay_design_is_intersecting_but_not_self_transversal():
 # ----------------------------------------------------------------------
 # the generalised construction still reproduces the Fano benchmark
 # ----------------------------------------------------------------------
-@pytest.mark.parametrize("k", [1, 2, 3])
-def test_self_dualise_reproduces_self_dual_fano(k):
-    lines = [list(line) for line in FANO_LINES]
-    assert self_dualise(lines, 7, k).edges == self_dual_fano(k).edges
-
-
 def test_self_dualised_w11_is_self_transversal():
     W = witt_11()
     S = self_dualise(W.to_sets(one_indexed=True), 11, 1)

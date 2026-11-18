@@ -40,10 +40,7 @@ Let $f_k$ be denoted as the collection of hypergraphs on $2^{2k-1}$ vertices def
 &f_{k+1}=(f_k^{(1)}\wedge f_k^{(2)})\vee(f_k^{(3)}\wedge f_k^{(4)}),
 \end{align*}
 
-Here $f_k^{(1)},\ldots,f_k^{(4)}$ are copies on pairwise disjoint sets of $n(k)=2^{2k-1}$ vertices. Let $f_2$ be expressed as $(A_1\wedge A_2)\vee(A_3\wedge A_4)$, where $A_i$ $(i=1,\dots,4)$ are vertex-disjoint copies of $f_1$. Then, $f_k$ can be recursively written as:
-\[
-f_1=v_1\vee v_2,\quad f_k=(A_1\wedge A_2)\vee(A_3\wedge A_4).
-\]
+Here $f_k^{(1)},\ldots,f_k^{(4)}$ are copies on pairwise disjoint sets of $n(k)=2^{2k-1}$ vertices.
 
 The corresponding transversal hypergraph for $f_k$, denoted $g_k$ are defined by the following recurrence:
 \begin{align*}
@@ -53,11 +50,6 @@ g_2&=((v_1\wedge v_2)\vee(v_3\wedge v_4))\wedge((v_5\wedge v_6)\vee(v_7\wedge v_
 g_{k+1}&=(g_k(v_1,\dots,v_{n(k)})\vee g_k(v_{n(k)+1},\dots,v_{2n(k)}))\wedge\\
 &\quad\ (g_k(v_{2n(k)+1},\dots,v_{3n(k)})\vee g_k(v_{3n(k)+1},\dots,v_{4n(k)})).
 \end{align*}
-
-Similarly, we denote $g_2=(A_1\vee A_2)\wedge(A_3\vee A_4)$, where $A_i,i=1,\dots,4$ are disjoint copies of $g_1$, and get the following recursive form of $g_k$:
-\[
-g_1=v_1\wedge v_2,\quad g_k\ \ =(A_1\vee A_2)\wedge(A_3\vee A_4).
-\]
 
 \begin{figure}[h]
 \centering
@@ -111,7 +103,7 @@ These are \leanref{card_alt_succ}, \leanref{card_coalt_succ} and \leanref{alt_co
 
 In particular, $\Gamma_3$ represents $g_2$. Interchanging every join and union gives $f_2$.
 
-Gurvich first characterized these alternating trees by properties of their primal graphs in the 70's \cite{Gc77}. Hertel identified the alternating trees as the \emph{read-once} hypergraphs \cite{Her04}. They are also called exact-transversal hypergraphs or \emph{xt}-hypergraphs \cite{Eit94}. In Boolean terms, they are known as read-once functions. \cite{GMR06} shows that there is a one-to-one correspondence between read-once Boolean functions and read-once hypergraphs.
+Gurvich first characterized these alternating trees by properties of their primal graphs in the 70's \cite{Gc77}. The alternating trees are examples of \emph{read-once} hypergraphs studied by Hertel \cite{Her04}. They are also called exact-transversal hypergraphs or \emph{xt}-hypergraphs \cite{Eit94}. In Boolean terms, they are known as read-once functions. \cite{GMR06} shows that there is a one-to-one correspondence between read-once Boolean functions and read-once hypergraphs.
 
 \begin{figure}[h]
 \centering

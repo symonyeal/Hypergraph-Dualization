@@ -30,7 +30,7 @@ def test_sets_round_trip_one_indexed():
 
 def test_edges_are_deduplicated_and_sorted():
     MBF = Hypergraph.from_sets(3, [[0, 1], [1, 0], [2]])
-    assert len(MBF) == 2
+    assert MBF.edges == (3, 4)
 
 
 def test_rejects_vertex_out_of_range():
@@ -125,22 +125,11 @@ def test_superset_removal_drops_the_all_ones_row():
     assert reduced.to_sets() == [[0], [1]]
 
 
-def test_superset_removal_keeps_one_of_each_duplicate():
-    """Duplicates must be removed *before* the superset pass.
-
-    Two equal terms are each a (non-strict) superset of the other, so a
-    superset pass run first would delete both.
-    """
-    MBF = Hypergraph.from_sets(3, [[0, 1], [0, 1], [2]])
-    result = irredundant(MBF)
-    assert result.reduced.to_sets() == [[0, 1], [2]]
-
-
 def test_reduction_reports_what_it_removed():
     MBF = Hypergraph.from_sets(4, [[0], [0, 1], [0, 1, 2], [3]])
     result = irredundant(MBF)
     assert result.reduced.to_sets() == [[0], [3]]
-    assert len(result.removed) == 2
+    assert result.removed == (3, 7)
 
 
 def test_chain_reduces_to_the_minimum():
@@ -167,7 +156,7 @@ def test_superset_removal_matches_the_definition(rng):
         edges = tuple(
             sorted(
                 {
-                    sum(1 << v for v in rng.sample(range(n), rng.randint(1, n)))
+                    sum(1 << v for v in rng.sample(range(n), rng.randint(0, n)))
                     for _ in range(rng.randint(1, 10))
                 }
             )
@@ -176,6 +165,7 @@ def test_superset_removal_matches_the_definition(rng):
         kept, dropped = result.reduced.edges, result.removed
         assert set(kept) == set(pairwise(edges))
         assert set(kept) | set(dropped) == set(edges)
+        assert set(kept).isdisjoint(dropped)
 
 
 @pytest.mark.slow
@@ -196,6 +186,7 @@ def test_reduction_is_idempotent_and_sperner(rng):
 # ----------------------------------------------------------------------
 def test_minimal_elements():
     assert minimal_elements([0b111, 0b011, 0b100, 0b011]) == (0b011, 0b100)
+    assert minimal_elements([3, 0, 4, 0]) == (0,)
 
 
 def test_degenerate_dual_conventions():

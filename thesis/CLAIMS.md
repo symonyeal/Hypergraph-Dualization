@@ -242,3 +242,8 @@ Historical reproduction commands belong to the archived source at revision `9e84
 | §4.4 | Read-once characterization is for Sperner hypergraphs on support; automorphisms permute twin classes, and sharing an orbit does not imply twinhood |
 | §5.1 | Implementation prose now describes canonical bitsets, the shared Sperner reduction and exported HTML reports |
 | Frequency campaigns | The old W11 composition campaign used 1-based data as 0-based bitsets. Its 16,000-trial evidence is withdrawn; `frequency_families.py` uses the canonical design and has a regression test |
+
+The independent final source review corrected the star-count arithmetic
+`C(4,3)·3=12`, removed a repeated GK recurrence with the wrong fixed copies,
+and scoped Chapter 5's 7-Ver/8-Ver property observations by side, node and split
+rule. These changes preserve all numbered statement slots and drawing assets.

@@ -407,6 +407,7 @@ def test_sage_names_groups_without_explicit_generators():
     result = name_group(group)
     assert result.order == 2
     assert result.name == "C2"
+    assert result.method == "sage-gap"
 
 
 @pytest.mark.sage

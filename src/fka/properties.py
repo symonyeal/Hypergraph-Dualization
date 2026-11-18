@@ -179,16 +179,17 @@ def analyse(MBF: Hypergraph, *, graph_classes: bool = True) -> Properties:
     g = primal_graph(MBF)
     bad_clique = nonconformal_clique(MBF, g)
     conformal = bad_clique is None
+    sperner = MBF.is_sperner()
     return Properties(
         n_vertices=MBF.n,
         n_edges=len(MBF),
         edge_sizes=tuple(MBF.edge_sizes()),
         degrees=tuple(MBF.degrees()),
-        irredundant=MBF.is_sperner(),
+        irredundant=sperner,
         conformal=conformal,
         nonconformal_clique=bad_clique,
         alpha_acyclic=is_alpha_acyclic(MBF),
-        read_once=is_read_once(MBF, g),
+        read_once=(sperner and conformal and is_cograph(g, max_vertices=None)) if MBF.edges else True,
         graph_classes=classify_graph(g) if graph_classes else None,
         isolated_vertices=MBF.isolated_vertices(),
     )

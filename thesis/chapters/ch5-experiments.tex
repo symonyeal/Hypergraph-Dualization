@@ -150,7 +150,10 @@ For the given hypergraphs, each node in the automorphism tree corresponds to a r
 
 \subsubsection*{Read-Once Hypergraphs in \FKA}
 
-The input hypergraphs maintained both their conformality and their read-once property throughout the decomposition process. While this relationship is not preserved in every recursive step, an interesting pattern emerges: if an input hypergraph $f$ at a given node in the automorphism tree is $\alpha$-acyclic, the primal graph of its transversal is often chordal bipartite. This suggests a potential connection between chordal bipartite graphs and hypergraph acyclicity, warranting further exploration.
+For the read-once input pair $f_2,g_2$, both sides remain read-once and
+conformal throughout the recursion. Alpha-acyclicity is a separate property:
+it requires a chordal primal graph in addition to conformality. Read-once
+structure alone does not imply it, since a cograph can contain an induced $C_4$.
 
 In the recursion tree for \FKA{} on $f_2,g_2$, we observe the following occurring:
 
@@ -227,9 +230,11 @@ For $n=3$, we consider the hypergraph $K_3$, which is the complete 2-uniform gra
 
 For $n=7$, we consider the Fano plane, the smallest finite projective plane with 7 lines of 3 points each on 7 vertices. The Fano plane is also self-transversal, with all variable frequencies equal to $\frac{3}{7}$.
 
-The Fano plane is also a finite projective plane with the smallest possible number of points and lines, making it the smallest projective plane. No larger projective plane hypergraph has been shown to be self-transversal, further highlighting their distinctiveness in this context. The projective plane of order 3 is not: six of its points meet every line and contain none \leanref{pg23_not_self_dual}.
+For the cyclic $PG(2,3)$ design formalised here, six points meet every
+line and contain none, certifying that this design is not self-transversal
+\leanref{pg23_not_self_dual}.
 
-Looking at the hypergraph and its recursion tree, we see a uniform distribution of nodes in the tree. Interestingly, the primal graph of the fano plane is just the complete graph $K_7$ on 7 vertices. Any 4 vertices together form a $K_4$, which does not contain a $P_4$. However, testing primal graph properties did not reveal any additional insights due to the hypergraph being non-conformal.
+Looking at the hypergraph and its recursion tree, we see a uniform distribution of nodes in the tree. Interestingly, the primal graph of the fano plane is just the complete graph $K_7$ on 7 vertices. Any four vertices induce a $K_4$, so there is no induced $P_4$. However, testing primal graph properties did not reveal any additional insights due to the hypergraph being non-conformal.
 
 While large symmetric groups have been sparse on the cases we have examined under \FKA{} recursion,the first recursion on the fano plane results in a nontrivial $S_4$ on four edges (Node 2, Node 19).
 
@@ -239,7 +244,13 @@ In each of 6-B, 6-C and 6-D, both sides are read-once and the transversal side i
 
 The hypergraph 7-Ver has $\epsilon=\frac{5}{11}$, above the Fano plane's $\epsilon=\frac{3}{7}$. For every vertex of 8-Ver, the larger of its two side frequencies is $\frac{2}{5}$ \leanref{eightVer_uniform}, below the maximum frequency of the $f_2,g_2$ pair.
 
-We note that while 8-Ver was conformal, 7-Ver was not. In fact, it was the only hypergraph from \cite{SS24} that wasn't conformal, but after some decomposition, later in the recursion tree the hypergraphs became acyclic and read-once. While on 8-Ver., we can see that the input hypergraphs maintained their conformality and also gained read-once and acyclicity properties after a second recursion.
+These properties depend on the side and the node. In the modified FK-A
+tree, 8-Ver starts conformal only on $G$. At depth one, node 2 has both sides
+conformal, while node 9 has only $H$ conformal. At depth two, nodes 3, 4, 10 and
+15 have both sides conformal; only nodes 3 and 10 have both sides simultaneously
+read-once and $\alpha$-acyclic. Both sides of 7-Ver start nonconformal and attain
+all three properties at depth-two nodes 3 and 16. These are finite observations
+on the labelled instances and the degree-sum split rule.
 
 \begin{figure}[p]
 \centering
