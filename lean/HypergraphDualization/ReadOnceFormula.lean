@@ -4,7 +4,8 @@ Copyright (c) 2026 Saimon Y. Islam. Released under the GPL-3.0-or-later.
 # Read-once formulas and the leftmost split rule (research track C)
 
 A monotone formula `f` over `Fin n` has the DNF `dnf f` (edges = terms after distributing, not
-reduced) and the dual `dual f` (AND and OR exchanged). For every formula
+reduced) and the dual `dual f` (AND and OR exchanged). For every formula, restriction commutes
+with the DNF: `dnf(f|x=0) = dnf f − x` and `dnf(f|x=1) = dnf f / x`, and
 `Tr(dnf f) = min(dnf(dual f))`; for a read-once `f` the reduction is unnecessary.
 
 *Theorem 4.16* (Hertel's Theorem 4.4.1 for FK-A). Number the leaves of a read-once formula from
@@ -15,12 +16,18 @@ restriction of `f` fixing the leftmost leaves. There are at most `n` states, so 
 states and the constants, labelled by the leftmost rule, are an FBDD for `f` with at most
 `|vars f| + 2` nodes (`Fm.leftmost_fbdd` in `BranchingProgram`).
 
+A read-once formula on all of `Fin n` has a read-once DNF in the hypergraph sense of `Primitive`
+(Sperner, conformal, cograph primal graph): `readOnce_dnf`, the easy direction of Gurvich's
+characterisation. The converse is cited, not proved.
+
 | Lean | Statement |
 | --- | --- |
 | `Fm`, `eval`, `dnf`, `dual`, `upHit_dnf` | monotone formulas; `dnf f` contains an edge of `S` iff `f(S)` |
+| `dnf_restrict_false`, `dnf_restrict_true` | `dnf(f\|x=0) = dnf f − x`, `dnf(f\|x=1) = dnf f / x` |
 | `tr_dnf`, `tr_dnf_readOnce` | `Tr(dnf f) = min(dnf(dual f))`; `= dnf(dual f)` for read-once `f` |
 | `St`, `card_St_le`, `St_closed` | the leftmost states: at most `\|vars f\|`, closed under the leftmost split |
 | `leftmost_delta` | `δ ≤ 2·\|vars f\| + 2 ≤ 2n + 2` under the leftmost rule (Theorem 4.16) |
+| `readOnce_dnf` | `Fm.ReadOnce f`, `vars f = univ` imply `HD.ReadOnce (dnf f)` |
 | `minor_union`, `minor_join`, `rminor_determined` | interleaving (Lemma 4.17); Remark 4.12 |
 -/
 import HypergraphDualization.SplitRule
@@ -152,6 +159,14 @@ def vars : Fm n → Finset (Fin n)
   | and f g => vars f ∪ vars g
   | or f g => vars f ∪ vars g
 
+/-- The restriction `f|x=b`. -/
+def restrict (x : Fin n) (b : Bool) : Fm n → Fm n
+  | tt => tt
+  | ff => ff
+  | var i => if i = x then (if b then tt else ff) else var i
+  | and f g => and (restrict x b f) (restrict x b g)
+  | or f g => or (restrict x b f) (restrict x b g)
+
 /-- Read-once: no constants, and the inputs of every gate have disjoint variables. -/
 def ReadOnce : Fm n → Prop
   | tt => False
@@ -194,6 +209,30 @@ theorem hits_dnf (f : Fm n) (S : Finset (Fin n)) : Hits (dnf f) S ↔ eval (dual
   | var i => simp [dnf, dual, eval, Hits, Finset.Nonempty]
   | and f g hf hg => simp [dnf, dual, eval, hits_join, hf, hg]
   | or f g hf hg => simp [dnf, dual, eval, hits_union, hf, hg]
+
+/-- **`dnf(f|x=0) = dnf f − x`**, for every formula. -/
+theorem dnf_restrict_false (x : Fin n) (f : Fm n) : dnf (restrict x false f) = del (dnf f) x := by
+  induction f with
+  | tt => simp [restrict, dnf, del, filter_singleton]
+  | ff => simp [restrict, dnf, del, filter_singleton]
+  | var i =>
+    by_cases h : i = x
+    · subst h; simp [restrict, dnf, del, filter_singleton]
+    · simp [restrict, dnf, del, filter_singleton, h, Ne.symm h]
+  | and f g hf hg => simp only [restrict, dnf, hf, hg, del_join]
+  | or f g hf hg => simp only [restrict, dnf, hf, hg, del_union]
+
+/-- **`dnf(f|x=1) = dnf f / x`**, for every formula; hence `min dnf(f|x=1) = min(dnf f / x)`. -/
+theorem dnf_restrict_true (x : Fin n) (f : Fm n) : dnf (restrict x true f) = con (dnf f) x := by
+  induction f with
+  | tt => simp [restrict, dnf, con]
+  | ff => simp [restrict, dnf, con]
+  | var i =>
+    by_cases h : i = x
+    · subst h; simp [restrict, dnf, con]
+    · simp [restrict, dnf, con, h, erase_eq_of_notMem, Ne.symm h]
+  | and f g hf hg => simp only [restrict, dnf, hf, hg, con_join]
+  | or f g hf hg => simp only [restrict, dnf, hf, hg, con_union]
 
 /-- **`Tr(dnf f) = min(dnf(f^d))`**, for every formula. -/
 theorem tr_dnf (f : Fm n) : tr univ (dnf f) = minimal (dnf (dual f)) :=
@@ -255,6 +294,142 @@ theorem dnf_props : ∀ {f : Fm n}, ReadOnce f →
 /-- **`Tr(dnf f) = dnf(f^d)`** for a read-once formula: `(dnf f, dnf f^d)` is a dual pair. -/
 theorem tr_dnf_readOnce {f : Fm n} (hf : ReadOnce f) : tr univ (dnf f) = dnf (dual f) := by
   rw [tr_dnf, minimal_eq_self (dnf_props hf.dual).1]
+
+/-! ### Read-once formulas are read-once hypergraphs (one direction of Gurvich's theorem) -/
+
+theorem support_dnf : ∀ {f : Fm n}, ReadOnce f → support (dnf f) = vars f
+  | tt, h | ff, h => h.elim
+  | var i, _ => by ext u; simp [mem_support, dnf, vars]
+  | and f g, ⟨hf, hg, _⟩ => by
+    rw [dnf, support_join (dnf_props hf).2.2 (dnf_props hg).2.2, support_dnf hf, support_dnf hg]
+    rfl
+  | or f g, ⟨hf, hg, _⟩ => by rw [dnf, support_union, support_dnf hf, support_dnf hg]; rfl
+
+theorem _root_.HD.IsCograph.congr {α : Type*} [DecidableEq α] {R R' : α → α → Prop}
+    {A : Finset α} (h : IsCograph R A) (hR : ∀ a ∈ A, ∀ b ∈ A, R a b ↔ R' a b) :
+    IsCograph R' A := by
+  revert hR
+  induction h with
+  | single v => exact fun _ => .single v
+  | union A B hd _ _ hno ihA ihB =>
+    intro hR
+    exact .union A B hd (ihA fun a ha b hb => hR a (mem_union_left _ ha) b (mem_union_left _ hb))
+      (ihB fun a ha b hb => hR a (mem_union_right _ ha) b (mem_union_right _ hb))
+      fun a ha b hb h => hno a ha b hb ((hR a (mem_union_left _ ha) b (mem_union_right _ hb)).2 h)
+  | join A B hd _ _ hj ihA ihB =>
+    intro hR
+    exact .join A B hd (ihA fun a ha b hb => hR a (mem_union_left _ ha) b (mem_union_left _ hb))
+      (ihB fun a ha b hb => hR a (mem_union_right _ ha) b (mem_union_right _ hb))
+      fun a ha b hb => (hR a (mem_union_left _ ha) b (mem_union_right _ hb)).1 (hj a ha b hb)
+
+theorem join_comm (A B : HG n) : join A B = join B A := by
+  ext s; simp only [mem_join]
+  constructor <;> rintro ⟨e, he, f, hf, rfl⟩ <;> exact ⟨f, hf, e, he, union_comm _ _⟩
+
+/-- Inside the left part of an OR on disjoint supports, the primal graph is the left input's. -/
+theorem primalAdj_union_left {V W : Finset (Fin n)} (hd : Disjoint V W) {A B : HG n}
+    (hB : Within W B) {a b : Fin n} (ha : a ∈ V) : primalAdj (A ∪ B) a b ↔ primalAdj A a b := by
+  rw [primalAdj_union]
+  exact ⟨fun h => h.resolve_right fun ⟨_, e, he, hae, _⟩ => disjoint_left.1 hd ha (hB e he hae),
+    Or.inl⟩
+
+/-- Inside the left part of an AND on disjoint supports, the primal graph is the left input's. -/
+theorem primalAdj_join_left {V W : Finset (Fin n)} (hd : Disjoint V W) {A B : HG n}
+    (hA : Within V A) (hB : Within W B) (nA : A.Nonempty) (nB : B.Nonempty) {a b : Fin n}
+    (ha : a ∈ V) (hb : b ∈ V) : primalAdj (join A B) a b ↔ primalAdj A a b := by
+  rw [primalAdj_join hd hA hB nA nB]
+  have out : ∀ {u}, u ∈ V → u ∈ support B → False := fun hu h =>
+    disjoint_left.1 hd hu (support_subset_of_within hB h)
+  refine ⟨fun h => ?_, Or.inl⟩
+  rcases h with h | ⟨_, e, he, hae, _⟩ | ⟨_, h⟩ | ⟨_, h⟩
+  · exact h
+  · exact (out ha (mem_support.2 ⟨e, he, hae⟩)).elim
+  · exact (out hb h).elim
+  · exact (out ha h).elim
+
+theorem cograph_dnf : ∀ {f : Fm n}, ReadOnce f → IsCograph (primalAdj (dnf f)) (vars f)
+  | tt, h | ff, h => h.elim
+  | var i, _ => .single i
+  | or f g, ⟨hf, hg, hd⟩ => by
+    have wf := dnf_within f; have wg := dnf_within g
+    refine .union _ _ hd ((cograph_dnf hf).congr fun a ha b _ => ?_)
+      ((cograph_dnf hg).congr fun a ha b _ => ?_) fun a ha b hb h => ?_
+    · exact (primalAdj_union_left hd wg ha).symm
+    · show _ ↔ primalAdj (dnf f ∪ dnf g) a b
+      rw [union_comm]; exact (primalAdj_union_left hd.symm wf ha).symm
+    · rcases primalAdj_union.1 h with ⟨_, e, he, _, hbe⟩ | ⟨_, e, he, hae, _⟩
+      · exact disjoint_left.1 hd (wf e he hbe) hb
+      · exact disjoint_left.1 hd ha (wg e he hae)
+  | and f g, ⟨hf, hg, hd⟩ => by
+    have wf := dnf_within f; have wg := dnf_within g
+    have nf := (dnf_props hf).2.2; have ng := (dnf_props hg).2.2
+    refine .join _ _ hd ((cograph_dnf hf).congr fun a ha b hb => ?_)
+      ((cograph_dnf hg).congr fun a ha b hb => ?_) fun a ha b hb => ?_
+    · exact (primalAdj_join_left hd wf wg nf ng ha hb).symm
+    · show _ ↔ primalAdj (join (dnf f) (dnf g)) a b
+      rw [join_comm]; exact (primalAdj_join_left hd.symm wg wf ng nf ha hb).symm
+    · show primalAdj (join (dnf f) (dnf g)) a b
+      rw [primalAdj_join hd wf wg nf ng]
+      exact Or.inr (Or.inr (Or.inl ⟨support_dnf hf ▸ ha, support_dnf hg ▸ hb⟩))
+
+theorem conformal_dnf : ∀ {f : Fm n}, ReadOnce f → ∀ S : Finset (Fin n), S.Nonempty →
+    S ⊆ vars f → (∀ u ∈ S, ∀ v ∈ S, u ≠ v → primalAdj (dnf f) u v) → ∃ e ∈ dnf f, S ⊆ e
+  | tt, h | ff, h => h.elim
+  | var i, _ => fun S _ hS _ => ⟨{i}, mem_singleton_self _, hS⟩
+  | or f g, ⟨hf, hg, hd⟩ => fun S ⟨u, hu⟩ hS hc => by
+    have wf := dnf_within f; have wg := dnf_within g
+    -- a clique of an OR on disjoint supports lies in one part
+    have side : ∀ {V W : Finset (Fin n)} {A B : HG n}, Disjoint V W → Within V A → Within W B →
+        u ∈ V → (∀ v ∈ S, v ≠ u → primalAdj (A ∪ B) u v) → S ⊆ V := by
+      intro V W A B hVW hA hB huV hc' v hv
+      by_cases hvu : v = u
+      · exact hvu ▸ huV
+      rcases primalAdj_union.1 (hc' v hv hvu) with ⟨_, e, he, _, hve⟩ | ⟨_, e, he, hue, _⟩
+      · exact hA e he hve
+      · exact absurd (hB e he hue) (disjoint_left.1 hVW huV)
+    rcases mem_union.1 (hS hu) with huf | hug
+    · have hSf := side hd wf wg huf fun v hv hvu => hc u hu v hv (Ne.symm hvu)
+      obtain ⟨e, he, hSe⟩ := conformal_dnf hf S ⟨u, hu⟩ hSf fun a ha b hb hab =>
+        (primalAdj_union_left hd wg (hSf ha)).1 (hc a ha b hb hab)
+      exact ⟨e, mem_union_left _ he, hSe⟩
+    · have hSg := side hd.symm wg wf hug fun v hv hvu => by
+        rw [union_comm]; exact hc u hu v hv (Ne.symm hvu)
+      obtain ⟨e, he, hSe⟩ := conformal_dnf hg S ⟨u, hu⟩ hSg fun a ha b hb hab => by
+        have : primalAdj (dnf f ∪ dnf g) a b := hc a ha b hb hab
+        rw [union_comm] at this
+        exact (primalAdj_union_left hd.symm wf (hSg ha)).1 this
+      exact ⟨e, mem_union_right _ he, hSe⟩
+  | and f g, ⟨hf, hg, hd⟩ => fun S _ hS hc => by
+    have wf := dnf_within f; have wg := dnf_within g
+    have nf := (dnf_props hf).2.2; have ng := (dnf_props hg).2.2
+    -- the two parts of a clique of an AND are cliques of the inputs, each inside an edge
+    have part : ∀ {V : Finset (Fin n)} {A : HG n}, A.Nonempty →
+        (∀ T : Finset (Fin n), T.Nonempty → T ⊆ V →
+          (∀ u ∈ T, ∀ v ∈ T, u ≠ v → primalAdj A u v) → ∃ e ∈ A, T ⊆ e) →
+        (∀ a ∈ S.filter (· ∈ V), ∀ b ∈ S.filter (· ∈ V), a ≠ b → primalAdj A a b) →
+          ∃ e ∈ A, S.filter (· ∈ V) ⊆ e := by
+      intro V A nA ih hc'
+      by_cases hne : (S.filter (· ∈ V)).Nonempty
+      · exact ih _ hne (fun x hx => (mem_filter.1 hx).2) hc'
+      · obtain ⟨e, he⟩ := nA
+        exact ⟨e, he, by rw [not_nonempty_iff_eq_empty.1 hne]; exact empty_subset _⟩
+    obtain ⟨e, he, hSe⟩ := part nf (conformal_dnf hf) fun a ha b hb hab =>
+      (primalAdj_join_left hd wf wg nf ng (mem_filter.1 ha).2 (mem_filter.1 hb).2).1
+        (hc a (mem_filter.1 ha).1 b (mem_filter.1 hb).1 hab)
+    obtain ⟨e', he', hSe'⟩ := part ng (conformal_dnf hg) fun a ha b hb hab => by
+      have : primalAdj (join (dnf f) (dnf g)) a b := hc a (mem_filter.1 ha).1 b (mem_filter.1 hb).1 hab
+      rw [join_comm] at this
+      exact (primalAdj_join_left hd.symm wg wf ng nf (mem_filter.1 ha).2 (mem_filter.1 hb).2).1 this
+    refine ⟨e ∪ e', mem_join.2 ⟨e, he, e', he', rfl⟩, fun x hx => ?_⟩
+    rcases mem_union.1 (hS hx) with h | h
+    · exact mem_union_left _ (hSe (mem_filter.2 ⟨hx, h⟩))
+    · exact mem_union_right _ (hSe' (mem_filter.2 ⟨hx, h⟩))
+
+/-- **A read-once formula on all of `Fin n` has a read-once DNF** in the sense of `HD.ReadOnce`
+(Sperner, conformal, cograph primal graph): the easy direction of Gurvich's characterisation. -/
+theorem readOnce_dnf {f : Fm n} (hf : ReadOnce f) (hv : vars f = univ) : HD.ReadOnce (dnf f) :=
+  ⟨(dnf_props hf).1, fun S hS hc => conformal_dnf hf S hS (hv ▸ subset_univ S) hc,
+    hv ▸ cograph_dnf hf⟩
 
 /-! ### The leftmost states -/
 

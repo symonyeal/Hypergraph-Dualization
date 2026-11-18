@@ -82,7 +82,8 @@ elab "#assert_evaluation " ids:ident* : command => do
   HD.Data.fanoC HD.Fix.gem_chordal_five HD.Fix.gem_chordal_four HD.Fix.gem_not_distance_hereditary
   HD.Fix.printed_recurrence_fails HD.Fm.ReadOnce HD.Fm.St HD.Fm.St_closed HD.Fm.card_St_le
     HD.Fm.eq_of_support_eq HD.Fm.leftRule_closed HD.Fm.leftmost_delta
-  HD.Fm.leftmost_delta_le HD.Fm.leftmost_fbdd HD.Fm.minor_join HD.Fm.minor_union   HD.Fm.rminor_determined HD.Fm.tr_dnf HD.Fm.tr_dnf_readOnce
+  HD.Fm.leftmost_delta_le HD.Fm.leftmost_fbdd HD.Fm.minor_join HD.Fm.minor_union   HD.Fm.rminor_determined HD.Fm.cograph_dnf HD.Fm.conformal_dnf HD.Fm.dnf_restrict_false HD.Fm.dnf_restrict_true
+  HD.Fm.readOnce_dnf HD.Fm.support_dnf HD.Fm.tr_dnf HD.Fm.tr_dnf_readOnce
   HD.Fm.upHit_dnf HD.IsBP HD.IsCograph HD.IsFBDD HD.IsSteiner
   HD.OpenAI.IsCover HD.OpenAI.bernoulliProbability HD.OpenAI.bernoulliWeight
   HD.OpenAI.bernoulli_dual HD.OpenAI.bernoulli_self_dual HD.OpenAI.coverCardinalities
