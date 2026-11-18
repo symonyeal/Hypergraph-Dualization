@@ -4,9 +4,8 @@ Copyright (c) 2026 Saimon Y. Islam. Released under the GPL-3.0-or-later.
 # FK-A under an arbitrary split rule (research track C)
 
 `fkAR r` (`Algorithm`) is Algorithm 1 with the split vertex chosen by a rule
-`r : HG n → HG n → Option (Fin n)`; `fkADagR r` (`Dag`) collects its distinct subproblems. The
-published FK-A is the degree-sum instance by definition (`fkAR_splitVar`, `fkADagR_splitVar`),
-and the verdict is correct under every rule (`fkAR_correct`).
+`r : HG n → HG n → Option (Fin n)`; `fkADagR r` (`Dag`) collects its distinct subproblems. `fkA` and
+`fkADag` are the degree-sum instances by definition (`abbrev`), and the verdict is correct under every rule (`fkAR_correct`).
 
 A family `𝒮` of Sperner hypergraphs is *`r`-closed* if every `H ∈ 𝒮` that `r` splits at `x` has
 both restrictions `H − x = f|x=0` and `min(H / x) = f|x=1` in `𝒮`. For a symmetric rule every
@@ -16,7 +15,6 @@ by their own functions (`BranchingProgram`), so this is the bound `δ ≤ 2 · s
 
 | Lean | Statement |
 | --- | --- |
-| `fkAR_splitVar`, `fkADagR_splitVar` | the degree-sum instance is `fkA` |
 | `leftRule` | the least vertex of `support C ∪ support D` (Hertel's order) |
 | `Closed`, `fkADagR_closed` | subproblems of `(G, Tr G)` lie over an `r`-closed family containing `G` |
 -/
@@ -27,11 +25,6 @@ namespace HD
 open Finset
 
 variable {n : ℕ}
-
-/-- The degree-sum instance is FK-A. -/
-theorem fkAR_splitVar : fkAR (splitVar (n := n)) = fkA := rfl
-
-theorem fkADagR_splitVar : fkADagR (splitVar (n := n)) = fkADag := rfl
 
 /-! ### Closed families -/
 
@@ -91,12 +84,6 @@ theorem fkADagR_closed {r : Rule n} (hr : Symm r) {𝒮 : Finset (HG n)} (h𝒮 
   · rw [minimal_eq_self sG, minimal_tr]; exact mem_pairs_left hG
   · rw [minimal_eq_self sG, minimal_tr]; exact mem_pairs_right hG
 
-/-- **`δ ≤ 2|𝒮|`** for a symmetric rule and an `r`-closed family containing `G`. -/
-theorem card_fkADagR_le_closed {r : Rule n} (hr : Symm r) {𝒮 : Finset (HG n)}
-    (h𝒮 : Closed r 𝒮) (fuel : ℕ) (b : Bool) {G : HG n} (hG : G ∈ 𝒮) :
-    (fkADagR r fuel b G (tr univ G)).card ≤ 2 * 𝒮.card :=
-  (card_le_card ((fkADagR_closed hr h𝒮 fuel b G hG).1)).trans (card_pairs_le 𝒮)
-
 /-! ### The leftmost rule -/
 
 /-- Hertel's order: the least vertex of `support C ∪ support D`. -/
@@ -106,6 +93,5 @@ def leftRule (C D : HG n) : Option (Fin n) :=
 theorem leftRule_symm : Symm (leftRule (n := n)) := by
   intro C D; simp only [leftRule, union_comm]
 
-theorem splitVar_symm : Symm (splitVar (n := n)) := splitVar_comm
 
 end HD

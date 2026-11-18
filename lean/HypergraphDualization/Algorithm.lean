@@ -21,7 +21,7 @@ equivalent separately (`dual_empty_left`, `dual_singleton_left`, `conds_of_dual`
 
 | Lean | Thesis |
 | --- | --- |
-| `fkAR_correct`, `fkA_correct` | Algorithm 1 decides `Trans-Hyp` under every split rule: the verdict is `Dual` |
+| `fkAR_correct` | Algorithm 1 decides `Trans-Hyp` under every split rule: the verdict is `Dual` |
 | `conds_of_dual` | conditions (i)-(iv) hold for every dual pair (Props. 2.2.1-2.2.4) |
 | `dual_singleton_left` | the `D₁,ₖ` rule of §5.1.1 |
 -/
@@ -77,7 +77,7 @@ def fkAR (r : Rule n) : ℕ → Bool → HG n → HG n → Bool × ℕ
           (r'.1, 1 + l.2 + r'.2)
         else (false, 1 + l.2)
 
-/-- Algorithm 1 as published: the degree-sum rule. -/
+/-- Algorithm 1 with the implementation's degree-sum rule. -/
 abbrev fkA : ℕ → Bool → HG n → HG n → Bool × ℕ := fkAR splitVar
 
 /-- Run FK-A with enough fuel for every vertex to be split once. -/
@@ -128,11 +128,6 @@ theorem fkAR_correct (r : Rule n) (fuel : ℕ) (modified : Bool) (C D : HG n) :
         · rw [ih] at hl
           simp only [decide_eq_true_eq] at hl
           simp [hD, hl]
-
-/-- **Algorithm 1 is correct.** For any fuel, the verdict of FK-A is exactly `Dual`. -/
-theorem fkA_correct (fuel : ℕ) (modified : Bool) (C D : HG n) :
-    (fkA fuel modified C D).1 = decide (Dual univ C D) :=
-  fkAR_correct splitVar fuel modified C D
 
 /-- Relabelling preserves the verdict under any two split rules; node counts may differ. -/
 theorem fkAR_pimg (r s : Rule n) (fuel : ℕ) (modified : Bool)

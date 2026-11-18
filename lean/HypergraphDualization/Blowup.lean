@@ -10,12 +10,7 @@ facts that account for the size of its recursion tree `τ` and of its subproblem
 1. *Normal form.* Under any split rule every subproblem is `(H, Tr H)` or `(Tr H, H)` for a minor
    `H` of `G` (`fkADag_minor`); the two orientations have the same children (`fkA_comm`). Hence
    `δ ≤ 2 · #minors` (`card_fkADag_le_minors`).
-2. *Resilience.* A dual node is never pruned, so if every minor of `G` by fewer than `d`
-   deletions and contractions keeps two edges and two minimal transversals, then
-   `τ ≥ 2^(d+1) − 1` (`tau_ge_of_resilient`). The hypothesis ranges over all minors, including
-   constants: `matching(8)` is not 3-resilient (`matching_eight_not_resilient`).
-3. *Overlap.* Under any rule the repeated work `τ − δ` is superadditive over a split, with the
-   overlap of the children's subproblem sets as surplus (`excess_split`).
+2. *Repetition.* `δ ≤ τ` under any rule (`card_fkADag_le`).
 
 Finally an explicit read-once pair on 12 points has `δ = 43 > 2N = 42` (`ro12_delta`), which
 refutes Conjecture 4.5 of `docs/research-2026-10.md` (`δ ≤ 2N` on read-once pairs).
@@ -24,9 +19,7 @@ refutes Conjecture 4.5 of `docs/research-2026-10.md` (`δ ≤ 2N` on read-once p
 | --- | --- |
 | `Minor`, `fkADag_minor` | subproblems are minors of `G` or their transversals |
 | `fkA_comm` | `τ(C, D) = τ(D, C)` on dual pairs |
-| `tau_ge_of_resilient` | `τ ≥ 2^(d+1) − 1` for `d`-resilient `G` |
-| `matching_eight_not_resilient` | contracting both points of a pair: `matching(8)` is not 3-resilient (evaluation) |
-| `card_fkADag_le`, `excess_split` | `δ ≤ τ`; `τ − δ ≥ (τ_L − δ_L) + (τ_R − δ_R) + |Δ_L ∩ Δ_R|` |
+| `card_fkADag_le` | `δ ≤ τ` |
 | `ro12_readOnce`, `ro12_delta` | the read-once counterexample to `δ ≤ 2N` (evaluation) |
 -/
 import HypergraphDualization.Dag
@@ -68,7 +61,7 @@ theorem fkA_comm (fuel : ℕ) (b : Bool) {C D : HG n} (h : Dual univ C D) :
     split_ifs <;> try rfl
     split <;> try rfl
     rename_i x _
-    simp only [fkA_correct, decide_eq_true (hl x), decide_eq_true (hr x), ite_true]
+    simp only [fkAR_correct, decide_eq_true (hl x), decide_eq_true (hr x), ite_true]
     omega
 
 /-! ### Minors -/
@@ -144,56 +137,7 @@ theorem card_fkADag_le_minors (r : Rule n) (fuel : ℕ) (b : Bool) (G : HG n) :
     _ ≤ (minors G).card + (minors G).card := add_le_add card_image_le card_image_le
     _ = _ := by ring
 
-/-! ### Resilience: the tree is a full binary tree to depth `d` -/
-
-/-- A Sperner family with two edges has a vertex of positive degree. -/
-theorem exists_degree_pos {C : HG n} (sC : IsSperner C) (hC : 2 ≤ C.card) :
-    ∃ y, 0 < degree C y := by
-  obtain ⟨e, he, f, hf, hef⟩ := one_lt_card.1 hC
-  have : e.Nonempty := by
-    rw [nonempty_iff_ne_empty]; rintro rfl
-    exact hef (sC _ he f hf (empty_subset f))
-  obtain ⟨y, hy⟩ := this
-  exact ⟨y, card_pos.2 ⟨e, mem_filter.2 ⟨he, hy⟩⟩⟩
-
-/-- **Resilience bound.** Suppose every minor of `G` by `k < d` deletions and contractions keeps
-at least two edges and two minimal transversals. Then FK-A's tree on `(G, Tr G)` (either variant,
-fuel at least `d`) has at least `2^(d+1) − 1` nodes: a dual node is never pruned, so the tree is
-full to depth `d`. -/
-theorem tau_ge_of_resilient (b : Bool) (d : ℕ) : ∀ (G : HG n) (fuel : ℕ), d ≤ fuel →
-    (∀ k < d, ∀ H, Minor G k H → 2 ≤ (minimal H).card ∧ 2 ≤ (tr univ H).card) →
-    2 ^ (d + 1) - 1 ≤ (fkA fuel b G (tr univ G)).2 := by
-  induction d with
-  | zero => intro G fuel _ _; simpa using fkA_pos fuel b G (tr univ G)
-  | succ d ih =>
-    intro G fuel hfuel hres
-    obtain ⟨f, rfl⟩ : ∃ f, fuel = f + 1 := ⟨fuel - 1, by omega⟩
-    set G' := minimal G
-    have sG := minimal_isSperner G
-    obtain ⟨hC, hD⟩ := hres 0 (by omega) G' (.min .refl)
-    rw [minimal_eq_self sG] at hC
-    obtain ⟨y, hy⟩ := exists_degree_pos sG hC
-    obtain ⟨x, hx, -⟩ := splitVar_spec G' (tr univ G') (y₀ := y) (by unfold key; exact Nat.add_pos_left hy _)
-    have hroot : fkA (f + 1) b G (tr univ G) = fkA (f + 1) b G' (tr univ G') := by
-      rw [← fkA_minimal, minimal_tr, tr_minimal]
-    have hstep := fkA_split (fuel := f) (b := b) sG (tr_isSperner _ _) (dual_tr G') hC hD hx
-    -- the children are `(G' − x, Tr)` and, up to orientation, `(G'/x, Tr)`
-    have hL : (fkA f b (del G' x) (con (tr univ G') x)).2 =
-        (fkA f b (del G' x) (tr univ (del G' x))).2 := by
-      exact congrArg Prod.snd (fkAR_left splitVar f b G' x)
-    have hR : (fkA f b (del (tr univ G') x) (con G' x)).2 =
-        (fkA f b (con G' x) (tr univ (con G' x))).2 := by
-      rw [← tr_con_eq]; exact (fkA_comm f b (dual_tr _)).symm
-    have lift : ∀ (op : HG n → Fin n → HG n), (∀ H, Minor G 0 H → Minor G 1 (op H x)) →
-        ∀ k < d, ∀ H, Minor (op G' x) k H → 2 ≤ (minimal H).card ∧ 2 ≤ (tr univ H).card :=
-      fun op hop k hk H hH => hres (1 + k) (by omega) H (hH.trans (hop G' (.min .refl)))
-    have iL := ih (del G' x) f (by omega) (lift del fun H h => .del x h)
-    have iR := ih (con G' x) f (by omega) (lift con fun H h => .con x h)
-    rw [hroot, hstep, hL, hR]
-    have : 2 ^ (d + 1 + 1) = 2 * 2 ^ (d + 1) := by ring
-    omega
-
-/-! ### Overlap: repeated work is superadditive -/
+/-! ### Repeated work -/
 
 /-- `δ ≤ τ` under any rule: the subproblems are among the tree's nodes. -/
 theorem card_fkADag_le (r : Rule n) (fuel : ℕ) (b : Bool) (C D : HG n) :
@@ -217,30 +161,6 @@ theorem card_fkADag_le (r : Rule n) (fuel : ℕ) (b : Bool) (C D : HG n) :
     · have := card_insert_le (minimal C, minimal D) (fkADagR r f b (del (minimal C) x)
         (con (minimal D) x))
       dsimp only; omega
-
-/-- **Overlap excess.** At a split of a dual Sperner node, the repeated work `τ − δ` is at least
-that of the two children plus the number of subproblems they share:
-`τ − δ ≥ (τ_L − δ_L) + (τ_R − δ_R) + |Δ_L ∩ Δ_R|`. A memo removes exactly this surplus, and
-iterating it along a chain of overlapping splits doubles `τ` while `δ` grows additively. -/
-theorem excess_split {r : Rule n} {fuel : ℕ} {b : Bool} {C D : HG n} (sC : IsSperner C)
-    (sD : IsSperner D) (h : Dual univ C D) (hC : 2 ≤ C.card) (hD : 2 ≤ D.card) {x : Fin n}
-    (hx : r C D = some x) :
-    let L := (del C x, con D x)
-    let R := (del D x, con C x)
-    let ΔL := fkADagR r fuel b L.1 L.2
-    let ΔR := fkADagR r fuel b R.1 R.2
-    ((fkAR r fuel b L.1 L.2).2 - ΔL.card) + ((fkAR r fuel b R.1 R.2).2 - ΔR.card) +
-        (ΔL ∩ ΔR).card ≤
-      (fkAR r (fuel + 1) b C D).2 - (fkADagR r (fuel + 1) b C D).card := by
-  intro L R ΔL ΔR
-  obtain ⟨hτ, hδ⟩ := fkAR_split (fuel := fuel) (b := b) sC sD h hC hD hx
-  have h1 := card_insert_le (C, D) (ΔL ∪ ΔR)
-  have h2 := card_union_add_card_inter ΔL ΔR
-  have h3 := card_fkADag_le r fuel b L.1 L.2
-  have h4 := card_fkADag_le r fuel b R.1 R.2
-  simp only [L, R, ΔL, ΔR] at *
-  rw [hτ, hδ]
-  omega
 
 /-! ### A read-once pair with `δ > 2N`
 
@@ -303,16 +223,6 @@ theorem ro12_readOnce :
 `τ = 59` and `δ = 43 > 2N = 42` (evaluation). -/
 theorem ro12_delta :
     (runFKA true ro12 ro12d).2 = 59 ∧ (fkADag 13 true ro12 ro12d).card = 43 := by
-  native_decide
-
-/-- **Theorem 4.9 does not reach the matching beyond `d = 2`.** Contracting both points of a
-pair of `matching(8)` gives the constant `{∅}`, a minor by two restrictions with one edge, so
-`matching(8)` is not 3-resilient (evaluation). -/
-theorem matching_eight_not_resilient : ¬ ∀ k < 3, ∀ H, Minor (matchS (n := 8) (range 4)) k H →
-    2 ≤ (minimal H).card ∧ 2 ≤ (tr univ H).card := by
-  intro h
-  have := (h 2 (by omega) _ (.con 1 (.con 0 .refl))).1
-  revert this
   native_decide
 
 end HD

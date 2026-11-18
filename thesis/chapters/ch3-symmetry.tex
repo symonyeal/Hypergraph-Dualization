@@ -35,13 +35,8 @@ O(v)=\{g(v)\mid g\in\mathcal{G}\}
 consisting of all vertices that $v$ can be mapped to by the automorphisms in $\mathcal{G}$.
 \end{definition}
 
-\begin{definition}
-A \emph{partition} of the vertex set $V$ of a hypergraph $H=(V,E)$ is a collection of disjoint subsets $V_1,V_2,\dots,V_k$ such that:
-\[
-V=\bigcup_{i=1}^{k}V_i\quad\text{and}\quad V_i\cap V_j=\emptyset\text{ for all }i\neq j.
-\]
-Each subset $V_i$ is called a \emph{partition class}.
-\end{definition}
+% Reserve the number of the removed partition definition.
+\stepcounter{definition}
 
 {\sloppy\wrong{Each orbit partitions the vertex set $V$ into equivalence classes permuted by automorphisms} \wrong{$g\in\Aut(H)$.} \fix{The orbits partition $V$ into equivalence classes, each mapped onto itself by every $g\in\Aut(H)$.} Nontrivial vertex permutations are referred to as automorphism \emph{generators} when they are elements of the automorphism group that generate all other group elements under composition. The set of generators, through their action on the vertex set $V$, precisely determine and generate the orbits.\par}
 
@@ -86,12 +81,7 @@ For $(g_1,g_2)\in\mathcal{G}_1\times\mathcal{G}_2$, the action is
 It preserves every edge family setwise. This embeds the direct product into
 $\Aut(H)$; equal components may also admit automorphisms interchanging them.
 
-Whereas the semidirect product $\mathcal{N}\rtimes_\theta\mathcal{K}$ generalizes this structure by combining two groups $\mathcal{N}$ and $\mathcal{K}$ with an additional homomorphism $\theta$ controlling how $\mathcal{K}$ acts on $\mathcal{N}$. When $\theta$ is trivial, the semidirect product reduces to the direct product. Within $\mathcal{G}=\mathcal{N}\rtimes_\theta\mathcal{K}$, the subgroups $\mathcal{N}^*=\{(u,1)\mid u\in\mathcal{N}\}$ and $\mathcal{K}^*=\{(1,x)\mid x\in\mathcal{K}\}$ are isomorphic to $\mathcal{N}$ and $\mathcal{K}$, respectively, and satisfy the properties:
-\begin{itemize}
-\item $\mathcal{G}=\mathcal{N}^*\mathcal{K}^*$,
-\item $\mathcal{N}^*\cap\mathcal{K}^*=\{(1,1)\}$,
-\item $\mathcal{N}^*\lhd\mathcal{G}$.
-\end{itemize}
+The semidirect product $\mathcal{N}\rtimes_\theta\mathcal{K}$ generalizes the direct product by a homomorphism $\theta:\mathcal{K}\to\Aut(\mathcal{N})$; it is the direct product when $\theta$ is trivial.
 
 The non-trivial blocks created by an imprimitive group capture localized symmetry within the hypergraph. Within each block, the vertices have an induced symmetry on them, defined by $\mathcal{G}$, but the symmetry does not extend uniformly across all vertices in the hypergraph. These localized symmetries create a hierarchical structure, with symmetries operating both within blocks and between blocks, leading to a modular or layered symmetry pattern in the hypergraph. \cite{BCW24}
 
@@ -436,22 +426,4 @@ In the next chapters, we explore the primal graph structures of poorly performin
 
 \section{Symmetry in \FKA{} Recursion}
 
-For a Sperner hypergraph $G$, the equality $\Aut(G)=\Aut(\Tr(G))$
-allows the same permutations to act on both sides of a dual pair
-\leanref{aut_tr_of_sperner}. If the split vertex is $v$, every automorphism
-of $G$ fixing $v$ remains an automorphism after deletion or contraction
-\leanref{stab_mem_aut_del}, \leanref{stab_mem_aut_con}. Sperner reduction
-also preserves every existing automorphism \leanref{aut_le_aut_minimal}.
-
-These statements concern inherited permutations on the fixed ambient vertex
-set. They do not order the full parent and child groups by inclusion or size:
-some parent permutations may fail to survive, while the child may acquire new
-ones. In particular, finding a new child automorphism does not by itself prove
-that the child group is larger, and fixing the split vertex in every parent
-automorphism proves inclusion, not equality.
-
-
-Local automorphism orders also do not count repeated subproblems. That count
-requires isomorphisms between distinct reached pairs. Isomorphisms inherited
-from the input group form a further restriction; an isomorphism between two
-subproblems need not extend to an automorphism of the input.
+Lemma~\ref{lem:aut-tr}, Lemma~\ref{lem:break} and Corollary~\ref{cor:aut-min} concern permutations inherited on the fixed ambient vertex set. They do not order the parent and child groups by inclusion or size, and they do not count repeated subproblems: that needs isomorphisms between distinct reached pairs, which need not extend to automorphisms of the input.

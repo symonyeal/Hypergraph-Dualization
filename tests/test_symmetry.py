@@ -361,7 +361,7 @@ def test_aut_g_equals_aut_h_at_every_node_of_both_algorithms(algorithm):
     The thesis states it of the input pair. Measured over the whole recursion of
     both algorithms on every live instance, it holds at every node where both
     groups were computed -- 3455 of them as of 2026-08-04, with zero
-    disagreements. See docs/fk-a-vs-fk-b.md section 7.
+    disagreements; Lemma 3.3.1 (`aut_tr_of_sperner`) proves it.
 
     FK-B is the part the thesis never examined: it decomposes by forcing whole
     clauses and monomials rather than single vertices, so there was no reason in

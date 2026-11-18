@@ -40,7 +40,7 @@ The iterated constant `c` has a finite positive limit exactly at
 > **(1.1)** `T` is `r`-uniform and *regular* on `t = r^2` vertices, and so is
 > `Tr(T)`; then `c_inf = max(log2 |E(T)|, log2 |E(Tr T)|) / (r - 1)`.
 
-Counting `sum_{v in e} deg*(v)` two ways gives a second, free consequence:
+Research Proposition 3.7 (which needs only one regular side) gives:
 
 > **(1.2)** every block of `T` meets every block of `Tr(T)` in exactly one
 > point, so `Tr(T)` is the set of *perfect selectors*.
@@ -86,9 +86,8 @@ A cograph on at least two vertices has exactly one of `G`, `G^c` disconnected
 cotree has depth 1, which gives `S_n`. `PGL(3,2)` settles the Fano plane in one
 line. It lives in `fka.selfdual`.
 
-**(2.1)** and **(1.3)** together give the finding that inverts the natural
-guess: the symmetry behind the known superpolynomial lower bounds is the
-*imprimitive, solvable, iterated-wreath* kind, not the primitive/simple kind.
+The known superpolynomial families (GK, TK, the words) are read-once, so their groups are iterated
+wreath products of symmetric groups and imprimitive.
 
 ## 3. The word families and the constant words
 
@@ -117,13 +116,8 @@ For a Sperner family without the empty edge, `MBF = Tr(MBF)` iff it is intersect
 and **not 2-colourable** (`tr_eq_self_iff`). The Python scan now checks Sperner first:
 redundant terms can represent a self-dual function without the family equalling its
 transversal. For nonempty self-transversal families on `n > 1` points,
-`n eps^2 > 1` (`eps_self_strict`). In the uniform regular case:
-
-> **(4.1)** for self-dual, uniform, regular `MBF`, counting gives
-> `d(r^2 - t) >= r(r-1)`, hence for `r > 1`, `t < r^2` and `eps > 1/r`.
-> Equality holds iff any two distinct blocks meet in one point
-> (`intersecting_regular_bound`). See the canonical proof in
-> [`research-2026-10.md`, Theorem 2.2](research-2026-10.md#2-self-transversal-hypergraphs).
+`n eps^2 > 1` (`eps_self_strict`). In the uniform regular case research Theorem 2.2 gives `d(r² − t) ≥ r(r − 1)`,
+hence `t < r²` and `eps > 1/r` for `r > 1`.
 
 Among projective planes only `PG(2,2)` survives: `PG(2,3)` has a 6-point
 projective triangle whose complement also blocks, so it is 2-colourable. The self-transversal examples among these Witt designs are `S(2,3,7)` and

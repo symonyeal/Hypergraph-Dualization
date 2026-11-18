@@ -41,7 +41,7 @@ constant is 1, attained by a single variable (`eps = 1`, `N = 2`). Since
 
 ## 1. A product form of the lemma
 
-**Lemma 1 (edge sizes; written proof).** Every term of a dual pair has at least `t`
+**Lemma 1 (edge sizes; research Theorem 3.1 with the two sides' caps kept apart).** Every term of a dual pair has at least `t`
 points and every clause at least `s`; in particular every edge has at least `r = 1/eps`.
 
 *Proof.* A term `c` meets every clause, so `B ≤ Σ_{v∈c} deg_D(v) ≤ |c| · B/t`. The same

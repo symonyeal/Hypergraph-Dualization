@@ -166,7 +166,7 @@ impl<const W: usize> Joint<W> {
                 labels(c)
             );
         }
-        // Conjecture 4.38 needs only target pairs of equal support size.
+        // Observation 4.39 recounts target pairs of equal support size.
         let mut eq: std::collections::BTreeMap<u32, (u64, u64, u64)> = Default::default();
         let mut miss = None;
         for &a in &self.r {

@@ -50,10 +50,8 @@ subproblems". The recursion that builds the tree does not.
 
 ## 2. Two closed forms
 
-Both are exact, for every size tested, and are asserted in `tests/test_memo.py`:
-
-    matching(v):    tau = 2^(v/2+1) - 3       delta = v       (even v >= 4)
-    threshold(v):   tau = v - 1               delta = v - 1   (even v >= 2)
+Research Theorem 4.3 (Lean) gives `τ = 2^{v/2+1} − 3`, `δ = v` for `matching(v)` (even `v ≥ 4`)
+and `τ = δ = v − 1` for `threshold(v)` (even `v ≥ 2`).
 
 `threshold` is the only family in the library with `tau = delta` -- no repeated
 subproblem at all. It is also the only instance class where FK-B *loses*

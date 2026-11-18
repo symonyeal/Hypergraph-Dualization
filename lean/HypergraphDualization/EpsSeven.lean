@@ -11,10 +11,11 @@ edge, so one of its `s` points lies in at least `|Tr G| / s` of them, and `s·e 
 
 | Lean | Statement |
 | --- | --- |
-| `eps_bound` | **Theorem B.** some `s ∈ ℕ` has `s·ε ≥ 1` and `s ≤ n·ε` |
+| `eps_bound` | **Theorem B.** a smallest edge `g` of `G` has `|g|·ε ≥ 1` and `|g| ≤ n·ε` |
 | `eps_sq` | **Corollary.** `n·ε² ≥ 1`, i.e. `ε(n) ≥ 1/√n` |
 | `eps_seven` | **Theorem (Observation 5.2.3, `n = 7`).** `ε(7) = 3/7`, attained by the Fano plane |
-| `eps_five`, `eps_six` | `ε(5) = ε(6) = 1/2` |
+| `eps_four`, `eps_five`, `eps_six` | `ε(4) = ε(5) = ε(6) = 1/2` |
+| `eps_eight` | `ε(8) ≥ 3/8` |
 | `eps_nine` | `ε(9) = 1/3`, attained by three disjoint triples: the bound `1/√n` is attained |
 -/
 import HypergraphDualization.Frequency
@@ -61,10 +62,11 @@ theorem sum_degree_eq (H : HG n) (g : Finset (Fin n)) :
   refine sum_congr rfl fun h _ => ?_
   rw [← card_filter, filter_mem_eq_inter]
 
-/-- **Theorem B.** For a non-trivial transversal pair on `n` points with `ε = ε(G, Tr G)`, some
-natural number `s` (the size of a smallest edge of `G`) has `s·ε ≥ 1` and `s ≤ n·ε`. -/
+/-- **Theorem B.** For a non-trivial transversal pair on `n` points with `ε = ε(G, Tr G)`, a
+smallest edge `g` of `G` has `|g|·ε ≥ 1` and `|g| ≤ n·ε`. -/
 theorem eps_bound (G : HG n) (hG : NonTrivial G) :
-    ∃ s : ℕ, 1 ≤ (s : ℚ) * eps G (tr univ G) ∧ (s : ℚ) ≤ n * eps G (tr univ G) := by
+    ∃ g ∈ G, (∀ f ∈ G, g.card ≤ f.card) ∧
+      1 ≤ (g.card : ℚ) * eps G (tr univ G) ∧ (g.card : ℚ) ≤ n * eps G (tr univ G) := by
   obtain ⟨hGne, -, hHne, -⟩ := hG
   set H := tr univ G
   set e := eps G H
@@ -73,7 +75,7 @@ theorem eps_bound (G : HG n) (hG : NonTrivial G) :
   have hfG := degree_le_eps_left G H hGne
   have hfH := degree_le_eps_right G H hHne
   obtain ⟨g, hg, hmin⟩ := G.exists_min_image card hGne
-  refine ⟨g.card, ?_, ?_⟩
+  refine ⟨g, hg, hmin, ?_, ?_⟩
   · -- every minimal transversal meets `g`
     have h1 : (H.card : ℚ) ≤ ∑ v ∈ g, (degree H v : ℚ) := by
       rw [← Nat.cast_sum, sum_degree_eq, card_eq_sum_ones, Nat.cast_le]
@@ -101,18 +103,18 @@ theorem eps_bound (G : HG n) (hG : NonTrivial G) :
 /-- **Corollary.** `n · ε² ≥ 1`: every non-trivial transversal pair on `n` points has a vertex
 of frequency at least `1/√n`. -/
 theorem eps_sq (G : HG n) (hG : NonTrivial G) : 1 ≤ n * eps G (tr univ G) ^ 2 := by
-  obtain ⟨s, h1, h2⟩ := eps_bound G hG
+  obtain ⟨g, -, -, h1, h2⟩ := eps_bound G hG
   have he := eps_nonneg G (tr univ G)
   nlinarith
 
 /-- If `ε < 1/m` then the smallest edge has more than `m` points. -/
 theorem eps_bound_lt (G : HG n) (hG : NonTrivial G) {m : ℕ} (hm : 0 < m)
     (h : eps G (tr univ G) < 1 / m) : ∃ s : ℕ, m < s ∧ (s : ℚ) ≤ n * eps G (tr univ G) := by
-  obtain ⟨s, h1, h2⟩ := eps_bound G hG
-  refine ⟨s, ?_, h2⟩
+  obtain ⟨g, -, -, h1, h2⟩ := eps_bound G hG
+  refine ⟨g.card, ?_, h2⟩
   by_contra hs
   push Not at hs
-  have hs' : (s : ℚ) ≤ m := by exact_mod_cast hs
+  have hs' : (g.card : ℚ) ≤ m := by exact_mod_cast hs
   have hm' : (0 : ℚ) < m := by exact_mod_cast hm
   rw [lt_div_iff₀ hm'] at h
   have he := eps_nonneg G (tr univ G)
@@ -143,6 +145,12 @@ theorem eps_seven :
   push_cast at hsn
   linarith
 
+/-- `ε(4) = 1/2`, attained by `{{v₁,v₄},{v₂,v₃}}`; the lower bound is general. -/
+theorem eps_four :
+    (∀ G : HG 4, NonTrivial G → 1 / 2 ≤ eps G (tr univ G)) ∧
+      eps ({{0, 3}, {1, 2}} : HG 4) (tr univ {{0, 3}, {1, 2}}) = 1 / 2 := by
+  exact ⟨fun G hG => eps_ge_inv G hG (by decide : 0 < 2) (by decide), by native_decide⟩
+
 /-- `ε(5) = 1/2`. -/
 theorem eps_five :
     (∀ G : HG 5, NonTrivial G → 1 / 2 ≤ eps G (tr univ G)) ∧
@@ -154,6 +162,16 @@ theorem eps_six :
     (∀ G : HG 6, NonTrivial G → 1 / 2 ≤ eps G (tr univ G)) ∧
       eps ({{0, 3}, {1, 2}} : HG 6) (tr univ {{0, 3}, {1, 2}}) = 1 / 2 := by
   exact ⟨fun G hG => eps_ge_inv G hG (by decide : 0 < 2) (by decide), by native_decide⟩
+
+/-- `ε(8) ≥ 3/8`: below it the smallest edge would have at least three points and at most
+`8ε < 3`. Whether `ε(8) = 2/5` is open (`eightVer_eps` gives `≤ 2/5`). -/
+theorem eps_eight (G : HG 8) (hG : NonTrivial G) : 3 / 8 ≤ eps G (tr univ G) := by
+  by_contra h
+  push Not at h
+  obtain ⟨s, hs, hsn⟩ := eps_bound_lt G hG (m := 2) (by norm_num) (by linarith)
+  have : (3 : ℚ) ≤ s := by exact_mod_cast hs
+  push_cast at hsn
+  linarith
 
 /-- `ε(9) = 1/3`, attained by three disjoint triples: the bound `ε ≥ 1/√n` is attained. -/
 theorem eps_nine :

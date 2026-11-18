@@ -146,7 +146,7 @@ the SageMath section below.
 
 The applied supplier-panel study and its data are maintained in
 [Resilient-Supplier-Panels](https://github.com/symonyeal/Resilient-Supplier-Panels).
-Algorithmic correspondences and their proof status are recorded in research §8.
+Algorithmic correspondences and their proof status are recorded in `thesis/CLAIMS.md` and the research notes.
 
 ## SageMath
 

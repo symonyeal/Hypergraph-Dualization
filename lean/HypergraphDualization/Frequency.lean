@@ -9,7 +9,6 @@ nonempty and free of the empty edge. Observation 5.2.3 claims `ε(3) = 2/3` and 
 | Lean | Thesis |
 | --- | --- |
 | `eps_three` | `ε(3) = 2/3`, attained only by `K₃` (exhaustive) |
-| `eps_four` | `ε(4) = 1/2`, so `ε` is not determined by projective planes |
 | `eps_seven` (in `EpsSeven`) | `ε(7) = 3/7`; the lower bound is general and the Fano plane attains it |
 -/
 import HypergraphDualization.Section32
@@ -29,12 +28,6 @@ instance {n : ℕ} (G : HG n) : Decidable (NonTrivial G) := by unfold NonTrivial
 theorem eps_three :
     ∀ G ∈ sperner 3, NonTrivial G →
       2 / 3 ≤ eps G (tr univ G) ∧ (eps G (tr univ G) = 2 / 3 → G = k3C) := by
-  native_decide
-
-/-- On four vertices the minimum is `1/2`, attained by `{{v₁,v₄},{v₂,v₃}}`. -/
-theorem eps_four :
-    (∀ G ∈ sperner 4, NonTrivial G → 1 / 2 ≤ eps G (tr univ G)) ∧
-    eps ({{0, 3}, {1, 2}} : HG 4) (tr univ {{0, 3}, {1, 2}}) = 1 / 2 := by
   native_decide
 
 end HD.S32

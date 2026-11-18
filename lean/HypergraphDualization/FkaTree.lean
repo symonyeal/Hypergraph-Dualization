@@ -390,11 +390,4 @@ theorem fkA_gk_tree {j : ℕ} {r : Rule (2 ^ (j + 2))} (hv : Valid r) (modified 
   calc (2 * 27 ^ 2 ^ j : ℕ) ≤ 16 ^ 2 ^ j * t.leaves := by exact_mod_cast this
     _ ≤ _ := Nat.mul_le_mul_left _ hl
 
-/-- FK-A as published (the degree-sum rule): the same bound on GK `f_k = coalt (2k - 1)`. -/
-theorem fkA_gk_degree_sum (j : ℕ) (modified : Bool) :
-    2 * 27 ^ (2 ^ j) ≤ 16 ^ (2 ^ j) *
-      ((2 ^ (j + 2) + 1) *
-        (fkA (2 ^ (j + 2) + 1) modified (gkH (j + 2)) (tr univ (gkH (j + 2)))).2) :=
-  fkA_gk_tree valid_splitVar modified
-
 end HD

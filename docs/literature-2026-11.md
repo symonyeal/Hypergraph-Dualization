@@ -32,7 +32,7 @@ So neither this repository nor Elbassioni has priority for the bound. Our Fourie
 machine-checked and has the larger constant; both sources are cited here. His Lemma 3.5
 loses a factor 3 per level (`|u_{k+1}| ≥ |u_k|⁴/3`); his own bound, evaluated exactly, has
 rate `0.37245` bits per variable, above both; our measures on blocks of eight variables
-raise the rate to `0.41433` (see [`complex-evaluation.md`](complex-evaluation.md) §§2, 4, written
+raise the rate to `0.41433` (see [`complex-evaluation.md`](complex-evaluation.md) §§1, 4, written
 proofs). A size-optimal
 decision tree for GK `f_k`, `k ≥ 4`, is not known (for `k ≤ 3` it is depth-first,
 [`complex-evaluation.md`](complex-evaluation.md)): depth-first evaluation gives 62,833 leaves on `f₃`
@@ -70,9 +70,7 @@ then for no split rule computable in polynomial time does a polynomial `p` satis
 (b) For `2/3 < γ ≤ 1`: if 3-SAT has no `2^{o(n^γ)}` algorithm, then Dual has no
 `N^{o((log N)^{(3γ − 2)/2}/(log log N)^{γ/2})}` algorithm. At `γ = 1` this is KKW's bound.
 
-*Proof.* (a) As in Proposition 4.6, `δ ≤ p(N)` gives a polynomial-time duality test
-(memoised FK-A, answering "not dual" past `p(N)` subproblems). On KKW's instances,
-`N = 2^{O(n^{2/3}(log n)^{1/3})}`, so 3-SAT would run in `2^{O(n^{2/3}(log n)^{1/3})}`.
+*Proof.* (a) is research Proposition 4.6.
 (b) KKW Theorem 1 gives `log₂N ≤ L₀ = K n^{2/3}(log n)^{1/3}` for a constant `K`, and
 `n = Θ(L₀^{3/2}/(log L₀)^{1/2})`. Take a Dual algorithm in time `N^{h(N)}` with `h`
 nondecreasing (its running maximum satisfies the same bound) and `h(M) = o((log M)^{(3γ−2)/2}/(log log M)^{γ/2})`. It solves 3-SAT in

@@ -33,7 +33,7 @@ same cache from Mathlib's Azure storage account.
 | `Conditions` | Props. 2.2.1–2.2.4, Cor. 2.3.1 (corrected), Lemma 2.3.2 |
 | `Decomposition` | deletion and contraction; the FK-A split |
 | `Algorithm` | FK-A under a split rule (`fkAR`; `fkA` is the degree-sum instance) and its correctness `fkAR_correct` |
-| `FkB` | FK-B under a split rule and a `μ`-frequency test (`fkBR`, `fkB`), with the per-clause branch `dual_muD` and the verdict `fkBR_correct`, `fkB_correct`; leaves by `Dual`, no node count |
+| `FkB` | FK-B under a split rule and a `μ`-frequency test (`fkBR`, `fkB`), with the per-clause branch `dual_muD` and the verdict `fkBR_correct`; leaves by `Dual`, no node count |
 | `Symmetry` | automorphism groups; Lemma 3.3.1, Cor. 3.3.4 (corrected), orbits |
 | `Operations`, `Families` | union and join; Hertel's alternating trees and their edge counts |
 | `AltShape` | uniform edge sizes and vertex frequencies of the alternating trees (§4.3) |
@@ -43,7 +43,7 @@ same cache from Mathlib's Azure storage account.
 | `Instances` | transversal pairs, tree sizes, frequencies and group orders of the instances |
 | `Section32` | the hypergraphs on at most four vertices (§3.2); `Aut(D_{m,1})` |
 | `Recursion` | Lemma 3.3.2 (corrected), Lemma 3.3.3 (refuted), Observations 3.4.5 and 5.2.2 |
-| `Frequency` | `ε(3)` and `ε(4)` (Observation 5.2.3) |
+| `Frequency` | `ε(3)` (Observation 5.2.3) |
 | `FanoCopies` | `k` disjoint Fano planes: `7k` edges, `7^k` minimal transversals |
 | `Trees`, `TreeFacts` | node-by-node checks of eight published recursion trees against fixed fixtures from revision `9e840c1` |
 | `Corrections` | counterexamples to statements as printed in 2024 |
@@ -53,21 +53,21 @@ same cache from Mathlib's Azure storage account.
 | `Critical` | Seymour's bound `n ≤ |H|` for minimally non-2-colourable `H`; hence for self-transversal `H`; the counting test `#{A : A ⊇ edge} = 2^{n−1}`; edge-transitive self-transversal `H` is vertex-transitive |
 | `Steiner` | Steiner systems: blocks disjoint from a block, `n₀` (A5a–b); every `S(t, t+1, 2t+3)` is self-transversal (A5c) |
 | `SteinerData`, `SteinerInstances` | `PG(2,4)` and `S(4,7,23)`: Steiner, intersecting, 2-colourable |
-| `EpsSeven` | `s·ε ≥ 1`, `s ≤ nε` for the smallest edge size `s`; `ε(7) = 3/7` (Observation 5.2.3), `ε(5) = ε(6) = 1/2`, `ε(9) = 1/3` |
+| `EpsSeven` | `s·ε ≥ 1`, `s ≤ nε` for the smallest edge size `s`; `ε(7) = 3/7` (Observation 5.2.3), `ε(4) = ε(5) = ε(6) = 1/2`, `ε(8) ≥ 3/8`, `ε(9) = 1/3` |
 | `FrequencyGap` | cross-intersection excess, stability, square-order equality structure, strict self-transversal gap; one regular side forces singleton intersections in uniform pairs on `r²` points; kernel-checked Fano excess and four-point counterexample |
 | `Dag` | FK-A's distinct subproblems (`fkADagR`, `fkADag`) and the closure lemma `fkADagR_sub`; `Tr(G/x) = Tr(G) − x`; `τ` and `δ` of `matching(v)` and `threshold(v)` for every `v` (C1) |
 | `Primitive` | read-once hypergraphs with a primitive automorphism group have `Aut = Sₙ` (A7); `w11` and Fano are not read-once |
 | `Substitution` | substitution duality, disjoint-support Sperner and cardinality formulas; closure of `(P)`; D3 at `r = 2` (`template_rank_two`) |
 | `Influence` | automorphisms preserve pivotal probabilities; equal influences for Fano |
-| `Blowup` | why FK-A's subproblems multiply: subproblems are minors under any rule (`fkADag_minor`), `τ(C,D) = τ(D,C)` on dual pairs, the resilience bound `τ ≥ 2^{d+1} − 1`, superadditive repeated work `τ − δ`; the read-once `ro12` with `δ = 43 > 2N` (refutes Conjecture 4.5) |
+| `Blowup` | why FK-A's subproblems multiply: subproblems are minors under any rule (`fkADag_minor`), `τ(C,D) = τ(D,C)` on dual pairs, `δ ≤ τ`; the read-once `ro12` with `δ = 43 > 2N` (refutes Conjecture 4.5) |
 | `SplitRule` | symmetric rules, rule-closed families: subproblems lie over them (`fkADagR_closed`); the leftmost rule |
-| `ReadOnceFormula` | monotone formulas, `dnf`, restriction and duality identities; a read-once formula has a read-once DNF (`readOnce_dnf`); the leftmost bound `δ ≤ 2n + 2` on read-once formulas with leaves in order (`leftmost_delta`, Theorem 4.16); interleaving (`minor_union`, `minor_join`); Remark 4.12 (`rminor_determined`) |
+| `ReadOnceFormula` | monotone formulas, `dnf`, restriction and duality identities; a read-once formula has a read-once DNF (`readOnce_dnf`); the leftmost bound `δ ≤ 2n + 2` on read-once formulas with leaves in order (`leftmost_delta`, Theorem 4.16); minors of unions and joins (`minor_union`, `minor_join`); Remark 4.12 (`rminor_determined`) |
 | `BranchingProgram` | branching programs named by their functions (`run_correct`, `path_nodup`); the memo DAG is an FBDD of size `≤ 2δ + 2` under a valid symmetric rule (`memo_fbdd`, `memo_bp`) and conversely (`fbddRule`, `rule_of_fbdd`); the leftmost FBDD (`Fm.leftmost_fbdd`); the guarded rule with FK96's frequency guarantee (`guardRule_frequent`) |
 | `RuleInstances` | `δ` of GK `f₂` and `ro12` under the three rules (evaluation) |
 | `Axioms` | the trust base, checked: cited general theorems use only the standard axioms, checked facts are evaluations |
 | `SymmetryDepth` | FK-A split traces have a nonempty first deletion set at positive depth; multiple transitivity gives at most `2j` ordered classes at depth `j`, or `j` for equal sides; cumulative bounds `1+k(k+1)` and `1+k(k+1)/2`, linked to the actual FK-A DAG and its exact isomorphism quotient |
 | `DecisionTree` | decision trees and Fourier coefficients on a cube of subsets; a decision tree has at least `‖f̂‖₁` leaves (`l1_le_leaves`); JRSW's dense-coefficient recursion for `coalt` (`wc_gk_succ`, `dsum_eq`), so every decision tree for GK or TK has at least `2·(27/16)^{n/4}` leaves (`gk_leaves`) |
-| `FkaTree` | FK-A's recursion tree unfolds into a decision tree for `f_C` under every rule (`fkDT`, `eval_fkDT`) with at most `(n+1)τ` leaves on dual pairs under valid rules (`leaves_fkDT`, `fkA_tree_dt`); on GK and TK `τ ≥ 2·(27/16)^{n/4}/(n+1)` (`fkA_gk_tree`, `fkA_gk_degree_sum`) |
+| `FkaTree` | FK-A's recursion tree unfolds into a decision tree for `f_C` under every rule (`fkDT`, `eval_fkDT`) with at most `(n+1)τ` leaves on dual pairs under valid rules (`leaves_fkDT`, `fkA_tree_dt`); on GK and TK `τ ≥ 2·(27/16)^{n/4}/(n+1)` (`fkA_gk_tree`) |
 | `GkMemo` | `coalt` as an ordered read-once formula with DNF `gkH` (`dnf_coFm_gkH`); under the leftmost rule `δ ≤ 2n + 2` and `τ ≥ 2·(27/16)^{n/4}/(n+1)` on the same pair (`gk_memo_gap`) |
 | `IsoMemo` | FK-A with a memo keyed by any map `κ` that relabels each pair (`fkAI`): its verdict is `Dual` under every rule and fuel, and the memo stays sound (`fkAI_correct`, `fkAI_eq_fkAR`) |
 

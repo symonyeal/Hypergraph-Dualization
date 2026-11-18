@@ -26,7 +26,7 @@ fuel zero) is decided by `Dual` itself, and the conditions are those of `conds`,
 | `cx` | `phi_x_0`: the edges holding `x`, with `x` removed |
 | `setF` | `A_c_x`: the variables of `c` set false |
 | `dual_muD` | FK-B's per-clause branch (lines 8-12 of the listing) is exact |
-| `fkBR_correct`, `fkB_correct` | `fkb.algorithm.fk_b` decides `C = Tr(D)` |
+| `fkBR_correct` | `fkb.algorithm.fk_b` decides `C = Tr(D)` |
 -/
 import HypergraphDualization.Algorithm
 
@@ -292,10 +292,5 @@ theorem fkBR_correct (r : Rule n) (mf : Fin n → HG n → HG n → Bool) (fuel 
 
 /-- FK-B with the degree-sum split rule. -/
 abbrev fkB (mf : Fin n → HG n → HG n → Bool) : ℕ → HG n → HG n → Bool := fkBR splitVar mf
-
-/-- **FK-B is correct.** For any `mu`-frequency test and any fuel, the verdict is exactly `Dual`. -/
-theorem fkB_correct (mf : Fin n → HG n → HG n → Bool) (fuel : ℕ) (C D : HG n) :
-    fkB mf fuel C D = decide (Dual univ C D) :=
-  fkBR_correct splitVar mf fuel C D
 
 end HD

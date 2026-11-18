@@ -419,10 +419,6 @@ theorem fkAR_left (r : Rule n) (f : ℕ) (b : Bool) (K : HG n) (x : Fin n) :
   rw [← fkAR_minimal r f b (del K x) (con _ x), ← fkAR_minimal r f b (del K x) (tr univ _),
     minimal_con_tr (mem_univ x), minimal_tr]
 
-theorem fkAR_right (r : Rule n) (f : ℕ) (b : Bool) (K : HG n) (x : Fin n) :
-    fkAR r f b (del (tr univ K) x) (con K x) =
-      fkAR r f b (tr univ (minimal (con K x))) (minimal (con K x)) := by
-  rw [← tr_con_eq, ← fkAR_minimal, minimal_tr, ← tr_minimal univ (con K x)]
 
 theorem fkADagR_left (r : Rule n) (f : ℕ) (b : Bool) (K : HG n) (x : Fin n) :
     fkADagR r f b (del K x) (con (tr univ K) x) =

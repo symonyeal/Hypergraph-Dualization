@@ -3,7 +3,7 @@
 \noindent\textit{Audit markup (November 2026): text that is incorrect is \wrong{struck out in red}; the \fix{correction or counterexample is in blue}. The statements are recorded in \texttt{CLAIMS.md}.}
 
 
-A \emph{hypergraph} $H$ is as a pair $(V,E)$, where $V$ is a set of \emph{vertices}, and $E=\{e_1,e_2,\dots,e_m\}$ is a set of \emph{hyperedges} (subsets of $V$). For hypergraph $H=(V,E)$, if $e_i\subseteq e_j\implies i=j$ holds for all hyperedges, it's called a \emph{Sperner} hypergraph (often called \emph{simple} hypergraph). A set $T\subseteq V$ is a \emph{transversal} of $H$ if it intersects all the edges. A transversal of $H$ is \emph{minimal} if every proper subset of it are also not transversal. The set of all minimal transversals of $H$ constitutes a Sperner hypergraph on $V$ called the \emph{transversal hypergraph} of $H$, and denoted by $\Tr(H)$.
+This thesis studies hypergraphs, their minimal transversals and the transversal hypergraph $\Tr(H)$; the definitions are in Section 1.1.
 
 We denote the verification of two given hypergraphs as transversal hypergraphs as the \emph{Transversal Hypergraph} problem, or \TransHyp. The problem decides, given two Sperner hypergraphs $H_1$ and $H_2$, if they are transversal to each other. Solving the decision problem in polynomial time, or enumerating the minimal transversals in output-polynomial time, remains open \cite{EMG08}. The enumeration problem is measured against the total input and output sizes because the number of minimal transversals can be exponential in the input size.
 

@@ -693,32 +693,6 @@ theorem minor_join {A B : HG n} {k : ℕ} {H : HG n} (h : Minor (join A B) k H) 
     obtain ⟨i, A', hA, j, B', hB, hS⟩ := ih
     exact ⟨i, A', hA, j, B', hB, fun S => by rw [upHit_minimal, hS]⟩
 
-/-- On disjoint supports the OR of two states determines them: `A₀ = (A₀ ∪ B₀) ∩ 2^V`. -/
-theorem union_left_part {V W : Finset (Fin n)} (hVW : Disjoint V W) {A₀ B₀ : HG n}
-    (hA : Within V A₀) (hB : Within W B₀) (eB : ∅ ∉ B₀) : (A₀ ∪ B₀).filter (· ⊆ V) = A₀ := by
-  ext e
-  simp only [mem_filter, mem_union]
-  constructor
-  · rintro ⟨he | he, heV⟩
-    · exact he
-    · obtain ⟨x, hx⟩ := nonempty_iff_ne_empty.2 (fun h => eB (h ▸ he))
-      exact absurd (hB e he hx) (disjoint_left.1 hVW (heV hx))
-  · exact fun he => ⟨Or.inl he, hA e he⟩
-
-/-- On disjoint supports the AND of two states determines them: `A₀ = {e ∩ V : e ∈ A₀ ∧ B₀}`. -/
-theorem join_left_part {V W : Finset (Fin n)} (hVW : Disjoint V W) {A₀ B₀ : HG n}
-    (hA : Within V A₀) (hB : Within W B₀) (nB : B₀.Nonempty) : (join A₀ B₀).image (· ∩ V) = A₀ := by
-  have key : ∀ e ∈ A₀, ∀ f ∈ B₀, (e ∪ f) ∩ V = e := fun e he f hf => by
-    rw [union_inter_distrib_right, inter_eq_left.2 (hA e he),
-      disjoint_iff_inter_eq_empty.1 (disjoint_of_subset_left (hB f hf) hVW.symm), union_empty]
-  ext e
-  simp only [mem_image, mem_join]
-  constructor
-  · rintro ⟨_, ⟨e', he', f, hf, rfl⟩, rfl⟩; rw [key e' he' f hf]; exact he'
-  · intro he
-    obtain ⟨f, hf⟩ := nB
-    exact ⟨e ∪ f, ⟨e, he, f, hf, rfl⟩, key e he f hf⟩
-
 theorem _root_.HD.Minor.within {G H : HG n} {k : ℕ} {V : Finset (Fin n)} (h : Minor G k H)
     (hG : Within V G) : Within V H := by
   induction h with

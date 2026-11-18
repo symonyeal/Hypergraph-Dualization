@@ -78,7 +78,7 @@ They are not, in general. Under the leftmost rule on GK and TK,
 exact repeat of a labelled subproblem, and symmetry contributes nothing. In the
 other direction `trivial-aut-1` has `|Aut| = 1` and still repeats subproblems up to
 isomorphism. Exact repeats come from the recursion itself (research
-Proposition 4.10); symmetric repeats are a separate factor `δ/δ_iso` that depends
+Remarks 4.9–4.10); symmetric repeats are a separate factor `δ/δ_iso` that depends
 on the split rule.
 
 The annotation pass makes this measurable. Over all annotated nodes of the
@@ -183,25 +183,6 @@ So the repeats here are as avoidable as anywhere else, and what survives is the
 narrower observation: FK-A and FK-B *both* fail to avoid them, which is why
 their ratio stays flat. That is a fact about the two algorithms, not about the
 instance. See [tree-vs-dag.md](tree-vs-dag.md) §2.
-
-## 7. The thesis' `Aut(C) = Aut(D)` claim
-
-Thesis p.51 states that "the input hypergraphs G and H (if they are transversals
-of each other) have the same automorphism group". Across **4,034 annotated
-nodes** — 2,639 FK-A and 1,395 FK-B, over all fourteen live instances — there
-were zero disagreements among the recorded group descriptors. This sample includes
-descendant nodes of both algorithms. The earlier total of 3,455 across twelve
-instances also had zero recorded disagreements and carried the FK-B count corrected
-in §3. Agreement of reported names and orders does not establish equality of actions.
-For any actual Sperner transversal pair, equality of the automorphism subgroups
-follows from equivariance and transversal involution (`aut_tr_of_sperner`).
-
-The previously recorded counterexample was `6a` *as published*, where
-`Aut(C) = C₂` and `Aut(D) = C₂ × C₂`. That instance is **not a transversal
-pair** — which is exactly the hypothesis the claim carries — so it never
-contradicted it. It was withdrawn to
-`_archive/20260804-verbatim-nontransversal/` on 2026-08-04 and the distinction
-is locked by `tests/test_symmetry.py`.
 
 ---
 
