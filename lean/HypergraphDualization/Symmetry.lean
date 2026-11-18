@@ -13,7 +13,6 @@ Copyright (c) 2026 Saimon Y. Islam. Released under the GPL-3.0-or-later.
 | `aut_tr_of_sperner` | Lemma 3.3.1 **corrected**: `Aut(Tr H) = Aut(H)` for Sperner `H` |
 | `aut_le_aut_minimal` | Cor. 3.3.4 **corrected**: `Aut(H) ≤ Aut(min H)` (equality fails) |
 | `stab_mem_aut_del`, `stab_mem_aut_con` | replace Lemmas 3.3.2-3.3.3: automorphisms fixing the split vertex survive in both FK-A children |
-| `invariant_eq_union_orbits`, `union_orbits_invariant`, `orbit_invariant`, `orbit_minimal` | Claim 3.1.6 **corrected**: the invariant sets are exactly the unions of orbits; orbits are the minimal nonempty ones |
 | `degree_eq_of_transitive` | a transitive `Aut` makes every vertex equally frequent (§5.2.2, Fano) |
 -/
 import HypergraphDualization.Duality
@@ -208,49 +207,6 @@ theorem stab_mem_aut_con {G : Finset (Finset α)} {σ : Equiv.Perm α} (hσ : σ
   obtain ⟨f, hf, rfl⟩ := mem_image.1 he
   refine mem_image.2 ⟨pmap σ f, (mem_aut.1 hσ) ▸ mem_image_of_mem _ hf, ?_⟩
   rw [pmap_erase, hx]
-
-/-! ### Orbits (Claim 3.1.6) -/
-
-section Orbits
-
-variable (Γ : Subgroup (Equiv.Perm α))
-
-/-- The orbit `{g v : g ∈ Γ}`. -/
-def orbitOf (v : α) : Set α := {w | ∃ g ∈ Γ, g v = w}
-
-/-- **Claim 3.1.6, corrected.** An invariant set is the union of the orbits of its points. -/
-theorem invariant_eq_union_orbits {S : Set α} (hS : ∀ g ∈ Γ, ∀ v ∈ S, g v ∈ S) :
-    S = ⋃ v ∈ S, orbitOf Γ v := by
-  ext w
-  simp only [Set.mem_iUnion, exists_prop]
-  constructor
-  · intro hw; exact ⟨w, hw, 1, Γ.one_mem, rfl⟩
-  · rintro ⟨v, hv, g, hg, rfl⟩; exact hS g hg v hv
-
-/-- Orbits are the minimal nonempty invariant sets. -/
-theorem orbit_minimal {S : Set α} (v : α) (hS : ∀ g ∈ Γ, ∀ w ∈ S, g w ∈ S) (hsub : S ⊆ orbitOf Γ v)
-    (hne : S.Nonempty) : S = orbitOf Γ v := by
-  refine Set.Subset.antisymm hsub ?_
-  obtain ⟨u, hu⟩ := hne
-  obtain ⟨g, hg, rfl⟩ := hsub hu
-  rintro w ⟨h, hh, rfl⟩
-  have := hS (h * g⁻¹) (Γ.mul_mem hh (Γ.inv_mem hg)) _ hu
-  simpa [Equiv.Perm.mul_apply] using this
-
-/-- An orbit is invariant. -/
-theorem orbit_invariant (v : α) : ∀ g ∈ Γ, ∀ w ∈ orbitOf Γ v, g w ∈ orbitOf Γ v := by
-  rintro g hg w ⟨h, hh, rfl⟩
-  exact ⟨g * h, Γ.mul_mem hg hh, rfl⟩
-
-/-- **Claim 3.1.6, converse.** A union of orbits is invariant. -/
-theorem union_orbits_invariant (T : Set α) :
-    ∀ g ∈ Γ, ∀ w ∈ ⋃ v ∈ T, orbitOf Γ v, g w ∈ ⋃ v ∈ T, orbitOf Γ v := by
-  intro g hg w hw
-  simp only [Set.mem_iUnion, exists_prop] at hw ⊢
-  obtain ⟨v, hv, hw⟩ := hw
-  exact ⟨v, hv, orbit_invariant Γ v g hg w hw⟩
-
-end Orbits
 
 /-! ### Transitivity and frequency -/
 

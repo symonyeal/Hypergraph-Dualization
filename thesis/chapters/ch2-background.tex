@@ -6,7 +6,7 @@
 
 This section explores the sufficient and necessary conditions for a hypergraph to be the transversal hypergraph of another. The following results are based on \cite{Ber87}.
 
-\begin{lemma}[\leanref{eq_tr_iff_partition}]\label{lem:partition}
+\begin{lemma}\label{lem:partition}
 Let $G$ and $H$ be two Sperner hypergraphs on the same vertex set $V$. Then $H=\Tr(G)$ if and only if, for all partitions $(A,B)$ of $V$, where $A\cup B=V$ and $A\cap B=\emptyset$, the following conditions hold:
 \begin{enumerate}
 \item There exists either an $e_i\in E(H)$ such that $e_i\subseteq A$ or an $e_j\in E(G)$ such that $e_j\subseteq B$.
@@ -16,14 +16,12 @@ Let $G$ and $H$ be two Sperner hypergraphs on the same vertex set $V$. Then $H=\
 
 This lemma establishes a fundamental property for recognizing transversal hypergraphs, which leads directly to the following corollaries.
 
-\begin{corollary}[\leanref{eq_tr_comm}]
+\begin{corollary}
 Let $G$ and $H$ be two Sperner hypergraphs on the same vertex set $V$. Then $H=\Tr(G)$ if and only if $G=\Tr(H)$.
 \end{corollary}
 
 \begin{corollary}
-\leavevmode\\
-\leanref{tr_tr_of_sperner}.
-Let $H$ be a Sperner hypergraph. Then $\Tr(\Tr(H))=H$. For an arbitrary hypergraph, $\Tr(\Tr(H))=min(H)$ \leanref{tr_tr}.
+Let $H$ be a Sperner hypergraph. Then $\Tr(\Tr(H))=H$. For an arbitrary hypergraph, $\Tr(\Tr(H))=min(H)$.
 \end{corollary}
 
 \subsection{Problem Representation}
@@ -62,7 +60,7 @@ Importantly, if $G$ and $H$ are already transversal, these precondition checks d
 
 Throughout this subsection, let $G$ and $H$ be Sperner hypergraphs that are transversal to one another. The following necessary conditions are used by the algorithm \cite{DNU21,FK96}.
 
-\begin{proposition}[\leanref{edges_meet}]\label{prop:intersect}
+\begin{proposition}\label{prop:intersect}
 For every $e_i\in E(G)$ and $e_j\in E(H)$, $e_i\cap e_j\neq\emptyset$.
 \end{proposition}
 
@@ -70,7 +68,7 @@ For every $e_i\in E(G)$ and $e_j\in E(H)$, $e_i\cap e_j\neq\emptyset$.
 Assume that there exists an edge $e_i\in E(G)$ and $e_j\in E(H)$ such that $e_i\cap e_j=\emptyset$. In this case, $e_i$ does not intersect $e_j$, meaning that $e_i$ fails to act as a minimal hitting set for $H$, which contradicts the assumption that $G$ and $H$ form a transversal pair.
 \end{proof}
 
-\begin{proposition}[\leanref{support_eq}]\label{prop:support}
+\begin{proposition}\label{prop:support}
 $\bigcup\{e_i:e_i\in E(G)\}=\bigcup\{e_j:e_j\in E(H)\}$.
 \end{proposition}
 
@@ -81,7 +79,7 @@ of $e\in\Tr(H)$. Thus $\operatorname{supp}(G)\subseteq\operatorname{supp}(H)$;
 interchanging the two sides proves equality.
 \end{proof}
 
-\begin{proposition}[\leanref{card_le_card_tr}]\label{prop:size}
+\begin{proposition}\label{prop:size}
 $\max\{|e_i|:e_i\in E(G)\}\leq|H|$ and $\max\{|e_j|:e_j\in E(H)\}\leq|G|$.
 \end{proposition}
 
@@ -138,7 +136,7 @@ $|e|\leq |H|$. Interchange $G$ and $H$ for the second bound.
 \end{algorithmic}
 \end{algorithm}
 
-\begin{proposition}[\leanref{kraft_sum}]\label{prop:sum}
+\begin{proposition}\label{prop:sum}
 \[
 \sum_{e_i\in E(G)}2^{-|e_i|}+\sum_{e_j\in E(H)}2^{-|e_j|}\geq 1
 \]
@@ -208,7 +206,7 @@ Suppose, $H=(V,E)$ is a Sperner hypergraph, where $v\in V$. $H/v$ is the $v$ ind
 
 In the base operation of \FKA, Proposition \ref{prop:sum} ensures that transversal hypergraphs contain hyperedges of length logarithmic in the combined number of edges. Using this property, the size of hyperedges can be bounded by the following result:
 
-\begin{corollary}[\leanref{two_pow_shortest_le}]\label{cor:shortest}
+\begin{corollary}\label{cor:shortest}
 Let $G$ and $H$ be mutually transversal hypergraphs, where $n=|G|+|H|$, and let $s=\min\{|e_l|:e_l\in E(G)\cup E(H)\}$ represent the length of the shortest hyperedge. Then:
 \[
 s\leq\log_2 n,\quad\text{since }1\leq\sum_{e\in E(G)}2^{-|e|}+\sum_{e\in E(H)}2^{-|e|}\leq n\cdot 2^{-s}.
@@ -220,7 +218,7 @@ s\leq\log_2 n,\quad\text{since }1\leq\sum_{e\in E(G)}2^{-|e|}+\sum_{e\in E(H)}2^
 
 Both Proposition \ref{prop:sum} and Corollary \ref{cor:shortest} establish bounds on the frequency of the most frequent vertex (MFV). This is formalized as follows:
 
-\begin{lemma}[\leanref{exists_frequent_vertex}]\label{lem:frequency}
+\begin{lemma}\label{lem:frequency}
 For transversal hypergraphs $G$ and $H$, with $|G|\cdot|H|\geq 1$ and $n=|G|+|H|$, there exists a vertex $v_i\in V(G)=V(H)$ with frequency:
 \[
 \epsilon(v_i)\geq\frac{1}{\log n}.

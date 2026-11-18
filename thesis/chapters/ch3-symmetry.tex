@@ -40,19 +40,8 @@ consisting of all vertices that $v$ can be mapped to by the automorphisms in $\m
 
 {\sloppy\wrong{Each orbit partitions the vertex set $V$ into equivalence classes permuted by automorphisms} \wrong{$g\in\Aut(H)$.} \fix{The orbits partition $V$ into equivalence classes, each mapped onto itself by every $g\in\Aut(H)$.} Nontrivial vertex permutations are referred to as automorphism \emph{generators} when they are elements of the automorphism group that generate all other group elements under composition. The set of generators, through their action on the vertex set $V$, precisely determine and generate the orbits.\par}
 
-\begin{claim}[\leanref{invariant_eq_union_orbits}, \leanref{orbit_minimal}]
-The vertex sets of the subhypergraphs of $H$ invariant under the automorphism group $\mathcal{G}=\Aut(H)$ are precisely the unions of orbits of the action of $\mathcal{G}$ on $V$, and the orbits are exactly the minimal nonempty ones. \cite{Lec}
-\end{claim}
-
-The whole vertex set of $St_2$ is invariant and contains more than one orbit, since every automorphism fixes $v_1$ \leanref{claim_3_1_6_counterexample}.
-
-\begin{proof}
-Let $O(v_i)=\{\sigma(v_i)\mid\sigma\in\mathcal{G}\}$ be the orbit of a vertex $v_i\in V$ under the action of $\mathcal{G}$. By definition, the orbit $O(v_i)$ is closed under the action of $\mathcal{G}$ since, for any $\sigma,\tau\in\mathcal{G}$ and $v_j\in O(v_i)$ with $v_j=\sigma(v_i)$, we have $\tau(v_j)=\tau(\sigma(v_i))=(\tau\circ\sigma)(v_i)\in O(v_i)$. Thus, $O(v_i)$ forms a stable subset under $\mathcal{G}$, and the vertices of $O(v_i)$ define a subhypergraph of $H$.
-
-Conversely, let $S\subseteq V$ be the vertex set of a subhypergraph of $H$ under $\mathcal{G}$. Since $S$ is closed under the automorphisms in $\mathcal{G}$, for every $\sigma\in\mathcal{G}$ and $s\in S$, we have $\sigma(s)\in S$. For any vertex $s\in S$, its orbit $O(s)=\{\sigma(s)\mid\sigma\in\mathcal{G}\}$ is entirely contained within $S$, as $S$ is closed under the action. Furthermore, $S$ must be a union of orbits because it cannot partially include any orbit without violating closure under $\mathcal{G}$.
-
-Therefore, each orbit under $\mathcal{G}$ corresponds to a subhypergraph of $H$, and any invariant vertex set is a union of orbits. A nonempty invariant set contained in an orbit $O(v_i)$ contains some $\sigma(v_i)$, hence all of $O(v_i)$, so the orbits are the minimal nonempty invariant sets.
-\end{proof}
+% Reserve the number of the removed Claim 3.1.6 (invariant sets are unions of orbits).
+\stepcounter{definition}
 
 A permutation group $\mathcal{G}$ acts \emph{transitively} on the vertices of a hypergraph $H=(V,E)$ if for any two vertices $u,v\in V$, there exists $g\in\mathcal{G}$ such that $g(u)=v$, ensuring uniform symmetry across $V$. A permutation group $\mathcal{G}$ of degree $n$ is said to be \emph{set-transitive} if any two subsets of the vertex set of same cardinality lie in the same orbit of $\mathcal{G}$. If $\mathcal{G}$ is set-transitive, then any $\mathcal{G}$-invariant hypergraph consists of either all or none of the $k$-subsets for all $k$, and its full automorphism group is the symmetric group $S_n$.
 

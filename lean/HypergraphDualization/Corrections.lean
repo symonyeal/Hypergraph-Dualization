@@ -10,7 +10,6 @@ which the printed form fails. Vertices are 0-indexed.
 | --- | --- |
 | `lemma_3_3_1_needs_sperner` | Lemma 3.3.1 without the Sperner hypothesis: `Aut(Tr H) = Aut(H)` |
 | `cor_3_3_4_not_iso` | Cor. 3.3.4: `Aut(H) ≅ Aut(min H)` |
-| `claim_3_1_6_counterexample` | Claim 3.1.6: invariant vertex sets are *precisely* the orbits |
 | `printed_recurrence_fails` | §4.2.3 as printed: `|Γᵢ₊₁| = 2|Γᵢ|` at the first (join) level |
 | `gem_chordal_four`, `gem_chordal_five`, `gem_not_distance_hereditary` | §4.4.2: chordal graphs are distance-hereditary |
 -/
@@ -35,11 +34,6 @@ isomorphic. What holds is `Aut(H) ≤ Aut(min H)` (`aut_le_aut_minimal`). -/
 theorem cor_3_3_4_not_iso :
     minimal nonSperner = {{0}} ∧ autOrder nonSperner = 1 ∧ autOrder (minimal nonSperner) = 2 :=
   by native_decide
-
-/-- **Claim 3.1.6 fails.** For `St₂ = {{v₁}, {v₂, v₃}}` the whole vertex set is invariant under
-`Aut(St₂)`, yet it is not an orbit: `v₁` is fixed by every automorphism. -/
-theorem claim_3_1_6_counterexample :
-    (∀ σ ∈ aut S32.st2, σ 0 = 0) ∧ Equiv.swap 1 2 ∈ aut S32.st2 := by native_decide
 
 /-- **§4.2.3 as printed fails.** At the first level the tree is a join, so
 `|Γ₁| = |Γ₀|² = 1`, not `2|Γ₀| = 2`; at the second (union) level `|Γ₂| = 2|Γ₁| = 2`, not

@@ -14,8 +14,7 @@ For a transversal pair `H = Tr(G)` with `G` Sperner, all inside `U`:
 | `two_pow_shortest_le` | Cor. 2.3.1 **corrected**: `2^s ≤ |G| + |H|`, i.e. `s ≤ log₂ n` |
 | `exists_frequent_vertex` | Lemma 2.3.2: a vertex of frequency at least `1/s`, `2^s ≤ n` |
 
-Cor. 2.3.1 as printed (`s ≥ log n`) is false; `k3_refutes_printed_cor_2_3_1` is the
-counterexample. The proofs printed for Props. 2.2.3 and 2.2.4 do not establish them; the
+Cor. 2.3.1 as printed (`s ≥ log n`) is false. The proofs printed for Props. 2.2.3 and 2.2.4 do not establish them; the
 proofs here are new.
 -/
 import HypergraphDualization.Duality

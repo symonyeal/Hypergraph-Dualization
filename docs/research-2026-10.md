@@ -938,7 +938,7 @@ pruned formula in `test_gk5_first_departure_certificate`; the full trace is a Ru
 
 ### What Chapter 3's symmetry statements identify (Q4)
 
-The corrected Chapter 3 results (Claim 3.1.6, Lemmas 3.3.1–3.3.2, Corollary 3.3.4) concern the
+The corrected Chapter 3 results (Lemmas 3.3.1–3.3.2, Corollary 3.3.4) concern the
 automorphism group of a single node. Counting repeated subproblems needs input automorphisms that map
 one reached pair to another (`δ_Aut`) or isomorphisms between distinct reached pairs (`δ_iso`), and
 none of those statements bounds either quotient. Theorem 4.22 is the only reached-class bound from

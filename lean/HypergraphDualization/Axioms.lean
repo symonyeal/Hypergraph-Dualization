@@ -108,10 +108,10 @@ elab "#assert_evaluation " ids:ident* : command => do
   HD.fkADagR_sub HD.fkADag_minor HD.fkADag_split HD.fkADag_within HD.fkAR
   HD.fkAR_correct HD.fkAR_left HD.fkAR_minimal HD.fkAR_split   HD.fkATree HD.fkA_comm HD.fkA_split HD.guardRule HD.guardRule_frequent
   HD.guardRule_symm HD.hits_subst HD.hits_tr_iff HD.influence_aut HD.influence_eq_of_transitive
-  HD.intersecting_regular_bound HD.invariant_eq_union_orbits HD.orbit_invariant HD.union_orbits_invariant HD.S32.eps_eight   HD.isFBDD_of_closed HD.isMinHit_compl_iff HD.isSteiner_of_packing HD.join_isSperner_of_disjoint
+  HD.intersecting_regular_bound HD.S32.eps_eight   HD.isFBDD_of_closed HD.isMinHit_compl_iff HD.isSteiner_of_packing HD.join_isSperner_of_disjoint
   HD.kFano_card HD.kids_eq HD.kids_mem HD.kraft_sum HD.leftRule HD.leftRule_symm HD.matching_law
   HD.matching_tau_delta HD.mem_fkADagR_succ HD.memo_bp HD.memo_fbdd HD.memo_good HD.minimal_con_tr
-  HD.n0_table HD.not_steiner_of_table HD.not_trueTwin_and_falseTwin HD.orbit_minimal HD.path_nodup
+  HD.n0_table HD.not_steiner_of_table HD.not_trueTwin_and_falseTwin HD.path_nodup
   HD.primalAdj_alt HD.primal_children_le
   HD.prop_P_comp HD.root_mem_fkADagR HD.rule_of_fbdd HD.run_correct HD.splitVar HD.splitVar_comm
   HD.splitVar_spec HD.stab_mem_aut_con HD.stab_mem_aut_del HD.steiner_count
@@ -148,9 +148,9 @@ elab "#assert_evaluation " ids:ident* : command => do
   HD.S32.k4_splits
   HD.Data.eightVer_eps HD.Data.eightVer_printed_not_dual HD.Data.eightVer_tree
   HD.Data.eightVer_uniform HD.Data.faithful_nodes HD.Data.fano_self_tr
-  HD.Data.k3_refutes_printed_cor_2_3_1 HD.Data.k3_self_tr HD.Data.pg23_not_self_dual
+  HD.Data.k3_self_tr HD.Data.pg23_not_self_dual
   HD.Data.sevenVer_tree HD.Data.sixA_printed_not_dual HD.Data.sixD_tree
-  HD.Fix.claim_3_1_6_counterexample HD.Fix.cor_3_3_4_not_iso HD.Fix.lemma_3_3_1_needs_sperner
+  HD.Fix.cor_3_3_4_not_iso HD.Fix.lemma_3_3_1_needs_sperner
   HD.OpenAI.fano_k3_balanced HD.S32.c4_tr HD.S32.classes_four HD.S32.d31_tr HD.S32.eps_five
   HD.S32.eps_four HD.S32.eps_nine HD.S32.eps_seven HD.S32.eps_six HD.S32.eps_three
   HD.S32.ex34_corrected HD.S32.k2dd_freq HD.S32.k2dd_mfv_not_optimal HD.S32.k2dd_printed_not_tr

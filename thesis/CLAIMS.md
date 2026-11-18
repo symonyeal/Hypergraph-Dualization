@@ -25,28 +25,11 @@ claims. Where available, the library includes a counterexample to the printed st
 | Cited, Conditional | Rests on a named external source or hypothesis, stated in the row |
 | Refuted, Withdrawn | False, with a counterexample, or no longer claimed, with the reason |
 
-## Chapter 1
+## Chapters 1 and 2
 
-| Statement | Status | Lean |
-| --- | --- | --- |
-| Prop. 1.1.5, `Tr(H) = Tr(min H)` | Proved | `tr_minimal` |
-| `Tr(H)` is Sperner (Def. 1.1.4) | Proved | `tr_isSperner` |
-| §1.1.1, complements of maximal independent sets are the minimal transversals | Proved, generalised: no hypothesis `I ⊆ U` | `isMinHit_compl_iff` |
-| §1.1.2, `Tr(H)` is the CNF of the function whose DNF is `H` | Proved | `hits_tr_iff` |
-
-## Chapter 2
-
-| Statement | Status | Lean |
-| --- | --- | --- |
-| Lemma 2.1.1, partition criterion | Proved, generalised: `G` need not be Sperner | `eq_tr_iff_partition` |
-| Cor. 2.1.2, `H = Tr G ⟺ G = Tr H` | Proved | `eq_tr_comm` |
-| Cor. 2.1.3, `Tr(Tr H) = H` | Proved; for non-Sperner `H` the value is `min(H)` | `tr_tr_of_sperner`, `tr_tr` |
-| Props. 2.2.1–2.2.4, conditions (i)–(iv) | Proved; (iv) generalised: `G` need not be Sperner | `edges_meet`, `support_eq`, `card_le_card_tr`, `kraft_sum` |
-| Cor. 2.3.1, `s ≥ log n` | **Corrected**: the inequality is reversed, `2^s ≤ n`, i.e. `s ≤ log₂ n`; `G` need not be Sperner | `two_pow_shortest_le`; counterexample `k3_refutes_printed_cor_2_3_1` |
-| Lemma 2.3.2, a vertex of frequency `≥ 1/log n` | Proved (as `≥ 1/s` with `2^s ≤ n`) | `exists_frequent_vertex` |
-| §2.2.2, `(G, H)` dual iff both FK-A subproblems are | Proved, generalised: `G`, `H` need not lie in `U` | `dual_split` |
-| Algorithm 1 decides `Trans-Hyp` | Proved for every input and every split rule; leaves are decided by the definition of duality (`Dual`), and the leaf rules are proved equivalent separately (`dual_empty_left`, `dual_singleton_left`, `conds_of_dual`) | `fkAR_correct` (with `splitVar` for `fkA`), `conds_of_dual` |
-| FK-B decides `Trans-Hyp` | Proved for every split rule, every `μ`-frequency test and every fuel; the model has the same leaf convention as FK-A (leaves, including the `min(nC, nD) ≤ 2` case, are decided by `Dual`) and FK-A's necessary conditions `conds`; not modelled: the arithmetic of `μ(n) = log n / log log n` (the test is a parameter `mf`), node counts, FK-B's own Check_Conditions and Easy_case, and certificates (conflicting assignments). The per-clause and per-monomial branches are proved exact (`dual_muD`) | `fkBR_correct`, `dual_muD` |
+Literature. The results are cited, not registered here; the Lean lemmas in `Basic`,
+`Duality` and `Conditions` exist because later proofs use them. Printed errors in these
+chapters are listed under the mathematical audit below.
 
 ## Chapter 3
 
@@ -56,7 +39,6 @@ is fixed are withdrawn; they do not follow from those inclusions (research §4, 
 
 | Statement | Status | Lean |
 | --- | --- | --- |
-| Claim 3.1.6, invariant vertex sets are precisely the orbits | **Corrected**: they are the unions of orbits; orbits are the minimal ones | `invariant_eq_union_orbits` (invariant ⇒ union of its orbits), `union_orbits_invariant` (the converse), `orbit_invariant`, `orbit_minimal`; counterexample `claim_3_1_6_counterexample` |
 | §3.2, 168 Sperner hypergraphs on 4 vertices in 30 classes | Checked | `sperner_four_card`, `classes_four` |
 | §3.2, 13 pairs of distinct hypergraphs | Checked, with the reading made explicit: 13 pairs of classes with `G ≇ Tr G` plus 4 classes with `G ≅ Tr G` | `self_dual_classes_four` |
 | §3.2, largest tree on 3 and 4 vertices: 3 and 7 nodes, depth 3 | Checked; "depth 3" is three levels (height 2) | `max_tree_three`, `max_tree_four` |
@@ -258,6 +240,7 @@ repository code; they are kept with the audit report outside the repository.
 | Ch. 1, large edges | every edge of `Tr(H)` lies in `τ(E_H)^c` | false: `H = {{v₁},{v₂}}` on three points |
 | Ch. 1, bounded conformality | `S ∈ e_i` | `S ⊆ e_i` |
 | Ch. 2 §2.3 | the bounds give a lower limit on FK-A's performance | they give its running-time upper bound |
+| Cor. 2.3.1 | `s ≥ log n` | reversed: `2^s ≤ n`; `K₃` has `s = 2`, `n = 6` |
 | Obs. 2.3.3 | `for any i = 1,…,n` with `n = |G|+|H|` | `i` ranges over vertices |
 | Def. 3.1.1 | every element of a permutation group preserves `E(H)` | only subgroups of `Aut(H)` do |
 | §3.1, orbits | each orbit partitions `V`; classes permuted | the orbits partition `V`; each is fixed setwise |
@@ -272,7 +255,7 @@ repository code; they are kept with the audit report outside the repository.
 | §3.2, `K₄⁻` | every split gives `K₃` and `D₂,₁` | `v₁, v₂`: `K₃` and `D₁,₂`; `v₃, v₄`: `St₂`-type and `D₁,₃`; all 5 nodes |
 | Ch. 4, introduction and §4.2.1 | alternating trees in GK99, used to prove FK-A's upper bounds | GK97 (Discrete Math. 169), showing the frequency bound is tight up to a factor 2 |
 | §4.4.3 | two twins lie in the same automorphism orbit | holds for graphs and clique hypergraphs; the thesis's own example `{{v₁,v₂},{v₂,v₃,v₄},{v₁,v₃}}` has false twins `v₁, v₄` of degrees 2 and 1 |
-| §4.4.3, after Prop. 4.4.15 | `Aut` of a disjoint union of copies is a product of wreath products | needs connected, pairwise non-isomorphic components: four singleton edges give `24 ≠ 8` |
+| §4.4.3, after Prop. 4.4.15 | `Aut` of a disjoint union of copies is a product of wreath products | needs connected, pairwise non-isomorphic components: four singleton edges read as two copies of `{{v₁},{v₂}}` give order 8, `Aut = S₄` has 24; a broken grouping gives a subgroup. Reduced-cotree children of a union node are connected, not pairwise non-isomorphic: group them by type. No computed result uses the formula (groups come from the search in `fka.automorphism`, and no split rule reads `Aut`) |
 | §5.2.2, two `C₄` | one top `C₂` acts within each cycle independently | two factors `C₂`, one per cycle |
 
 Outside the thesis the same audit corrected: the A6 conjecture's status (unresolved; the cited pair
@@ -280,4 +263,4 @@ agrees with it), the naming of the degree-sum rule (the implementation's choice,
 frequency rule), the scope of README's memoisation sentence (leftmost rule), the Lean scope of
 `N^{Ω(log N)}`, Proposition 4.6's quantifier over polynomial-time rules, `fk-a-vs-fk-b.md` §3's
 claim that symmetry causes the repeats, the primitivity-depth caption, and the rows above for
-Theorem B, `ε(4)`, `ε(8)`, Claim 3.1.6 and D2.
+Theorem B, `ε(4)`, `ε(8)` and D2.

@@ -16,7 +16,6 @@ not. `Axioms` checks both.
 | `*_nodes` | node counts of Figs. 5.1, 5.2, 5.4, 5, 6 |
 | `*_eps` | the frequencies quoted in §5.2.2 |
 | `*_aut` | the root groups of Figs. 5.1-5.4, 5, 6 (orders) |
-| `k3_refutes_printed_cor_2_3_1` | Cor. 2.3.1 as printed is false |
 | `pg23_not_self_dual` | §5.2.2: the named cyclic PG(2,3) is not self-transversal |
 -/
 import HypergraphDualization.Data
@@ -105,12 +104,6 @@ theorem sevenVer_aut : autOrder sevenVerC = 2 := by native_decide
 theorem eightVer_aut : autOrder eightVerC = 16 := by native_decide
 
 /-! ### Refutations -/
-
-/-- **Cor. 2.3.1 as printed is false.** For `K₃`, the shortest edge has `s = 2` vertices and
-`n = |G| + |H| = 6`, so `s < log₂ n`; the corrected form `2^s ≤ n` holds. -/
-theorem k3_refutes_printed_cor_2_3_1 :
-    (∀ e ∈ k3C ∪ k3D, e.card = 2) ∧ 2 ^ 2 < k3C.card + k3D.card ∧
-    2 ^ 2 ≤ k3C.card + k3D.card := by native_decide
 
 /-- `PG(2,3)`: the 13 lines `{i, i+1, i+3, i+9} mod 13`. -/
 def pg23 : HG 13 := (univ : Finset (Fin 13)).image fun i => {i, i + 1, i + 3, i + 9}
