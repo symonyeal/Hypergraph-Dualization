@@ -143,7 +143,7 @@ this regime supplies remarkable single objects, not lower-bound families.
 `results/hard-classes.{json,md}` classifies **every node of both trees** for
 each measured instance, with the compacted `(cnf, dnf)` used for deduplication.
 It checks read-once structure and records the deepest certified primitive
-non-symmetric group. The read-once cases use the structural result in §2 without
+group at a non-read-once node (full symmetric groups included). The read-once cases use the structural result in §2 without
 enumerating their groups. Elsewhere, a capped subgroup certifies primitivity
 only if it is transitive and primitive. The remaining capped cases leave the
 full-group classification unresolved.
@@ -160,11 +160,14 @@ remain valid, but zero counts and negative depths do not certify absence.
 > enumeration also leaves some non-read-once nodes unresolved; its negative
 > counts cannot establish that the converse holds or fails.
 
-> **(5.2)** Primitivity *depth* does **not** predict FK-B's advantage.
-> `w11-sd-1` keeps primitive nodes to depth 10 and FK-B wins only 1.33x, while
-> `gk-f3` is read-once throughout and FK-B wins 52.96x. There is no
-> monotone relation between the two columns -- if anything the sign is the
-> opposite of the one a three-instance reading suggested.
+> **(5.2)** Whether primitivity *depth* predicts FK-B's advantage is unresolved
+> (corrected 2026-11-18; the earlier text called it refuted with the sign reversed).
+> `w11-sd-1` (depth 10, 1.33x) against `gk-f3` (no primitive node, 52.96x) agrees
+> with "the FK-A/FK-B ratio falls as depth rises"; among the positive depths,
+> `k3` (0, 1.00x), `trivial-aut-1` (4, 1.24x) and `w11` (8, 1.47x) rise instead.
+> The column counts primitive groups of non-read-once nodes, full symmetric groups
+> included (`k3` has `Aut = S₃`); it compares modified FK-A with faithful FK-B; and
+> capped negatives are undetermined. Four positive-depth instances decide nothing.
 >
 
 The FK-A repeat rates are 99.6% on `gk-f3` and 95.2% on `word-xy`, with

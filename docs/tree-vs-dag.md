@@ -144,7 +144,7 @@ keeps is a constant factor from its shallower base case -- `min(|C|,|D|) <= 2`
 against `nC*nD <= 1`, which is a whole binary subtree per leaf
 ([fk-a-vs-fk-b.md](fk-a-vs-fk-b.md) §4). The two improvements are independent,
 and on this library the algorithm to reach for is FK-A with both. The table is
-seven instances, not an asymptotic statement: under FK-A's own rule `gk-f4` has
+seven instances, not an asymptotic statement: under the degree-sum rule `gk-f4` has
 `delta = 67,247,387` (research §4), where `beta` was not measured, and whether
 `delta/N` is unbounded on GK is open (Conjecture 4.19).
 

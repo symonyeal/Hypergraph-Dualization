@@ -1,10 +1,13 @@
 \chapter{Introduction}
 
+\noindent\textit{Audit markup (November 2026): text that is incorrect is \wrong{struck out in red}; the \fix{correction or counterexample is in blue}. The statements are recorded in \texttt{CLAIMS.md}.}
+
+
 A \emph{hypergraph} $H$ is as a pair $(V,E)$, where $V$ is a set of \emph{vertices}, and $E=\{e_1,e_2,\dots,e_m\}$ is a set of \emph{hyperedges} (subsets of $V$). For hypergraph $H=(V,E)$, if $e_i\subseteq e_j\implies i=j$ holds for all hyperedges, it's called a \emph{Sperner} hypergraph (often called \emph{simple} hypergraph). A set $T\subseteq V$ is a \emph{transversal} of $H$ if it intersects all the edges. A transversal of $H$ is \emph{minimal} if every proper subset of it are also not transversal. The set of all minimal transversals of $H$ constitutes a Sperner hypergraph on $V$ called the \emph{transversal hypergraph} of $H$, and denoted by $\Tr(H)$.
 
 We denote the verification of two given hypergraphs as transversal hypergraphs as the \emph{Transversal Hypergraph} problem, or \TransHyp. The problem decides, given two Sperner hypergraphs $H_1$ and $H_2$, if they are transversal to each other. Solving the decision problem in polynomial time, or enumerating the minimal transversals in output-polynomial time, remains open \cite{EMG08}. The enumeration problem is measured against the total input and output sizes because the number of minimal transversals can be exponential in the input size.
 
-Generating the transversal hypergraph is a longstanding problem of interest. Perhaps the simplest and most well-known algorithm to generate the transversal hypergraph is the sequential method, also known as Berge's algorithm \cite{Ber87}. However, \cite{Tak08} showed that for a family of hypergraphs (denoted here as $\TK$-family), sequential method generates exponential sized (in total size of input and output) intermediate hypergraphs.
+Generating the transversal hypergraph is a longstanding problem of interest. Perhaps the simplest and most well-known algorithm to generate the transversal hypergraph is the sequential method, also known as Berge's algorithm \cite{Ber87}. However, \cite{Tak08} showed that for a family of hypergraphs (denoted here as $\TK$-family), sequential method generates \wrong{exponential sized} \fix{superpolynomial, $n^{\Omega(\log\log n)}$-sized} (in total size of input and output) intermediate hypergraphs.
 
 In 1996, Fredman and Khachiyan in \cite{FK96} showed that \TransHyp{} is solvable in quasipolynomial time, namely in time $\mathcal{O}(n^{polylog(n)})$, where $n$ is the combined size of the input i.e., the total number of hyperedges of the two hypergraphs. They developed two algorithms we will call \FKA{} and \FKB, and showed that their running times are bounded by $n^{\mathcal{O}(\log^2 n)}$ and $n^{\mathcal{O}(\log n)}$, respectively. These algorithms, unlike Berge's, can be used as an oracle for computing the transversal hypergraph in incremental output-subexponential time, the best provable upper time bound yet \cite{CKP20}.
 
@@ -98,7 +101,7 @@ A \emph{literal} is a variable $x_i$ or its complement $(x_i)^c$. For a set of $
 \end{definition}
 
 \begin{definition}
-A \emph{Boolean function} on $n$ literals is a mapping $f:\{0,1\}^n\to\{0,1\}$. A Boolean expression $\mathbf{x}=(x_1,x_2,\dots,x_n)$ is a tuple in $\{0,1\}^n$, where $x_i$ denotes the value of the $i$-th literal.
+A \emph{Boolean function} on $n$ \wrong{literals} \fix{variables} is a mapping $f:\{0,1\}^n\to\{0,1\}$. \wrong{A Boolean expression} \fix{An assignment} $\mathbf{x}=(x_1,x_2,\dots,x_n)$ is a tuple in $\{0,1\}^n$, where $x_i$ denotes the value of the $i$-th \wrong{literal} \fix{variable}.
 \end{definition}
 
 \begin{definition}
@@ -126,7 +129,7 @@ For $f(x_1,x_2)=x_1\wedge x_2$, $x_1$ and $x_2$ are prime implicates. The clause
 \end{example}
 
 \begin{definition}
-A Boolean function is in \emph{Conjunctive Normal Form (CNF)} if it is expressed as an irredundant conjunction of disjunctions of its prime implicates:
+\wrong{A Boolean function is in Conjunctive Normal Form (CNF) if it is expressed as an irredundant conjunction of disjunctions of its prime implicates:} \fix{For a monotone Boolean function $f$, the prime \emph{Conjunctive Normal Form (CNF)} is the conjunction of all prime implicates of $f$; it is irredundant. For a general $f$ the conjunction of all prime implicates can be redundant: $(x_1\vee x_2)\wedge(\neg x_1\vee x_3)$ has the prime implicate $x_2\vee x_3$, which is implied by the other two.}
 \[
 C=\bigwedge_{c\in I}\bigvee_{i\in c}a_i,
 \]
@@ -134,7 +137,7 @@ where $I$ is the set of prime implicates of $f$.
 \end{definition}
 
 \begin{definition}
-A Boolean function is in \emph{Disjunctive Normal Form (DNF)} if it is represented as an irredundant disjunction of conjunctions of its prime implicants:
+\wrong{A Boolean function is in Disjunctive Normal Form (DNF) if it is represented as an irredundant disjunction of conjunctions of its prime implicants:} \fix{For a monotone Boolean function $f$, the prime \emph{Disjunctive Normal Form (DNF)} is the disjunction of all prime implicants of $f$; it is irredundant (the same caveat as for the CNF applies to general $f$).}
 \[
 D=\bigvee_{t\in A}\bigwedge_{j\in t}a_j,
 \]
@@ -142,7 +145,7 @@ where $A$ is the set of prime implicants of $f$.
 \end{definition}
 
 \begin{definition}
-A Boolean function $f$ is \emph{irredundant} if its minimal representation, in either CNF or DNF, contains no redundant prime implicants or prime implicates. Removing any such implicant or implicate changes the function's output.
+\wrong{A Boolean function f is irredundant if its minimal representation, in either CNF or DNF, contains no redundant prime implicants or prime implicates. Removing any such implicant or implicate changes the function's output.} \fix{A DNF (CNF) is \emph{irredundant} if removing any of its terms (clauses) changes the function it represents. Irredundance is a property of a representation, not of the function.}
 \end{definition}
 
 \begin{example}
@@ -198,13 +201,13 @@ In this section, we provide an overview of problems that are modelled by hypergr
 
 \textbf{Set Cover Problem:} For a hypergraph $H=(V,E)$, the vertices represent the elements of a set, and the edges are subsets of these elements. A \emph{set cover} is a subset $E'\subseteq E$ such that every $v\in V$ is contained in at least one edge $e\in E'$. A cover of $V$ is a transversal of the incidence-dual hypergraph $(E,\{e_v\mid v\in V\})$, where $e_v=\{e\in E\mid v\in e\}$. Minimal covers correspond to minimal transversals of this incidence-dual hypergraph \cite{EMG08}.
 
-\textbf{Minimal Dominating Sets:} In a graph $G=(V,E)$, a \emph{dominating set} $D\subseteq V$ ensures every $v\in V$ is in $D$ or adjacent to $u\in D$. A dominating set $D$ is minimal if no proper subset of $D$ satisfies this condition. Minimal dominating sets correspond to minimal hitting sets of the hypergraph formed by neighborhoods of vertices in $G$.
+\textbf{Minimal Dominating Sets:} In a graph $G=(V,E)$, a \emph{dominating set} $D\subseteq V$ ensures every $v\in V$ is in $D$ or adjacent to $u\in D$. A dominating set $D$ is minimal if no proper subset of $D$ satisfies this condition. Minimal dominating sets correspond to minimal hitting sets of the hypergraph formed by \wrong{neighborhoods} \fix{closed neighborhoods $N[v]=\{v\}\cup N(v)$} of vertices in $G$.
 
-\textbf{Model-Based Diagnosis:} Given a system $S$ with its set of components $V$, a diagnosis identifies the minimal set of faulty components $D\subseteq V$ responsible for a set of faulty observations $F$. A diagnosis corresponds to a transversal of $F$. \cite{Rei87}.
+\textbf{Model-Based Diagnosis:} Given a system $S$ with its set of components $V$, a diagnosis identifies the minimal set of faulty components $D\subseteq V$ responsible for a set of faulty observations $F$. \wrong{A diagnosis corresponds to a transversal of $F$.} \fix{The minimal diagnoses are the minimal transversals of the family of minimal conflict sets: sets of components that cannot all work correctly given $F$.} \cite{Rei87}.
 
-\textbf{Minimal Cut Sets in Metabolic Networks:} A metabolic network is represented as a directed hypergraph where the vertex set $V$ corresponds to metabolites and the edge set $E$ represents biochemical reactions. Blocking a set of metabolic reactions through cut sets corresponds to finding minimal hitting sets of the hypergraph, making this an instance of \emph{Trans-Gen}.
+\textbf{Minimal Cut Sets in Metabolic Networks:} A metabolic network is represented as a directed hypergraph where the vertex set $V$ corresponds to metabolites and the edge set $E$ represents biochemical reactions. \wrong{Blocking a set of metabolic reactions through cut sets corresponds to finding minimal hitting sets of the hypergraph,} \fix{Minimal cut sets are the minimal hitting sets of the family of elementary flux modes (as sets of reactions) that carry the target function, not of the reaction hypergraph itself,} making this an instance of \emph{Trans-Gen}.
 
-\textbf{Drug Cocktail Development:} Given a set of antibiotics and a set of bacterial strains, each strain (vertex) is associated with the set of antibiotics (edges) that are effective against it. A transversal of this hypergraph represents a minimal cocktail of antibiotics that is effective against all target strains.
+\textbf{Drug Cocktail Development:} Given a set of antibiotics and a set of bacterial strains, each strain \wrong{(vertex) is associated with the set of antibiotics (edges) that are effective against it.} \fix{is an edge: the set of antibiotics (vertices) effective against it.} A transversal of this hypergraph represents a minimal cocktail of antibiotics that is effective against all target strains.
 
 \section{Recent Developments}
 
@@ -218,7 +221,7 @@ This section describes some of the \emph{tractable} classes of hypergraphs and t
 
 \paragraph{Hypergraphs with Edge-Size Bound:} \TransHyp{} can solve hypergraphs where the size of each edge is bounded by a fixed value $k$, i.e., $|e|\leq k$ for all $e\in E$, in polynomial time $\mathcal{O}(n^{k+1})$ \cite{BGH98}. When $k=2$, the hypergraph corresponds to a graph.
 
-\paragraph{Hypergraphs with Large Edges:} \TransHyp{} can solve hypergraphs where each edge satisfies $|e|\geq|V|-c$ for some constant $c$ in $\mathcal{O}(n^{c+1})$ \cite{BGH98}. Let $V^c$ be the complement of $V'\subseteq V$, and define the set of complementary edges as $E^c=\{e^c\mid e\in E\}$. For a Sperner hypergraph $H=(V,E_H)$, define $\tau(E_H)=\{e\setminus\{v\}\mid e\in E_H,v\in e\}$. \cite{EG02} shows that every edge $e_j\in\Tr(H)$ is in $\tau(E_H)^c$.
+\paragraph{Hypergraphs with Large Edges:} \TransHyp{} can solve hypergraphs where each edge satisfies $|e|\geq|V|-c$ for some constant $c$ in $\mathcal{O}(n^{c+1})$ \cite{BGH98}. Let $V^c$ be the complement of $V'\subseteq V$, and define the set of complementary edges as $E^c=\{e^c\mid e\in E\}$. For a Sperner hypergraph $H=(V,E_H)$, define $\tau(E_H)=\{e\setminus\{v\}\mid e\in E_H,v\in e\}$. \wrong{\mbox{\cite{EG02}} shows that every edge $e_j\in\Tr(H)$ is in $\tau(E_H)^c$.} \fix{This statement is false: for $H=\{\{v_1\},\{v_2\}\}$ on $V=\{v_1,v_2,v_3\}$, $\Tr(H)=\{\{v_1,v_2\}\}$, whereas $\tau(E_H)^c=\{\{v_1,v_2,v_3\}\}$.}
 
 \subsubsection*{Structural Restrictions on Hypergraphs}
 
@@ -226,7 +229,7 @@ This section describes some of the \emph{tractable} classes of hypergraphs and t
 
 \paragraph{Bounded Intersection:} A hypergraph $H=(V,E)$ is called $r$-exact if any minimal transversal of $H$ intersects every edge in at most $r$ vertices. \TransHyp{} can solve hypergraphs with bounded intersection in polynomial time \cite{ER10}. The class of hypergraphs with bounded intersection includes read-once hypergraphs, which are 1-exact (having the \emph{CIS}-property), and hypergraphs with the circular ones property, which are 2-exact.
 
-\paragraph{Bounded Conformality:} A hypergraph $H=(V,E)$ is \emph{bounded conformal} if for every subset $S\subseteq V$, $S\in e_i$ for some edge $e_i\in E$ whenever all subsets of $S$ with size at most $\delta$ are contained in an edge $e_j\in E$. A hypergraph is \emph{bounded dual conformal} if its transversal hypergraph $\Tr(H)$ is bounded conformal for some constant. \TransHyp{} can solve both in polynomial time. \cite{Hag08} Conformal hypergraphs include highly symmetric families, which will be analyzed in Chapter 4.
+\paragraph{Bounded Conformality:} A hypergraph $H=(V,E)$ is \emph{bounded conformal} if for every subset $S\subseteq V$, \wrong{$S\in e_i$} \fix{$S\subseteq e_i$} for some edge $e_i\in E$ whenever all subsets of $S$ with size at most $\delta$ are contained in an edge $e_j\in E$. A hypergraph is \emph{bounded dual conformal} if its transversal hypergraph $\Tr(H)$ is bounded conformal for some constant. \TransHyp{} can solve both in polynomial time. \cite{Hag08} Conformal hypergraphs include highly symmetric families, which will be analyzed in Chapter 4.
 
 \paragraph{Bounded Intersecting Hypergraphs:} bounded intersecting means input hypergraphs where any $k$ edges intersect in at most $r$ vertices, and $k+r\leq c$ for some constant $c$, \TransHyp{} can solve bounded intersecting hypergraphs in polynomial time \cite{KBEG06}.
 

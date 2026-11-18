@@ -69,12 +69,17 @@ own DAG. It does not determine the FK-B tree size. For example, the classifier's
 has a 2.99x FK-A/FK-B tree ratio, against 52.96x on `gk-f3`.
 See [hard-classes.md §5](hard-classes.md).
 
-## 3. Why the repeats happen: symmetry
+## 3. Repeats and symmetry
 
-The repeats are not accidental. FK-A splits on a single vertex. On a
-vertex-transitive instance every vertex looks the same, so the two subproblems
-it produces are near-isomorphic to each other and to their parent — and FK-A
-carries no memo, so each copy is explored from scratch.
+**Corrected 2026-11-18.** This section said the repeats are caused by symmetry.
+They are not, in general. Under the leftmost rule on GK and TK,
+`δ = δ_Aut = δ_iso = n` while `τ/δ` is exponential in `n`
+([research Observation 4.29(a)](research-2026-10.md)): every repeat there is an
+exact repeat of a labelled subproblem, and symmetry contributes nothing. In the
+other direction `trivial-aut-1` has `|Aut| = 1` and still repeats subproblems up to
+isomorphism. Exact repeats come from the recursion itself (research
+Proposition 4.10); symmetric repeats are a separate factor `δ/δ_iso` that depends
+on the split rule.
 
 The annotation pass makes this measurable. Over all annotated nodes of the
 fourteen live instances, with the twelve this section originally reported on
@@ -204,7 +209,7 @@ is locked by `tests/test_symmetry.py`.
 
 | regime | example | FK-A repeats | who wins | why |
 | --- | --- | --- | --- | --- |
-| **Symmetry-bound** | `sdfp-sd-*`, `fano`, `f2g2` | 60–98% | **FK-B**, growing with size | FK-A re-derives orbit-equivalent subproblems; FK-B's per-term branch takes a whole orbit representative at once |
+| **Symmetric, self-dual** | `sdfp-sd-*`, `fano`, `f2g2` | 60–98% | **FK-B**, growing with size | not established; the repeats are not explained by symmetry alone (§3) |
 | **Primitively symmetric** | `w11`, `w11-sd-1` | 70% | **neither**, ~1.5x | The root group is 4-transitive, so no vertex, pair, triple or quadruple is distinguishable. FK-B's cheap path stops firing: it needs 323 nodes at depth 9 where the Fano plane costs it 11 at depth 3. Added 2026-08-05; see [hard-classes.md](hard-classes.md) |
 | **Large output** | `matching(v)` | high, and avoidable | neither, flat ~1.9x | `|Tr|` is exponential but neither algorithm needs it; both simply fail to reuse — `delta = v`, see §6 |
 | **Shape-easy** | `threshold(v)`, `8ver` | 0–48% | **FK-A** | `D_{1,k}` settles it before FK-B's per-term fan-out earns anything |

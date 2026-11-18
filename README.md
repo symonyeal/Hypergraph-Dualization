@@ -91,7 +91,7 @@ defined under Methods. Theorem numbers are those of [`research-2026-10.md`](docs
   class is sound (Theorem 4.28, Lean).
 - **FK-A's recursion tree.** It unfolds into a decision tree (Theorem 4.25, Lean). So on the GK and
   TK families on `n` vertices every valid rule has `τ ≥ 2·(27/16)^{n/4}/(n + 1)` (Lean), which is
-  `N^{Ω(log N)}` (written), while memoisation saves a factor exponential in `n` (Corollary 4.26, Lean).
+  `N^{Ω(log N)}` (written), while under the leftmost rule memoisation saves a factor exponential in `n` (Corollary 4.26, Lean); under the degree-sum rule of the implementation whether `δ/N` is bounded is open (Conjecture 4.19).
 - **The exponent of that tree.** On GK and TK the least `τ` over valid rules is bounded below by
   `2^{0.41433 n}/(n + 1)` and above by `2^{(0.469254 + o(1)) n}` (written lower bound;
   upper bound argued and computed). Depth-first trees are

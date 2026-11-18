@@ -254,7 +254,7 @@ without the empty edge; `ε(n)` is its minimum over pairs on `n` points.
 **Theorem 3.1** (B2). Let `(G, Tr G)` be a non-trivial transversal pair on `n` points,
 `ε = ε(G, Tr G)`, and `s` the size of a smallest edge of `G`. Then `s·ε ≥ 1` and `s ≤ n·ε`.
 Hence `n·ε² ≥ 1`.
-Lean: `eps_bound`, `eps_sq`.
+Lean: `eps_bound`, `eps_sq`. The Lean statement asserts an integer `s` with both inequalities, which the proof takes to be the smallest edge size; it does not name the edge.
 
 *Proof.* Each vertex has `deg_G v ≤ ε|G|`, so `|G|·s ≤ Σ_{g∈G} |g| = Σ_v deg_G v ≤ nε|G|`. Let `g`
 be a smallest edge. Every minimal transversal meets `g`, so
@@ -296,7 +296,7 @@ symmetry) and solves it with OR-Tools CP-SAT:
 | 8 | `ε < 2/5` | infeasible | 646 s |
 
 The rows for `n ≤ 7` agree with Corollary 3.2. The row for `n = 8` is CP-SAT's infeasibility
-verdict, not a Lean certificate; Lean proves `3/8 ≤ ε(8) ≤ 2/5` (`eps_bound`, `eightVer_eps`).
+verdict, not a Lean certificate; Lean proves `ε(8) ≤ 2/5` (`eightVer_eps`); the lower bound `3/8 ≤ ε(8)` follows from `eps_bound_lt` with `m = 2` but is not stated as a declaration.
 
 ### The gap and its equality case
 
@@ -413,10 +413,10 @@ FK-A (his Thm 4.1.7), and every DPLL decision tree for the alternating trees (th
 `n^{Ω(log^{1−o(1)} n)}` nodes (Thm 4.3.6), so FK-A's recursion tree is superpolynomial on them
 under every split rule. With memoisation (DPLLCache), branching on the leaves of the formula from
 left to right decides any read-once formula with `k` connectives in `2k + 3` nodes (Thm 4.4.1).
-So C2 holds for that order, and the question left is FK-A's own rule: the vertex of largest
+So C2 holds for that order, and the question left is the implementation's degree-sum rule: the vertex of largest
 degree sum.
 
-**Observation 4.4.** Under FK-A's rule the memoised count `δ` exceeds Hertel's `2k + 3` on the
+**Observation 4.4.** Under the degree-sum rule the memoised count `δ` exceeds Hertel's `2k + 3` on the
 alternating trees. GK `fₖ` and TK `Sₖ` below are the alternating trees with an OR root and with
 an AND root; `word-xxx`, the alternating tree on 64 leaves with an OR root, is the dual of TK `S₃`
 (`word-yyy`) and has the same `δ`. The last column splits on the least live variable instead,
@@ -439,7 +439,7 @@ agreed with the Python simulation on GK `f₁–f₃`, TK `S₁–S₂` and 400 
 with fan-in at most 4 on at most 16 variables. The recorded Rust run of GK `f₄` took
 about six minutes. The historical Python command `readonce_sim.py 4` exceeded 14 GB.
 
-**Conjecture 4.5** (refuted). On read-once pairs FK-A's rule gives `δ ≤ 2N`.
+**Conjecture 4.5** (refuted). On read-once pairs the degree-sum rule gives `δ ≤ 2N`.
 
 **Observation 4.5a.** Let `g(a,b,c,d,e,f) = (a ∨ b) ∧ (c ∨ (d ∧ (e ∨ f)))` and
 `ro12 = g(0,6,4,8,2,9) ∨ g(1,7,5,11,10,3)` on 12 points. Then `ro12` is read-once,
@@ -513,7 +513,7 @@ whose children share subproblems adds their overlap. On `matching` the right chi
 left child again two levels down (`rnode` in `Dag.lean`), so `τ` doubles at each pair while `δ`
 grows by two (Theorem 4.3).
 
-**Observation 4.11** (the split rule; Python and Rust). The third source is FK-A's own rule. On
+**Observation 4.11** (the split rule; Python and Rust). The third source is the split rule. FK96 require only a vertex of frequency at least `1/log N`; the degree-sum rule of the implementation (`splitVar`) is one choice, with no proved frequency guarantee. On
 GK and TK the distinct subproblems number exactly `n` under the leftmost rule (`n − 1` on the
 fan-in-3 alternating trees) and far exceed `N` under the degree-sum rule (Observation 4.4, last
 two columns). Over 500 seeded random formulas
@@ -536,10 +536,10 @@ Lean: `Fm.rminor_determined` (by induction on the formula, through Lemma 4.17).
 So, to the thesis's question. The recursion tree is exponential because a dual node always
 recurses into both children (Theorem 4.9). Most of the tree repeats subproblems, and
 memoisation removes exactly that part (Proposition 4.10). What remains, `δ`, is small for a
-coordinated split order and large for FK-A's most-frequent-vertex rule, because that rule
+coordinated split order and large for the degree-sum rule, because that rule
 interleaves independent parts of the instance (Observation 4.11). A 3-SAT hardness premise weaker than ETH forces memoised FK-A to
 be superpolynomial on some dual pairs (Proposition 4.6), a statement about `δ`. On the
-alternating trees FK-A's own rule already shows superlinear growth of `δ`, in this
+alternating trees the degree-sum rule already shows superlinear growth of `δ`, in this
 measurement.
 
 ### The memo DAG is a branching program
@@ -679,7 +679,7 @@ rule is usually lower (e.g. `6b`); on the larger ones (`sdfp-sd-2`, `w11`, `w11-
 the order-based rules are. For a uniform matroid `U(k, n)` all three agree, `δ` quadratic in `n`
 (the computed table in `results/split-rules.md`).
 
-**Conjecture 4.19** (C2, the open part). Under FK-A's degree-sum rule, `δ/N` is unbounded on the
+**Conjecture 4.19** (C2, the open part). Under the degree-sum rule, `δ/N` is unbounded on the
 GK family. *Evidence:* `δ/N = 0.67, 1.92, 1368` and `log δ / log N = 0.84, 1.12, 1.67` for
 `k = 2, 3, 4`; GK `f₅` (`N ≈ 3.2·10⁹`) is out of reach. *Search bound:* GK and TK to `k = 4`,
 alternating trees of fan-in 3 to depth 4, and `k ≤ 5` disjoint copies of `ro12`'s gadget, where
@@ -695,7 +695,7 @@ C3 as stated, `δ ≤ 2N` on all dual pairs, is refuted unconditionally by `ro12
 conditionally:
 
 **Proposition 4.6** (conditional; cited). If 3-SAT has no deterministic algorithm running in time
-`2^{O(n^{2/3}(log n)^{1/3})}`, then no polynomial `p` satisfies `δ ≤ p(N)` on all dual pairs.
+`2^{O(n^{2/3}(log n)^{1/3})}`, then for no split rule computable in polynomial time does a polynomial `p` satisfy `δ ≤ p(N)` on all dual pairs.
 
 The premise is weaker than ETH, so the October 2026 manuscripts claiming subexponential 3-SAT
 algorithms leave it open ([literature note](literature-2026-11.md), Proposition L1).
@@ -707,7 +707,7 @@ subproblems would decide duality in polynomial time. The reduction of Kobayashi,
 pair with `N = 2^{O(n^{2/3}(log n)^{1/3})}`, so 3-SAT would run in that time. ∎
 
 Their reduction is from 3-SAT and yields pairs with `L ⊆ Tr(H)`; it does not give an explicit
-dual family with `δ/N → ∞`. The GK family under FK-A's own rule is now an explicit candidate:
+dual family with `δ/N → ∞`. The GK family under the degree-sum rule is now an explicit candidate:
 `δ/N = 0.67, 1.92, 1368` for `k = 2, 3, 4` (Observation 4.4). Unboundedness is not proved, and
 under the leftmost rule the same family has `δ = n`.
 
@@ -794,8 +794,8 @@ count of `fkAR`. Consequently, on GK and TK, under every valid rule,
 
     τ ≥ 2·(27/16)^{n/4} / (n + 1).
 
-Lean: `fkDT`, `eval_fkDT`, `leaves_fkDT`, `fkA_tree_dt`, `fkA_gk_tree`; the degree-sum rule as
-published is `fkA_gk_degree_sum`.
+Lean: `fkDT`, `eval_fkDT`, `leaves_fkDT`, `fkA_tree_dt`, `fkA_gk_tree`; the implementation's degree-sum rule
+is `fkA_gk_degree_sum`.
 
 *Proof.* At a split of `(C, D)` at `x` the decision tree reads `x`. The left child `(C − x, D/x)`
 carries `f_C|x=0` on its first side and the right child `(D − x, C/x)` carries `f_C|x=1` on its
@@ -929,12 +929,12 @@ the weight changes, so a block is driven through more states than `f_k`'s own ru
 213,009 and 205,660 live sets at `f₄` (62 and 62 at `f₃`). This explains the growth; it does not
 bound it.
 
-**Conjecture 4.30** (S3; strengthens Conjecture 4.19, since `δ_iso ≤ δ`). Under FK-A's degree-sum
+**Conjecture 4.30** (S3; strengthens Conjecture 4.19, since `δ_iso ≤ δ`). Under the degree-sum
 rule, `δ_iso/N` is unbounded on the GK family. *Evidence:* `δ_iso/N = 0.67, 0.83, 16.8` for
 `k = 2, 3, 4` (Observation 4.29). *Search bound:* `k ≤ 4`. The algorithm of Theorem 4.28 expands
 `d_iso ≤ δ_iso` nodes, so its cost needs the conjecture for `d_iso`, whose evidence is the same
-(`d_iso/N = 0.67, 0.81, 14.9`). If that holds, keying the memo by isomorphism class leaves FK-A's
-own rule above `O(N)` subproblems on read-once pairs, where the leftmost rule needs `n` without
+(`d_iso/N = 0.67, 0.81, 14.9`). If that holds, keying the memo by isomorphism class leaves the
+degree-sum rule above `O(N)` subproblems on read-once pairs, where the leftmost rule needs `n` without
 any symmetry.
 
 ### Joint block projections and guarded departures (Q1–Q2)
@@ -1244,14 +1244,14 @@ That `P_p` is strictly increasing for a nonconstant monotone property is Russo�
 
 | Item | Status |
 | --- | --- |
-| A6: Lean statements for the FK-A children of `w11` (orders 720 and 720, both primitive) | Python only (Correction 1.3). The conjecture that FK-A/FK-B falls as primitivity depth rises is refuted in `docs/hard-classes.md` (5.2): `w11-sd-1` keeps primitive nodes to depth 10 with FK-B 1.33× ahead, `gk-f3` has none with 52.96× |
+| A6: Lean statements for the FK-A children of `w11` (orders 720 and 720, both primitive) | Python only (Correction 1.3). The conjecture that FK-A/FK-B falls as primitivity depth rises is unresolved, not refuted (corrected 2026-11-18). `w11-sd-1` (depth 10, 1.33×) against `gk-f3` (none, 52.96×) agrees with it; `k3` (0, 1.00×), `trivial-aut-1` (4, 1.24×) and `w11` (8, 1.47×) do not. The depth column also counts full symmetric groups, compares modified FK-A with faithful FK-B, and the survey has not been rerun ([`hard-classes.md`](hard-classes.md) (5.2)) |
 | A5d (Conjecture 2.12) | open; evidence for `v ≤ 100` |
 | B: `ε(8) = 2/5` (Conjecture 3.3) | open; CP-SAT infeasibility not Lean-certified |
 | B8: the constant in the frequency lemma | `|C||D| ≥ 4^{1/ε − 1}` (written proof); the words attain `|C||D| = 8^{1/ε − 1}`. Conjecture 6 (`|C||D| ≥ 8^{1/ε − 1}`) is **refuted**: the read-once `T₆` on 36 points has `ε = 1/6`, `|C||D| = 31,104 < 8⁵` (computed and written). Read-once pairs satisfy `|C||D| ≥ e^{2(1/ε − 1)}` (written proof). Open: `ε·log₂N → 3/2` in general (a question about `max(|C|, |D|)`); the read-once base in `[e², 7.78]`. [`frequency-constant.md`](frequency-constant.md) |
 | B3: growth of `ε(n)` | `ε(n) ≥ 1/√n` (Theorem 3.1) and `ε(s²) ≤ 1/s` by `s` disjoint `s`-sets, so `ε(n) = Θ(n^{−1/2})`. These pairs have `N = s + s^s`, so `ε·log₂ N ≈ log₂ s → ∞`: minimising `ε` on `n` points does not approach the FK96 threshold `ε·log₂ N ≥ 1`. The upper bound for general `s` is not in Lean (`eps_four`, `eps_nine` cover `s = 2, 3`) |
-| C2: Conjecture 4.5 | **refuted**: `ro12` has `δ = 43 > 2N` (Lean, evaluation); GK `f₄` has `δ/N = 1368` (Rust). The leftmost bound `δ ≤ 2n + 2` is Theorem 4.16 (Lean). Open: Conjecture 4.19, `δ/N` unbounded on GK under FK-A's rule (log-ratio 0.84, 1.12, 1.67). Route: Proposition 4.34 (Lean balance), Proposition 4.37 (loss budgets), Conjecture 4.40 (a constant share of standalone pairs occurs jointly; measured `0.43, 0.53` at `k = 2, 3`) |
+| C2: Conjecture 4.5 | **refuted**: `ro12` has `δ = 43 > 2N` (Lean, evaluation); GK `f₄` has `δ/N = 1368` (Rust). The leftmost bound `δ ≤ 2n + 2` is Theorem 4.16 (Lean). Open: Conjecture 4.19, `δ/N` unbounded on GK under the degree-sum rule (log-ratio 0.84, 1.12, 1.67). Route: Proposition 4.34 (Lean balance), Proposition 4.37 (loss budgets), Conjecture 4.40 (a constant share of standalone pairs occurs jointly; measured `0.43, 0.53` at `k = 2, 3`) |
 | C3 | `δ ≤ 2N` refuted by `ro12`; no polynomial bound unless 3-SAT runs in `2^{O(n^{2/3}(log n)^{1/3})}` (Proposition 4.6). For unmodified FK-A, an explicit family defeating every valid symmetric rule exists iff some monotone family has polynomial `N` and superpolynomial size of FBDDs named by their functions (Theorem 4.13, Proposition 4.14, Lean); replacing these by arbitrary FBDDs rests on the argued reduction of review row 29. None is known, and mixedness cannot give one (§4, *Literature*). This is the monotone case of JRSW's Question 1, open since 1997 (Proposition 4.27) |
-| Track T: FK-A's recursion tree | On GK and TK, every valid rule has `τ ≥ 2·(27/16)^{n/4}/(n + 1) = N^{Ω(log N)}` (Theorems 4.24–4.25, Lean). This lower bound grows faster than the cited FK-B upper bound. Leftmost memoization reduces node counts by an exponential factor (Corollary 4.26). The written improvement gives `τ ≥ 2^{0.41433 n}/(n + 1)`, or `N^{(0.2071 − o(1)) log₂ N}`, and the leftmost upper bound is `τ ≤ 2^{(0.469254 + o(1))n}`. The exact rate remains open. Depth-first is optimal on GK `f₁–f₃` for all leaf weights. A constant above `0.1609` in the one-gate inequality on 0-leaves would exceed the subcube-method bound ([Lemmas 15–16 and Conjecture 17](complex-evaluation.md)). The worst-case rate lies between `N^{Ω(log N)}` and FK96's `N^{O(log² N)}`. A rule with `τ ≤ N^{O(log N)}` on every dual pair would remove JRSW's `log n` factor for monotone functions. |
+| Track T: FK-A's recursion tree | On GK and TK, every valid rule has `τ ≥ 2·(27/16)^{n/4}/(n + 1)` (Theorems 4.24–4.25, Lean, `n` the number of vertices); this is `N^{Ω(log N)}` by the written conversion of Corollary 4.26(b) on GK, and by the same conversion with `n ≈ (log₂ N)²/4` on TK. This lower bound grows faster than the cited FK-B upper bound. Leftmost memoization reduces node counts by an exponential factor (Corollary 4.26). The written improvement gives `τ ≥ 2^{0.41433 n}/(n + 1)`, or `N^{(0.2071 − o(1)) log₂ N}`, and the leftmost upper bound is `τ ≤ 2^{(0.469254 + o(1))n}`. The exact rate remains open. Depth-first is optimal on GK `f₁–f₃` for all leaf weights. A constant above `0.1609` in the one-gate inequality on 0-leaves would exceed the subcube-method bound ([Lemmas 15–16 and Conjecture 17](complex-evaluation.md)). The worst-case rate lies between `N^{Ω(log N)}` and FK96's `N^{O(log² N)}`. A rule with `τ ≤ N^{O(log N)}` on every dual pair would remove JRSW's `log n` factor for monotone functions. |
 | Track S: symmetry in FK-A's work | Measured on GK `f₁–f₅`, TK `S₁–S₄`, `alt3 d₃–d₅` and the library (Observation 4.29); the iso-keyed memo is sound (Theorem 4.28, Lean). Under the leftmost rule there are no symmetric repeats; under the degree-sum rule `δ/δ_iso` grows (81.3 at GK `f₄`) and `δ_iso/N` too. Open: Conjecture 4.30; `δ_iso` at GK `f₅` and the label-exact `δ` of TK `S₄` under the degree-sum rule (not computed); a recurrence for the pruned shapes the rule reaches |
 | Track 3: a memo-friendly rule with FK96's guarantee | The guarded rule keeps the frequency `≥ 1/⌊log₂ N⌋` at every node (Proposition 4.18, Lean); `δ = 32, 263, 124,876` on GK `f₃–f₅`. Open: FK96's recursion bound for it in Lean; a rule with both the guarantee and `δ = O(n)` on read-once pairs |
 | D3 | `r = 2` settled, no (Proposition 5.4); open from `r = 3` (Open problem 5.3) |
@@ -1294,7 +1294,7 @@ been confirmed by the author.
 | 8 | `experiments/readonce_sim.py` models an FK-A node by the function whose DNF is `C`, with children `g\|x=0` and `(g\|x=1)^d` | Agrees with `fka.algorithm` and `fka.memo` on GK `f₁–f₃`, TK `S₁–S₂` and 200 random formulas | Python |
 | 9 | `ε(n)` is the minimum over pairs with both sides nonempty and no empty hyperedge of the largest vertex frequency on either side | `Frequency.lean`, `EpsSeven.lean`; thesis Observation 5.2.3 | Unchecked against the thesis's intended definition |
 | 10 | Proposition 4.6 rests on Kobayashi–Kurita–Wasa (arXiv:2610.11473) | An unrefereed preprint; its authors state the proof was first found by an AI model and then verified by them | Conditional |
-| 11 | The A6 conjecture (FK-A/FK-B falls as primitivity depth rises) is refuted | `docs/hard-classes.md` (5.2), Python | Python |
+| 11 | The A6 conjecture (FK-A/FK-B falls as primitivity depth rises) is unresolved | `docs/hard-classes.md` (5.2), Python | Corrected 2026-11-18: the cited `w11-sd-1`/`gk-f3` pair agrees with the conjecture; the earlier "refuted" had the sign reversed |
 | 12 | `Aut(S(4,5,11))` is `M₁₁` | Jordan's theorem on sharply 4-transitive groups | Cited |
 | 13 | Theorem 2.11 (every `S(t,t+1,2t+3)` is self-transversal) is not in the literature | Searches of 2026-10-21 only | Novelty not claimed |
 | 14 | The `H` and `Tr(H)` columns of `docs/architecture.md#interfaces` | Each reduction as stated by Hagen (2008, Ch. 3); the columns are this repository's reading of it | Unchecked entry by entry |

@@ -228,7 +228,7 @@ For transversal hypergraphs $G$ and $H$, with $|G|\cdot|H|\geq 1$ and $n=|G|+|H|
 \end{lemma}
 \noindent\textit{\cite{FK96}}
 
-These bounds provide a lower limit on the performance of \FKA. Identifying better upper bounds is an open challenge, particularly for hypergraph classes where \FKA{} struggles.
+\wrong{These bounds provide a lower limit on the performance of FK-A.} \fix{These lower bounds on edge size and vertex frequency give the upper bound on the running time of \FKA{} in Lemma~\ref{lem:subproblems}.} Identifying better upper bounds is an open challenge, particularly for hypergraph classes where \FKA{} struggles.
 
 \begin{observation}\label{obs:tight}
 The bounds in Corollary \ref{cor:shortest} and Lemma \ref{lem:frequency} are tight up to a factor of 2. There exist transversal hypergraph pairs with arbitrarily large $n$ such that:
@@ -236,8 +236,9 @@ The bounds in Corollary \ref{cor:shortest} and Lemma \ref{lem:frequency} are tig
 s=\min\{|e_l|:e_l\in E(G)\cup E(H)\}\geq\frac{\log n}{2},\quad\text{and}
 \]
 \[
-\max\left(\epsilon_i^G,\epsilon_i^H\right)<\frac{2}{\log n},\quad\text{for any }i=1,\dots,n.
+\max\left(\epsilon_i^G,\epsilon_i^H\right)<\frac{2}{\log n},\quad\text{\wrong{for any $i=1,\dots,n$}}\ \text{\fix{for every vertex $v_i$}}.
 \]
+\fix{Here $n=|G|+|H|$ counts edges, so the index $i$ ranges over the vertices, not over $1,\dots,n$.}
 \end{observation}
 \noindent\textit{\cite{FK96}}
 

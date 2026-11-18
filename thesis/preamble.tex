@@ -13,7 +13,12 @@
 \usetikzlibrary{calc}
 \usepackage[edges]{forest}
 \usepackage{xcolor}
+\usepackage[normalem]{ulem}
 \usepackage{hyperref}
+
+% Audit markup (2026-11-18): incorrect text struck out in red, its correction in blue.
+\DeclareRobustCommand{\wrong}[1]{{\color{red}\sout{#1}}}
+\DeclareRobustCommand{\fix}[1]{{\color{blue}#1}}
 
 \frenchspacing
 \renewcommand*{\chapterautorefname}{Chapter}

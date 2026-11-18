@@ -7,8 +7,8 @@ Positive primitivity certificates remain valid; historical zeros in `undet`
 and negative primitive depths do not certify absence.
 
 `c = eps * log2 N` (FK96 window is `[1, 2]`); `exp = log(FK-A nodes)/log N`;
-`prim depth` is the deepest recursion level still carrying a primitive,
-non-symmetric automorphism group.
+`prim depth` is the deepest recursion level with a primitive automorphism group at a
+non-read-once node (full symmetric groups included, e.g. `k3`).
 
 | instance | class | \|V\| | N | eps | c | s/log2N | FK-A | FK-B | A/B | exp | repeat | prim depth | RO root | undet |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | :-: | ---: |

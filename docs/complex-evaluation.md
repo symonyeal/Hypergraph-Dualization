@@ -129,7 +129,7 @@ log₂ L_df / v = 0.4981, 0.4765, 0.4711, 0.4697 on GK f₃–f₆   (limit 0.46
 So the least `τ` over valid rules on GK lies between `2^{0.41433 n}/(n + 1)` (Corollary 10) and
 `2^{(0.469254 + o(1)) n}`, i.e. between `N^{(0.2071 − o(1)) log₂ N}` and
 `N^{(0.2347 + o(1)) log₂ N}`; the leftmost rule meets the upper end, and `τ/L_df ≈ 1.065` on
-GK `f₃`, `f₄` and TK `S₃`. FK-A's own rule, largest degree sum, runs 1.545 and 32.1 times
+GK `f₃`, `f₄` and TK `S₃`. The degree-sum rule of the implementation runs 1.545 and 32.1 times
 longer than the leftmost rule on GK `f₃`
 and `f₄`; its rate there is 0.521 and 0.516 against 0.501 and 0.477. Under the leftmost rule
 `δ ≤ 2n + 2` (Theorem 4.16; `δ = n` measured), so memoisation saves at least

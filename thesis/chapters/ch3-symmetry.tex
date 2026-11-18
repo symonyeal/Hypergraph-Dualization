@@ -9,7 +9,7 @@ A \emph{permutation} of the vertex set $V$ of a hypergraph $H=(V,E)$ is a biject
 \item $\mathcal{G}$ contains $\alpha^{-1}$ for every $\alpha\in\mathcal{G}$, where $\alpha^{-1}(\alpha(v))=v$ for all $v\in V$.
 \item $\mathcal{G}$ is closed under composition: $(\alpha\circ\omega)(v)=\alpha(\omega(v))$ for all $\alpha,\omega\in\mathcal{G}$ and $v\in V$.
 \end{enumerate}
-Each $\alpha\in\mathcal{G}$ maps edges $e\in E(H)$ to edges $\alpha(e)=\{\alpha(v)\mid v\in e\}$, and non-edges to non-edges, preserving the structure of $H$.
+\wrong{Each $\alpha\in\mathcal{G}$ maps edges $e\in E(H)$ to edges $\alpha(e)=\{\alpha(v)\mid v\in e\}$, and non-edges to non-edges, preserving the structure of $H$.} \fix{A permutation group need not preserve $E(H)$. The permutation groups whose elements map edges $e$ to edges $\alpha(e)=\{\alpha(v)\mid v\in e\}$ are exactly the subgroups of $\Aut(H)$, defined below.}
 \end{definition}
 
 \begin{definition}
@@ -43,7 +43,7 @@ V=\bigcup_{i=1}^{k}V_i\quad\text{and}\quad V_i\cap V_j=\emptyset\text{ for all }
 Each subset $V_i$ is called a \emph{partition class}.
 \end{definition}
 
-Each orbit partitions the vertex set $V$ into equivalence classes permuted by automorphisms $g\in\Aut(H)$. Nontrivial vertex permutations are referred to as automorphism \emph{generators} when they are elements of the automorphism group that generate all other group elements under composition. The set of generators, through their action on the vertex set $V$, precisely determine and generate the orbits.
+{\sloppy\wrong{Each orbit partitions the vertex set $V$ into equivalence classes permuted by automorphisms} \wrong{$g\in\Aut(H)$.} \fix{The orbits partition $V$ into equivalence classes, each mapped onto itself by every $g\in\Aut(H)$.} Nontrivial vertex permutations are referred to as automorphism \emph{generators} when they are elements of the automorphism group that generate all other group elements under composition. The set of generators, through their action on the vertex set $V$, precisely determine and generate the orbits.\par}
 
 \begin{claim}[\leanref{invariant_eq_union_orbits}, \leanref{orbit_minimal}]
 The vertex sets of the subhypergraphs of $H$ invariant under the automorphism group $\mathcal{G}=\Aut(H)$ are precisely the unions of orbits of the action of $\mathcal{G}$ on $V$, and the orbits are exactly the minimal nonempty ones. \cite{Lec}
@@ -114,7 +114,7 @@ The group $S_{V_1}\times S_{V_2}$ acts on $V$ intransitively, as it permutes ver
 
 In contrast, the wreath product $S_{V_1}\wr S_{\{1,2\}}$ acts imprimitively on $V$. It preserves the partition of $V$ into $V_1$ and $V_2$ as blocks, permuting vertices within each subset $V_1$ and $V_2$ while also allowing permutations that interchange the two subsets. This ensures transitivity over the entire vertex set $V$, while maintaining the block structure defined by $V_1$ and $V_2$.
 
-When it comes to primitive groups being automorphism groups of hypergraphs, the alternating group $Alt(V)$ is not the automorphism group of any family of sets. For a hypergraph $H=(V,E)$, if $Alt(V)\leq\Aut(H)$, then $\Aut(H)=S_{|V|}$, which implies that $Alt(V)$ cannot be the automorphism group of any hypergraph. Therefore, set-transitive groups other than symmetric groups cannot be automorphism groups of hypergraphs. Babai and Cameron expanded on this and showed that except for the alternating groups and finitely many others, every primitive permutation group is the full automorphism group of an edge-transitive hypergraph \cite{BC15}. Pablo Spiga has since classified all 15 exceptions to this result \cite{Spi16}.
+When it comes to primitive groups being automorphism groups of hypergraphs, the alternating group $Alt(V)$ is not\fix{, for $|V|\geq3$,} the automorphism group of any family of sets \fix{($Alt(V)$ is set-transitive for $|V|\geq3$; for $|V|=2$ it is trivial and equals $\Aut(\{\{v_1\}\})$)}. For a hypergraph $H=(V,E)$, if $Alt(V)\leq\Aut(H)$, then $\Aut(H)=S_{|V|}$, which implies that $Alt(V)$ cannot be the automorphism group of any hypergraph. Therefore, set-transitive groups other than symmetric groups cannot be automorphism groups of hypergraphs. Babai and Cameron expanded on this and showed that except for the alternating groups and finitely many others, every primitive permutation group is the full automorphism group of an edge-transitive hypergraph \cite{BC15}. Pablo Spiga has since classified all 15 exceptions to this result \cite{Spi16}.
 
 \section{Vertex Symmetry in Lower Recursion Levels of \FKA}
 
@@ -152,7 +152,7 @@ $n$ & Dedekind Number $d(n)$\\\hline
 8 & 56,130,437,228,687,557,907,788\\\hline
 9 & 286,386,577,668,298,411,128,469,151,667,598,498,812,366\\\hline
 \end{tabular}}
-\caption{The first nine Dedekind Numbers $d(n)$.}
+\caption[The Dedekind numbers $d(0),\dots,d(9)$.]{\wrong{The first nine Dedekind Numbers $d(n)$.} \fix{The Dedekind numbers $d(0),\dots,d(9)$ (ten values).}}
 \end{minipage}
 \end{table}
 
@@ -170,11 +170,11 @@ Below, we describe the distinct hypergraph structures and their automorphism gro
 
 \subsubsection*{Hypergraphs $G$ with $\Aut(G)\cong S_2$}
 
-On 2 vertices, we have $D_{2,1}:\{\{v_1\},\{v_2\}\},\{\{v_1,v_2\}\}$ with the automorphism group $S_2$, which as discussed above, is terminal in a modified implementation of the algorithm and is a leaf node on the generated tree, but is not the case in the naive implementation. On $n$ vertices, $\Aut(D_{2,1})\cong S_2\times S_{n-2}$. In general $\Aut(D_{m,1})\cong S_m\times S_{n-m}$ (for $m<n$) \leanref{young_aut_singletons}. Picking a vertex and recursing on it gives either a $D_{1,0}$ or a $D_{1,1}$. One can easily see that these are the only possibilities for hypergraphs on 2 vertices, for we can have at most 2 edges, and each edges can have at most 1 vertex.
+On 2 vertices, we have $D_{2,1}:\{\{v_1\},\{v_2\}\},\{\{v_1,v_2\}\}$ with the automorphism group $S_2$, which as discussed above, is terminal in a modified implementation of the algorithm and is a leaf node on the generated tree, but is not the case in the naive implementation. On $n$ vertices, $\Aut(D_{2,1})\cong S_2\times S_{n-2}$. In general $\Aut(D_{m,1})\cong S_m\times S_{n-m}$ (for $m<n$) \leanref{young_aut_singletons}. Picking a vertex and recursing on it gives either a $D_{1,0}$ or a $D_{1,1}$. \wrong{One can easily see that these are the only possibilities for hypergraphs on 2 vertices, for we can have at most 2 edges, and each edges can have at most 1 vertex.} \fix{Up to exchanging the sides and relabelling, $D_{1,0}$, $D_{1,1}$ and $D_{2,1}$ are the only transversal pairs on 2 vertices; the edge $\{v_1,v_2\}$ occurs only as the transversal side of $D_{2,1}$.}
 
 On 3 vertices, the automorphism group $S_2$ occurs in the hypergraph we denote as $St_2$: $\{\{v_1\},\{v_2,v_3\}\},\{\{v_1,v_2\},\{v_1,v_3\}\}$ (see Figure \ref{fig:st2-pn3}). Since $S_1\times S_2\cong S_2$, $St_2$ also inherits the automorphism group $S_2$ like $D_{1,1}$. In general, on $n$ vertices, $\Aut(St_m)\cong S_{n-m-1}\times S_m$, where $S_0=Id$, the identity group (trivial permutation of vertices). We can observe this in the case of $St_2$, where $S_2\cong\mathbb{Z}_2$.
 
-The maximum size of an \FKA{} recursion tree for any hypergraph on 3 vertices is 3, because all hypergraphs of size at most 2 are on nodes on depth level at most 2. On $St_2$, choosing $v_1$ as the splitting vertex, results in two smaller hypergraphs on 2 vertices: $D_{1,2}$ on one recursion, and $D_{1,0}$ on the other. Therefore we end up with a tree of size 3. Choosing $v_2$ or $v_3$ as the splitting vertex instead, gives us two instances of the form $D_{1,1}$ and $D_{2,1}$.
+The maximum size of an \FKA{} recursion tree for any hypergraph on 3 vertices is 3, because \wrong{all hypergraphs of size at most 2 are on nodes on depth level at most 2.} \fix{a split leaves two children on at most 2 vertices, and every transversal pair on 2 vertices is a leaf of the modified algorithm.} On $St_2$, choosing $v_1$ as the splitting vertex, results in two smaller hypergraphs on 2 vertices: $D_{1,2}$ on one recursion, and $D_{1,0}$ on the other. Therefore we end up with a tree of size 3. Choosing $v_2$ or $v_3$ as the splitting vertex instead, gives us two instances of the form $D_{1,1}$ and $D_{2,1}$.
 
 Now, on 4 vertices, we denote the hypergraphs with automorphism group isomorphic to $S_2$ as
 \begin{gather*}
@@ -188,7 +188,7 @@ The group $S_2$ represents a simple permutation or "involution" between pairs of
 
 Now let's consider $\overline{Pn_3}$ (see Figure \ref{fig:k3dot-pn3bar}) . Since $v_1$ occurs in an edge of length 1, any automorphism of the hypergraph must leave it invariant. Since $\{v_1,v_2\}$ is the only edge of length 2 in the corresponding transversal hypergraph, we must have $v_2$ fixed as well. We get the automorphism group $\langle(v_3\,v_4)\rangle\cong S_2$. The same transposition generates $\Aut(Pn_3)$.
 
-$\Aut(P_4)\cong S_2$ and in fact, the same is true for all similar paths $P_n$ (see Figure \ref{fig:p4-hw3}). In $P_4$, $v_2$ and $v_3$ are frequent with frequency $\frac{2}{3}$ but $v_1$ and $v_4$ have a frequency of only $\frac{1}{3}$ and are infrequent since the threshold is $\frac{1}{\log_2 6}$. Choosing the most frequent vertices $v_3$ or $v_2$ results in an instance of $D_{2,1}$ and another of $D_{1,2}$, resulting in a tree with 3 nodes at the least, and up to 7 nodes. On the other hand, choosing $v_1$ or $v_4$ gets us two cases of $St_2$ and therefore generates a tree with 7 nodes. The hypergraph $P_4$, while not self-transversal explicitly, has another permutationally equivalent instance of $P_4$.
+$\Aut(P_4)\cong S_2$ and in fact, the same is true for all similar paths $P_n$ (see Figure \ref{fig:p4-hw3}). In $P_4$, $v_2$ and $v_3$ are frequent with frequency $\frac{2}{3}$ but $v_1$ and $v_4$ have a frequency of only $\frac{1}{3}$ and are infrequent since the threshold is $\frac{1}{\log_2 6}$. Choosing the most frequent vertices $v_3$ or $v_2$ results in an instance of $D_{2,1}$ and another of $D_{1,2}$, resulting in a tree with 3 nodes\wrong{ at the least, and up to 7 nodes}. On the other hand, choosing $v_1$ or $v_4$ gets us two cases of $St_2$ and therefore generates a tree with 7 nodes. The hypergraph $P_4$, while not self-transversal explicitly, has another permutationally equivalent instance of $P_4$.
 
 \begin{figure}[tp]
 \centering
@@ -199,13 +199,13 @@ $\Aut(P_4)\cong S_2$ and in fact, the same is true for all similar paths $P_n$ (
 \caption{Hypergraphs St\textsubscript{2} and Pn\textsubscript{3} and their transversals.}\label{fig:st2-pn3}
 \end{figure}
 
-In $\overline{Pn_3}$, the frequencies of $v_1,v_2,v_3$, and $v_4$ are $1$, $\frac{2}{3}$, $\frac{1}{2}$, and $\frac{1}{2}$, respectively \leanref{pn3bar_freq}. We see that all vertices of the hypergraph are above the frequency threshold of \FKA{} with $v_1$ being the most frequent. Choosing $v_1$ gives an instance of $St_2$ and $D_{1,0}$, whereas choosing $v_2$ gives instances of $D_{1,1}$ and interestingly, $D_{3,1}:\{\{v_1\},\{v_2\},\{v_3\}\},\{\{v_1,\mathbf{v_2},v_3\}\}$, and choosing $v_4$ or $v_3$ gives $St_2$ and $D_{2,1}$. While the hypergraph has the automorphism group $S_2$, decomposition can change it's automorphism group to $S_3$, giving us an instance of gaining symmetry in \FKA{} decomposition.
+In $\overline{Pn_3}$, the frequencies of $v_1,v_2,v_3$, and $v_4$ are $1$, $\frac{2}{3}$, $\frac{1}{2}$, and $\frac{1}{2}$, respectively \leanref{pn3bar_freq}. We see that all vertices of the hypergraph are above the frequency threshold of \FKA{} with $v_1$ being the most frequent. Choosing $v_1$ gives an instance of $St_2$ and $D_{1,0}$, whereas choosing $v_2$ gives instances of $D_{1,1}$ and interestingly, $D_{3,1}:$\wrong{$\{\{v_1\},\{v_2\},\{v_3\}\},\{\{v_1,\mathbf{v_2},v_3\}\}$} \fix{$\{\{v_1\},\{v_3\},\{v_4\}\},\{\{v_1,v_3,v_4\}\}$}, and choosing $v_4$ or $v_3$ gives $St_2$ and $D_{2,1}$. While the hypergraph has the automorphism group $S_2$, decomposition can change it's automorphism group to $S_3$, giving us an instance of gaining symmetry in \FKA{} decomposition.
 
 Lastly, in $Pn_3$, $v_1$ is the most frequent vertex, with frequency $\frac{3}{4}$, and $v_4$ and $v_3$ are frequent with frequency $\frac{2}{3}$ \leanref{pn3_freq}, while $v_2$ is considered infrequent and has frequency $\frac{1}{3}$ (see Figure \ref{fig:st2-pn3}). Here, removing $v_1$ gives optimal results, with an instance of $D_{1,2}$ and an instance of $D_{3,1}$. Choosing $v_2$, which is excluded by all but the most basic rule, produces the worst-case performance by instantiating $K_3$ and St\textsubscript{2}. Choosing $v_4$ or $v_3$ gives 5 nodes with St\textsubscript{2} and $D_{2,1}$.
 
 \subsubsection*{Hypergraphs $G$ with $\Aut(G)\cong S_3$}
 
-Up 3 vertices, hypergraphs such as $D_{1,1}$, $D_{3,1}:\{\{v_1\},\{v_2\},\{v_3\}\},\{\{v_1,\mathbf{v_2},v_3\}\}$, and $K_3:\{\{v_1,\mathbf{v_2}\},\{v_1,v_3\},\{v_2,v_3\}\}$ have automorphism groups isomorphic to $S_3$. Additionally, on 4 vertices, hypergraphs denoted
+Up 3 vertices, hypergraphs such as \wrong{$D_{1,1}$,} $D_{3,1}:\{\{v_1\},\{v_2\},\{v_3\}\},\{\{v_1,\mathbf{v_2},v_3\}\}$, and $K_3:\{\{v_1,\mathbf{v_2}\},\{v_1,v_3\},\{v_2,v_3\}\}$ have automorphism groups isomorphic to $S_3$ \fix{($D_{1,1}$ has $\Aut\cong S_{n-1}$: $S_2$ on 3 vertices, $S_3$ on 4)}. Additionally, on 4 vertices, hypergraphs denoted
 \begin{gather*}
 St_3:\{\{v_1,v_2\},\{v_1,v_3\},\{v_1,v_4\}\},\{\{v_1\},\{v_2,v_3,v_4\}\},\\[4pt]
 hw_3:\{\{v_1,v_4\},\{v_2,v_4\},\{v_3,v_4\},\{v_1,v_2,v_3\}\},\{\{v_1,v_4\},\{v_2,v_4\},\{v_3,v_4\},\{v_1,v_2,v_3\}\},\\[4pt]
@@ -229,7 +229,7 @@ Similarly, we see that in $hw_3$ (see Figure \ref{fig:p4-hw3}), $v_1$, $v_2$, an
 
 The hypergraph $K_3^{\cdot}$ is defined as a cycle $C_3$ together with a singleton vertex (see Figure \ref{fig:k3dot-pn3bar}). The vertex $v_2$ is most frequent with frequency 1, and the other vertices are frequent with a frequency of $\frac{2}{3}$. Removing $v_2$ gives $D_{0,1}$ and $K_3$ for a recursion tree with 5 nodes. Choosing any of the other vertices gives instances of $D_{1,3}$ and $St_2$, which again, results in a tree with 5 nodes.
 
-Lastly, $K_3$ is invariant under any permutation and in general $\Aut(K_n)\cong S_n$ (see Figure \ref{fig:k3-k4minus}). Selecting $v_1$ as the splitting vertex, we get two cases of $D_{1,2}$, which are trivial due to our modifications, and once again we have a tree of size 3. Another interesting observation is that both $K_3$ and $hw_3$ are also self-transversal hypergraphs. In fact, the next well-known self-transversal hypergraph is on 7 vertices, namely the fano plane hypergraph, which is identified as a difficult case for \FKA.
+Lastly, $K_3$ is invariant under any permutation and in general $\Aut(K_n)\cong S_n$ (see Figure \ref{fig:k3-k4minus}). Selecting $v_1$ as the splitting vertex, we get two cases of $D_{1,2}$, which are trivial due to our modifications, and once again we have a tree of size 3. Another interesting observation is that both $K_3$ and $hw_3$ are also self-transversal hypergraphs. \wrong{In fact, the next well-known self-transversal hypergraph is on 7 vertices, namely the fano plane hypergraph,} \fix{The next self-transversal hypergraph is not on 7 vertices: the 3-subsets of 5 points ($\mathrm{Maj}_5$) form one. The Fano plane on 7 vertices is the smallest projective plane and is self-transversal,} which is identified as a difficult case for \FKA.
 
 \begin{figure}[tp]
 \centering
@@ -251,7 +251,7 @@ K_2^{\cdot\cdot}:\{\{v_1\},\{v_2\},\{v_3,v_4\}\},\{\{v_1,v_2,v_3\},\{v_1,v_2,v_4
 \]
 For both $K_2^{\cdot\cdot}$ and $K_4^-$ the automorphism group is generated by $(v_1\ v_2)$ and $(v_3\ v_4)$. The two disjoint transpositions act independently (\leanref{k4minus_tr}, \leanref{k2dd_tr}).
 
-$K_4^-$ is a complete graph on 4 vertices missing one edge, where all vertices have maximum frequency $\frac{2}{3}$ (see Figure \ref{fig:k3-k4minus}). Recursing on any vertex leads to hypergraphs such as $K_3$ and $D_{2,1}$, resulting in a recursion tree with 5 nodes.
+$K_4^-$ is a complete graph on 4 vertices missing one edge, where all vertices have maximum frequency $\frac{2}{3}$ (see Figure \ref{fig:k3-k4minus}). \wrong{Recursing on any vertex leads to hypergraphs such as $K_3$ and $D_{2,1}$,} \fix{Recursing on $v_1$ or $v_2$ gives $K_3$ and $D_{1,2}$; recursing on $v_3$ or $v_4$ gives an instance of $St_2$ and $D_{1,3}$. Every choice results} \wrong{resulting} in a recursion tree with 5 nodes.
 
 $K_2^{\cdot\cdot}$ is the complete graph $K_2$ with two singleton vertices, with its transversal hypergraph having 2 edges each containing 3 vertices (see Figure \ref{fig:k2dd-c4}). $v_1$ and $v_2$ are most frequent with frequency 1, and $v_3$ and $v_4$ are frequent with frequency $\frac{1}{2}$. Choosing $v_3$ or $v_4$ gives an instance of $D_{3,1}$ and $D_{2,1}$, which results in 3 nodes in the recursion tree, while choosing $v_1$ or $v_2$ gives rise to $St_2$ and $D_{1,0}$, for a total of 5 nodes. Interestingly, in this case, choosing the vertex with the highest frequency is not optimal in terms of tree size \leanref{k2dd_mfv_not_optimal}.
 

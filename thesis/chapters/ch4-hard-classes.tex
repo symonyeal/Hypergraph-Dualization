@@ -2,7 +2,7 @@
 
 Fredman and Khachiyan derived upper bounds on the number of recursive calls in \ref{lem:subproblems} by bounding the smallest edge size and vertex frequency in the input hypergraphs \ref{obs:tight} \cite{FK96}. If \TransHyp{} were NP-hard under polynomial-time reductions, every problem in NP would have a quasipolynomial-time algorithm. Takata presented a super-polynomial lower bound of $n^{\Omega(\log\log n)}$ for Berge's algorithm (which solves the \emph{generation}-version of the problem), using the \emph{alternating trees} as an example \cite{Tak08}.
 
-The term \emph{Alternating Trees} in the context of hypergraph transversals was used in \cite{GK99} to describe a family of hypergraphs used to prove the upper bounds of \FKA. Identifying challenging hypergraph classes, including Alternating Trees, has remained a problem of interest. A different description of alternating trees was later presented in \cite{Tak08}, describing another family of hypergraphs. Hertel unified both descriptions to propose a generalized Alternating Trees family in \cite{Her04}, conjecturing that these hypergraphs are challenging for \FKA{}. He proved a superpolynomial lower bound of $n^{\Omega(\log^{1-o(1)}n)}$, where $n$ is the combined size of the hypergraph and its transversal hypergraph, on the size of every DPLL decision tree for them \cite[Thm.~4.3.6]{Her04}; since DPLL simulates \FKA{} \cite[Thm.~4.1.7]{Her04}, the bound applies to the recursion tree of \FKA{} under any choice of split vertex. With memoisation the picture reverses: DPLLCache decides every read-once formula with $k$ connectives by a decision tree of $2k+3$ nodes \cite[Thm.~4.4.1]{Her04}.
+The term \emph{Alternating Trees} in the context of hypergraph transversals was used in \wrong{\mbox{\cite{GK99}}} \fix{\cite{GK97}} to describe a family of hypergraphs \wrong{used to prove the upper bounds of FK-A.} \fix{showing that the frequency bound in the analysis of \FKA{} is tight up to a factor of 2.} Identifying challenging hypergraph classes, including Alternating Trees, has remained a problem of interest. A different description of alternating trees was later presented in \cite{Tak08}, describing another family of hypergraphs. Hertel unified both descriptions to propose a generalized Alternating Trees family in \cite{Her04}, conjecturing that these hypergraphs are challenging for \FKA{}. He proved a superpolynomial lower bound of $n^{\Omega(\log^{1-o(1)}n)}$, where $n$ is the combined size of the hypergraph and its transversal hypergraph, on the size of every DPLL decision tree for them \cite[Thm.~4.3.6]{Her04}; since DPLL simulates \FKA{} \cite[Thm.~4.1.7]{Her04}, the bound applies to the recursion tree of \FKA{} under any choice of split vertex. With memoisation the picture reverses: DPLLCache decides every read-once formula with $k$ connectives by a decision tree of $2k+3$ nodes \cite[Thm.~4.4.1]{Her04}.
 
 \section{Hypergraph Operations}
 
@@ -30,7 +30,7 @@ Berge presented and proved this construction in \cite{Ber87}. \cite{KS03} also p
 
 \subsection{\texorpdfstring{$\GK$}{GK}-family}
 
-Gurvich and Khachiyan presented an example of such a class of hypergraphs in \cite{GK99} for whom, in \FKA, the bounds are tight up to a factor of 2. They denoted the family of hypergraphs $f_k$ and their transversal hypergraphs $g_k$ as \emph{alternating trees.} We will call them \emph{$\GK$-family.}
+Gurvich and Khachiyan presented an example of such a class of hypergraphs in \wrong{\mbox{\cite{GK99}}} \fix{\cite{GK97}} for whom, in \FKA, the bounds are tight up to a factor of 2. They denoted the family of hypergraphs $f_k$ and their transversal hypergraphs $g_k$ as \emph{alternating trees.} We will call them \emph{$\GK$-family.}
 
 Let $f_k$ be denoted as the collection of hypergraphs on $2^{2k-1}$ vertices defined by the following recursion:
 \begin{align*}
@@ -260,7 +260,7 @@ Two distinct vertices $u,v\in V$ of a hypergraph $H$ are called:
 \end{itemize}
 \end{definition}
 
-More generally, two vertices are said to be \emph{twins} if they are either false twins or true twins. Twinhood, extended by equality, is an equivalence relation. Automorphisms permute the twin classes. Two twins lie in the same automorphism orbit, since their transposition is an automorphism; vertices in the same orbit need not be twins.
+More generally, two vertices are said to be \emph{twins} if they are either false twins or true twins. Twinhood, extended by equality, is an equivalence relation. Automorphisms permute the twin classes. \wrong{Two twins lie in the same automorphism orbit, since their transposition is an automorphism;} \fix{In a graph, and in its clique hypergraph (Lemma~\ref{lem:twins-permute}), two twins lie in the same automorphism orbit, since their transposition is an automorphism. In a general hypergraph they need not: in the example below $v_1$ and $v_4$ are false twins, but $v_1$ lies in two edges and $v_4$ in one, so no automorphism maps $v_1$ to $v_4$. Conversely,} vertices in the same orbit need not be twins.
 
 Consider a hypergraph on $\{v_1,v_2,v_3,v_4\}$ with edge family
 \[
@@ -302,7 +302,8 @@ For a graph $G$, permuting twin vertices while fixing all other vertices is an a
 Let $G$ be a cograph. The automorphism group of $G$ can be constructed from the trivial group using direct product (\ref{sec:symmetries}) and wreath product with a symmetric group. \cite{Cam22}
 \end{proposition}
 
-A cograph hypergraph can be built from the single-vertex hypergraph using operations of complement and disjoint union. Complementation does not alter the automorphism group. If $H$ is the disjoint union of $m_1$ copies of $H_1$, $m_2$ copies of $H_2$, ..., $m_r$ copies of $H_r$, then the automorphism group of $H$ is given by:
+A cograph hypergraph can be built from the single-vertex hypergraph using operations of complement and disjoint union. Complementation does not alter the automorphism group. If $H$ is the disjoint union of $m_1$ copies of $H_1$, $m_2$ copies of $H_2$, ..., $m_r$ copies of $H_r$, \fix{where $H_1,\dots,H_r$ are connected and pairwise non-isomorphic,} then the automorphism group of $H$ is given by:
 \[
 \Aut(H)=(\Aut(H_1)\wr S_{m_1})\times\dots\times(\Aut(H_r)\wr S_{m_r})
 \]
+\fix{The hypotheses are needed: the four singleton edges $\{\{v_1\},\{v_2\},\{v_3\},\{v_4\}\}$ form two copies of $\{\{v_1\},\{v_2\}\}$, yet $|\Aut|=24$, not $|S_2\wr S_2|=8$. The children of a node of a reduced cotree satisfy them.}

@@ -56,7 +56,7 @@ is fixed are withdrawn; they do not follow from those inclusions (research Audit
 
 | Statement | Status | Lean |
 | --- | --- | --- |
-| Claim 3.1.6, invariant vertex sets are precisely the orbits | **Corrected**: they are the unions of orbits; orbits are the minimal ones | `invariant_eq_union_orbits`, `orbit_minimal`; counterexample `claim_3_1_6_counterexample` |
+| Claim 3.1.6, invariant vertex sets are precisely the orbits | **Corrected**: they are the unions of orbits; orbits are the minimal ones | `invariant_eq_union_orbits` (invariant ⇒ union of its orbits), `orbit_minimal` (minimality inside an orbit); the converse and the invariance of an orbit are immediate but not stated in Lean; counterexample `claim_3_1_6_counterexample` |
 | §3.2, 168 Sperner hypergraphs on 4 vertices in 30 classes | Checked | `sperner_four_card`, `classes_four` |
 | §3.2, 13 pairs of distinct hypergraphs | Checked, with the reading made explicit: 13 pairs of classes with `G ≇ Tr G` plus 4 classes with `G ≅ Tr G` | `self_dual_classes_four` |
 | §3.2, largest tree on 3 and 4 vertices: 3 and 7 nodes, depth 3 | Checked; "depth 3" is three levels (height 2) | `max_tree_three`, `max_tree_four` |
@@ -115,7 +115,7 @@ is fixed are withdrawn; they do not follow from those inclusions (research Audit
 | §5.2.2, frequencies `ε` | Checked | `*_eps`, `eightVer_uniform` |
 | Observation 5.2.2, a false twin of the split vertex leaves the contraction | Proved (general lemma) and checked on `f₂, g₂` | `falseTwin_filtered`, `f2g2_false_twin_filtered` |
 | Observation 5.2.3, `ε(3) = 2/3` | Checked (exhaustion by evaluation); `K₃` is the unique minimiser | `eps_three` |
-| Observation 5.2.3, `ε(7) = 3/7` | Lower bound Proved (2026-10): every non-trivial pair on `n` points has `s·ε ≥ 1` and `s ≤ nε` for its smallest edge size `s`, which forces `ε ≥ 3/7` on seven points. Attainment Checked: Fano. Also `ε(4) = ε(5) = ε(6) = 1/2`, `ε(9) = 1/3` (bounds Proved, attainment Checked) | `eps_bound` (Proved); `eps_seven`, `eps_four`, `eps_five`, `eps_six`, `eps_nine` (Checked) |
+| Observation 5.2.3, `ε(7) = 3/7` | Lower bound Proved (2026-10): every non-trivial pair on `n` points has `s·ε ≥ 1` and `s ≤ nε` for its smallest edge size `s`, which forces `ε ≥ 3/7` on seven points. Attainment Checked: Fano. Also `ε(5) = ε(6) = 1/2`, `ε(9) = 1/3` (bounds Proved, attainment Checked) and `ε(4) = 1/2` (bound and attainment Checked by evaluation in `eps_four`; the bound also follows from `eps_ge_inv`) | `eps_bound` (Proved); `eps_seven`, `eps_four`, `eps_five`, `eps_six`, `eps_nine` (Checked) |
 | §5.2.2, Fano and `K₃` are self-transversal; `PG(2,3)` is not | Checked | `fano_self_tr`, `k3_self_tr`, `pg23_not_self_dual` |
 | Def. 5.2.1, `7k` edges and the transversal count `(k−2)²/4 + k/2 + 1` | **Corrected**: `k` disjoint Fano planes have `7k` edges and `7^k` minimal transversals, for every `k` | `kFano_card`, `tr_kFano_card` |
 
@@ -142,7 +142,7 @@ New statements of the October 2026 research program, each written up in
 | Theorem A5a: in `S(t,k,v)`, `1 ≤ t ≤ k`, every block is disjoint from exactly `n₀(t,k,v) = Σ_{i<t} (−1)^i C(k,i)(λ_i − 1)` blocks; hence `n₀ ≥ 0` for every existing system | Proved | `steiner_disjoint`, `steiner_n0_nonneg` |
 | Observation A5b: `n₀` for 19 parameter sets; no `S(t,k,v)` with `n₀ > 0` (nine sets, including every `S(2,3,15)`, `S(3,4,16)`, `S(5,8,24)`) is self-transversal; none with `n₀ < 0` (ten sets) exists | Proved (kernel `decide`) | `n0_table`, `steiner_tr_ne_of_table`, `not_steiner_of_table` |
 | `PG(2,4)` and `S(4,7,23)` are intersecting Steiner systems with a 2-colouring, so not self-transversal | Checked | `pg24_steiner`, `pg24_tr_ne`, `s4723_steiner`, `s4723_tr_ne` |
-| Theorem B: `s·ε ≥ 1` and `s ≤ nε` for the smallest edge size `s`; hence `nε² ≥ 1` | Proved | `eps_bound`, `eps_sq` |
+| Theorem B: `s·ε ≥ 1` and `s ≤ nε` for the smallest edge size `s`; hence `nε² ≥ 1` | Proved; the Lean statement asserts an integer `s` with both inequalities (the proof uses the smallest edge) | `eps_bound`, `eps_sq` |
 | B4: for nonempty cross-intersecting `G,H`, `ab + X ≤ nε²ab`, where `X = Σ_{g,h} (|g ∩ h|−1)`; at most `(nε²−1)ab` cross pairs have nonsingleton intersection | Proved (kernel) | `sum_degree_mul_eq_excess`, `crossExcess_bound`, `eps_crossExcess`, `eps_badCross`, `eps_overlap_gap` |
 | B5: equality forces `n=m²`, both families `m`-uniform and regular with frequency `1/m`, Sperner, every cross intersection singleton; nonsquares have strict inequality | Proved (kernel) | `eps_eq_rigid`, `eps_eq_sperner`, `eps_eq_cross_singleton`, `eps_strict_of_nonsquare` |
 | Equality transversal pairs are read-once; so are regular convergent templates for every `r` | Cited consequence of B5 and Gurvich (Das–Straßburger 2016, Thm 4.10); bridge not formalised | — |
@@ -150,7 +150,7 @@ New statements of the October 2026 research program, each written up in
 | Both sides 2-uniform on four points need not attain the frequency bound; Fano has cross excess 14 | Proved (finite, kernel `decide +kernel`) | `path_four_not_extremal`, `fano_crossExcess` |
 | `n ≤ m(m+1)`, `m>0` implies `ε ≥ 1/m`; shared proof for `ε(5),ε(6)` | Proved (kernel) | `eps_ge_inv` |
 | B7: two `r`-uniform cross-intersecting families on `r²` points have singleton cross intersections if either side is regular | Proved (kernel); a non-read-once D3 candidate must have both sides irregular by cited Gurvich | `uniform_regular_cross_singleton` |
-| `ε(8) = 2/5` | Open: `3/8 ≤ ε(8) ≤ 2/5` proved; CP-SAT finds no pair below `2/5` (`experiments/eps_search.py`) | `eps_bound`, `eightVer_eps` |
+| `ε(8) = 2/5` | Open: `ε(8) ≤ 2/5` proved (`eightVer_eps`), `3/8 ≤ ε(8)` follows from `eps_bound_lt` (`m = 2`) but is not a declaration; CP-SAT finds no pair below `2/5` (`experiments/eps_search.py`) | `eps_bound`, `eightVer_eps` |
 | Theorem C1: `matching(v)` has `τ = 2^{v/2+1} − 3`, `δ = v` (even `v ≥ 4`); `threshold(v)` has `τ = δ = v − 1` (even `v ≥ 2`); modified FK-A | Proved | `matching_tau_delta`, `threshold_tau_delta` |
 | Theorem A5c: every Steiner system `S(t, t+1, 2t+3)` is self-transversal, and `t` is even | Proved | `witt_tr_eq` |
 | Theorem (Seymour 1974): a 3-critical hypergraph covering `n` points has at least `n` edges | Proved | `card_le_of_critical` |
@@ -159,7 +159,7 @@ New statements of the October 2026 research program, each written up in
 | If `Tr(H) ⊆ H` and `Aut(H)` is edge-transitive, it is transitive on covered points | Proved | `transitive_of_edge_transitive` |
 | Hertel's alternating-tree bound (cited in Chapter 4) is a lower bound on DPLL trees, not an upper bound on subproblems | Corrected citation (corrected thesis, Chapter 4) | — |
 | Observation 4.4: FK-A's degree-sum rule exceeds Hertel's memoised `2k + 3` on GK `f₃` (`δ = 369 > 65`) | Computed historically with the retired Python formula engine; the surviving Rust engine and generic hypergraph tests reproduce the bounded count | — |
-| Conjecture 4.5: `δ ≤ 2N` on read-once pairs under FK-A's rule | **Refuted**: the read-once `ro12` on 12 points has `δ = 43 > 2N = 42` (evaluation); GK `f₄` has `δ/N = 1368` (Rust) | `ro12_readOnce`, `ro12_delta` |
+| Conjecture 4.5: `δ ≤ 2N` on read-once pairs under the degree-sum rule | **Refuted**: the read-once `ro12` on 12 points has `δ = 43 > 2N = 42` (evaluation); GK `f₄` has `δ/N = 1368` (Rust) | `ro12_readOnce`, `ro12_delta` |
 | Theorem 4.7: under any split rule every FK-A subproblem of `(G, Tr G)` is `(H, Tr H)` or `(Tr H, H)`, `H` a minor of `G`; `δ ≤ 2·#minors` | Proved | `fkADag_minor`, `card_fkADag_le_minors` |
 | Proposition 4.8: `τ(C, D) = τ(D, C)` on dual pairs | Proved | `fkA_comm`, `splitVar_comm` |
 | Theorem 4.9: `d`-resilient `G` has `τ ≥ 2^{d+1} − 1` (fuel `≥ d`); `matching(8)` is not 3-resilient | Proved; the matching fact Checked | `tau_ge_of_resilient`, `matching_eight_not_resilient` |
@@ -176,9 +176,9 @@ New statements of the October 2026 research program, each written up in
 | Proposition 4.18: the guarded rule is valid, symmetric, and has frequency `≥ 1/⌊log₂ N⌋` at an eligible split | Proved; choosing the least eligible vertex follows from its ascending search definition | `guardRule_frequent`, `valid_guardRule`, `guardRule_symm` |
 | `δ` of GK `f₂` is 8 under all three rules; `ro12` has `δ = 91` under the leftmost and guarded rules | Checked | `gk2_rules`, `ro12_rules` |
 | Conjecture 4.19: `δ/N` is unbounded on GK under the degree-sum rule | Open; `δ/N = 0.67, 1.92, 1368` for `k = 2, 3, 4` (Rust) | — |
-| Proposition 4.6: unless 3-SAT runs in `2^{O(n^{2/3}(log n)^{1/3})}`, no polynomial bounds `δ` on all dual pairs (C3 false) | Conditional: a short argument from the Kobayashi–Kurita–Wasa 2026 reduction; the premise is weaker than ETH; not in Lean | — |
+| Proposition 4.6: unless 3-SAT runs in `2^{O(n^{2/3}(log n)^{1/3})}`, for no polynomial-time split rule does a polynomial bound `δ` on all dual pairs (C3 false) | Conditional: a short argument from the Kobayashi–Kurita–Wasa 2026 reduction; the premise is weaker than ETH; not in Lean | — |
 | Theorem D1: `Tr(T[Γ]) = min(Tr(T)[Tr Γ])`; on disjoint supports no reduction, Sperner, `|T[Γ]| = Σ_t Π_i |Γ i|` | Proved | `tr_subst`, `tr_subst_of_disjoint`, `subst_isSperner`, `card_subst` |
-| Proposition D2: `(P)` `k·k* ≥ 8^{r−1}` is closed under composition | Proved | `card_subst_uniform`, `prop_P_comp` |
+| Proposition D2: `(P)` `k·k* ≥ 8^{r−1}` is closed under composition | Proved as arithmetic (`prop_P_comp`) with the counts of `card_subst_uniform`; the template statement is assembled in prose. It is the count case of F Lemma 4 (`Δ(T[S]) = rΔ(S) + Δ(T)`) | `card_subst_uniform`, `prop_P_comp` |
 | Proposition 5.4: D3 at `r = 2` has no counterexample; `(k, k*) ∈ {(2,4),(4,2),(3,3)}` | Checked for the product bound over 64 families; the full-support three-class classification is a separate finite computation, with triangle plus an isolated point as a fourth ambient class | `template_rank_two` |
 | Proposition E2: automorphisms preserve influences; Fano's seven influences agree at every `p` | Proved | `influence_aut`, `influence_eq_of_transitive`, `fano_influence_eq` |
 | Observation 4.20: GK f3 under modified degree-sum FK-A has 369 labelled states, 160 reached isomorphism classes and 155 cache visits | Computed; 15 bounded table rows checked against the hypergraph engine, shape equality checked against incidence-graph isomorphism | — |
@@ -247,3 +247,43 @@ The independent final source review corrected the star-count arithmetic
 `C(4,3)·3=12`, removed a repeated GK recurrence with the wrong fixed copies,
 and scoped Chapter 5's 7-Ver/8-Ver property observations by side, node and split
 rule. These changes preserve all numbered statement slots and drawing assets.
+
+## Mathematical audit (2026-11-18)
+
+The thesis now marks each statement below in red strikethrough, with its correction in blue
+(`\wrong`, `\fix` in `preamble.tex`). Computations are standard-library scripts that import no
+repository code; they are kept with the audit report outside the repository.
+
+| Location | Printed statement | Correction and evidence |
+| --- | --- | --- |
+| Ch. 1, introduction | Takata: exponential-size intermediates | superpolynomial, `n^{Ω(log log n)}` (as in Ch. 4) |
+| Ch. 1, Boolean functions | "on `n` literals"; an assignment called an expression | variables; assignment |
+| Ch. 1, CNF and DNF | the conjunction of all prime implicates is irredundant | true for monotone `f`; `(x₁∨x₂)(¬x₁∨x₃)` has the redundant prime implicate `x₂∨x₃` |
+| Ch. 1, irredundant | a property of the function | a property of a DNF or CNF |
+| Ch. 1, applications | dominating sets from neighbourhoods; diagnosis as a transversal of the observations; metabolic cut sets as transversals of the reaction hypergraph; strains as vertices | closed neighbourhoods; minimal transversals of the minimal conflict sets; minimal transversals of the elementary modes; strains are edges, antibiotics vertices |
+| Ch. 1, large edges | every edge of `Tr(H)` lies in `τ(E_H)^c` | false: `H = {{v₁},{v₂}}` on three points |
+| Ch. 1, bounded conformality | `S ∈ e_i` | `S ⊆ e_i` |
+| Ch. 2 §2.3 | the bounds give a lower limit on FK-A's performance | they give its running-time upper bound |
+| Obs. 2.3.3 | `for any i = 1,…,n` with `n = |G|+|H|` | `i` ranges over vertices |
+| Def. 3.1.1 | every element of a permutation group preserves `E(H)` | only subgroups of `Aut(H)` do |
+| §3.1, orbits | each orbit partitions `V`; classes permuted | the orbits partition `V`; each is fixed setwise |
+| §3.1, alternating group | `Alt(V)` is never an automorphism group | true for `|V| ≥ 3`; at `|V| = 2` it is `Aut({{v₁}})` |
+| §3.2, Table 3.2 | "the first nine Dedekind numbers" | ten values, `d(0)`–`d(9)` |
+| §3.2, two vertices | every edge has at most one vertex | `{v₁,v₂}` is the transversal side of `D₂,₁` |
+| §3.2, three vertices | reason for the maximum tree size 3 | children of a split have at most 2 vertices and are leaves |
+| §3.2, `P₄` | splitting `v₂` or `v₃` gives "3 nodes at the least, up to 7" | exactly 3 |
+| §3.2, `Pn₃‾` | child `D₃,₁` labelled `{v₁},{v₂},{v₃}` | `{v₁},{v₃},{v₄}` |
+| §3.2, `S₃` list | `D₁,₁` on 3 vertices has `Aut ≅ S₃` | `S₂` on 3 vertices, `S₃` on 4 |
+| §3.2, after `K₃` | the next self-transversal hypergraph is on 7 vertices | the 3-subsets of 5 points are self-transversal |
+| §3.2, `K₄⁻` | every split gives `K₃` and `D₂,₁` | `v₁, v₂`: `K₃` and `D₁,₂`; `v₃, v₄`: `St₂`-type and `D₁,₃`; all 5 nodes |
+| Ch. 4, introduction and §4.2.1 | alternating trees in GK99, used to prove FK-A's upper bounds | GK97 (Discrete Math. 169), showing the frequency bound is tight up to a factor 2 |
+| §4.4.3 | two twins lie in the same automorphism orbit | holds for graphs and clique hypergraphs; the thesis's own example `{{v₁,v₂},{v₂,v₃,v₄},{v₁,v₃}}` has false twins `v₁, v₄` of degrees 2 and 1 |
+| §4.4.3, after Prop. 4.4.15 | `Aut` of a disjoint union of copies is a product of wreath products | needs connected, pairwise non-isomorphic components: four singleton edges give `24 ≠ 8` |
+| §5.2.2, two `C₄` | one top `C₂` acts within each cycle independently | two factors `C₂`, one per cycle |
+
+Outside the thesis the same audit corrected: the A6 conjecture's status (unresolved; the cited pair
+agrees with it), the naming of the degree-sum rule (the implementation's choice, not FK96's
+frequency rule), the scope of README's memoisation sentence (leftmost rule), the Lean scope of
+`N^{Ω(log N)}`, Proposition 4.6's quantifier over polynomial-time rules, `fk-a-vs-fk-b.md` §3's
+claim that symmetry causes the repeats, the primitivity-depth caption, and the rows above for
+Theorem B, `ε(4)`, `ε(8)`, Claim 3.1.6 and D2.
