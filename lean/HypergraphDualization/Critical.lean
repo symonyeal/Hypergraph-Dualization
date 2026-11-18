@@ -11,7 +11,7 @@ and transitivity on edges forces transitivity on points.
 | --- | --- |
 | `card_le_of_critical` | **Seymour (1974).** Not 2-colourable, 2-colourable after deleting any edge, no isolated point: `n ≤ |H|` |
 | `erase_twoColourable` | a self-transversal Sperner `H` is 2-colourable after deleting any edge `e`: take `A = e` |
-| `card_le_of_tr_eq_self` | a self-transversal Sperner `H` covering `n` points has `n ≤ |H|`; equality for `K₃` and Fano |
+| `card_le_of_tr_eq_self` | a self-transversal `H` covering `n` points has `n ≤ |H|`; equality for `K₃` and Fano |
 | `tr_eq_self_iff_card` | for intersecting Sperner `H` without `∅`: `Tr(H) = H` iff exactly `2^{n−1}` subsets contain an edge |
 | `transitive_of_edge_transitive` | if `Tr(H) ⊆ H` and `Aut(H)` is transitive on edges, it is transitive on covered points |
 -/
@@ -95,10 +95,12 @@ theorem erase_twoColourable {H : Finset (Finset α)} (sH : IsSperner H)
     rw [mem_inter] at hx
     exact (mem_sdiff.1 (hfe hx.2)).2 hx.1
 
-/-- A self-transversal Sperner hypergraph covering all `n` points has at least `n` edges.
+/-- A self-transversal hypergraph (Sperner, as every `Tr` is) covering all `n` points has at
+least `n` edges.
 Equality holds for `K₃` and the Fano plane; `w11` has 66 edges on 11 points. -/
-theorem card_le_of_tr_eq_self {H : Finset (Finset α)} (sH : IsSperner H)
+theorem card_le_of_tr_eq_self {H : Finset (Finset α)}
     (hT : tr univ H = H) (hcov : ∀ x, ∃ e ∈ H, x ∈ e) : Fintype.card α ≤ H.card := by
+  have sH : IsSperner H := by simpa [hT] using tr_isSperner univ H
   obtain ⟨hI, -, h2⟩ := (tr_eq_self_iff (fun e _ => subset_univ e) sH).1 hT
   exact card_le_of_critical hcov h2 fun e he => erase_twoColourable sH hI he
 

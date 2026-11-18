@@ -17,9 +17,10 @@ namespace HD.S32
 
 open HD HD.Data Finset
 
-/-- The non-trivial transversal pairs: both sides nonempty and without the empty edge. -/
+/-- The non-trivial transversal pairs `(G, Tr G)`: `G` nonempty without the empty edge. Then so
+is `Tr G`: `univ` contains a minimal transversal, and `∅ ∈ Tr G` iff `G = ∅` (`empty_mem_tr_iff`). -/
 def NonTrivial {n : ℕ} (G : HG n) : Prop :=
-  G.Nonempty ∧ ∅ ∉ G ∧ (tr univ G).Nonempty ∧ ∅ ∉ tr univ G
+  G.Nonempty ∧ ∅ ∉ G
 
 instance {n : ℕ} (G : HG n) : Decidable (NonTrivial G) := by unfold NonTrivial; infer_instance
 

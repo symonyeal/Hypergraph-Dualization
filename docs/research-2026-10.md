@@ -80,9 +80,8 @@ cotree on `V`: a single point, or a disjoint union or join of two cographs.
 Lean: `ReadOnce`, `IsCograph`, `Conformal`.
 
 This is Gurvich's characterisation taken as the definition. §4 also uses read-once *formulas*
-(`Fm.ReadOnce`: no constants, disjoint inputs at every gate). A read-once formula on all of `V`
-has a read-once DNF in the sense of Definition 2.3 (`Fm.readOnce_dnf`); the converse is Gurvich's
-theorem, cited, not proved.
+(`Fm.ReadOnce`: no constants, disjoint inputs at every gate). By Gurvich's theorem (cited,
+not proved), the read-once hypergraphs of Definition 2.3 are the DNFs of read-once formulas on `V`.
 
 **Lemma 2.4.** Let a group act primitively on `α` and preserve a relation `R`. Then either the
 equivalence closure of `R` is all of `α × α`, or `R u v` implies `u = v`.
@@ -212,7 +211,7 @@ the others lie in `H − e₀` and inherit the colouring of `A'`. So `H` is 2-co
 partition `(e, U \ e)`: no other edge lies inside `e` (Sperner) or avoids it (intersecting).
 Lean: `erase_twoColourable`.
 
-**Corollary 2.15.** A self-transversal Sperner hypergraph covering `n` points has `|H| ≥ n`.
+**Corollary 2.15.** A self-transversal hypergraph covering `n` points has `|H| ≥ n`.
 Equality holds for `K₃` and the Fano plane; `w11` has 66 edges on 11 points.
 Lean: `card_le_of_tr_eq_self`.
 
@@ -593,10 +592,8 @@ and the constants form a family closed under the rule, and every subproblem lies
 In branching-program terms, the read-once formula's OBDD in leaf order has at most one node per
 variable besides the two sinks (`Fm.leftmost_fbdd`).
 Fault-tree analysis uses this depth-first, left-most order for trees without repeated events
-(Rauzy 1993, cited, not read). The identities behind the proof hold for every monotone formula:
-`dnf(f|x=0) = dnf f − x`, `dnf(f|x=1) = dnf f / x`, `Tr(dnf f) = min dnf(f^d)`, and
-`Tr(dnf f) = dnf(f^d)` for read-once `f` (`Fm.dnf_restrict_false`, `Fm.dnf_restrict_true`,
-`Fm.tr_dnf`, `Fm.tr_dnf_readOnce`).
+(Rauzy 1993, cited, not read). The proof uses `Tr(dnf f) = min dnf(f^d)` for every monotone
+formula, and `Tr(dnf f) = dnf(f^d)` for read-once `f` (`Fm.tr_dnf`, `Fm.tr_dnf_readOnce`).
 
 **Lemma 4.17** (interleaving). For any `A`, `B`, a minor of `A ∪ B` (of `A ∧ B`) is, as a
 function, `A' ∪ B'` (`A' ∧ B'`) for minors `A'` of `A` and `B'` of `B`. It is the induction

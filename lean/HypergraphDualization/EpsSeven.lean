@@ -67,7 +67,10 @@ smallest edge `g` of `G` has `|g|·ε ≥ 1` and `|g| ≤ n·ε`. -/
 theorem eps_bound (G : HG n) (hG : NonTrivial G) :
     ∃ g ∈ G, (∀ f ∈ G, g.card ≤ f.card) ∧
       1 ≤ (g.card : ℚ) * eps G (tr univ G) ∧ (g.card : ℚ) ≤ n * eps G (tr univ G) := by
-  obtain ⟨hGne, -, hHne, -⟩ := hG
+  obtain ⟨hGne, hG0⟩ := hG
+  obtain ⟨T, -, hT⟩ := exists_isMinHit_subset (H := G) _ univ rfl fun e he => by
+    rw [univ_inter]; exact nonempty_iff_ne_empty.2 fun h => hG0 (h ▸ he)
+  have hHne : (tr univ G).Nonempty := ⟨T, mem_tr.2 ⟨subset_univ T, hT⟩⟩
   set H := tr univ G
   set e := eps G H
   have hGpos : (0 : ℚ) < G.card := by exact_mod_cast card_pos.2 hGne

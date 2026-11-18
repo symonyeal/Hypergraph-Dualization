@@ -611,11 +611,11 @@ theorem valid_guardRule : Valid (guardRule (n := n)) := by
 /-- **FK96's guarantee.** On a dual pair `(G, Tr G)` with both sides nonempty the guarded rule
 splits on a vertex of frequency at least `1/⌊log₂ N⌋` on one side: the least such vertex, which
 exists by FK96 Lemma 2.3.2 (`exists_frequent_vertex`). -/
-theorem guardRule_frequent {G : HG n} (sG : IsSperner G) (hG : G.Nonempty)
+theorem guardRule_frequent {G : HG n} (hG : G.Nonempty)
     (hH : (tr univ G).Nonempty) : ∃ x, guardRule G (tr univ G) = some x ∧
       (G.card ≤ Nat.log 2 (G.card + (tr univ G).card) * degree G x ∨
         (tr univ G).card ≤ Nat.log 2 (G.card + (tr univ G).card) * degree (tr univ G) x) := by
-  obtain ⟨s, v, hs, hpow, hv⟩ := exists_frequent_vertex (within_univ G) sG rfl hG hH
+  obtain ⟨s, v, hs, hpow, hv⟩ := exists_frequent_vertex (within_univ G) rfl hG hH
   have hsl : s ≤ Nat.log 2 (G.card + (tr univ G).card) := Nat.le_log_of_pow_le (by norm_num) hpow
   have hfv : frequent G (tr univ G) v = true := by
     have cG := card_pos.2 hG; have cH := card_pos.2 hH

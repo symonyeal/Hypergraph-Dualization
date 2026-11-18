@@ -7,7 +7,7 @@ Copyright (c) 2026 Saimon Y. Islam. Released under the GPL-3.0-or-later.
 | --- | --- |
 | `aut_child_moves_split_to_isolated` | Lemma 3.3.2 **corrected**: in either child an automorphism can move the split vertex only to a vertex lying in no edge |
 | `lemma_3_3_3_false` | Lemma 3.3.3 **refuted**: a transposition of a generator need not survive |
-| `primalAdj_del`, `primalAdj_con`, `primalAdj_minimal` | Observation 3.4.5 **made precise**: each child's primal graph is a subgraph of `G(H) - v` |
+| `primal_children_le` | Observation 3.4.5 **made precise**: each child's primal graph is a subgraph of `G(H) - v` |
 | `falseTwin_filtered` | Observation 5.2.2: a false twin of the split vertex leaves the Sperner-reduced contraction |
 -/
 import HypergraphDualization.Section32
@@ -20,21 +20,6 @@ variable {α : Type*} [DecidableEq α]
 
 /-! ### Lemma 3.3.2, corrected -/
 
-theorem degree_del_self (G : Finset (Finset α)) (x : α) : degree (del G x) x = 0 := by
-  unfold degree del
-  rw [card_eq_zero, filter_eq_empty_iff]
-  intro e he; exact (mem_filter.1 he).2
-
-theorem degree_con_self (G : Finset (Finset α)) (x : α) : degree (con G x) x = 0 := by
-  unfold degree con
-  rw [card_eq_zero, filter_eq_empty_iff]
-  intro e he
-  obtain ⟨f, -, rfl⟩ := mem_image.1 he
-  exact notMem_erase x f
-
-theorem degree_minimal_le (G : Finset (Finset α)) (x : α) : degree (minimal G) x ≤ degree G x :=
-  card_le_card (filter_subset_filter _ (minimal_subset G))
-
 /-- **Lemma 3.3.2, corrected.** The split vertex `x` lies in no edge of either child, so an
 automorphism of a child (before or after Sperner reduction) sends `x` to a vertex that also
 lies in no edge of that child. The symmetries of the parent that fix `x` survive in both
@@ -43,11 +28,23 @@ theorem aut_child_moves_split_to_isolated (G : Finset (Finset α)) (x : α) (σ 
     (σ ∈ aut (del G x) → degree (del G x) (σ x) = 0) ∧
     (σ ∈ aut (con G x) → degree (con G x) (σ x) = 0) ∧
     (σ ∈ aut (minimal (con G x)) → degree (minimal (con G x)) (σ x) = 0) := by
+  have hdel : degree (del G x) x = 0 := by
+    unfold degree del
+    rw [card_eq_zero, filter_eq_empty_iff]
+    intro e he; exact (mem_filter.1 he).2
+  have hcon : degree (con G x) x = 0 := by
+    unfold degree con
+    rw [card_eq_zero, filter_eq_empty_iff]
+    intro e he
+    obtain ⟨f, -, rfl⟩ := mem_image.1 he
+    exact notMem_erase x f
+  have hmin : degree (minimal (con G x)) x ≤ degree (con G x) x :=
+    card_le_card (filter_subset_filter _ (minimal_subset _))
   refine ⟨fun h => ?_, fun h => ?_, fun h => ?_⟩
-  · rw [← degree_eq_of_transitive h rfl, degree_del_self]
-  · rw [← degree_eq_of_transitive h rfl, degree_con_self]
+  · rw [← degree_eq_of_transitive h rfl, hdel]
+  · rw [← degree_eq_of_transitive h rfl, hcon]
   · rw [← degree_eq_of_transitive h rfl]
-    exact Nat.eq_zero_of_le_zero ((degree_minimal_le _ x).trans (degree_con_self G x).le)
+    exact Nat.eq_zero_of_le_zero (hmin.trans hcon.le)
 
 /-! ### Lemma 3.3.3, refuted -/
 
@@ -65,32 +62,24 @@ theorem lemma_3_3_3_false :
 
 /-! ### Observation 3.4.5, made precise -/
 
-theorem primalAdj_del {G : Finset (Finset α)} {x u v : α} (h : primalAdj (del G x) u v) :
-    primalAdj G u v ∧ u ≠ x ∧ v ≠ x := by
-  obtain ⟨huv, e, he, hu, hv⟩ := h
-  rw [del, mem_filter] at he
-  exact ⟨⟨huv, e, he.1, hu, hv⟩, fun h => he.2 (h ▸ hu), fun h => he.2 (h ▸ hv)⟩
-
-theorem primalAdj_con {G : Finset (Finset α)} {x u v : α} (h : primalAdj (con G x) u v) :
-    primalAdj G u v ∧ u ≠ x ∧ v ≠ x := by
-  obtain ⟨huv, e, he, hu, hv⟩ := h
-  obtain ⟨f, hf, rfl⟩ := mem_image.1 he
-  exact ⟨⟨huv, f, hf, mem_of_mem_erase hu, mem_of_mem_erase hv⟩, ne_of_mem_erase hu,
-    ne_of_mem_erase hv⟩
-
-theorem primalAdj_minimal {G : Finset (Finset α)} {u v : α} (h : primalAdj (minimal G) u v) :
-    primalAdj G u v := by
-  obtain ⟨huv, e, he, hu, hv⟩ := h
-  exact ⟨huv, e, minimal_subset G he, hu, hv⟩
-
 /-- **Observation 3.4.5, made precise.** Both FK-A children of a pair split at `x`, after
 Sperner reduction, have primal graphs that are subgraphs of `G(C) - x` and `G(D) - x`. Each
 child's primal graph is therefore a minor of the parent's, obtained by deleting `x` and
 edges only; no contraction is needed. -/
 theorem primal_children_le (C D : Finset (Finset α)) (x u v : α) :
     (primalAdj (minimal (del C x)) u v → primalAdj C u v ∧ u ≠ x ∧ v ≠ x) ∧
-    (primalAdj (minimal (con D x)) u v → primalAdj D u v ∧ u ≠ x ∧ v ≠ x) :=
-  ⟨fun h => primalAdj_del (primalAdj_minimal h), fun h => primalAdj_con (primalAdj_minimal h)⟩
+    (primalAdj (minimal (con D x)) u v → primalAdj D u v ∧ u ≠ x ∧ v ≠ x) := by
+  constructor
+  · intro h
+    obtain ⟨huv, e, he, hu, hv⟩ := h
+    have he := minimal_subset _ he
+    rw [del, mem_filter] at he
+    exact ⟨⟨huv, e, he.1, hu, hv⟩, fun h => he.2 (h ▸ hu), fun h => he.2 (h ▸ hv)⟩
+  · intro h
+    obtain ⟨huv, e, he, hu, hv⟩ := h
+    obtain ⟨f, hf, rfl⟩ := mem_image.1 (minimal_subset _ he)
+    exact ⟨⟨huv, f, hf, mem_of_mem_erase hu, mem_of_mem_erase hv⟩, ne_of_mem_erase hu,
+      ne_of_mem_erase hv⟩
 
 /-! ### Observation 5.2.2 -/
 

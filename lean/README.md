@@ -61,7 +61,7 @@ same cache from Mathlib's Azure storage account.
 | `Influence` | automorphisms preserve pivotal probabilities; equal influences for Fano |
 | `Blowup` | why FK-A's subproblems multiply: subproblems are minors under any rule (`fkADag_minor`), `τ(C,D) = τ(D,C)` on dual pairs, `δ ≤ τ`; the read-once `ro12` with `δ = 43 > 2N` (refutes Conjecture 4.5) |
 | `SplitRule` | symmetric rules, rule-closed families: subproblems lie over them (`fkADagR_closed`); the leftmost rule |
-| `ReadOnceFormula` | monotone formulas, `dnf`, restriction and duality identities; a read-once formula has a read-once DNF (`readOnce_dnf`); the leftmost bound `δ ≤ 2n + 2` on read-once formulas with leaves in order (`leftmost_delta`, Theorem 4.16); minors of unions and joins (`minor_union`, `minor_join`); Remark 4.12 (`rminor_determined`) |
+| `ReadOnceFormula` | monotone formulas, `dnf` and its transversal (`tr_dnf`); the leftmost bound `δ ≤ 2n + 2` on read-once formulas with leaves in order (`leftmost_delta`, Theorem 4.16); minors of unions and joins (`minor_union`, `minor_join`); Remark 4.12 (`rminor_determined`) |
 | `BranchingProgram` | branching programs named by their functions (`run_correct`, `path_nodup`); the memo DAG is an FBDD of size `≤ 2δ + 2` under a valid symmetric rule (`memo_fbdd`, `memo_bp`) and conversely (`fbddRule`, `rule_of_fbdd`); the leftmost FBDD (`Fm.leftmost_fbdd`); the guarded rule with FK96's frequency guarantee (`guardRule_frequent`) |
 | `RuleInstances` | `δ` of GK `f₂` and `ro12` under the three rules (evaluation) |
 | `Axioms` | the trust base, checked: cited general theorems use only the standard axioms, checked facts are evaluations |
