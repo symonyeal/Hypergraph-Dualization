@@ -12,8 +12,7 @@ decomposition on a `Finset`: a single vertex, or a disjoint union or join of two
 | `connected_or_trivial` | **Lemma.** A relation preserved by a primitive group action is connected (its equivalence closure is everything) or relates only equal points |
 | `aut_eq_top_of_readOnce` | **Proposition A7.** A read-once hypergraph on `n ≥ 2` points with a primitive automorphism group has `Aut(H) = Sₙ` |
 | `eq_univ_of_complete` | a conformal Sperner hypergraph with complete primal graph is `{V}` |
-| `w11_not_readOnce` | `w11` is not read-once: `Aut(w11)` is primitive of order `7920 ≠ 11!` |
-| `fano_not_readOnce` | the Fano plane is not read-once: complete primal graph, not `{V}` |
+| `w11_not_readOnce`, `fano_not_readOnce` | `w11` and the Fano plane are not read-once: complete primal graph, not `{V}` |
 -/
 import HypergraphDualization.Witt
 import HypergraphDualization.Recursion
@@ -239,16 +238,13 @@ theorem eq_univ_of_complete [Fintype α] [Nonempty α] {H : Finset (Finset α)} 
   rw [mem_singleton]
   exact ⟨fun hf => sH f hf univ he (subset_univ f), fun hf => hf ▸ he⟩
 
-/-- **Corollary.** `w11` is not read-once: `Aut(w11)` is primitive (`w11_preprimitive`), and
-`|Aut(w11)| = 7920 ≠ 11!`. -/
+/-- **Corollary.** `w11` is not read-once: every two points lie in a block, so its primal graph
+is complete, and a read-once `w11` would be `{V}`, but it has 66 blocks. -/
 theorem w11_not_readOnce : ¬ ReadOnce Witt.w11 := by
-  intro h
-  have := Witt.w11_preprimitive
-  have htop := aut_eq_top_of_readOnce (by simp) h
-  have hc := Witt.card_aut_w11
-  rw [htop, Subgroup.card_top, Nat.card_perm, Nat.card_eq_fintype_card, Fintype.card_fin] at hc
-  revert hc
-  decide
+  rintro ⟨sH, cH, _⟩
+  have h := congrArg card (eq_univ_of_complete sH cH (by native_decide))
+  rw [Witt.w11_steiner.1, card_singleton] at h
+  omega
 
 /-- **Corollary.** The Fano plane is not read-once: its primal graph is complete, so a read-once
 Fano plane would be `{V}`. -/

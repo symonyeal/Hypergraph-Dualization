@@ -61,8 +61,8 @@ such `(A,B)` to any other. Reduction and restriction commute with relabelling
 `C=D`, the source-side choice disappears, giving `j`. Summing and adding the
 root proves the bounds; classes shared between depths only reduce the total.
 
-`SD.isoKey_eq_iff` identifies equality of the formal quotient with an actual
-common vertex permutation of both sides. The final theorems
+`SD.isoKey` is the quotient by a common vertex permutation of both sides
+(`SD.Iso`). The final theorems
 `SD.dual_transitive_bound` and `SD.self_transitive_bound` count this quotient,
 with `SD.hom_of_ktransitive` supplying the group-action hypothesis. Their
 `fkADagR` fuel is `k`: on a dual input this collects precisely the prefix of

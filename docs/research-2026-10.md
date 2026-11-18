@@ -102,9 +102,10 @@ most one point, and by transitivity a singleton edge forces every singleton, so 
 preserves `H`. *Join:* the same argument applied to the complement of `P` makes `P` complete.
 Conformality puts `V` inside an edge, and Sperner gives `H = {V}`. ∎
 
-**Corollary 2.6.** `w11` is not read-once: `Aut(w11)` is primitive of order `7920 ≠ 11!`. The
-Fano plane is not read-once: its primal graph is complete, and a conformal Sperner hypergraph
-with complete primal graph is `{V}` (`eq_univ_of_complete`).
+**Corollary 2.6.** `w11` and the Fano plane are not read-once: every two points lie in a block,
+so the primal graph is complete, and a conformal Sperner hypergraph with complete primal graph
+is `{V}` (`eq_univ_of_complete`). For `w11` this also follows from Proposition 2.5, since
+`Aut(w11)` is primitive of order `7920 ≠ 11!`.
 Lean: `w11_not_readOnce`, `fano_not_readOnce`.
 
 ### Steiner systems
@@ -302,7 +303,7 @@ ab + X = Σ_v deg_G(v) deg_H(v) ≤ n ε² ab.
 
 Hence the fraction of cross pairs with intersection size at least two is at most `nε² − 1`.
 One such pair gives `nε² ≥ 1 + 1/(ab)`. This needs neither Sperner nor duality.
-Lean: `sum_degree_mul_eq_excess`, `eps_crossExcess`, `eps_badCross`, `eps_overlap_gap`.
+Lean: `sum_degree_mul_eq_excess`, `eps_crossExcess`, `eps_overlap_gap`.
 With separate degree-frequency caps `p,q`, replace `ε²` by `pq` (`crossExcess_bound`).
 
 *Proof.* Count triples `(v,g,h)` with `v ∈ g ∩ h`. Each cross pair contributes its mandatory
@@ -688,7 +689,7 @@ and at most `1+k(k+1)` through depth `k`. For `G=Tr G`, the bounds improve to
 `j` and `1+k(k+1)/2`. No equivariance or side-symmetry of the rule is needed.
 Lean: `SD.Trace.normal`, `SD.fkADag_trace`, `SD.hom_of_ktransitive`,
 `SD.depth_bound`, `SD.self_depth_bound`, `SD.dual_transitive_bound`,
-`SD.self_transitive_bound`; `SD.isoKey_eq_iff` identifies the quotient.
+`SD.self_transitive_bound`; the classes are those of `SD.Iso`.
 
 *Proof.* Every nonroot state has normal form
 `(M(C,A,B),M(D,B,A))`, with the input sides possibly exchanged,

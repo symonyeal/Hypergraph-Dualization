@@ -170,36 +170,19 @@ theorem eps_eq_rigid (G H : HG n) (hG : G.Nonempty) (hH : H.Nonempty)
     have := hh f hf
     exact_mod_cast (mul_right_cancel₀ (ne_of_gt hep) (this.trans hm.symm))
 
-/-- Count cross pairs whose intersections contain at least two points. -/
-def badCross (G H : HG n) : ℕ :=
-  ((G ×ˢ H).filter fun gh => 1 < (gh.1 ∩ gh.2).card).card
-
-theorem badCross_le_excess (G H : HG n) : badCross G H ≤ crossExcess G H := by
-  rw [badCross, card_filter, sum_product]
-  refine sum_le_sum fun g _ => sum_le_sum fun h _ => ?_
-  split_ifs with hgh
-  · change (1 : ℕ) ≤ (g ∩ h).card - 1
-    change 1 < (g ∩ h).card at hgh
-    omega
-  · exact Nat.zero_le _
-
-/-- At most `(n ε² - 1)|G||H|` cross pairs have a nonsingleton intersection. -/
-theorem eps_badCross (G H : HG n) (hG : G.Nonempty) (hH : H.Nonempty)
-    (hGH : ∀ g ∈ G, ∀ h ∈ H, (g ∩ h).Nonempty) :
-    (G.card : ℚ) * H.card + badCross G H ≤
-      n * eps G H ^ 2 * ((G.card : ℚ) * H.card) := by
-  have := (Nat.cast_le (α := ℚ)).2 (badCross_le_excess G H)
-  linarith [eps_crossExcess G H hG hH hGH]
-
 /-- A single cross intersection of size at least two gives an explicit strict gap. -/
 theorem eps_overlap_gap (G H : HG n) (hG : G.Nonempty) (hH : H.Nonempty)
     (hGH : ∀ g ∈ G, ∀ h ∈ H, (g ∩ h).Nonempty)
     {g h : Finset (Fin n)} (hg : g ∈ G) (hh : h ∈ H) (hgh : 1 < (g ∩ h).card) :
     (G.card : ℚ) * H.card + 1 ≤ n * eps G H ^ 2 * ((G.card : ℚ) * H.card) := by
-  have hpos : 0 < badCross G H := card_pos.2
-    ⟨(g, h), mem_filter.2 ⟨mem_product.2 ⟨hg, hh⟩, hgh⟩⟩
-  have : (1 : ℚ) ≤ badCross G H := by exact_mod_cast hpos
-  linarith [eps_badCross G H hG hH hGH]
+  have h1 : 1 ≤ crossExcess G H :=
+    calc 1 ≤ (g ∩ h).card - 1 := by omega
+      _ ≤ ∑ h' ∈ H, ((g ∩ h').card - 1) :=
+        single_le_sum (fun h' (_ : h' ∈ H) => Nat.zero_le ((g ∩ h').card - 1)) hh
+      _ ≤ crossExcess G H :=
+        single_le_sum (fun g' (_ : g' ∈ G) => Nat.zero_le (∑ h' ∈ H, ((g' ∩ h').card - 1))) hg
+  have : (1 : ℚ) ≤ crossExcess G H := by exact_mod_cast h1
+  linarith [eps_crossExcess G H hG hH hGH]
 
 /-- Diagonal pairs alone account for `∑ g, (|g|-1)` units of excess. -/
 theorem diagonal_le_excess (G : HG n) :

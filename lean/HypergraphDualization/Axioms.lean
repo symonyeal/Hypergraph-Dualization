@@ -75,7 +75,7 @@ elab "#assert_evaluation " ids:ident* : command => do
   HD.eval_fkDT HD.leaves_fkDT HD.fkA_tree_dt HD.fkA_gk_tree   HD.ordered_coFm HD.dnf_coFm HD.dnf_coFm_gkH HD.gk_memo_gap
   HD.SD.Trace.normal HD.SD.fkADag_trace HD.SD.cut_pimg HD.SD.hom_of_transitive
   HD.SD.depth_bound HD.SD.self_depth_bound HD.SD.upto_bound HD.SD.self_upto_bound
-  HD.SD.isoKey_eq_iff HD.SD.transitive_bound HD.SD.self_transitive_bound HD.SD.dual_transitive_bound
+  HD.SD.transitive_bound HD.SD.self_transitive_bound HD.SD.dual_transitive_bound
   HD.pimg_injective HD.tr_eq_pimg_iff HD.minimal_pimg HD.dual_pimg HD.fkAR_pimg
   HD.dual_of_key_eq HD.fkAI_correct HD.fkAI_eq_fkAR
   HD.gk_degree_balance HD.tk_degree_ratio
@@ -90,7 +90,7 @@ elab "#assert_evaluation " ids:ident* : command => do
   HD.OpenAI.bernoulli_dual HD.OpenAI.bernoulli_self_dual HD.OpenAI.coverCardinalities
   HD.OpenAI.coverNumber HD.OpenAI.coverNumber_eq_tr_min HD.OpenAI.coverNumber_le_of_intersecting
   HD.OpenAI.isCover_iff_hits HD.OpenAI.ryser_extremal_size HD.ReadOnce HD.S32.crossExcess_bound
-  HD.S32.eps_badCross HD.S32.eps_bound HD.S32.eps_crossExcess HD.S32.eps_eq_cross_singleton
+  HD.S32.eps_bound HD.S32.eps_crossExcess HD.S32.eps_eq_cross_singleton
   HD.S32.eps_eq_rigid HD.S32.eps_eq_sperner HD.S32.eps_ge_inv HD.S32.eps_overlap_gap
   HD.S32.eps_self_diagonal HD.S32.eps_self_strict HD.S32.eps_sq HD.S32.eps_strict_of_nonsquare
   HD.S32.fano_crossExcess HD.S32.path_four_not_extremal HD.S32.sizeAt

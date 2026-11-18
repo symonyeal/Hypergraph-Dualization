@@ -138,12 +138,12 @@ New statements of the October 2026 research program, each written up in
 | Theorem A4: intersecting, `r`-uniform, `d`-regular on `t` points gives `d(r² − t) ≥ r(r − 1)`, equality iff distinct edges meet in one point | Proved | `intersecting_regular_bound` |
 | Lemma: a relation preserved by a primitive action is connected or relates only equal points | Proved | `connected_or_trivial` |
 | Proposition A7: a read-once hypergraph on `n ≥ 2` points with primitive `Aut(H)` has `Aut(H) = Sₙ` | Proved | `aut_eq_top_of_readOnce` |
-| `w11` and the Fano plane are not read-once | `w11`: Checked (through A2); Fano: Proved (kernel `decide`) | `w11_not_readOnce`, `fano_not_readOnce` |
+| `w11` and the Fano plane are not read-once (complete primal graph) | `w11`: Checked (completeness by evaluation); Fano: Proved (kernel `decide`) | `w11_not_readOnce`, `fano_not_readOnce` |
 | Theorem A5a: in `S(t,k,v)`, `1 ≤ t ≤ k`, every block is disjoint from exactly `n₀(t,k,v) = Σ_{i<t} (−1)^i C(k,i)(λ_i − 1)` blocks; hence `n₀ ≥ 0` for every existing system | Proved | `steiner_disjoint`, `steiner_n0_nonneg` |
 | Observation A5b: `n₀` for 19 parameter sets; no `S(t,k,v)` with `n₀ > 0` (nine sets, including every `S(2,3,15)`, `S(3,4,16)`, `S(5,8,24)`) is self-transversal; none with `n₀ < 0` (ten sets) exists | Proved (kernel `decide`) | `n0_table`, `steiner_tr_ne_of_table`, `not_steiner_of_table` |
 | `PG(2,4)` and `S(4,7,23)` are intersecting Steiner systems with a 2-colouring, so not self-transversal | Checked | `pg24_steiner`, `pg24_tr_ne`, `s4723_steiner`, `s4723_tr_ne` |
 | Theorem B: `s·ε ≥ 1` and `s ≤ nε` for the smallest edge size `s`; hence `nε² ≥ 1` | Proved | `eps_bound`, `eps_sq` |
-| B4: for nonempty cross-intersecting `G,H`, `ab + X ≤ nε²ab`, where `X = Σ_{g,h} (|g ∩ h|−1)`; at most `(nε²−1)ab` cross pairs have nonsingleton intersection | Proved (kernel) | `sum_degree_mul_eq_excess`, `crossExcess_bound`, `eps_crossExcess`, `eps_badCross`, `eps_overlap_gap` |
+| B4: for nonempty cross-intersecting `G,H`, `ab + X ≤ nε²ab`, where `X = Σ_{g,h} (|g ∩ h|−1)`; each cross pair with nonsingleton intersection adds at least 1 to `X` | Proved (kernel) | `sum_degree_mul_eq_excess`, `crossExcess_bound`, `eps_crossExcess`, `eps_overlap_gap` |
 | B5: equality forces `n=m²`, both families `m`-uniform and regular with frequency `1/m`, Sperner, every cross intersection singleton; nonsquares have strict inequality | Proved (kernel) | `eps_eq_rigid`, `eps_eq_sperner`, `eps_eq_cross_singleton`, `eps_strict_of_nonsquare` |
 | Equality transversal pairs are read-once; so are regular convergent templates for every `r` | Cited consequence of B5 and Gurvich (Das–Straßburger 2016, Thm 4.10); bridge not formalised | — |
 | B6: self-transversal `G` satisfies `|G|² + Σ_g (|g|−1) ≤ nε²|G|²`; `n>1` implies `nε²>1` | Proved (kernel) | `eps_self_diagonal`, `eps_self_strict` |

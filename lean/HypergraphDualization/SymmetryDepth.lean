@@ -4,7 +4,8 @@ Copyright (c) 2026 Saimon Y. Islam. Released under the GPL-3.0-or-later.
 # Symmetry depth
 
 Legend: C,D are the input families; A is the deleted set; B is the contracted
-set; U is the set of queried vertices; j is depth; q is an isomorphism key.
+set; U is the set of queried vertices; j is depth; isoKey is the class of an
+ordered pair under a common vertex permutation (`Iso`).
 Every nonroot FK-A state has a first side with at least one deletion, from
 either C or D. This saves two classes at every positive depth.
 -/
@@ -275,15 +276,37 @@ theorem hom_of_transitive (C D : HG n) (j : ℕ)
   exact ⟨σ, σ.property.1, σ.property.2,
     pmap_eq_of_equiv σ eA hA, pmap_eq_of_equiv σ eB hB⟩
 
-def Inv {β : Type*} (q : (HG n × HG n) → β) : Prop :=
-  ∀ σ C D, q (pimg σ C, pimg σ D) = q (C, D)
+/-! ### The isomorphism quotient -/
 
-theorem key_pair {β : Type*} {q : (HG n × HG n) → β} (hq : Inv q)
-    {C D : HG n} {j : ℕ} (h : Hom C D j) {A B A' B' : Finset (Fin n)}
+/-- `p ≅ q`: one vertex permutation carries both sides of `q` to those of `p`. -/
+def Iso (p q : HG n × HG n) : Prop :=
+  ∃ σ : Equiv.Perm (Fin n), p = (pimg σ q.1, pimg σ q.2)
+
+def isoSetoid (n : ℕ) : Setoid (HG n × HG n) where
+  r := Iso
+  iseqv := {
+    refl := fun p => ⟨1, by simp [pimg_one]⟩
+    symm := by
+      rintro p q ⟨σ, rfl⟩
+      exact ⟨σ⁻¹, by simp [pimg_inv_pimg]⟩
+    trans := by
+      rintro p q z ⟨σ, rfl⟩ ⟨ρ, rfl⟩
+      exact ⟨σ * ρ, by simp [pimg_mul]⟩ }
+
+/-- The isomorphism class of an ordered pair; equal keys are `Iso` (`Quotient.eq`). -/
+def isoKey (p : HG n × HG n) : Quotient (isoSetoid n) := Quotient.mk _ p
+
+noncomputable instance : DecidableEq (Quotient (isoSetoid n)) := Classical.decEq _
+
+theorem isoKey_pimg (σ : Equiv.Perm (Fin n)) (C D : HG n) :
+    isoKey (pimg σ C, pimg σ D) = isoKey (C, D) :=
+  Quotient.sound ⟨σ, rfl⟩
+
+theorem key_pair {C D : HG n} {j : ℕ} (h : Hom C D j) {A B A' B' : Finset (Fin n)}
     (hd : Disjoint A B) (hd' : Disjoint A' B') (hc : A.card + B.card = j)
     (hc' : A'.card + B'.card = j) (hb : B.card = B'.card) :
-    q (pair C D A B) = q (pair C D A' B') ∧
-      q (pair D C A B) = q (pair D C A' B') := by
+    isoKey (pair C D A B) = isoKey (pair C D A' B') ∧
+      isoKey (pair D C A B) = isoKey (pair D C A' B') := by
   obtain ⟨σ, hC, hD, hA, hB⟩ := h A B A' B' hd hd' hc hc' hb
   have h1 := cut_pimg σ C A B
   have h2 := cut_pimg σ D B A
@@ -292,8 +315,8 @@ theorem key_pair {β : Type*} {q : (HG n × HG n) → β} (hq : Inv q)
   rw [hC, hA, hB] at h1 h4
   rw [hD, hA, hB] at h2 h3
   constructor
-  · exact (hq σ (cut C A B) (cut D B A)).symm.trans (by rw [← h1, ← h2]; rfl)
-  · exact (hq σ (cut D A B) (cut C B A)).symm.trans (by rw [← h3, ← h4]; rfl)
+  · exact (isoKey_pimg σ (cut C A B) (cut D B A)).symm.trans (by rw [← h1, ← h2]; rfl)
+  · exact (isoKey_pimg σ (cut D A B) (cut C B A)).symm.trans (by rw [← h3, ← h4]; rfl)
 
 /-- A finite image factors through any finite signature separating its values. -/
 theorem card_image_le_signature {α β γ : Type*} [DecidableEq β] [Fintype γ]
@@ -325,39 +348,35 @@ theorem normal_code {C D : HG n} {j : ℕ} (hj : 0 < j)
   · exact ⟨true, A, B, hd, hc, by omega, hp⟩
 
 /-- At positive depth j there are at most 2j ordered isomorphism classes. -/
-theorem depth_bound {β : Type*} [DecidableEq β] {q : (HG n × HG n) → β}
-    (hq : Inv q) {C D : HG n} {j : ℕ} (hj : 0 < j) (hh : Hom C D j)
+theorem depth_bound {C D : HG n} {j : ℕ} (hj : 0 < j) (hh : Hom C D j)
     (R : Finset (HG n × HG n))
     (hR : ∀ p ∈ R, ∃ U, U.card = j ∧ Trace C D U p) :
-    (R.image q).card ≤ 2 * j := by
-  classical
+    (R.image isoKey).card ≤ 2 * j := by
   have hn := fun p : R => normal_code hj (hR p.val p.property)
   choose b A B hd hc hb hp using hn
   let g : R → Bool × Fin j := fun p => (b p, ⟨(B p).card, hb p⟩)
-  have h := card_image_le_signature R q g (by
+  have h := card_image_le_signature R isoKey g (by
     intro p p' he
     have he1 : b p = b p' := congrArg Prod.fst he
     have he2 : (B p).card = (B p').card := congrArg (fun t : Bool × Fin j => t.2.val) he
     rw [hp p, hp p', ← he1]
-    obtain ⟨h0, h1⟩ := key_pair hq hh (hd p) (hd p') (hc p) (hc p') he2
+    obtain ⟨h0, h1⟩ := key_pair hh (hd p) (hd p') (hc p) (hc p') he2
     cases b p <;> simp only [Bool.false_eq_true, ite_false, ite_true] <;> assumption)
   simpa using h
 
 /-- Equal input sides remove the source-side bit: at most j classes at depth j. -/
-theorem self_depth_bound {β : Type*} [DecidableEq β] {q : (HG n × HG n) → β}
-    (hq : Inv q) {C : HG n} {j : ℕ} (hj : 0 < j) (hh : Hom C C j)
+theorem self_depth_bound {C : HG n} {j : ℕ} (hj : 0 < j) (hh : Hom C C j)
     (R : Finset (HG n × HG n))
     (hR : ∀ p ∈ R, ∃ U, U.card = j ∧ Trace C C U p) :
-    (R.image q).card ≤ j := by
-  classical
+    (R.image isoKey).card ≤ j := by
   have hn := fun p : R => normal_code hj (hR p.val p.property)
   choose b A B hd hc hb hp using hn
   have hp' : ∀ p : R, p.val = pair C C (A p) (B p) := by intro p; simpa using hp p
   let g : R → Fin j := fun p => ⟨(B p).card, hb p⟩
-  have h := card_image_le_signature R q g (by
+  have h := card_image_le_signature R isoKey g (by
     intro p p' he
     rw [hp' p, hp' p']
-    exact (key_pair hq hh (hd p) (hd p') (hc p) (hc p') (congrArg Fin.val he)).1)
+    exact (key_pair hh (hd p) (hd p') (hc p) (hc p') (congrArg Fin.val he)).1)
   simpa using h
 
 open Classical in
@@ -394,31 +413,28 @@ theorem upto_succ (C D : HG n) (k : ℕ) :
   rfl
 
 /-- Sum the layer bounds; classes at different depths may coincide. -/
-theorem upto_count {β : Type*} [DecidableEq β] (q : (HG n × HG n) → β)
-    (C D : HG n) (c k : ℕ)
-    (hh : ∀ j, 0 < j → j ≤ k → ((layer C D j).image q).card ≤ c * j) :
-    2 * ((upto C D k).image q).card ≤ 2 + c * k * (k + 1) := by
+theorem upto_count (C D : HG n) (c k : ℕ)
+    (hh : ∀ j, 0 < j → j ≤ k → ((layer C D j).image isoKey).card ≤ c * j) :
+    2 * ((upto C D k).image isoKey).card ≤ 2 + c * k * (k + 1) := by
   induction k with
   | zero => simp [upto_zero]
   | succ k ih =>
     have h0 := ih (fun j hj hk => hh j hj (by omega))
     have h1 := hh (k + 1) (by omega) le_rfl
     rw [upto_succ, image_union]
-    have h2 := card_union_le ((layer C D (k + 1)).image q) ((upto C D k).image q)
+    have h2 := card_union_le ((layer C D (k + 1)).image isoKey) ((upto C D k).image isoKey)
     nlinarith
 
-theorem upto_bound {β : Type*} [DecidableEq β] {q : (HG n × HG n) → β}
-    (hq : Inv q) {C D : HG n} {k : ℕ} (hh : ∀ j ≤ k, Hom C D j) :
-    ((upto C D k).image q).card ≤ 1 + k * (k + 1) := by
-  have h := upto_count q C D 2 k (fun j hj hk =>
-    depth_bound hq hj (hh j hk) _ (fun p hp => mem_layer.1 hp))
+theorem upto_bound {C D : HG n} {k : ℕ} (hh : ∀ j ≤ k, Hom C D j) :
+    ((upto C D k).image isoKey).card ≤ 1 + k * (k + 1) := by
+  have h := upto_count C D 2 k (fun j hj hk =>
+    depth_bound hj (hh j hk) _ (fun p hp => mem_layer.1 hp))
   nlinarith
 
-theorem self_upto_bound {β : Type*} [DecidableEq β] {q : (HG n × HG n) → β}
-    (hq : Inv q) {C : HG n} {k : ℕ} (hh : ∀ j ≤ k, Hom C C j) :
-    ((upto C C k).image q).card ≤ 1 + k * (k + 1) / 2 := by
-  have h := upto_count q C C 1 k (fun j hj hk => by
-    simpa using self_depth_bound hq hj (hh j hk) _ (fun p hp => mem_layer.1 hp))
+theorem self_upto_bound {C : HG n} {k : ℕ} (hh : ∀ j ≤ k, Hom C C j) :
+    ((upto C C k).image isoKey).card ≤ 1 + k * (k + 1) / 2 := by
+  have h := upto_count C C 1 k (fun j hj hk => by
+    simpa using self_depth_bound hj (hh j hk) _ (fun p hp => mem_layer.1 hp))
   simp only [one_mul] at h
   omega
 
@@ -429,22 +445,6 @@ theorem fkADag_subset_upto (r : Rule n)
   obtain ⟨U, hu, ht⟩ := fkADag_trace r hr k b C D p hp
   exact mem_biUnion.2 ⟨U.card, mem_range.2 (by omega), mem_layer.2 ⟨U, rfl, ht⟩⟩
 
-theorem fkADag_iso_bound {β : Type*} [DecidableEq β] {q : (HG n × HG n) → β}
-    (hq : Inv q) (r : Rule n)
-    (hr : ∀ C D x, r C D = some x → x ∈ support C ∪ support D)
-    (k : ℕ) (b : Bool) (C D : HG n) (hh : ∀ j ≤ k, Hom C D j) :
-    ((fkADagR r k b C D).image q).card ≤ 1 + k * (k + 1) :=
-  (card_le_card (image_subset_image (fkADag_subset_upto r hr k b C D))).trans
-    (upto_bound hq hh)
-
-theorem fkADag_self_iso_bound {β : Type*} [DecidableEq β] {q : (HG n × HG n) → β}
-    (hq : Inv q) (r : Rule n)
-    (hr : ∀ C D x, r C D = some x → x ∈ support C ∪ support D)
-    (k : ℕ) (b : Bool) (C : HG n) (hh : ∀ j ≤ k, Hom C C j) :
-    ((fkADagR r k b C C).image q).card ≤ 1 + k * (k + 1) / 2 :=
-  (card_le_card (image_subset_image (fkADag_subset_upto r hr k b C C))).trans
-    (self_upto_bound hq hh)
-
 theorem hom_of_ktransitive (C D : HG n) (k : ℕ) (hk : k ≤ n)
     [MulAction.IsMultiplyPretransitive ↥(aut C ⊓ aut D) (Fin n) k] :
     ∀ j ≤ k, Hom C D j := by
@@ -453,36 +453,15 @@ theorem hom_of_ktransitive (C D : HG n) (k : ℕ) (hk : k ≤ n)
     (G := ↥(aut C ⊓ aut D)) (α := Fin n) hj (by simpa using hk)
   exact hom_of_transitive C D j
 
-def Iso (p q : HG n × HG n) : Prop :=
-  ∃ σ : Equiv.Perm (Fin n), p = (pimg σ q.1, pimg σ q.2)
-
-def isoSetoid (n : ℕ) : Setoid (HG n × HG n) where
-  r := Iso
-  iseqv := {
-    refl := fun p => ⟨1, by simp [pimg_one]⟩
-    symm := by
-      rintro p q ⟨σ, rfl⟩
-      exact ⟨σ⁻¹, by simp [pimg_inv_pimg]⟩
-    trans := by
-      rintro p q z ⟨σ, rfl⟩ ⟨ρ, rfl⟩
-      exact ⟨σ * ρ, by simp [pimg_mul]⟩ }
-
-def isoKey (p : HG n × HG n) : Quotient (isoSetoid n) := Quotient.mk _ p
-
-theorem isoKey_eq_iff (p q : HG n × HG n) : isoKey p = isoKey q ↔ Iso p q :=
-  Quotient.eq
-
-theorem isoKey_inv : Inv (isoKey (n := n)) := fun σ _ _ => Quotient.sound ⟨σ, rfl⟩
-
-open Classical in
-/-- The actual ordered-pair isomorphism quotient, under k-transitivity. -/
+/-- **Theorem 4.22.** Under `k`-transitivity of the common automorphism group, every live-vertex
+rule reaches at most `1 + k(k+1)` ordered isomorphism classes through depth `k`. -/
 theorem transitive_bound (C D : HG n) (k : ℕ) (hk : k ≤ n)
     [MulAction.IsMultiplyPretransitive ↥(aut C ⊓ aut D) (Fin n) k]
     (r : Rule n) (hr : ∀ E F x, r E F = some x → x ∈ support E ∪ support F) (b : Bool) :
     ((fkADagR r k b C D).image isoKey).card ≤ 1 + k * (k + 1) :=
-  fkADag_iso_bound isoKey_inv r hr k b C D (hom_of_ktransitive C D k hk)
+  (card_le_card (image_subset_image (fkADag_subset_upto r hr k b C D))).trans
+    (upto_bound (hom_of_ktransitive C D k hk))
 
-open Classical in
 theorem self_transitive_bound (C : HG n) (k : ℕ) (hk : k ≤ n)
     [MulAction.IsMultiplyPretransitive (aut C) (Fin n) k]
     (r : Rule n) (hr : ∀ E F x, r E F = some x → x ∈ support E ∪ support F) (b : Bool) :
@@ -490,9 +469,9 @@ theorem self_transitive_bound (C : HG n) (k : ℕ) (hk : k ≤ n)
   have he : aut C ⊓ aut C = aut C := inf_idem _
   have : MulAction.IsMultiplyPretransitive ↥(aut C ⊓ aut C) (Fin n) k := by
     rw [he]; infer_instance
-  exact fkADag_self_iso_bound isoKey_inv r hr k b C (hom_of_ktransitive C C k hk)
+  exact (card_le_card (image_subset_image (fkADag_subset_upto r hr k b C C))).trans
+    (self_upto_bound (hom_of_ktransitive C C k hk))
 
-open Classical in
 theorem dual_transitive_bound (C : HG n) (k : ℕ) (hk : k ≤ n)
     [MulAction.IsMultiplyPretransitive (aut C) (Fin n) k]
     (r : Rule n) (hr : ∀ E F x, r E F = some x → x ∈ support E ∪ support F) (b : Bool) :
