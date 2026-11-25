@@ -233,6 +233,37 @@ def describe(MBF: Hypergraph) -> dict:
     return row
 
 
+def group_hits(gens: list[list[int]], n: int, pair_max: int):
+    """Yield every self-transversal hypergraph on ``n`` points that is one orbit, or (for
+    ``n <= pair_max``) the union of two intersecting orbits, of ``<gens>`` on subsets."""
+    intersecting_orbits = []
+    for k in range(2, (n + 3) // 2 + 1):
+        if n > k * k - 1:          # L3
+            continue
+        for orbit in orbits_on_subsets(gens, n, k):
+            if not intersecting(orbit):
+                continue
+            intersecting_orbits.append(orbit)
+            if not edges_are_minimal_transversals(orbit):
+                continue
+            MBF = Hypergraph.from_bitsets(n, orbit)
+            if is_self_transversal(MBF):
+                yield MBF
+    if n > pair_max:
+        return
+    for a, b in combinations(intersecting_orbits, 2):
+        if not cross_intersecting(a, b):
+            continue
+        edges = list(a | b)
+        if any(x != y and (x & y) == x for x in edges for y in edges):
+            continue               # a self-transversal family is Sperner
+        if not edges_are_minimal_transversals(edges):
+            continue
+        MBF = Hypergraph.from_bitsets(n, edges)
+        if is_self_transversal(MBF):
+            yield MBF
+
+
 def search(n_from: int, n_to: int, pair_max: int = 12) -> list[dict]:
     found: dict = {}
     for n in range(n_from, n_to + 1):
@@ -243,32 +274,8 @@ def search(n_from: int, n_to: int, pair_max: int = 12) -> list[dict]:
             if not gens:
                 gens = [list(range(n))]
             label = f"{n}T{T.transitive_number()}"
-            intersecting_orbits = []
-            for k in range(2, (n + 3) // 2 + 1):
-                if n > k * k - 1:          # L3
-                    continue
-                for orbit in orbits_on_subsets(gens, n, k):
-                    if not intersecting(orbit):
-                        continue
-                    intersecting_orbits.append(orbit)
-                    if not edges_are_minimal_transversals(orbit):
-                        continue
-                    MBF = Hypergraph.from_bitsets(n, orbit)
-                    if is_self_transversal(MBF):
-                        found.setdefault(canonical_key(MBF), (MBF, set()))[1].add(label)
-            if n > pair_max:
-                continue
-            for a, b in combinations(intersecting_orbits, 2):
-                if not cross_intersecting(a, b):
-                    continue
-                edges = list(a | b)
-                if any(x != y and (x & y) == x for x in edges for y in edges):
-                    continue               # a self-transversal family is Sperner
-                if not edges_are_minimal_transversals(edges):
-                    continue
-                MBF = Hypergraph.from_bitsets(n, edges)
-                if is_self_transversal(MBF):
-                    found.setdefault(canonical_key(MBF), (MBF, set()))[1].add(label)
+            for MBF in group_hits(gens, n, pair_max):
+                found.setdefault(canonical_key(MBF), (MBF, set()))[1].add(label)
 
     rows = []
     for MBF, labels in found.values():

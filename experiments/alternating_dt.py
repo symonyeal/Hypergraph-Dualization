@@ -284,29 +284,36 @@ def least_ratio(A, B):
     return min(Fraction(val(A, a, b), val(B, a, b)) for a, b in dirs)
 
 
+def departures(pairs, fresh):
+    """Restricted pairs (a, b) of the pairs (g, h), with `fresh` of them unrestricted (1 or 0): the
+    count n, and for each baseline (gate, flattened) [number where H(AND(a, b)) differs, least ratio, witness]."""
+    n, stats = 0, {"gate": [0, Fraction(2), None], "flattened": [0, Fraction(2), None]}
+    for g, h in pairs:
+        for a in restrictions(g):
+            for b in restrictions(h):
+                if (a == g) + (b == h) != fresh:
+                    continue
+                n += 1
+                f = mk("&", [a, b])
+                base = {"gate": lhull(compose(H(a), H(b)) + compose(H(b), H(a))), "flattened": top(f)}
+                for name, B in base.items():
+                    if H(f) != B:
+                        s = stats[name]
+                        s[0] += 1
+                        r = least_ratio(H(f), B)
+                        if r < s[1]:
+                            s[1], s[2] = r, (a, b)
+    return n, stats
+
+
 def gates(L, R):
     fs = [f for f in balanced_formulas(L) if f[0] == "|"]
     pairs = [(g, h) for i, g in enumerate(fs) for h in fs[i:]]
     fresh = sum(H(mk("&", [g, h])) == top(mk("&", [g, h])) for g, h in pairs)
     print(f"{len(fs)} OR-rooted balanced formulas, {len(pairs)} pairs: AND(g, h) depth-first at the gate on {fresh}")
     pairs = [(g, h) for g, h in pairs if max(repr(g).count("x"), repr(h).count("x")) <= R]
-    for kind in ("one fresh", "both restricted"):
-        n, stats = 0, {"gate": [0, Fraction(2), None], "flattened": [0, Fraction(2), None]}
-        for g, h in pairs:
-            for a in restrictions(g):
-                for b in restrictions(h):
-                    if (a == g) + (b == h) != (1 if kind == "one fresh" else 0):
-                        continue
-                    n += 1
-                    f = mk("&", [a, b])
-                    base = {"gate": lhull(compose(H(a), H(b)) + compose(H(b), H(a))), "flattened": top(f)}
-                    for name, B in base.items():
-                        if H(f) != B:
-                            s = stats[name]
-                            s[0] += 1
-                            r = least_ratio(H(f), B)
-                            if r < s[1]:
-                                s[1], s[2] = r, (a, b)
+    for kind, one in (("one fresh", 1), ("both restricted", 0)):
+        n, stats = departures(pairs, one)
         print(f"  {kind}: {n} restricted pairs")
         for name, (bad, r, w) in stats.items():
             print(f"    not depth-first, {name} (a, b {'as units' if name == 'gate' else 'flattened into the gate'}): "

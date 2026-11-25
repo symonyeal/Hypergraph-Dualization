@@ -18,7 +18,8 @@ import readonce_formulas as formulas
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def main():
+def arguments():
+    """Parsed command line; every unsupported combination is rejected here."""
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("family", choices=["gk", "tk"])
     p.add_argument("k", type=int)
@@ -36,6 +37,11 @@ def main():
         p.error("supported bounds: GK k<=5, TK k<=4 (n<=512)")
     if a.family == "gk" and a.k == 5 and a.mode == "joint":
         p.error("GK f5 degree-sum enumeration is outside the search bound")
+    return a
+
+
+def evidence(a):
+    """Run the Rust probe for the parsed arguments a; return the evidence record r and the output rows."""
     exe = ROOT / "experiments/readonce_dag/target/release/readonce_dag"
     if exe.with_suffix(".exe").exists():
         exe = exe.with_suffix(".exe")
@@ -59,6 +65,12 @@ def main():
     if lv:
         r["totals"] = {s: sum(q[s] for q in lv) for s in
                        ("nodes", "splits", "leftmost_ineligible", "fallbacks", "diff_degree_sum")}
+    return r, rows
+
+
+def main():
+    a = arguments()
+    r, rows = evidence(a)
     a.out.parent.mkdir(parents=True, exist_ok=True)
     with a.out.open("x", encoding="utf-8", newline="\n") as out:
         out.write(json.dumps(r, indent=2) + "\n")

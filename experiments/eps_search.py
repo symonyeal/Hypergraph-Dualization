@@ -31,17 +31,12 @@ from fka.algorithm import eps_exact  # noqa: E402
 from fka.transversal import transversal  # noqa: E402
 
 
-def model(n, p, q):
-    N, M = 1 << n, cp_model.CpModel()
-    f = [M.new_bool_var(f"f{x}") for x in range(N)]
+def edge_indicators(M, f, n):
+    """Add to the CP model M the indicators m, h of the edges of G and of H = Tr(G), 2^n bools each,
+    defined from the truth table f of the monotone function: m(x) minterm of f, h(x) minterm of its dual."""
+    N = 1 << n
     m = [M.new_bool_var(f"m{x}") for x in range(N)]
     h = [M.new_bool_var(f"h{x}") for x in range(N)]
-    for x in range(N):
-        for i in range(n):
-            if not x >> i & 1:
-                M.add_implication(f[x], f[x | 1 << i])
-    M.add(f[0] == 0)
-    M.add(f[N - 1] == 1)
     for x in range(N):
         I = [i for i in range(n) if x >> i & 1]
         lit_m = [f[x]] + [f[x ^ 1 << i].Not() for i in I]          # minterm of f
@@ -49,6 +44,19 @@ def model(n, p, q):
         for y, L in ((m[x], lit_m), (h[x], lit_h)):
             M.add_bool_and(L).only_enforce_if(y)
             M.add_bool_or([l.Not() for l in L]).only_enforce_if(y.Not())
+    return m, h
+
+
+def model(n, p, q):
+    N, M = 1 << n, cp_model.CpModel()
+    f = [M.new_bool_var(f"f{x}") for x in range(N)]
+    for x in range(N):
+        for i in range(n):
+            if not x >> i & 1:
+                M.add_implication(f[x], f[x | 1 << i])
+    M.add(f[0] == 0)
+    M.add(f[N - 1] == 1)
+    m, h = edge_indicators(M, f, n)
     for F in (m, h):
         size = sum(F)
         for v in range(n):
